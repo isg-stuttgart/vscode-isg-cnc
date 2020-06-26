@@ -1,0 +1,25 @@
+name: Extension Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    name: Test on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: xvfb-run -a npm run test
+        if: runner.os == 'Linux'
+      - run: npm run test
+        if: runner.os != 'Linux'

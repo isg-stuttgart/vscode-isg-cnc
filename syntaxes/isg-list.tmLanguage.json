@@ -1,0 +1,62 @@
+{
+    "scopeName": "source.isg-list",
+    "name": "VSCode isg-cnc Syntax",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#common"
+        },
+        {
+            "include": "#operators"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.block",
+                    "begin": "\/\\*",
+                    "end": "\\*\/"
+                },
+                {
+                    "name": "comment.line",
+                    "match": "(\\s*?)(;|#|\\(|\/\\*).*?\n"
+                }
+            ]
+        },
+        "common":{
+            "patterns": [
+                {
+                    "match": "\\s+(0x\\d+|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+\\.[0-9]+)?|-?\\d+\\w*\\.?\\d*|P-AXIS-\\d+(\\.\\d+)?|[\\w:\\\\.+\/-\\[\\]\\s,]+)",
+                    "name": "variable"
+                },
+                {
+                    "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+)",
+                    "name": "variable.parameter"
+                },
+                {
+                    "match": "(\\d\\s)+",
+                    "name": "variable.parameter"
+                }                ,
+                {
+                    "match": "[XYZABC]",
+                    "name": "constant.language.axis"
+                }
+            ]
+        },
+        "operators": {
+            "patterns": [
+                {
+                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*|\\|)",
+                    "name": "keyword.operator"
+                },
+                {
+                    "match": "(TRUE)|(FALSE)",
+                    "name": "keyword.operator"
+                }
+            ]
+        }
+    }
+}
