@@ -1,0 +1,658 @@
+{
+  "G00": {
+    "body": ["G00"],
+    "description": "G00 Linear interpolation in rapid traverse",
+    "prefix": "G00",
+    "scope": "isg-cnc"
+  },
+  "G01": {
+    "body": ["G01"],
+    "description": "G01 Linear interpolation",
+    "prefix": "G01",
+    "scope": "isg-cnc"
+  },
+  "G02": {
+    "body": ["G02"],
+    "description": "G02 Circular interpolation, clockwise",
+    "prefix": "G02",
+    "scope": "isg-cnc"
+  },
+  "G03": {
+    "body": ["G03"],
+    "description": "G03 Circular interpolation, counterclockwise",
+    "prefix": "G03",
+    "scope": "isg-cnc"
+  },
+  "G04": {
+    "body": ["G04 ${1|P,X,S|}${2:[Dwell]}"],
+    "description": "G04 Dwell time",
+    "prefix": "G04",
+    "scope": "isg-cnc"
+  },
+  "G05": {
+    "body": ["G05"],
+    "description": "G05 Select/deselect tangent of TRC",
+    "prefix": "G05",
+    "scope": "isg-cnc"
+  },
+  "G08": {
+    "body": ["G08"],
+    "description": "G08 Acceleration at block start",
+    "prefix": "G08",
+    "scope": "isg-cnc"
+  },
+  "G09": {
+    "body": ["G09"],
+    "description": "G09 Deceleration at block end",
+    "prefix": "G09",
+    "scope": "isg-cnc"
+  },
+  "G10": {
+    "body": ["G10"],
+    "description": "G10 Constant feedrate",
+    "prefix": "G10",
+    "scope": "isg-cnc"
+  },
+  "G11": {
+    "body": ["G11"],
+    "description": "G11 Adapted feedrate",
+    "prefix": "G11",
+    "scope": "isg-cnc"
+  },
+  "G12": {
+    "body": ["G12"],
+    "description": "G12 Deselect corner reduction",
+    "prefix": "G12",
+    "scope": "isg-cnc"
+  },
+  "G13": {
+    "body": ["G13"],
+    "description": "G13 Select corner reduction",
+    "prefix": "G13",
+    "scope": "isg-cnc"
+  },
+  "G17": {
+    "body": ["G17"],
+    "description": "G17 X-Y plane",
+    "prefix": "G17",
+    "scope": "isg-cnc"
+  },
+  "G18": {
+    "body": ["G18"],
+    "description": "G18 Z-X plane",
+    "prefix": "G18",
+    "scope": "isg-cnc"
+  },
+  "G19": {
+    "body": ["G19"],
+    "description": "G19 Y-Z plane",
+    "prefix": "G19",
+    "scope": "isg-cnc"
+  },
+  "G20": {
+    "body": ["G20"],
+    "description": "G20 Deselect the mirroring function",
+    "prefix": "G20",
+    "scope": "isg-cnc"
+  },
+  "G21": {
+    "body": ["G21"],
+    "description": "G21 Mirror programmed paths on the Y axis",
+    "prefix": "G21",
+    "scope": "isg-cnc"
+  },
+  "G22": {
+    "body": ["G22"],
+    "description": "G22 Mirror programmed paths on the X axis",
+    "prefix": "G22",
+    "scope": "isg-cnc"
+  },
+  "G23": {
+    "body": ["G23"],
+    "description": "G23 Superimpose G21 and G22",
+    "prefix": "G23",
+    "scope": "isg-cnc"
+  },
+  "G25": {
+    "body": ["G25"],
+    "description": "G25 Linear transitions with TRC",
+    "prefix": "G25",
+    "scope": "isg-cnc"
+  },
+  "G26": {
+    "body": ["G26"],
+    "description": "G26 Circular transitions with TRC",
+    "prefix": "G26",
+    "scope": "isg-cnc"
+  },
+  "G33": {
+    "body": ["G33"],
+    "description": "G33 Thread cutting, uniform pitch",
+    "prefix": "G33",
+    "scope": "isg-cnc"
+  },
+  "G40": {
+    "body": ["G40"],
+    "description": "G40 Deselect TRC/SRK",
+    "prefix": "G40",
+    "scope": "isg-cnc"
+  },
+  "G41": {
+    "body": ["G41"],
+    "description": "G41 TRC/SRK left of contour",
+    "prefix": "G41",
+    "scope": "isg-cnc"
+  },
+  "G42": {
+    "body": ["G42"],
+    "description": "G42 TRC/SRK right of contour",
+    "prefix": "G42",
+    "scope": "isg-cnc"
+  },
+  "G51": {
+    "body": ["G51 X${1:[Diameter]}"],
+    "description": "G51 Select diameter programming",
+    "prefix": "G51",
+    "scope": "isg-cnc"
+  },
+  "G52": {
+    "body": ["G52"],
+    "description": "G52 Deselect diameter programming",
+    "prefix": "G52",
+    "scope": "isg-cnc"
+  },
+  "G53": {
+    "body": ["G53"],
+    "description": "G53 Deselect zero offsets",
+    "prefix": "G53",
+    "scope": "isg-cnc"
+  },
+  "G54-G59": {
+    "body": ["G${1|54,55,56,57,58,59|}"],
+    "description": "G54-G59 Select zero offsets",
+    "prefix": "G54",
+    "scope": "isg-cnc"
+  },
+  "G60": {
+    "body": ["G60"],
+    "description": "G60 Exact stop",
+    "prefix": "G60",
+    "scope": "isg-cnc"
+  },
+  "G61": {
+    "body": ["G61"],
+    "description": "G61 Polynomial contouring",
+    "prefix": "G61",
+    "scope": "isg-cnc"
+  },
+  "G63": {
+    "body": ["G63 Z${1:[ZPos]} F${2:[Feed]}"],
+    "description": "G63 Tapping",
+    "prefix": "G63",
+    "scope": "isg-cnc"
+  },
+  "G66": {
+    "body": ["G66"],
+    "description": "G66 Cycle synchronisation at block end",
+    "prefix": "G66",
+    "scope": "isg-cnc"
+  },
+  "G70": {
+    "body": ["G70"],
+    "description": "G70 Inputs in inch (inch)",
+    "prefix": "G70",
+    "scope": "isg-cnc"
+  },
+  "G71": {
+    "body": ["G71"],
+    "description": "G71 Inputs in metric units",
+    "prefix": "G71",
+    "scope": "isg-cnc"
+  },
+  "G74": {
+    "body": ["G74 X${1|1,2,3|} Y${2|1,2,3|} Z${3|1,2,3|}"],
+    "description": "G74 Homing",
+    "prefix": "G74",
+    "scope": "isg-cnc"
+  },
+  "G80-G89": {
+    "body": ["G${1|80,81,82,83,84,85,86,87,88,89|}"],
+    "description": "G80-G89 Implicit subroutine calls",
+    "prefix": "G80",
+    "scope": "isg-cnc"
+  },
+  "G90": {
+    "body": ["G90"],
+    "description": "G90 Absolute dimension",
+    "prefix": "G90",
+    "scope": "isg-cnc"
+  },
+  "G91": {
+    "body": ["G91"],
+    "description": "G91 Incremental dimension (relative)",
+    "prefix": "G91",
+    "scope": "isg-cnc"
+  },
+  "G92": {
+    "body": ["G92"],
+    "description": "G92 Reference point offset",
+    "prefix": "G92",
+    "scope": "isg-cnc"
+  },
+  "G93": {
+    "body": ["G93"],
+    "description": "G93 Switch meaning of F word to specify machining time",
+    "prefix": "G93",
+    "scope": "isg-cnc"
+  },
+  "G94": {
+    "body": ["G94"],
+    "description": "G94 Switch meaning of F word to specify feedrate",
+    "prefix": "G94",
+    "scope": "isg-cnc"
+  },
+  "G95": {
+    "body": ["G95"],
+    "description": "G95 Feedrate per revolution",
+    "prefix": "G95",
+    "scope": "isg-cnc"
+  },
+  "G96": {
+    "body": ["G96"],
+    "description": "G96 Constant cutting speed",
+    "prefix": "G96",
+    "scope": "isg-cnc"
+  },
+  "G97": {
+    "body": ["G97"],
+    "description": "G97 Specify spindle speed in rpm",
+    "prefix": "G97",
+    "scope": "isg-cnc"
+  },
+  "G98": {
+    "body": ["G98"],
+    "description": "G98 Set negative software limit switch",
+    "prefix": "G98",
+    "scope": "isg-cnc"
+  },
+  "G99": {
+    "body": ["G99"],
+    "description": "G99 Set positive software limit switch",
+    "prefix": "G99",
+    "scope": "isg-cnc"
+  },
+  "G100": {
+    "body": ["G100"],
+    "description": "G100 Measuring functions (types 1- 7)",
+    "prefix": "G100",
+    "scope": "isg-cnc"
+  },
+  "G101": {
+    "body": ["G101"],
+    "description": "G101 Include measuring offsets in calculation",
+    "prefix": "G101",
+    "scope": "isg-cnc"
+  },
+  "G102": {
+    "body": ["G102"],
+    "description": "G102 Extract measuring offsets from calculation",
+    "prefix": "G102",
+    "scope": "isg-cnc"
+  },
+  "G106": {
+    "body": ["G106"],
+    "description": "G106 Measurement run with motion to target point",
+    "prefix": "G106",
+    "scope": "isg-cnc"
+  },
+  "G107": {
+    "body": ["G107"],
+    "description": "G107 Deselect cross-block edge banding",
+    "prefix": "G107",
+    "scope": "isg-cnc"
+  },
+  "G108": {
+    "body": ["G108"],
+    "description": "G108 Edge banding",
+    "prefix": "G108",
+    "scope": "isg-cnc"
+  },
+  "G112": {
+    "body": ["G112"],
+    "description": "G112 Gear change",
+    "prefix": "G112",
+    "scope": "isg-cnc"
+  },
+  "G115": {
+    "body": ["G115"],
+    "description": "G115 General influencing of look-ahead",
+    "prefix": "G115",
+    "scope": "isg-cnc"
+  },
+  "G116": {
+    "body": ["G116"],
+    "description": "G116 Manipulate look-ahead (block transition velocity)",
+    "prefix": "G116",
+    "scope": "isg-cnc"
+  },
+  "G117": {
+    "body": ["G117"],
+    "description": "G117 Switch on look-ahead (default)",
+    "prefix": "G117",
+    "scope": "isg-cnc"
+  },
+  "G128": {
+    "body": ["G128"],
+    "description": "G128 Weighting of maximum velocity",
+    "prefix": "G128",
+    "scope": "isg-cnc"
+  },
+  "G129": {
+    "body": ["G129"],
+    "description": "G129 Weighting of rapid traverse velocity",
+    "prefix": "G129",
+    "scope": "isg-cnc"
+  },
+  "G130": {
+    "body": ["G130"],
+    "description": "G130 Axis-specific weighting of acceleration",
+    "prefix": "G130",
+    "scope": "isg-cnc"
+  },
+  "G131": {
+    "body": ["G131"],
+    "description": "G131 Axis group-specific weighting of acceleration for G01/G02/G03",
+    "prefix": "G131",
+    "scope": "isg-cnc"
+  },
+  "G132": {
+    "body": ["G132"],
+    "description": "G132 Axis-specific weighting of ramp time",
+    "prefix": "G132",
+    "scope": "isg-cnc"
+  },
+  "G133": {
+    "body": ["G133"],
+    "description": "G133 Axis group-specific weighting of ramp time for G01/G02/G03",
+    "prefix": "G133",
+    "scope": "isg-cnc"
+  },
+  "G134": {
+    "body": ["G134"],
+    "description": "G134 Axis group-specific weighting of geometrical ramp time",
+    "prefix": "G134",
+    "scope": "isg-cnc"
+  },
+  "G135": {
+    "body": ["G135"],
+    "description": "G135 Select feedforward control",
+    "prefix": "G135",
+    "scope": "isg-cnc"
+  },
+  "G136": {
+    "body": ["G136"],
+    "description": "G136 Specify weighting of feedforward control",
+    "prefix": "G136",
+    "scope": "isg-cnc"
+  },
+  "G137": {
+    "body": ["G137"],
+    "description": "G137 Deselect feedforward control",
+    "prefix": "G137",
+    "scope": "isg-cnc"
+  },
+  "G138": {
+    "body": ["G138"],
+    "description": "G138 Direct TRC selection/deselection",
+    "prefix": "G138",
+    "scope": "isg-cnc"
+  },
+  "G139": {
+    "body": ["G139"],
+    "description": "G139 Indirect TRC selection/deselection",
+    "prefix": "G139",
+    "scope": "isg-cnc"
+  },
+  "G140": {
+    "body": ["G140"],
+    "description": "G140 Deselect contour masking",
+    "prefix": "G140",
+    "scope": "isg-cnc"
+  },
+  "G141": {
+    "body": ["G141"],
+    "description": "G141 Select contour masking",
+    "prefix": "G141",
+    "scope": "isg-cnc"
+  },
+  "G150": {
+    "body": ["G150"],
+    "description": "G150 Deselect spline interpolation",
+    "prefix": "G150",
+    "scope": "isg-cnc"
+  },
+  "G151": {
+    "body": ["G151"],
+    "description": "G151 Select spline interpolation",
+    "prefix": "G151",
+    "scope": "isg-cnc"
+  },
+  "G159": {
+    "body": ["G159"],
+    "description": "G159 Extended zero offsets",
+    "prefix": "G159",
+    "scope": "isg-cnc"
+  },
+  "G160": {
+    "body": ["G160"],
+    "description": "G160 Axis-specific activation of zero offsets",
+    "prefix": "G160",
+    "scope": "isg-cnc"
+  },
+  "G161": {
+    "body": ["G161"],
+    "description": "G161 Circle centre point, absolute",
+    "prefix": "G161",
+    "scope": "isg-cnc"
+  },
+  "G162": {
+    "body": ["G162"],
+    "description": "G162 Circle centre point, relative",
+    "prefix": "G162",
+    "scope": "isg-cnc"
+  },
+  "G163": {
+    "body": ["G163"],
+    "description": "G163 Select radius programming",
+    "prefix": "G163",
+    "scope": "isg-cnc"
+  },
+  "G164": {
+    "body": ["G164"],
+    "description": "G164 Circle centre point offset off",
+    "prefix": "G164",
+    "scope": "isg-cnc"
+  },
+  "G165": {
+    "body": ["G165"],
+    "description": "G165 Circle centre point offset on",
+    "prefix": "G165",
+    "scope": "isg-cnc"
+  },
+  "G166": {
+    "body": ["G166"],
+    "description": "G166 Override 100%",
+    "prefix": "G166",
+    "scope": "isg-cnc"
+  },
+  "G167": {
+    "body": ["G167"],
+    "description": "G167 Spindle override 100%",
+    "prefix": "G167",
+    "scope": "isg-cnc"
+  },
+  "G193": {
+    "body": ["G193"],
+    "description": "G193 Path-related feed interpolation",
+    "prefix": "G193",
+    "scope": "isg-cnc"
+  },
+  "G194": {
+    "body": ["G194"],
+    "description": "G194 Weighting of maximum feedrate",
+    "prefix": "G194",
+    "scope": "isg-cnc"
+  },
+  "G196": {
+    "body": ["G196"],
+    "description": "G196 Maximum spindle speed for G96",
+    "prefix": "G196",
+    "scope": "isg-cnc"
+  },
+  "G200": {
+    "body": ["G200"],
+    "description": "G200 Select manual mode without parallel interpolation",
+    "prefix": "G200",
+    "scope": "isg-cnc"
+  },
+  "G201": {
+    "body": ["G201"],
+    "description": "G201 Select manual mode with parallel interpolation",
+    "prefix": "G201",
+    "scope": "isg-cnc"
+  },
+  "G202": {
+    "body": ["G202"],
+    "description": "G202 Deselect manual mode with parallel interpolation",
+    "prefix": "G202",
+    "scope": "isg-cnc"
+  },
+  "G231": {
+    "body": ["G231"],
+    "description": "G231 Axis group-specific weighting of acceleration for G00",
+    "prefix": "G231",
+    "scope": "isg-cnc"
+  },
+  "G233": {
+    "body": ["G233"],
+    "description": "G233 Axis group-specific weighting of ramp time for G00",
+    "prefix": "G233",
+    "scope": "isg-cnc"
+  },
+  "G236": {
+    "body": ["G236"],
+    "description": "G236 Direct TRC selection/deselection",
+    "prefix": "G236",
+    "scope": "isg-cnc"
+  },
+  "G237": {
+    "body": ["G237"],
+    "description": "G237 Perpendicular TRC selection/deselection",
+    "prefix": "G237",
+    "scope": "isg-cnc"
+  },
+  "G238": {
+    "body": ["G238"],
+    "description": "G238 Select inside corner of TRC",
+    "prefix": "G238",
+    "scope": "isg-cnc"
+  },
+  "G239": {
+    "body": ["G239"],
+    "description": "G239 Direct TRC selection/deselection without block",
+    "prefix": "G239",
+    "scope": "isg-cnc"
+  },
+  "G260": {
+    "body": ["G260"],
+    "description": "G260 Deselect polynomial contouring",
+    "prefix": "G260",
+    "scope": "isg-cnc"
+  },
+  "G261": {
+    "body": ["G261"],
+    "description": "G261 Select polynomial contouring",
+    "prefix": "G261",
+    "scope": "isg-cnc"
+  },
+  "G293": {
+    "body": ["G293"],
+    "description": "G293 Time-related feed interpolation",
+    "prefix": "G293",
+    "scope": "isg-cnc"
+  },
+  "G301": {
+    "body": ["G301"],
+    "description": "G301 Insert chamfers",
+    "prefix": "G301",
+    "scope": "isg-cnc"
+  },
+  "G302": {
+    "body": ["G302"],
+    "description": "G302 Insert roundings",
+    "prefix": "G302",
+    "scope": "isg-cnc"
+  },
+  "G303": {
+    "body": ["G303"],
+    "description": "G303 Arc in 3D space",
+    "prefix": "G303",
+    "scope": "isg-cnc"
+  },
+  "G310": {
+    "body": ["G310"],
+    "description": "G310 Interruptible block (measurement types 5 - 6)",
+    "prefix": "G310",
+    "scope": "isg-cnc"
+  },
+  "G331": {
+    "body": ["G331"],
+    "description": "G331 Tapping with pitch specification",
+    "prefix": "G331",
+    "scope": "isg-cnc"
+  },
+  "G332": {
+    "body": ["G332"],
+    "description": "G332 Tapping retraction with pitch specification",
+    "prefix": "G332",
+    "scope": "isg-cnc"
+  },
+  "G351": {
+    "body": ["G351"],
+    "description": "G351 Mirror with axis specification",
+    "prefix": "G351",
+    "scope": "isg-cnc"
+  },
+  "G359": {
+    "body": ["G359"],
+    "description": "G359 Deselect exact stop",
+    "prefix": "G359",
+    "scope": "isg-cnc"
+  },
+  "G360": {
+    "body": ["G360"],
+    "description": "G360 Select exact stop",
+    "prefix": "G360",
+    "scope": "isg-cnc"
+  },
+  "G800-G819": {
+    "body": [
+      "G${1|800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819|}"
+    ],
+    "description": "G800-G819 Additional implicit subroutine calls",
+    "prefix": "G800",
+    "scope": "isg-cnc"
+  },
+  "G900": {
+    "body": ["G900"],
+    "description": "G900 Switch to deceleration at block end",
+    "prefix": "G900",
+    "scope": "isg-cnc"
+  },
+  "G901": {
+    "body": ["G901"],
+    "description": "G901 Deceleration at block end",
+    "prefix": "G901",
+    "scope": "isg-cnc"
+  }
+}

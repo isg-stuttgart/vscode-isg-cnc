@@ -1,0 +1,79 @@
+{
+  "M00": {
+    "body": ["M00"],
+    "description": "M00 Programmed stop",
+    "prefix": "M00",
+    "scope": "isg-cnc"
+  },
+  "M01": {
+    "body": ["M01"],
+    "description": "M01 Optional stop",
+    "prefix": "M01",
+    "scope": "isg-cnc"
+  },
+  "M02": {
+    "body": ["M02"],
+    "description": "M02 Program end",
+    "prefix": "M02",
+    "scope": "isg-cnc"
+  },
+  "M03": {
+    "body": ["M03"],
+    "description": "M03 Rotate spindle clockwise",
+    "prefix": "M03",
+    "scope": "isg-cnc"
+  },
+  "M04": {
+    "body": ["M04"],
+    "description": "M04 Rotate spindle counterclockwise",
+    "prefix": "M04",
+    "scope": "isg-cnc"
+  },
+  "M05": {
+    "description": "M05 Stop spindle",
+    "prefix": "M05",
+    "scope": "isg-cnc"
+  },
+  "M06": {
+    "body": ["M06 T${1:[Tool Number]}"],
+    "description": "M06 Call a tool change program",
+    "prefix": "M06",
+    "scope": "isg-cnc"
+  },
+  "M17": {
+    "body": ["M17 S.POS=${1:[Angle]}"],
+    "description": "M17 Subroutine end",
+    "prefix": "M17",
+    "scope": "isg-cnc"
+  },
+  "M19": {
+    "body": ["M19 S.POS=${1:[Angle]}"],
+    "description": "M19 Position spindle",
+    "prefix": "M19",
+    "scope": "isg-cnc"
+  },
+  "M19S": {
+    "body": ["M19 S${1:[RPM]} S.POS=${0:[Angle]}"],
+    "description": "M19 Position spindle",
+    "prefix": "M19S",
+    "scope": "isg-cnc"
+  },
+  "M29": {
+    "body": ["M29"],
+    "description": "M29 Subroutine end",
+    "prefix": "M29",
+    "scope": "isg-cnc"
+  },
+  "M30": {
+    "body": ["M30"],
+    "description": "M30 Program end",
+    "prefix": "M30",
+    "scope": "isg-cnc"
+  },
+  "M40-M45": {
+    "body": ["M${1|40,41,42,43,44,45|}"],
+    "description": "M40-M45 Select spindle gear stages",
+    "prefix": "M40",
+    "scope": "isg-cnc"
+  }
+}
