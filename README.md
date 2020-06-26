@@ -44,7 +44,7 @@ This extension contributes the following settings with default values (json form
 
 ## Known Issues
 
-Please find and report issues on [git issues](https://git/).
+Please find and report issues on [git issues](http://gitlab/kernel/vscode-isg-cnc/-/issues).
 
 ## Release Notes
 
