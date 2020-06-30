@@ -16,7 +16,7 @@ If text is selected the documentation will opened with search results in the doc
 
 ## Requirements
 
-There are no requirements.
+Visual Studio Code V1.46.0 or higher
 
 ## Installation
 
