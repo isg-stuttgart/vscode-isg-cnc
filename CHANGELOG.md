@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### v0.1.4
+
+- Bugfix: Wrong highlighting for line comment semicolon ";"
+
 ### v0.1.3
 
 - Bugfix: Wrong highlighting for operators
