@@ -1,0 +1,14 @@
+image: isg/vscode-isg-cnc
+
+build:
+  tags:
+    - vscode-isg-cnc
+  stage: build
+  only:
+    - master
+  script:
+    - vsce package --baseContentUrl https://none --baseImagesUrl https://none
+  artifacts:
+    name: "vscode-isg-cnc"
+    paths:
+      - /builds/kernel/vscode-isg-cnc/*.vsix
