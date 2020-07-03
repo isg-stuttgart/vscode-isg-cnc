@@ -20,9 +20,8 @@ Visual Studio Code V1.46.0 or higher
 
 ## Installation
 
-![Installation](images/install_steps_vscode.png)\
-![Settings](images/settings_vscode.png)\
-![ISG-CNC Settings](images/settings_vscode_isg_extension.png)
+![Installation](images/vscode-isg-cnc-install_steps.png)\
+![Settings](images/vscode-isg-cnc-settings.png)\
 
 ## Extension Settings
 
