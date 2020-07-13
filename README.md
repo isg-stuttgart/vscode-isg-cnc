@@ -20,8 +20,10 @@ Visual Studio Code V1.46.0 or higher
 
 ## Installation
 
+For details look at the project wiki. (http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/wikis/home)\
+
 ![Installation](images/vscode-isg-cnc-install_steps.png)\
-![Settings](images/vscode-isg-cnc-settings.png)\
+![Settings](images/vscode-isg-cnc-settings.png)
 
 ## Extension Settings
 
