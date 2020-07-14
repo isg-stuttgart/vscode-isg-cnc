@@ -1,4 +1,4 @@
-# ![vscode-isg-cnc](/images/ISGCncEditor.png) ISG CNC (vscode-isg-cnc README)
+# <img src=images/ISGCncEditor.png width=80> ISG CNC (vscode-isg-cnc README)
 
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for ISG CNC kernel.
 We support syntax highlghting, snippets and many more features.\
