@@ -1,4 +1,4 @@
-# <img src=images/ISGCncEditor.png width=80> ISG CNC (vscode-isg-cnc README)
+# ISG CNC (vscode-isg-cnc README)
 
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for ISG CNC kernel.
 We support syntax highlghting, snippets and many more features.\
@@ -12,7 +12,13 @@ If text is selected the documentation will opened with search results in the doc
 
 ## Features
 
-<img src=images/nc.png width=800> <img src=images/var.png width=800> <img src=images/for.png width=800>
+- Syntax highlighting
+- Code completion
+- Add and remove blocknumbers
+- Find technology like T, F, S commands
+- Show and jump to fileoffset
+- Open documentation in browser
+- Light and dark color theme for ISG CNC language
 
 ## Requirements
 
