@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### v0.1.4
 
+- Add #GANTRY commands
 - Bugfix: Wrong highlighting for line comment semicolon ";"
 
 ### v0.1.3

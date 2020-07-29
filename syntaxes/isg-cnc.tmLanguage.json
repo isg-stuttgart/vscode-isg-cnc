@@ -171,6 +171,10 @@
     "hashtagkeywords": {
       "patterns": [
         {
+          "match": "\\#GANTRY\\s((ON\\sALL)|ON\\s?\\[.*\\]|(OFF\\sALL)|OFF\\s?\\[.*\\])",
+          "name": "isg-cnc.keyword.hashtag"
+        },
+        {
           "match": "\\#ACHSE",
           "name": "isg-cnc.keyword.hashtag"
         },
