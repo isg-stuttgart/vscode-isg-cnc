@@ -6,9 +6,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+- Add #GANTRY commands
+- Now recognizing commands with multiple whitespaces also.
+
 ### v0.1.4
 
-- Add #GANTRY commands
 - Bugfix: Wrong highlighting for line comment semicolon ";"
 
 ### v0.1.3
