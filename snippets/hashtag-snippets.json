@@ -293,7 +293,7 @@
     "scope": "isg-cnc",
     "prefix": "#DISTANCE",
     "body": [
-      "#DISTANCE PROG START"
+      "#DISTANCE PROG START ${1|ON,OFF,CLEAR|}"
     ],
     "description": "#DISTANCE PROG START"
   },
