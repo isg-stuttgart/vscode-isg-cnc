@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Add #GANTRY commands
 - Now recognizing commands with multiple whitespaces also.
+- Extended DIST PROG START choice
 
 ### v0.1.4
 
