@@ -576,7 +576,7 @@ function StartDocu() {
   } else if (process.platform === "win32") {
     terminalPath = TerminalPathWindows as string;
     if (terminalPath.endsWith("powershell.exe")) {
-      browserPath = `& ${browserPath}`;
+      browserPath = `& "${config.getParam("browser")}"`;
     } else {
       browserPath = `"${config.getParam("browser")}"`;
     }
