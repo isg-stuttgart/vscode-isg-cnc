@@ -58,17 +58,7 @@
         },
         {
           "name": "comment",
-          "begin": "\\(",
-          "end": "\n"
-        },
-        {
-          "name": "comment",
-          "begin": "\\(",
-          "end": "\\)"
-        },
-        {
-          "name": "comment",
-          "match": "(\\s*?);.*"
+          "match": "(\\s*?);.*|\\((.*?)(\\)|\n)"
         }
       ]
     },
