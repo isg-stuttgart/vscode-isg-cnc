@@ -5,6 +5,7 @@ All notable changes to the "vscode-isg-cnc" extension will be documented in this
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file
 
 ## [Unreleased]
+- Recognize closing brackets for comments
 
 ### v0.1.6
 
