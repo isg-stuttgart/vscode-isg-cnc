@@ -4,7 +4,7 @@ All notable changes to the "vscode-isg-cnc" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file
 
-## [Unreleased]
+## [Unreleased v99.99.99]
 - Recognize closing brackets for comments
 - Fixed Powershell call opening documentation in browser
 
