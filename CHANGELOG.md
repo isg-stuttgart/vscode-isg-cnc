@@ -6,10 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 - Recognize closing brackets for comments
+- Fixed Powershell call opening documentation in browser
 
 ### v0.1.6
 
-- Fixed Powershell call opening documentation in browser
 
 ### v0.1.5
 
