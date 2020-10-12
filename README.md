@@ -60,8 +60,3 @@ The license does not grant permission to use the trade names, trademarks, servic
 except as required for reasonable and customary use in describing the origin of the work and reproducing the content of any notice file.
 All other brand names, product names, or trademarks belong to their respective holders.
 ISG is not responsible for typographical or graphical errors that may appear in this document.
-
-## Build package command
-
-In case of building packages without online repository you have to overwrite baseContentUrl and baseImagesUrl:\
-`vsce package --baseContentUrl https://none --baseImagesUrl https://none`
