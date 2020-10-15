@@ -98,6 +98,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("isg-cnc.StartDocu", () => StartDocu())
   );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("isg-cnc.Beautify", () =>
+      Beautify()
+    )
+  );
 
   // add status bar items
   AddSelectedLinesStatusBarItem(context);
@@ -648,4 +653,153 @@ function GetContextbasedSite(): string {
 export function deactivate() {
   OutputChannel.appendLine("Close vscode-isg-cnc");
   OutputChannel.dispose();
+}
+
+
+export function Beautify() {
+  let currentLine: string;
+  let newLine: string;
+  let saveBlockNumber: string;
+  let whiteSpaces: number = config.getVscodeParam("editor.tabSize");
+  let currentPos: number = 0;
+  const textEdits: vscode.TextEdit[] = [];
+
+  const { activeTextEditor } = vscode.window;
+  if (activeTextEditor) {
+    const { document } = activeTextEditor;
+    if (document) {
+      // edit document line by line
+      let isCommentBlock = false;
+      for (let ln = 0; ln < document.lineCount; ln++) {
+        const line = document.lineAt(ln);
+
+        if (line.text.startsWith("#COMMENT BEGIN")) {
+          isCommentBlock = true;
+          continue;
+        }
+        if (line.text.startsWith("#COMMENT END")) {
+          isCommentBlock = false;
+          continue;
+        }
+
+        // skip program name, comment lines and empty lines
+        if (
+          line.text.startsWith("%", 0) ||
+          //line.isEmptyOrWhitespace ||
+          line.text.startsWith(";") ||
+          line.text.startsWith("(") ||
+          isCommentBlock
+        ) {
+          continue;
+        }
+
+        currentLine = line.text;
+        saveBlockNumber = "";
+        newLine = "";
+
+        // Get blocknumber and line text
+        const match = regExpBlocknumbers.exec(line.text);
+        if (match !== null && match.index !== undefined) {
+          const startPos = document.offsetAt(
+            new vscode.Position(line.lineNumber, match.index)
+          );
+          const endPos = document.offsetAt(
+            new vscode.Position(line.lineNumber, match.index + match[0].length)
+          );
+          const range = new vscode.Range(
+            document.positionAt(startPos),
+            document.positionAt(endPos)
+          );
+          saveBlockNumber = activeTextEditor.document.getText(range);
+          currentLine = activeTextEditor.document.getText(
+            new vscode.Range(document.positionAt(endPos), line.range.end));
+        }
+        else {
+          currentLine = activeTextEditor.document.getText(line.range);
+        }
+
+        // empty line trim whitespaces and write to edits buffer
+        currentLine.trim();
+        if (currentLine.length == 0) {
+          textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
+          continue;
+        }
+
+        currentLine = currentLine.trim();
+
+        if (currentLine.indexOf("$DO") == 0
+          || currentLine.indexOf("$REPEAT") == 0
+          || currentLine.indexOf("$FOR") == 0
+          || currentLine.indexOf("$IF") == 0
+          || currentLine.indexOf("$WHILE") == 0
+          || currentLine.indexOf("#VAR") == 0) {
+          // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+
+          newLine = NewLineForBeautifier(currentLine, currentPos);
+          currentPos = currentPos + whiteSpaces;
+        }
+        else if (currentLine.indexOf("$SWITCH") == 0) {
+          // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+
+          newLine = NewLineForBeautifier(currentLine, currentPos);
+          currentPos = currentPos + whiteSpaces * 2;
+        }
+        else if (currentLine.indexOf("$ENDDO") == 0
+          || currentLine.indexOf("$UNTIL") == 0
+          || currentLine.indexOf("$ENDFOR") == 0
+          || currentLine.indexOf("$ENDIF") == 0
+          || currentLine.indexOf("$ENDWHILE") == 0
+          || currentLine.indexOf("#ENDVAR") == 0) {
+          // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+
+          currentPos = currentPos - whiteSpaces;
+          if (currentPos < 0) {
+            currentPos = 0;
+          }
+
+          newLine = NewLineForBeautifier(currentLine, currentPos);
+        }
+        else if (currentLine.indexOf("$ENDSWITCH") == 0) {
+          // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+
+          currentPos = currentPos - whiteSpaces * 2;
+
+          if (currentPos < 0) {
+            currentPos = 0;
+          }
+
+          newLine = NewLineForBeautifier(currentLine, currentPos);
+        }
+        else if (currentLine.indexOf("$ELSEIF") == 0 || currentLine.indexOf("$ELSE") == 0 || currentLine.indexOf("$CASE") == 0 || currentLine.indexOf("$DEFAULT") == 0) {
+          // Zeile wird an der Aktuellen Position - TabSize eingefügt
+
+          newLine = NewLineForBeautifier(currentLine, currentPos - whiteSpaces);
+        }
+        else {
+          // Zeile wird an der Aktuellen Position eingefügt
+          newLine = NewLineForBeautifier(currentLine, currentPos);
+        }
+
+        newLine = saveBlockNumber + newLine;
+
+        textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+      }
+    }
+
+    // write back edits
+    const workEdits = new vscode.WorkspaceEdit();
+    workEdits.set(document.uri, textEdits); // give the edits
+    vscode.workspace.applyEdit(workEdits); // apply the edits
+    return;
+  }
+}
+
+function NewLineForBeautifier(line: string, whiteSpaces: number) {
+  let newLine = "";
+
+  for (let i = 0; i < whiteSpaces; i++) {
+    newLine = newLine + " ";
+  }
+  newLine = newLine + line;
+  return newLine;
 }
