@@ -4,3 +4,6 @@ node_modules
 *.vsix
 test_and_info/
 /archiv
+*.zip
+*.7z
+*.tgz
