@@ -2,7 +2,7 @@
   "name": "vscode-isg-cnc",
   "displayName": "vscode-isg-cnc",
   "description": "Support for ISG-CNC in vscode",
-  "version": "99.99.99",
+  "version": "0.1.7",
   "publisher": "ISG",
   "license": "ISG Copyright 2020",
   "engines": {
