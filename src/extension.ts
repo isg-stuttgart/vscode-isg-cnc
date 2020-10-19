@@ -660,7 +660,7 @@ export function Beautify() {
   let currentLine: string;
   let newLine: string;
   let saveBlockNumber: string;
-  let whiteSpaces: number = config.getVscodeParam("editor.tabSize");
+  let whiteSpaces: any;
   let currentPos: number = 0;
   const textEdits: vscode.TextEdit[] = [];
 
@@ -669,6 +669,7 @@ export function Beautify() {
     const { document } = activeTextEditor;
     if (document) {
       // edit document line by line
+      whiteSpaces = activeTextEditor.options.tabSize;
       let isCommentBlock = false;
       for (let ln = 0; ln < document.lineCount; ln++) {
         const line = document.lineAt(ln);
