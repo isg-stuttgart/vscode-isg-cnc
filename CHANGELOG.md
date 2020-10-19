@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 
 ## [Unreleased v99.99.99]
+
+### v0.1.7
 - Add text formating
 
 ### v0.1.6
