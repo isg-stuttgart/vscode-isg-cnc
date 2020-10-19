@@ -21,7 +21,11 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "configurationDefaults": {},
+    "configurationDefaults": {
+      "[isg-cnc]": {
+        "editor.tabSize": 2
+      }
+    },
     "configuration": {
       "title": "ISG CNC Configuration",
       "type": "object",
