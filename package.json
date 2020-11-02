@@ -4,7 +4,7 @@
   "description": "Support for ISG-CNC in vscode",
   "version": "0.1.7",
   "publisher": "ISG",
-  "license": "ISG Copyright 2020",
+  "license": "Copyright 2020 by ISG Industrielle Steuerungstechnik GmbH",
   "engines": {
     "vscode": "^1.46.0"
   },

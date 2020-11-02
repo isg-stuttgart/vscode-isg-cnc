@@ -24,6 +24,10 @@ If text is selected the documentation will opened with search results in the doc
 
 Visual Studio Code V1.46.0 or higher
 
+## Licence
+
+Copyright 2020, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.
+
 ## Installation
 
 For details look at the project [wiki](http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/wikis/home).
