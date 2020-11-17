@@ -777,7 +777,7 @@
         "programcalls": {
             "patterns": [
                 {
-                    "match": "\\bL\\s*?*+CYCLE",
+                    "match": "\\bL\\s*?*CYCLE",
                     "name": "isg-cnc.call"
                 },
                 {
