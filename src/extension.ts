@@ -12,18 +12,38 @@ import { config } from "./util/config";
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
 const TerminalPathWindows = config.getVscodeParam(
-  "terminal.integrated.shell.windows"
+    "terminal.integrated.shell.windows"
 );
 const TerminalPathLinux = config.getVscodeParam(
-  "terminal.integrated.shell.linux"
+    "terminal.integrated.shell.linux"
 );
 const Language = config.getParam("locale");
 const DocuPath = config.getParam("documentation");
 
-/**
- * Outputchannel for the extension
+/** Outputchannel for the extension
  */
 const OutputChannel = vscode.window.createOutputChannel("ISG-CNC");
+/** Decorator
+ */
+// create a decorator type that we use to decorate non ascii characters
+let timeout: NodeJS.Timer | undefined = undefined;
+const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecorationType(
+    {
+        borderWidth: "2px",
+        borderStyle: "solid",
+        overviewRulerColor: "red",
+        borderColor: "red",
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: {
+            // this color will be used in light color themes
+            backgroundColor: "orangered",
+        },
+        dark: {
+            // this color will be used in dark color themes
+            backgroundColor: "lightcoral",
+        },
+    }
+);
 
 /**
  * Statusbar items
@@ -40,7 +60,7 @@ let ExtensionPackage;
 const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(
-  /^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/
+    /^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/
 );
 
 /**
@@ -50,67 +70,89 @@ const regExpBlocknumbers = new RegExp(
  * @param {vscode.ExtensionContext} context
  */
 export function activate(context: vscode.ExtensionContext) {
-  // Get package.json informations
-  ExtensionPackage = Path.join(context.extensionPath, "package.json");
-  PackageFile = JSON.parse(fs.readFileSync(ExtensionPackage, "utf8"));
+    // Get package.json informations
+    ExtensionPackage = Path.join(context.extensionPath, "package.json");
+    PackageFile = JSON.parse(fs.readFileSync(ExtensionPackage, "utf8"));
 
-  // enable/disable outputchannel
-  if (config.getParam("outputchannel")) {
-    OutputChannel.show();
-  } else {
-    OutputChannel.hide();
-  }
+    // enable/disable outputchannel
+    if (config.getParam("outputchannel")) {
+        OutputChannel.show();
+    } else {
+        OutputChannel.hide();
+    }
 
-  // Output extension name and version number in console and output window ISG-CNC
-  if (PackageFile) {
-    vscode.window.showInformationMessage(
-      "Started: " + PackageFile.displayName + " V" + PackageFile.version
+    // Output extension name and version number in console and output window ISG-CNC
+    if (PackageFile) {
+        vscode.window.showInformationMessage(
+            "Started: " + PackageFile.displayName + " V" + PackageFile.version
+        );
+        OutputChannel.appendLine(
+            "Started: " + PackageFile.displayName + " V" + PackageFile.version
+        );
+    }
+
+    // commands
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.GoToPosition", () =>
+            GoToPosition()
+        )
     );
-    OutputChannel.appendLine(
-      "Started: " + PackageFile.displayName + " V" + PackageFile.version
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.ShowCursorFileOffsetInfobox", () =>
+            ShowCursorFileOffsetInfobox()
+        )
     );
-  }
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.FindNextTFS", () => FindNextTFS())
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.RemoveAllBlocknumbers", () =>
+            RemoveAllBlocknumbers()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.AddBlocknumbers", () =>
+            AddBlocknumbers()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.StartDocu", () => StartDocu())
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.Beautify", () => Beautify())
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () => FindNonAsciiCharacters())
+    );
 
-  // commands
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.GoToPosition", () =>
-      GoToPosition()
-    )
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.ShowCursorFileOffsetInfobox", () =>
-      ShowCursorFileOffsetInfobox()
-    )
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.FindNextTFS", () => FindNextTFS())
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.RemoveAllBlocknumbers", () =>
-      RemoveAllBlocknumbers()
-    )
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.AddBlocknumbers", () =>
-      AddBlocknumbers()
-    )
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.StartDocu", () => StartDocu())
-  );
-  context.subscriptions.push(
-    vscode.commands.registerCommand("isg-cnc.Beautify", () =>
-      Beautify()
-    )
-  );
+    // add status bar items
+    AddSelectedLinesStatusBarItem(context);
+    AddCurrentOffsetStatusBarItem(context);
 
-  // add status bar items
-  AddSelectedLinesStatusBarItem(context);
-  AddCurrentOffsetStatusBarItem(context);
+    // update status bar items once at start
+    UpdateSelectedLinesStatusBarItem();
+    UpdateCurrentOffsetStatusBarItem();
 
-  // update status bar items once at start
-  UpdateSelectedLinesStatusBarItem();
-  UpdateCurrentOffsetStatusBarItem();
+    /** Decorator
+     */
+    let activeEditor=vscode.window.activeTextEditor
+
+    if (activeEditor) {
+        triggerUpdateDecorations();
+    }
+
+    // vscode.window.onDidChangeActiveTextEditor((editor) => {
+    //     activeEditor = editor;
+    //     if (editor) {
+    //         triggerUpdateDecorations();
+    //     }
+    // }, null);
+
+    // vscode.workspace.onDidChangeTextDocument((event) => {
+    //     if (activeEditor && event.document === activeEditor.document) {
+    //         triggerUpdateDecorations();
+    //     }
+    // }, null);
 }
 
 /**
@@ -120,40 +162,40 @@ export function activate(context: vscode.ExtensionContext) {
  * @returns {boolean}
  */
 function FindNextTFS(): boolean {
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      const startposition = activeTextEditor.selection.active;
-      const endposition = document.positionAt(
-        document.offsetAt(
-          new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
-        )
-      );
-      const textToMatch = document.getText(
-        new vscode.Range(startposition, endposition)
-      );
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            const startposition = activeTextEditor.selection.active;
+            const endposition = document.positionAt(
+                document.offsetAt(
+                    new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
+                )
+            );
+            const textToMatch = document.getText(
+                new vscode.Range(startposition, endposition)
+            );
 
-      const match = regExTechnology.exec(textToMatch);
-      if (match !== null) {
-        const startoffset = match.index + document.offsetAt(startposition);
-        SetCursorPosition(startoffset);
-        const startPos = document.positionAt(startoffset);
-        const endPos = document.positionAt(startoffset + match[0].length);
-        const range = new vscode.Range(startPos, endPos);
-        activeTextEditor.selection = new vscode.Selection(
-          range.start,
-          range.end
-        );
-        activeTextEditor.revealRange(
-          range,
-          vscode.TextEditorRevealType.InCenterIfOutsideViewport
-        );
-        return true;
-      }
+            const match = regExTechnology.exec(textToMatch);
+            if (match !== null) {
+                const startoffset = match.index + document.offsetAt(startposition);
+                SetCursorPosition(startoffset);
+                const startPos = document.positionAt(startoffset);
+                const endPos = document.positionAt(startoffset + match[0].length);
+                const range = new vscode.Range(startPos, endPos);
+                activeTextEditor.selection = new vscode.Selection(
+                    range.start,
+                    range.end
+                );
+                activeTextEditor.revealRange(
+                    range,
+                    vscode.TextEditorRevealType.InCenterIfOutsideViewport
+                );
+                return true;
+            }
+        }
     }
-  }
-  return false;
+    return false;
 }
 
 /**
@@ -162,35 +204,35 @@ function FindNextTFS(): boolean {
  * @param {vscode.ExtensionContext} context
  */
 function AddSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
-  // register a command that is invoked when the status bar
-  // item is selected
-  const MyCommandId = "isg-cnc.showSelectedLinesCount";
+    // register a command that is invoked when the status bar
+    // item is selected
+    const MyCommandId = "isg-cnc.showSelectedLinesCount";
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand(MyCommandId, () => {
-      const n = GetNumberOfSelectedLines();
-      vscode.window.showInformationMessage(`${n} line(s) are selected.`);
-    })
-  );
+    context.subscriptions.push(
+        vscode.commands.registerCommand(MyCommandId, () => {
+            const n = GetNumberOfSelectedLines();
+            vscode.window.showInformationMessage(`${n} line(s) are selected.`);
+        })
+    );
 
-  // create a new status bar item that we can now manage
-  SelectedLinesStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  SelectedLinesStatusBarItem.command = MyCommandId;
-  context.subscriptions.push(SelectedLinesStatusBarItem);
+    // create a new status bar item that we can now manage
+    SelectedLinesStatusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Right,
+        100
+    );
+    SelectedLinesStatusBarItem.command = MyCommandId;
+    context.subscriptions.push(SelectedLinesStatusBarItem);
 
-  // register some listener that make sure the status bar
-  // item always up-to-date
-  context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor(UpdateSelectedLinesStatusBarItem)
-  );
-  context.subscriptions.push(
-    vscode.window.onDidChangeTextEditorSelection(
-      UpdateSelectedLinesStatusBarItem
-    )
-  );
+    // register some listener that make sure the status bar
+    // item always up-to-date
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(UpdateSelectedLinesStatusBarItem)
+    );
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorSelection(
+            UpdateSelectedLinesStatusBarItem
+        )
+    );
 }
 
 /**
@@ -199,13 +241,13 @@ function AddSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
  *
  */
 function UpdateSelectedLinesStatusBarItem(): void {
-  const n = GetNumberOfSelectedLines();
-  if (n > 0) {
-    SelectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
-    SelectedLinesStatusBarItem.show();
-  } else {
-    SelectedLinesStatusBarItem.hide();
-  }
+    const n = GetNumberOfSelectedLines();
+    if (n > 0) {
+        SelectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
+        SelectedLinesStatusBarItem.show();
+    } else {
+        SelectedLinesStatusBarItem.hide();
+    }
 }
 
 /**
@@ -214,27 +256,27 @@ function UpdateSelectedLinesStatusBarItem(): void {
  * @param {vscode.ExtensionContext} context
  */
 function AddCurrentOffsetStatusBarItem(context: vscode.ExtensionContext) {
-  // register a command that is invoked when the status bar
-  // fileoffset of the cursor
+    // register a command that is invoked when the status bar
+    // fileoffset of the cursor
 
-  // create a new status bar item that we can now manage
-  CurrentOffsetStatusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  CurrentOffsetStatusBarItem.command = "isg-cnc.GoToPosition";
-  context.subscriptions.push(CurrentOffsetStatusBarItem);
+    // create a new status bar item that we can now manage
+    CurrentOffsetStatusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Right,
+        100
+    );
+    CurrentOffsetStatusBarItem.command = "isg-cnc.GoToPosition";
+    context.subscriptions.push(CurrentOffsetStatusBarItem);
 
-  // register some listener that make sure the status bar
-  // item always up-to-date
-  context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor(UpdateCurrentOffsetStatusBarItem)
-  );
-  context.subscriptions.push(
-    vscode.window.onDidChangeTextEditorSelection(
-      UpdateCurrentOffsetStatusBarItem
-    )
-  );
+    // register some listener that make sure the status bar
+    // item always up-to-date
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(UpdateCurrentOffsetStatusBarItem)
+    );
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorSelection(
+            UpdateCurrentOffsetStatusBarItem
+        )
+    );
 }
 
 /**
@@ -242,19 +284,19 @@ function AddCurrentOffsetStatusBarItem(context: vscode.ExtensionContext) {
  *
  */
 function ShowCursorFileOffsetInfobox() {
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      const maxOffset = document.offsetAt(
-        new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
-      );
-      const n = GetCurrentFileOffset();
-      vscode.window.showInformationMessage(
-        `The current fileoffset is ${n} from ${maxOffset}.`
-      );
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            const maxOffset = document.offsetAt(
+                new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
+            );
+            const n = GetCurrentFileOffset();
+            vscode.window.showInformationMessage(
+                `The current fileoffset is ${n} from ${maxOffset}.`
+            );
+        }
     }
-  }
 }
 
 /**
@@ -262,9 +304,9 @@ function ShowCursorFileOffsetInfobox() {
  *
  */
 function UpdateCurrentOffsetStatusBarItem(): void {
-  const n = GetCurrentFileOffset();
-  CurrentOffsetStatusBarItem.text = `$(arrow-right) Fileoffset: ${n}`;
-  CurrentOffsetStatusBarItem.show();
+    const n = GetCurrentFileOffset();
+    CurrentOffsetStatusBarItem.text = `$(arrow-right) Fileoffset: ${n}`;
+    CurrentOffsetStatusBarItem.show();
 }
 
 /**
@@ -273,16 +315,16 @@ function UpdateCurrentOffsetStatusBarItem(): void {
  * @returns {number}
  */
 function GetCurrentFileOffset(): number {
-  // get current file offset position of the caret
-  let offset = 0;
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      offset = document.offsetAt(activeTextEditor.selection.active);
+    // get current file offset position of the caret
+    let offset = 0;
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            offset = document.offsetAt(activeTextEditor.selection.active);
+        }
     }
-  }
-  return offset;
+    return offset;
 }
 
 /**
@@ -291,34 +333,34 @@ function GetCurrentFileOffset(): number {
  * @returns {Promise<void>}
  */
 async function GoToPosition(): Promise<void> {
-  // move cursor to file offset
-  let maxOffset: number = 0;
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      const cursorOffset = document.offsetAt(activeTextEditor.selection.active);
-      maxOffset = document.offsetAt(
-        new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
-      );
+    // move cursor to file offset
+    let maxOffset: number = 0;
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            const cursorOffset = document.offsetAt(activeTextEditor.selection.active);
+            maxOffset = document.offsetAt(
+                new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
+            );
 
-      await vscode.window
-        .showInputBox({
-          prompt: `Type an offset number from 0 to ${maxOffset}.`,
-          validateInput: (input: string) => {
-            if (!IsNumeric(parseFloat(String(input)))) {
-              return undefined;
-            }
-          },
-          value: String(cursorOffset),
-        })
-        .then((input?: string) => {
-          input !== undefined
-            ? SetCursorPosition(parseFloat(String(input)))
-            : SetCursorPosition(cursorOffset);
-        });
+            await vscode.window
+                .showInputBox({
+                    prompt: `Type an offset number from 0 to ${maxOffset}.`,
+                    validateInput: (input: string) => {
+                        if (!IsNumeric(parseFloat(String(input)))) {
+                            return undefined;
+                        }
+                    },
+                    value: String(cursorOffset),
+                })
+                .then((input?: string) => {
+                    input !== undefined
+                        ? SetCursorPosition(parseFloat(String(input)))
+                        : SetCursorPosition(cursorOffset);
+                });
+        }
     }
-  }
 }
 
 /**
@@ -327,19 +369,19 @@ async function GoToPosition(): Promise<void> {
  * @param {number} pos
  */
 function SetCursorPosition(pos: number) {
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      const newPosition = document.positionAt(pos);
-      activeTextEditor.selection = new vscode.Selection(
-        newPosition,
-        newPosition
-      );
-      Reveal();
-      UpdateCurrentOffsetStatusBarItem();
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            const newPosition = document.positionAt(pos);
+            activeTextEditor.selection = new vscode.Selection(
+                newPosition,
+                newPosition
+            );
+            Reveal();
+            UpdateCurrentOffsetStatusBarItem();
+        }
     }
-  }
 }
 
 /**
@@ -348,15 +390,15 @@ function SetCursorPosition(pos: number) {
  * @returns {number}
  */
 function GetNumberOfSelectedLines(): number {
-  // get number of selected lines
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    return activeTextEditor.selections.reduce(
-      (prev, curr) => prev + (curr.end.line - curr.start.line),
-      0
-    );
-  }
-  return 0;
+    // get number of selected lines
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        return activeTextEditor.selections.reduce(
+            (prev, curr) => prev + (curr.end.line - curr.start.line),
+            0
+        );
+    }
+    return 0;
 }
 
 /**
@@ -365,12 +407,12 @@ function GetNumberOfSelectedLines(): number {
  * @param {vscode.TextEditorRevealType} [revealType]
  */
 function Reveal(revealType?: vscode.TextEditorRevealType): void {
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    revealType =
-      revealType || vscode.TextEditorRevealType.InCenterIfOutsideViewport;
-    activeTextEditor.revealRange(activeTextEditor.selection, revealType);
-  }
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        revealType =
+            revealType || vscode.TextEditorRevealType.InCenterIfOutsideViewport;
+        activeTextEditor.revealRange(activeTextEditor.selection, revealType);
+    }
 }
 
 /**
@@ -381,7 +423,7 @@ function Reveal(revealType?: vscode.TextEditorRevealType): void {
  * @returns
  */
 function IsNumeric(n: any) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 /**
@@ -389,36 +431,36 @@ function IsNumeric(n: any) {
  *
  */
 function RemoveAllBlocknumbers() {
-  const textEdits: vscode.TextEdit[] = [];
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      // edit document line by line
-      for (let ln = 0; ln < document.lineCount; ln++) {
-        const line = document.lineAt(ln);
-        const match = regExpBlocknumbers.exec(line.text);
-        if (match !== null && match.index !== undefined) {
-          const startPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index)
-          );
-          const endPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index + match[0].length)
-          );
-          const range = new vscode.Range(
-            document.positionAt(startPos),
-            document.positionAt(endPos)
-          );
-          textEdits.push(vscode.TextEdit.replace(range, ""));
-          // textEdits.push(vscode.TextEdit.insert(...));
+    const textEdits: vscode.TextEdit[] = [];
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            // edit document line by line
+            for (let ln = 0; ln < document.lineCount; ln++) {
+                const line = document.lineAt(ln);
+                const match = regExpBlocknumbers.exec(line.text);
+                if (match !== null && match.index !== undefined) {
+                    const startPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index)
+                    );
+                    const endPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index + match[0].length)
+                    );
+                    const range = new vscode.Range(
+                        document.positionAt(startPos),
+                        document.positionAt(endPos)
+                    );
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
+                    // textEdits.push(vscode.TextEdit.insert(...));
+                }
+            }
+            const workEdits = new vscode.WorkspaceEdit();
+            workEdits.set(document.uri, textEdits); // give the edits
+            vscode.workspace.applyEdit(workEdits); // apply the edits
         }
-      }
-      const workEdits = new vscode.WorkspaceEdit();
-      workEdits.set(document.uri, textEdits); // give the edits
-      vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-  }
-  return;
+    return;
 }
 
 /**
@@ -428,120 +470,120 @@ function RemoveAllBlocknumbers() {
  * @returns
  */
 async function AddBlocknumbers() {
-  let start = 10;
-  let step = 10;
-  const textEdits: vscode.TextEdit[] = [];
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      // get start number
-      let inputOptions: vscode.InputBoxOptions = {
-        prompt: `Type an start number.`,
-        validateInput: (input: string) => {
-          if (!IsNumeric(parseInt(input, 10))) {
-            return undefined;
-          }
-        },
-        value: start.toString(),
-      };
-      await vscode.window.showInputBox(inputOptions).then((input?: string) => {
-        if (input !== undefined) {
-          start = parseInt(input, 10);
-        } else {
-          start = -1;
+    let start = 10;
+    let step = 10;
+    const textEdits: vscode.TextEdit[] = [];
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            // get start number
+            let inputOptions: vscode.InputBoxOptions = {
+                prompt: `Type an start number.`,
+                validateInput: (input: string) => {
+                    if (!IsNumeric(parseInt(input, 10))) {
+                        return undefined;
+                    }
+                },
+                value: start.toString(),
+            };
+            await vscode.window.showInputBox(inputOptions).then((input?: string) => {
+                if (input !== undefined) {
+                    start = parseInt(input, 10);
+                } else {
+                    start = -1;
+                }
+            });
+
+            // check operation is canceled with esc then return
+            if (start === -1) {
+                return undefined;
+            }
+
+            // get step size
+            inputOptions = {
+                prompt: `Type an step size.`,
+                validateInput: (input: string) => {
+                    if (!IsNumeric(parseInt(input, 10))) {
+                        return undefined;
+                    }
+                },
+                value: step.toString(),
+            };
+            await vscode.window.showInputBox(inputOptions).then((input?: string) => {
+                if (input !== undefined) {
+                    step = parseInt(input, 10);
+                } else {
+                    step = -1;
+                }
+            });
+
+            // check operation is canceled with esc then return
+            if (step === -1) {
+                return undefined;
+            }
+
+            // add new blocknumbers
+            let blocknumber = start;
+            const digitsStartBlockNumber = DigitCount(start);
+            const maximalLeadingZeros = DigitCount(start + document.lineCount * step);
+
+            // edit document line by line
+            let isCommentBlock = false;
+            for (let ln = 0; ln < document.lineCount; ln++) {
+                const line = document.lineAt(ln);
+
+                if (line.text.startsWith("#COMMENT BEGIN")) {
+                    isCommentBlock = true;
+                }
+                if (line.text.startsWith("#COMMENT END")) {
+                    isCommentBlock = false;
+                    continue;
+                }
+                // skip program name, comment lines and empty lines
+                if (
+                    line.text.startsWith("%", 0) ||
+                    line.isEmptyOrWhitespace ||
+                    line.text.startsWith(";") ||
+                    line.text.startsWith("(") ||
+                    isCommentBlock
+                ) {
+                    continue;
+                }
+
+                // generate blocknumber
+                const block =
+                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
+
+                // add or replace blocknumber
+                const match = regExpBlocknumbers.exec(line.text);
+                if (match !== null && match.index !== undefined) {
+                    const startPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index)
+                    );
+                    const endPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index + match[0].length)
+                    );
+                    const range = new vscode.Range(
+                        document.positionAt(startPos),
+                        document.positionAt(endPos)
+                    );
+                    textEdits.push(vscode.TextEdit.replace(range, block));
+                } else {
+                    textEdits.push(
+                        vscode.TextEdit.insert(
+                            new vscode.Position(line.lineNumber, line.range.start.character),
+                            block
+                        )
+                    );
+                }
+                blocknumber += step;
+            }
         }
-      });
-
-      // check operation is canceled with esc then return
-      if (start === -1) {
-        return undefined;
-      }
-
-      // get step size
-      inputOptions = {
-        prompt: `Type an step size.`,
-        validateInput: (input: string) => {
-          if (!IsNumeric(parseInt(input, 10))) {
-            return undefined;
-          }
-        },
-        value: step.toString(),
-      };
-      await vscode.window.showInputBox(inputOptions).then((input?: string) => {
-        if (input !== undefined) {
-          step = parseInt(input, 10);
-        } else {
-          step = -1;
-        }
-      });
-
-      // check operation is canceled with esc then return
-      if (step === -1) {
-        return undefined;
-      }
-
-      // add new blocknumbers
-      let blocknumber = start;
-      const digitsStartBlockNumber = DigitCount(start);
-      const maximalLeadingZeros = DigitCount(start + document.lineCount * step);
-
-      // edit document line by line
-      let isCommentBlock = false;
-      for (let ln = 0; ln < document.lineCount; ln++) {
-        const line = document.lineAt(ln);
-
-        if (line.text.startsWith("#COMMENT BEGIN")) {
-          isCommentBlock = true;
-        }
-        if (line.text.startsWith("#COMMENT END")) {
-          isCommentBlock = false;
-          continue;
-        }
-        // skip program name, comment lines and empty lines
-        if (
-          line.text.startsWith("%", 0) ||
-          line.isEmptyOrWhitespace ||
-          line.text.startsWith(";") ||
-          line.text.startsWith("(") ||
-          isCommentBlock
-        ) {
-          continue;
-        }
-
-        // generate blocknumber
-        const block =
-          "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-
-        // add or replace blocknumber
-        const match = regExpBlocknumbers.exec(line.text);
-        if (match !== null && match.index !== undefined) {
-          const startPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index)
-          );
-          const endPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index + match[0].length)
-          );
-          const range = new vscode.Range(
-            document.positionAt(startPos),
-            document.positionAt(endPos)
-          );
-          textEdits.push(vscode.TextEdit.replace(range, block));
-        } else {
-          textEdits.push(
-            vscode.TextEdit.insert(
-              new vscode.Position(line.lineNumber, line.range.start.character),
-              block
-            )
-          );
-        }
-        blocknumber += step;
-      }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-    const workEdits = new vscode.WorkspaceEdit();
-    workEdits.set(document.uri, textEdits); // give the edits
-    vscode.workspace.applyEdit(workEdits); // apply the edits
-  }
 }
 
 /**
@@ -551,12 +593,12 @@ async function AddBlocknumbers() {
  * @returns {number}
  */
 function DigitCount(nr: number): number {
-  let digitCount = 0;
-  do {
-    nr /= 10;
-    digitCount++;
-  } while (nr >= 1);
-  return digitCount;
+    let digitCount = 0;
+    do {
+        nr /= 10;
+        digitCount++;
+    } while (nr >= 1);
+    return digitCount;
 }
 
 /**
@@ -565,42 +607,42 @@ function DigitCount(nr: number): number {
  *
  */
 function StartDocu() {
-  const docuAdress = GetContextbasedSite();
-  OutputChannel.appendLine(docuAdress);
+    const docuAdress = GetContextbasedSite();
+    OutputChannel.appendLine(docuAdress);
 
-  const terminal = vscode.window.createTerminal({
-    name: "ISG-CNC",
-    hideFromUser: false,
-    shellPath: TerminalPathWindows,
-  } as any);
-  let terminalPath = "";
-  let args;
-  let browserPath = `${config.getParam("browser")}`;
-  if (process.platform === "linux") {
-    terminalPath = TerminalPathLinux as string;
-  } else if (process.platform === "win32") {
-    terminalPath = TerminalPathWindows as string;
-    if (terminalPath.endsWith("powershell.exe")) {
-      browserPath = `& "${config.getParam("browser")}"`;
-    } else {
-      browserPath = `"${config.getParam("browser")}"`;
+    const terminal = vscode.window.createTerminal({
+        name: "ISG-CNC",
+        hideFromUser: false,
+        shellPath: TerminalPathWindows,
+    } as any);
+    let terminalPath = "";
+    let args;
+    let browserPath = `${config.getParam("browser")}`;
+    if (process.platform === "linux") {
+        terminalPath = TerminalPathLinux as string;
+    } else if (process.platform === "win32") {
+        terminalPath = TerminalPathWindows as string;
+        if (terminalPath.endsWith("powershell.exe")) {
+            browserPath = `& "${config.getParam("browser")}"`;
+        } else {
+            browserPath = `"${config.getParam("browser")}"`;
+        }
     }
-  }
 
-  if (docuAdress !== "" && docuAdress.startsWith("http")) {
-    args = docuAdress;
-  } else {
-    args = `"file://${docuAdress}"`;
-  }
-  OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
-  OutputChannel.appendLine(`Adress to the website: ${docuAdress}`);
-  OutputChannel.appendLine(
-    `Commandpart: ${browserPath} and Argumentpart: ${args}`
-  );
-  // example that works:
-  // "C:\Program Files\Mozilla Firefox\firefox.exe"
-  // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-  terminal.sendText(browserPath + " " + args);
+    if (docuAdress !== "" && docuAdress.startsWith("http")) {
+        args = docuAdress;
+    } else {
+        args = `"file://${docuAdress}"`;
+    }
+    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
+    OutputChannel.appendLine(`Adress to the website: ${docuAdress}`);
+    OutputChannel.appendLine(
+        `Commandpart: ${browserPath} and Argumentpart: ${args}`
+    );
+    // example that works:
+    // "C:\Program Files\Mozilla Firefox\firefox.exe"
+    // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
+    terminal.sendText(browserPath + " " + args);
 }
 
 /**
@@ -612,38 +654,38 @@ function StartDocu() {
  * @returns {string}
  */
 function GetContextbasedSite(): string {
-  let SearchContext: string;
-  let docuPath: string;
-  let DocuAdress: string = "";
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      if (DocuPath !== undefined && DocuPath !== "") {
-        docuPath = DocuPath as string;
-        if (!docuPath.endsWith("\\") && !docuPath.startsWith("http")) {
-          docuPath = docuPath.split('"').join("");
-          docuPath += "\\" + `${Language}\\`;
-        } else {
-          docuPath += `${Language}\\`;
+    let SearchContext: string;
+    let docuPath: string;
+    let DocuAdress: string = "";
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            if (DocuPath !== undefined && DocuPath !== "") {
+                docuPath = DocuPath as string;
+                if (!docuPath.endsWith("\\") && !docuPath.startsWith("http")) {
+                    docuPath = docuPath.split('"').join("");
+                    docuPath += "\\" + `${Language}\\`;
+                } else {
+                    docuPath += `${Language}\\`;
+                }
+            } else {
+                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${Language}/`;
+            }
+            if (activeTextEditor.selection.isEmpty !== true) {
+                SearchContext = activeTextEditor.document.getText(
+                    activeTextEditor.selection
+                );
+                const query = new URLSearchParams();
+                query.append("q", SearchContext);
+                DocuAdress = docuPath + `search.html?${query.toString()}`;
+            } else {
+                DocuAdress = docuPath + "index.html";
+            }
         }
-      } else {
-        docuPath = `https://www.isg-stuttgart.de/kernel-html5/${Language}/`;
-      }
-      if (activeTextEditor.selection.isEmpty !== true) {
-        SearchContext = activeTextEditor.document.getText(
-          activeTextEditor.selection
-        );
-        const query = new URLSearchParams();
-        query.append("q", SearchContext);
-        DocuAdress = docuPath + `search.html?${query.toString()}`;
-      } else {
-        DocuAdress = docuPath + "index.html";
-      }
     }
-  }
-  DocuAdress = DocuAdress.split("\\").join("/");
-  return DocuAdress;
+    DocuAdress = DocuAdress.split("\\").join("/");
+    return DocuAdress;
 }
 
 /**
@@ -651,156 +693,203 @@ function GetContextbasedSite(): string {
  *
  */
 export function deactivate() {
-  OutputChannel.appendLine("Close vscode-isg-cnc");
-  OutputChannel.dispose();
+    OutputChannel.appendLine("Close vscode-isg-cnc");
+    OutputChannel.dispose();
 }
 
-
 export function Beautify() {
-  let currentLine: string;
-  let newLine: string;
-  let saveBlockNumber: string;
-  let whiteSpaces: any;
-  let currentPos: number = 0;
-  const textEdits: vscode.TextEdit[] = [];
+    let currentLine: string;
+    let newLine: string;
+    let saveBlockNumber: string;
+    let whiteSpaces: any;
+    let currentPos: number = 0;
+    const textEdits: vscode.TextEdit[] = [];
 
-  const { activeTextEditor } = vscode.window;
-  if (activeTextEditor) {
-    const { document } = activeTextEditor;
-    if (document) {
-      // edit document line by line
-      whiteSpaces = activeTextEditor.options.tabSize;
-      let isCommentBlock = false;
-      for (let ln = 0; ln < document.lineCount; ln++) {
-        const line = document.lineAt(ln);
+    const { activeTextEditor } = vscode.window;
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            // edit document line by line
+            whiteSpaces = activeTextEditor.options.tabSize;
+            let isCommentBlock = false;
+            for (let ln = 0; ln < document.lineCount; ln++) {
+                const line = document.lineAt(ln);
 
-        if (line.text.startsWith("#COMMENT BEGIN")) {
-          isCommentBlock = true;
-          continue;
+                if (line.text.startsWith("#COMMENT BEGIN")) {
+                    isCommentBlock = true;
+                    continue;
+                }
+                if (line.text.startsWith("#COMMENT END")) {
+                    isCommentBlock = false;
+                    continue;
+                }
+
+                // skip program name, comment lines and empty lines
+                if (
+                    line.text.startsWith("%", 0) ||
+                    //line.isEmptyOrWhitespace ||
+                    line.text.startsWith(";") ||
+                    line.text.startsWith("(") ||
+                    isCommentBlock
+                ) {
+                    continue;
+                }
+
+                currentLine = line.text;
+                saveBlockNumber = "";
+                newLine = "";
+
+                // Get blocknumber and line text
+                const match = regExpBlocknumbers.exec(line.text);
+                if (match !== null && match.index !== undefined) {
+                    const startPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index)
+                    );
+                    const endPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, match.index + match[0].length)
+                    );
+                    const range = new vscode.Range(
+                        document.positionAt(startPos),
+                        document.positionAt(endPos)
+                    );
+                    saveBlockNumber = activeTextEditor.document.getText(range);
+                    currentLine = activeTextEditor.document.getText(
+                        new vscode.Range(document.positionAt(endPos), line.range.end)
+                    );
+                } else {
+                    currentLine = activeTextEditor.document.getText(line.range);
+                }
+
+                // empty line trim whitespaces and write to edits buffer
+                currentLine.trim();
+                if (currentLine.length == 0) {
+                    textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
+                    continue;
+                }
+
+                currentLine = currentLine.trim();
+
+                if (
+                    currentLine.indexOf("$DO") == 0 ||
+                    currentLine.indexOf("$REPEAT") == 0 ||
+                    currentLine.indexOf("$FOR") == 0 ||
+                    currentLine.indexOf("$IF") == 0 ||
+                    currentLine.indexOf("$WHILE") == 0 ||
+                    currentLine.indexOf("#VAR") == 0
+                ) {
+                    // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+
+                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    currentPos = currentPos + whiteSpaces;
+                } else if (currentLine.indexOf("$SWITCH") == 0) {
+                    // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+
+                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    currentPos = currentPos + whiteSpaces * 2;
+                } else if (
+                    currentLine.indexOf("$ENDDO") == 0 ||
+                    currentLine.indexOf("$UNTIL") == 0 ||
+                    currentLine.indexOf("$ENDFOR") == 0 ||
+                    currentLine.indexOf("$ENDIF") == 0 ||
+                    currentLine.indexOf("$ENDWHILE") == 0 ||
+                    currentLine.indexOf("#ENDVAR") == 0
+                ) {
+                    // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+
+                    currentPos = currentPos - whiteSpaces;
+                    if (currentPos < 0) {
+                        currentPos = 0;
+                    }
+
+                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                } else if (currentLine.indexOf("$ENDSWITCH") == 0) {
+                    // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+
+                    currentPos = currentPos - whiteSpaces * 2;
+
+                    if (currentPos < 0) {
+                        currentPos = 0;
+                    }
+
+                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                } else if (
+                    currentLine.indexOf("$ELSEIF") == 0 ||
+                    currentLine.indexOf("$ELSE") == 0 ||
+                    currentLine.indexOf("$CASE") == 0 ||
+                    currentLine.indexOf("$DEFAULT") == 0
+                ) {
+                    // Zeile wird an der Aktuellen Position - TabSize eingefügt
+
+                    newLine = NewLineForBeautifier(currentLine, currentPos - whiteSpaces);
+                } else {
+                    // Zeile wird an der Aktuellen Position eingefügt
+                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                }
+
+                newLine = saveBlockNumber + newLine;
+
+                textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+            }
         }
-        if (line.text.startsWith("#COMMENT END")) {
-          isCommentBlock = false;
-          continue;
-        }
 
-        // skip program name, comment lines and empty lines
-        if (
-          line.text.startsWith("%", 0) ||
-          //line.isEmptyOrWhitespace ||
-          line.text.startsWith(";") ||
-          line.text.startsWith("(") ||
-          isCommentBlock
-        ) {
-          continue;
-        }
-
-        currentLine = line.text;
-        saveBlockNumber = "";
-        newLine = "";
-
-        // Get blocknumber and line text
-        const match = regExpBlocknumbers.exec(line.text);
-        if (match !== null && match.index !== undefined) {
-          const startPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index)
-          );
-          const endPos = document.offsetAt(
-            new vscode.Position(line.lineNumber, match.index + match[0].length)
-          );
-          const range = new vscode.Range(
-            document.positionAt(startPos),
-            document.positionAt(endPos)
-          );
-          saveBlockNumber = activeTextEditor.document.getText(range);
-          currentLine = activeTextEditor.document.getText(
-            new vscode.Range(document.positionAt(endPos), line.range.end));
-        }
-        else {
-          currentLine = activeTextEditor.document.getText(line.range);
-        }
-
-        // empty line trim whitespaces and write to edits buffer
-        currentLine.trim();
-        if (currentLine.length == 0) {
-          textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
-          continue;
-        }
-
-        currentLine = currentLine.trim();
-
-        if (currentLine.indexOf("$DO") == 0
-          || currentLine.indexOf("$REPEAT") == 0
-          || currentLine.indexOf("$FOR") == 0
-          || currentLine.indexOf("$IF") == 0
-          || currentLine.indexOf("$WHILE") == 0
-          || currentLine.indexOf("#VAR") == 0) {
-          // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
-
-          newLine = NewLineForBeautifier(currentLine, currentPos);
-          currentPos = currentPos + whiteSpaces;
-        }
-        else if (currentLine.indexOf("$SWITCH") == 0) {
-          // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
-
-          newLine = NewLineForBeautifier(currentLine, currentPos);
-          currentPos = currentPos + whiteSpaces * 2;
-        }
-        else if (currentLine.indexOf("$ENDDO") == 0
-          || currentLine.indexOf("$UNTIL") == 0
-          || currentLine.indexOf("$ENDFOR") == 0
-          || currentLine.indexOf("$ENDIF") == 0
-          || currentLine.indexOf("$ENDWHILE") == 0
-          || currentLine.indexOf("#ENDVAR") == 0) {
-          // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
-
-          currentPos = currentPos - whiteSpaces;
-          if (currentPos < 0) {
-            currentPos = 0;
-          }
-
-          newLine = NewLineForBeautifier(currentLine, currentPos);
-        }
-        else if (currentLine.indexOf("$ENDSWITCH") == 0) {
-          // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
-
-          currentPos = currentPos - whiteSpaces * 2;
-
-          if (currentPos < 0) {
-            currentPos = 0;
-          }
-
-          newLine = NewLineForBeautifier(currentLine, currentPos);
-        }
-        else if (currentLine.indexOf("$ELSEIF") == 0 || currentLine.indexOf("$ELSE") == 0 || currentLine.indexOf("$CASE") == 0 || currentLine.indexOf("$DEFAULT") == 0) {
-          // Zeile wird an der Aktuellen Position - TabSize eingefügt
-
-          newLine = NewLineForBeautifier(currentLine, currentPos - whiteSpaces);
-        }
-        else {
-          // Zeile wird an der Aktuellen Position eingefügt
-          newLine = NewLineForBeautifier(currentLine, currentPos);
-        }
-
-        newLine = saveBlockNumber + newLine;
-
-        textEdits.push(vscode.TextEdit.replace(line.range, newLine));
-      }
+        // write back edits
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
+        return;
     }
-
-    // write back edits
-    const workEdits = new vscode.WorkspaceEdit();
-    workEdits.set(document.uri, textEdits); // give the edits
-    vscode.workspace.applyEdit(workEdits); // apply the edits
-    return;
-  }
 }
 
 function NewLineForBeautifier(line: string, whiteSpaces: number) {
-  let newLine = "";
+    let newLine = "";
 
-  for (let i = 0; i < whiteSpaces; i++) {
-    newLine = newLine + " ";
-  }
-  newLine = newLine + line;
-  return newLine;
+    for (let i = 0; i < whiteSpaces; i++) {
+        newLine = newLine + " ";
+    }
+    newLine = newLine + line;
+    return newLine;
+}
+
+export function FindNonAsciiCharacters() {
+    updateDecorations()    
+}
+
+function updateDecorations() {
+    let activeEditor=vscode.window.activeTextEditor
+    if (!activeEditor) {
+        return;
+    }
+    const regEx = /[^\x00-\x7F]+/gm;
+    const text = activeEditor.document.getText();
+    const nonAsciiCharacters: vscode.DecorationOptions[] = [];
+    let message: string
+    let match;
+    while ((match = regEx.exec(text))) {
+        const startPos = activeEditor.document.positionAt(match.index);
+        const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+        const decoration = {
+            range: new vscode.Range(startPos, endPos),
+            hoverMessage: "non ASCII Character **" + match[0] + "**",
+        };
+        nonAsciiCharacters.push(decoration);
+    }
+    activeEditor.setDecorations(
+        nonAsciiCharacterDecorationType,
+        nonAsciiCharacters
+    );
+    for(let nonAsciiChar of nonAsciiCharacters)
+    {
+        let ln = nonAsciiChar.range.end.line+1
+        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage
+        OutputChannel.appendLine(message)  
+    }
+    OutputChannel.show.apply
+}
+
+function triggerUpdateDecorations() {
+    if (timeout) {
+        clearTimeout(timeout);
+        timeout = undefined;
+    }
+    timeout = setTimeout(updateDecorations, 50);
 }

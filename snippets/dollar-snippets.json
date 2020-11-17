@@ -1,85 +1,119 @@
 {
-  "$BREAK": {
-    "scope": "isg-cnc",
-    "prefix": "$BREAK",
-    "body": ["\\$BREAK"],
-    "description": "$BREAK statement"
-  },
-  "$CONTINUE": {
-    "scope": "isg-cnc",
-    "prefix": "$CONTINUE",
-    "body": ["\\$CONTINUE"],
-    "description": "$CONTINUE statement"
-  },
-  "$DO": {
-    "scope": "isg-cnc",
-    "prefix": "$DO",
-    "body": ["\\$DO", "\t${0}", "\\$ENDDO ${1:[Options]}"],
-    "description": "$DO...$ENDDO"
-  },
-  "$REPEAT": {
-    "scope": "isg-cnc",
-    "prefix": "$REPEAT",
-    "body": ["\\$REPEAT", "\t${0}", "\\$UNTIL ${1:[Options]}"],
-    "description": "$REPEAT...$UNTIL"
-  },
-  "$FOR": {
-    "scope": "isg-cnc",
-    "prefix": "$FOR",
-    "body": [
-      "\\$FOR P${1:[Counting Variable]} = ${2:[Start value]}, ${3:[End value]}, ${4:[counting increment]}",
-      "\t${0}",
-      "\\$ENDFOR"
-    ],
-    "description": "$FOR...$ENDFOR"
-  },
-  "$GOTO": {
-    "scope": "isg-cnc",
-    "prefix": "$GOTO",
-    "body": ["\\$GOTO"],
-    "description": "$GOTO statement"
-  },
-  "$IF": {
-    "scope": "isg-cnc",
-    "prefix": "$IF",
-    "body": ["\\$IF ${1:[Options]}", "\t${0}", "\\$ENDIF"],
-    "description": "$IF...$ENDIF"
-  },
-  "$IFELSE": {
-    "scope": "isg-cnc",
-    "prefix": "$IFELSE",
-    "body": ["\\$IF ${1:[Options]}", "\t${2}", "\\$ELSE", "\t${0}", "\\$ENDIF"],
-    "description": "$IF...$ELSE...$ENDIF"
-  },
-  "$ELSEIF": {
-    "scope": "isg-cnc",
-    "prefix": "$ELSEIF",
-    "body": ["\\$ELSEIF"],
-    "description": "$ELSEIF"
-  },
-  "$SWITCH": {
-    "scope": "isg-cnc",
-    "prefix": "$SWITCH",
-    "body": [
-      "\\$SWITCH ${1:[Options]}",
-      "\t\\$CASE ${2}",
-      "\t\t${0}",
-      "\t\t\\$BREAK",
-      "\t\\$DEFAULT",
-      "\\$ENDSWITCH"
-    ],
-    "description": "$SWITCH...$CASE...$ENDSWITCH"
-  },
-  "$CASE": {
-    "scope": "isg-cnc",
-    "prefix": "$CASe",
-    "body": ["\\$CASE ${2}", "\t\t${0}", "\t\\$BREAK"],
-    "description": "$CASE...$BREAK"
-  },
-  "$WHILE": {
-    "scope": "isg-cnc",
-    "prefix": "$WHILE",
-    "body": ["\\$WHILE ${1:[Options]}", "\t${0}", "\\$ENDWHILE"],
-    "description": "$WHILE...$ENDWHILE"
-  }
+    "$BREAK": {
+        "scope": "isg-cnc",
+        "prefix": "$BREAK",
+        "body": [
+            "\\$BREAK"
+        ],
+        "description": "$BREAK statement"
+    },
+    "$CONTINUE": {
+        "scope": "isg-cnc",
+        "prefix": "$CONTINUE",
+        "body": [
+            "\\$CONTINUE"
+        ],
+        "description": "$CONTINUE statement"
+    },
+    "$DO": {
+        "scope": "isg-cnc",
+        "prefix": "$DO",
+        "body": [
+            "\\$DO",
+            "\t${0}",
+            "\\$ENDDO ${1:[Options]}"
+        ],
+        "description": "$DO...$ENDDO"
+    },
+    "$REPEAT": {
+        "scope": "isg-cnc",
+        "prefix": "$REPEAT",
+        "body": [
+            "\\$REPEAT",
+            "\t${0}",
+            "\\$UNTIL ${1:[Options]}"
+        ],
+        "description": "$REPEAT...$UNTIL"
+    },
+    "$FOR": {
+        "scope": "isg-cnc",
+        "prefix": "$FOR",
+        "body": [
+            "\\$FOR P${1:[Counting Variable]} = ${2:[Start value]}, ${3:[End value]}, ${4:[counting increment]}",
+            "\t${0}",
+            "\\$ENDFOR"
+        ],
+        "description": "$FOR...$ENDFOR"
+    },
+    "$GOTO": {
+        "scope": "isg-cnc",
+        "prefix": "$GOTO",
+        "body": [
+            "\\$GOTO"
+        ],
+        "description": "$GOTO statement"
+    },
+    "$IF": {
+        "scope": "isg-cnc",
+        "prefix": "$IF",
+        "body": [
+            "\\$IF ${1:[Options]}",
+            "\t${0}",
+            "\\$ENDIF"
+        ],
+        "description": "$IF...$ENDIF"
+    },
+    "$IFELSE": {
+        "scope": "isg-cnc",
+        "prefix": "$IFELSE",
+        "body": [
+            "\\$IF ${1:[Options]}",
+            "\t${2}",
+            "\\$ELSE",
+            "\t${0}",
+            "\\$ENDIF"
+        ],
+        "description": "$IF...$ELSE...$ENDIF"
+    },
+    "$ELSEIF": {
+        "scope": "isg-cnc",
+        "prefix": "$ELSEIF",
+        "body": [
+            "\\$ELSEIF"
+        ],
+        "description": "$ELSEIF"
+    },
+    "$SWITCH": {
+        "scope": "isg-cnc",
+        "prefix": "$SWITCH",
+        "body": [
+            "\\$SWITCH ${1:[Options]}",
+            "\t\\$CASE ${2}",
+            "\t\t${0}",
+            "\t\t\\$BREAK",
+            "\t\\$DEFAULT",
+            "\\$ENDSWITCH"
+        ],
+        "description": "$SWITCH...$CASE...$ENDSWITCH"
+    },
+    "$CASE": {
+        "scope": "isg-cnc",
+        "prefix": "$CASe",
+        "body": [
+            "\\$CASE ${2}",
+            "\t\t${0}",
+            "\t\\$BREAK"
+        ],
+        "description": "$CASE...$BREAK"
+    },
+    "$WHILE": {
+        "scope": "isg-cnc",
+        "prefix": "$WHILE",
+        "body": [
+            "\\$WHILE ${1:[Options]}",
+            "\t${0}",
+            "\\$ENDWHILE"
+        ],
+        "description": "$WHILE...$ENDWHILE"
+    }
 }

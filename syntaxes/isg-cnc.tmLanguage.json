@@ -1,802 +1,802 @@
 {
-  "scopeName": "source.isg-cnc",
-  "name": "VSCode ISG-CNC Syntax",
-  "patterns": [
-    {
-      "include": "#comments"
-    },
-    {
-      "include": "#speedsfeeds"
-    },
-    {
-      "include": "#prognames"
-    },
-    {
-      "include": "#coords"
-    },
-    {
-      "include": "#tools"
-    },
-    {
-      "include": "#modifiers"
-    },
-    {
-      "include": "#variables"
-    },
-    {
-      "include": "#gcodes"
-    },
-    {
-      "include": "#mcodes"
-    },
-    {
-      "include": "#dollarkeywords"
-    },
-    {
-      "include": "#hashtagkeywords"
-    },
-    {
-      "include": "#operators"
-    },
-    {
-      "include": "#constants"
-    },
-    {
-      "include": "#programcalls"
-    },
-    {
-      "include": "#common"
+    "scopeName": "source.isg-cnc",
+    "name": "VSCode ISG-CNC Syntax",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#speedsfeeds"
+        },
+        {
+            "include": "#prognames"
+        },
+        {
+            "include": "#coords"
+        },
+        {
+            "include": "#tools"
+        },
+        {
+            "include": "#modifiers"
+        },
+        {
+            "include": "#variables"
+        },
+        {
+            "include": "#gcodes"
+        },
+        {
+            "include": "#mcodes"
+        },
+        {
+            "include": "#dollarkeywords"
+        },
+        {
+            "include": "#hashtagkeywords"
+        },
+        {
+            "include": "#operators"
+        },
+        {
+            "include": "#constants"
+        },
+        {
+            "include": "#programcalls"
+        },
+        {
+            "include": "#common"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.documentation",
+                    "begin": "\\#COMMENT\\s*?*BEGIN",
+                    "end": "\\#COMMENT\\s*?*END"
+                },
+                {
+                    "name": "comment",
+                    "match": "(\\s*?);.*|\\((.*?)(\\)|\n)"
+                }
+            ]
+        },
+        "gcodes": {
+            "patterns": [
+                {
+                    "match": "\\b[Gg][0-9]{1,3}\\b",
+                    "name": "isg-cnc.keyword.gcode"
+                }
+            ]
+        },
+        "mcodes": {
+            "patterns": [
+                {
+                    "match": "\\b[Mm][0-9]{1,3}\\b",
+                    "name": "isg-cnc.keyword.mcode"
+                }
+            ]
+        },
+        "dollarkeywords": {
+            "patterns": [
+                {
+                    "match": "\\$BREAK",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$CONTINUE",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$DO",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ENDDO",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$REPEAT",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$UNTIL",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$FOR",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ENDFOR",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$GOTO",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$IF",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ELSEIF",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ENDIF",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ELSE",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$SWITCH",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$CASE",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$DEFAULT",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ENDSWITCH",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$WHILE",
+                    "name": "isg-cnc.keyword.dollar"
+                },
+                {
+                    "match": "\\$ENDWHILE",
+                    "name": "isg-cnc.keyword.dollar"
+                }
+            ]
+        },
+        "hashtagkeywords": {
+            "patterns": [
+                {
+                    "match": "\\#GANTRY\\s*?*((ON\\s*?*ALL)|ON\\s*?|(OFF\\s*?*ALL)|OFF\\s*?)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ACHSE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ACHSTAUSCH",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ACS\\s*?*((DEF\\s*?*ACT)|DEF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ACS\\s*?*(ON|(OFF\\s*?*ALL)|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ADD",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#AKIMA\\s*?*(STARTVECTOR|ENDVECTOR|TRANS)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ANG",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#AX\\s*?*((DEF\\s*?*DEFAULT)|DEF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#AX\\s*?*(LINK\\s*?*(ON|OFF|ALL)|REQUEST|((RELEASE\\s*?*ALL)|(UNLOCK\\s*?*ALL)|RELEASE)|LOCK)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#BACKWARD\\s*?*STORAGE\\s*?*CLEAR",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#BLOCKSEARCH\\s*?*(LOCKED|RELEASED)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CACHE\\s*?*(CLEAR|LOAD)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CALL\\s*?*AX",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CAXTRACK\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#CAX\\s*?(OFF|ON|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|#CAX",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CHANNEL\\s*?*(INIT|SET|(INTERFACE\\s*?*(ON|OFF)))",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CHR",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CHF",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CLEAR\\s*?*CONFIG",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#COMMAND\\s*?*((WR\\s*?*SYN|WR)|(WAIT\\s*?*SYN|WAIT))",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#CONTOUR\\s*?*(MODE\\s*?*ON|MODE))",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CONTROL\\s*?*AREA\\s*?*(BEGIN|END|OFF|ON|CLEAR)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CORNER\\s*?*PARAM",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CYL\\s*?*ORI\\s*?*(LATERAL|PROFILE)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#CS\\s*?*((ADD|(DEF\\s*?*ACT)|DEF|(DEL\\s*?*ALL)|MODE\\s*?*(ON|OFF))|ON|(OFF\\s*?*ALL)|OFF|SELECT)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#CYL\\s*?(OFF|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|\\#CYL",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DELETE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DEL\\s*?*DIST2GO",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DISTANCE\\s*?*PROG\\s*?*START\\s*?*(ON|OFF|CLEAR)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DRIVE\\s*?*(WR|WAIT)\\s*?*SYN",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DYN_WEIGHT\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#DYNAMIC\\s*?*WEIGHT\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ECS\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#EDM\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#EDGE\\s*?*MACHINING\\s*?*(ON\\s*?*DEFAULT|ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#DISABLE|\\#ENABLE)\\s*?*AX\\s*?*LINK",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ERROR",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#EXPORT\\s*?*VE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#EXPL\\s*?*SYN",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#FACE\\s*?(OFF|\\[(-?(?:\\d+(?:\\.\\d*)?))\\])|\\#FACE)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#FGROUP\\s*?*(ROT|WAXIS)|\\#FGROUP)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#FILE\\s*?*(NAME|EXIST|DELETE|RENAME)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#FILTER\\s*?*(ON|OFF)|\\#FILTER|\\s*?*\\[HSC\\])",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#FLUSH\\s*?*(CONTINUE|WAIT)|\\#FLUSH)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#FRC",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#FREE\\s*?*TOOL\\s*?*CHANGE\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#GET\\s*?*((CMDPOS|ACTPOS)|MANUAL\\s*?*OFFSETS|WCS\\s*?*POSLIMIT)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#HANDWHEEL",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#HSC\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#IDENT\\s*?*((WR|RD)\\s*?*SYN|(WR|RD))",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#INIT\\s*?*MACRO\\s*?*TAB",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#INIT\\s*?*V\\.E\\.",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#JOG\\s*?*(CONT|INCR)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#KIN\\s*?*ID",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#LOAD\\s*?*CONFIG",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#MACHINE\\s*?*DATA",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#MAIN\\s*?*SPINDLE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#MANUAL\\s*?*LIMITS",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#MCS\\s*?*(ON\\s*?*EX\\s*?*TOOL|ON|OFF|TO\\s*?*WCS)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#MEAS\\s*?*(MODE|DEFAULT)|\\#MEAS)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#MICROJOINT",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#MSG\\s*?*(INFO|SAVE\\s*?*EXCLUSIVE|SAVE|(SYN\\s*?*ACK|SYN))|\\#MSG)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#NIBBLE\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#OPTIONAL\\s*?*EXECUTION\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#OTC\\s*?*(ON|OFF)|\\#OTC)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#OVERRIDE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#PSET",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#PRESET",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#PTP\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#PUNCH\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#PUT\\s*?*(AX\\s*?*ALL|AX)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#RND",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ROTATION\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#RTCP\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SAVE\\s*?*CONFIG",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#SCALE\\s*?*(ON|OFF)|\\#SCALE)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SEGMENTATION\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SET\\s*?*(SLOPE\\s*?*PROFIL|(AX\\s*?*LINK|AX))",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SINGLE\\s*?*STEP|\\s*?*(\\[ENABLE\\]|\\[DISABLE\\]|\\[RESOLUTION\\s*?\\=\\s*?((-?(?:\\d+(?:\\.\\d*)?)))?\\])",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SPLINE\\s*?*(ON|OFF|TYPE\\s*?*AKIMA|TYPE\\s*?*BSPLINE)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#SIGNAL\\s*?*REMOVE|\\#SIGNAL)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#SLOPE\\s*?*DEFAULT|\\#SLOPE)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#SUPPRESS\\s*?*OFFSETS",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#STROKE\\s*?*DEF\\s*?*(BEGIN|END)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TANGFEED",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TIMER",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TIME",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TLC\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TOOL\\s*?*(DATA|LIFE\\s*?*READ|LIFE\\s*?*REMOVE|ORI\\s*?*CS|PREP|REFRESH)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TRACK\\s*?*CS\\s*?*(ON|OFF|ABS)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#TRAFO\\s*?*(ON|OFF)|\\#TRAFO)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TRANSVELMIN\\s*?*(ON|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#TRC",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#VAR",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ENDVAR",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#VECTOR\\s*?*LIMIT\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#VOLCOMP\\s*?*(ON|OFF)|\\#VOLCOMP)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "(\\#WAIT\\s*?*(FOR|INDP\\s*?*ALL|INDP)|\\#WAIT)",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#WCS\\s*?*TO\\s*?*MCS",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#INFO",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#IF",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ELSE",
+                    "name": "isg-cnc.keyword.hashtag"
+                },
+                {
+                    "match": "\\#ENDIF",
+                    "name": "isg-cnc.keyword.hashtag"
+                }
+            ]
+        },
+        "operators": {
+            "patterns": [
+                {
+                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*)",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(ABS)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(SQR)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(SQRT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(EXP)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(LN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(DEXP)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(LOG)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(\\&)|(\\|)|(\\^)|(INV)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(\\&\\&)|(\\|\\|)|(XOR)|(NOT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(SIN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(COS)\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(TAN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(COT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ASIN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ACOS)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ATAN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ATAN2)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ACOT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(INT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(FRACT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(CEIL)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ROUND)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(FLOOR)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(==)|(!=)|(>=)|(<=)|(<)|(>)",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(TRUE)|(FALSE)",
+                    "name": "isg-cnc.keyword.operator"
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "match": "(PI)",
+                    "name": "isg-cnc.keyword.constant"
+                }
+            ]
+        },
+        "speedsfeeds": {
+            "patterns": [
+                {
+                    "match": "\\b(@?[Ss])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.keyword.technology"
+                },
+                {
+                    "match": "\\b[Ff]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.keyword.technology"
+                },
+                {
+                    "match": "\\b[Ee]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.keyword.technology"
+                },
+                {
+                    "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.keyword.technology"
+                }
+            ]
+        },
+        "prognames": {
+            "patterns": [
+                {
+                    "match": "^%(-?(?:\\d+(?:\\.\\d*)?))\n",
+                    "name": "isg-cnc.programname"
+                },
+                {
+                    "match": "^[Oo](-?(?:\\d+(?:\\.\\d*)?))\n",
+                    "name": "isg-cnc.programname"
+                }
+            ]
+        },
+        "common": {
+            "patterns": [
+                {
+                    "match": "\\b[Nn][0-9]+",
+                    "name": "isg-cnc.blocknumber"
+                }
+            ]
+        },
+        "coords": {
+            "patterns": [
+                {
+                    "match": "\\b(@?X)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?Y)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?Z)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?A)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?B)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?C)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                }
+            ]
+        },
+        "tools": {
+            "patterns": [
+                {
+                    "match": "\\b[Dd]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.tool"
+                },
+                {
+                    "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.tool"
+                },
+                {
+                    "match": "\\b[Tt]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.tool"
+                }
+            ]
+        },
+        "modifiers": {
+            "patterns": [
+                {
+                    "match": "\\b(@?[Ii])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?[Jj])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?[Kk])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?[Rr])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
+                    "name": "isg-cnc.axis"
+                }
+            ]
+        },
+        "variables": {
+            "patterns": [
+                {
+                    "match": "V\\.A\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.SPDL\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.G\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.P\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.S\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.L\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.E\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.TOOL\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.TLM\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "V\\.CYC\\.[.a-zA-Z0-9_]+",
+                    "name": "variable"
+                },
+                {
+                    "match": "[Pp][0-9]+",
+                    "name": "variable"
+                }
+            ]
+        },
+        "programcalls": {
+            "patterns": [
+                {
+                    "match": "\\bL\\s*?*+CYCLE",
+                    "name": "isg-cnc.call"
+                },
+                {
+                    "match": "\\bLL\\s*?*CYCLE",
+                    "name": "isg-cnc.call"
+                },
+                {
+                    "match": "\\bL\\s*?*SEQUENCE",
+                    "name": "isg-cnc.call"
+                },
+                {
+                    "match": "\\b[Ll]{1,2}\\b",
+                    "name": "isg-cnc.call"
+                },
+                {
+                    "match": "\\b\\\\b",
+                    "name": "isg-cnc.call"
+                }
+            ]
+        }
     }
-  ],
-  "repository": {
-    "comments": {
-      "patterns": [
-        {
-          "name": "comment.documentation",
-          "begin": "\\#COMMENT\\s*?*BEGIN",
-          "end": "\\#COMMENT\\s*?*END"
-        },
-        {
-          "name": "comment",
-          "match": "(\\s*?);.*|\\((.*?)(\\)|\n)"
-        }
-      ]
-    },
-    "gcodes": {
-      "patterns": [
-        {
-          "match": "\\b[Gg][0-9]{1,3}\\b",
-          "name": "isg-cnc.keyword.gcode"
-        }
-      ]
-    },
-    "mcodes": {
-      "patterns": [
-        {
-          "match": "\\b[Mm][0-9]{1,3}\\b",
-          "name": "isg-cnc.keyword.mcode"
-        }
-      ]
-    },
-    "dollarkeywords": {
-      "patterns": [
-        {
-          "match": "\\$BREAK",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$CONTINUE",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$DO",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ENDDO",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$REPEAT",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$UNTIL",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$FOR",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ENDFOR",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$GOTO",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$IF",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ELSEIF",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ENDIF",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ELSE",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$SWITCH",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$CASE",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$DEFAULT",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ENDSWITCH",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$WHILE",
-          "name": "isg-cnc.keyword.dollar"
-        },
-        {
-          "match": "\\$ENDWHILE",
-          "name": "isg-cnc.keyword.dollar"
-        }
-      ]
-    },
-    "hashtagkeywords": {
-      "patterns": [
-        {
-          "match": "\\#GANTRY\\s*?*((ON\\s*?*ALL)|ON\\s*?|(OFF\\s*?*ALL)|OFF\\s*?)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ACHSE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ACHSTAUSCH",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ACS\\s*?*((DEF\\s*?*ACT)|DEF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ACS\\s*?*(ON|(OFF\\s*?*ALL)|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ADD",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#AKIMA\\s*?*(STARTVECTOR|ENDVECTOR|TRANS)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ANG",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#AX\\s*?*((DEF\\s*?*DEFAULT)|DEF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#AX\\s*?*(LINK\\s*?*(ON|OFF|ALL)|REQUEST|((RELEASE\\s*?*ALL)|(UNLOCK\\s*?*ALL)|RELEASE)|LOCK)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#BACKWARD\\s*?*STORAGE\\s*?*CLEAR",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#BLOCKSEARCH\\s*?*(LOCKED|RELEASED)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CACHE\\s*?*(CLEAR|LOAD)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CALL\\s*?*AX",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CAXTRACK\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#CAX\\s*?(OFF|ON|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|#CAX",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CHANNEL\\s*?*(INIT|SET|(INTERFACE\\s*?*(ON|OFF)))",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CHR",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CHF",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CLEAR\\s*?*CONFIG",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#COMMAND\\s*?*((WR\\s*?*SYN|WR)|(WAIT\\s*?*SYN|WAIT))",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#CONTOUR\\s*?*(MODE\\s*?*ON|MODE))",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CONTROL\\s*?*AREA\\s*?*(BEGIN|END|OFF|ON|CLEAR)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CORNER\\s*?*PARAM",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CYL\\s*?*ORI\\s*?*(LATERAL|PROFILE)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#CS\\s*?*((ADD|(DEF\\s*?*ACT)|DEF|(DEL\\s*?*ALL)|MODE\\s*?*(ON|OFF))|ON|(OFF\\s*?*ALL)|OFF|SELECT)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#CYL\\s*?(OFF|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|\\#CYL",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DELETE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DEL\\s*?*DIST2GO",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DISTANCE\\s*?*PROG\\s*?*START\\s*?*(ON|OFF|CLEAR)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DRIVE\\s*?*(WR|WAIT)\\s*?*SYN",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DYN_WEIGHT\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#DYNAMIC\\s*?*WEIGHT\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ECS\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#EDM\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#EDGE\\s*?*MACHINING\\s*?*(ON\\s*?*DEFAULT|ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#DISABLE|\\#ENABLE)\\s*?*AX\\s*?*LINK",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ERROR",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#EXPORT\\s*?*VE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#EXPL\\s*?*SYN",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#FACE\\s*?(OFF|\\[(-?(?:\\d+(?:\\.\\d*)?))\\])|\\#FACE)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#FGROUP\\s*?*(ROT|WAXIS)|\\#FGROUP)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#FILE\\s*?*(NAME|EXIST|DELETE|RENAME)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#FILTER\\s*?*(ON|OFF)|\\#FILTER|\\s*?*\\[HSC\\])",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#FLUSH\\s*?*(CONTINUE|WAIT)|\\#FLUSH)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#FRC",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#FREE\\s*?*TOOL\\s*?*CHANGE\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#GET\\s*?*((CMDPOS|ACTPOS)|MANUAL\\s*?*OFFSETS|WCS\\s*?*POSLIMIT)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#HANDWHEEL",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#HSC\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#IDENT\\s*?*((WR|RD)\\s*?*SYN|(WR|RD))",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#INIT\\s*?*MACRO\\s*?*TAB",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#INIT\\s*?*V\\.E\\.",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#JOG\\s*?*(CONT|INCR)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#KIN\\s*?*ID",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#LOAD\\s*?*CONFIG",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#MACHINE\\s*?*DATA",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#MAIN\\s*?*SPINDLE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#MANUAL\\s*?*LIMITS",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#MCS\\s*?*(ON\\s*?*EX\\s*?*TOOL|ON|OFF|TO\\s*?*WCS)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#MEAS\\s*?*(MODE|DEFAULT)|\\#MEAS)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#MICROJOINT",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#MSG\\s*?*(INFO|SAVE\\s*?*EXCLUSIVE|SAVE|(SYN\\s*?*ACK|SYN))|\\#MSG)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#NIBBLE\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#OPTIONAL\\s*?*EXECUTION\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#OTC\\s*?*(ON|OFF)|\\#OTC)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#OVERRIDE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#PSET",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#PRESET",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#PTP\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#PUNCH\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#PUT\\s*?*(AX\\s*?*ALL|AX)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#RND",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ROTATION\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#RTCP\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SAVE\\s*?*CONFIG",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#SCALE\\s*?*(ON|OFF)|\\#SCALE)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SEGMENTATION\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SET\\s*?*(SLOPE\\s*?*PROFIL|(AX\\s*?*LINK|AX))",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SINGLE\\s*?*STEP|\\s*?*(\\[ENABLE\\]|\\[DISABLE\\]|\\[RESOLUTION\\s*?\\=\\s*?((-?(?:\\d+(?:\\.\\d*)?)))?\\])",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SPLINE\\s*?*(ON|OFF|TYPE\\s*?*AKIMA|TYPE\\s*?*BSPLINE)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#SIGNAL\\s*?*REMOVE|\\#SIGNAL)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#SLOPE\\s*?*DEFAULT|\\#SLOPE)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#SUPPRESS\\s*?*OFFSETS",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#STROKE\\s*?*DEF\\s*?*(BEGIN|END)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TANGFEED",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TIMER",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TIME",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TLC\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TOOL\\s*?*(DATA|LIFE\\s*?*READ|LIFE\\s*?*REMOVE|ORI\\s*?*CS|PREP|REFRESH)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TRACK\\s*?*CS\\s*?*(ON|OFF|ABS)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#TRAFO\\s*?*(ON|OFF)|\\#TRAFO)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TRANSVELMIN\\s*?*(ON|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#TRC",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#VAR",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ENDVAR",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#VECTOR\\s*?*LIMIT\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#VOLCOMP\\s*?*(ON|OFF)|\\#VOLCOMP)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "(\\#WAIT\\s*?*(FOR|INDP\\s*?*ALL|INDP)|\\#WAIT)",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#WCS\\s*?*TO\\s*?*MCS",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#INFO",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#IF",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ELSE",
-          "name": "isg-cnc.keyword.hashtag"
-        },
-        {
-          "match": "\\#ENDIF",
-          "name": "isg-cnc.keyword.hashtag"
-        }
-      ]
-    },
-    "operators": {
-      "patterns": [
-        {
-          "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\s*?*MOD\\s*?*)",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(ABS)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(SQR)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(SQRT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(EXP)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(LN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(DEXP)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(LOG)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(\\&)|(\\|)|(\\^)|(INV)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(\\&\\&)|(\\|\\|)|(XOR)|(NOT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(SIN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(COS)\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(TAN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(COT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ASIN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ACOS)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ATAN)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ATAN2)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ACOT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(INT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(FRACT)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(CEIL)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(ROUND)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]|(FLOOR)\\s*?*\\[(-?(?:\\d+(?:\\.\\d*)?))\\]",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(==)|(!=)|(>=)|(<=)|(<)|(>)",
-          "name": "isg-cnc.keyword.operator"
-        },
-        {
-          "match": "(TRUE)|(FALSE)",
-          "name": "isg-cnc.keyword.operator"
-        }
-      ]
-    },
-    "constants": {
-      "patterns": [
-        {
-          "match": "(PI)",
-          "name": "isg-cnc.keyword.constant"
-        }
-      ]
-    },
-    "speedsfeeds": {
-      "patterns": [
-        {
-          "match": "\\b(@?[Ss])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.keyword.technology"
-        },
-        {
-          "match": "\\b[Ff]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.keyword.technology"
-        },
-        {
-          "match": "\\b[Ee]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.keyword.technology"
-        },
-        {
-          "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.keyword.technology"
-        }
-      ]
-    },
-    "prognames": {
-      "patterns": [
-        {
-          "match": "^%(-?(?:\\d+(?:\\.\\d*)?))\n",
-          "name": "isg-cnc.programname"
-        },
-        {
-          "match": "^[Oo](-?(?:\\d+(?:\\.\\d*)?))\n",
-          "name": "isg-cnc.programname"
-        }
-      ]
-    },
-    "common": {
-      "patterns": [
-        {
-          "match": "\\b[Nn][0-9]+",
-          "name": "isg-cnc.blocknumber"
-        }
-      ]
-    },
-    "coords": {
-      "patterns": [
-        {
-          "match": "\\b(@?X)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?Y)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?Z)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?A)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?B)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?C)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-          "name": "isg-cnc.axis"
-        }
-      ]
-    },
-    "tools": {
-      "patterns": [
-        {
-          "match": "\\b[Dd]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.tool"
-        },
-        {
-          "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.tool"
-        },
-        {
-          "match": "\\b[Tt]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.tool"
-        }
-      ]
-    },
-    "modifiers": {
-      "patterns": [
-        {
-          "match": "\\b(@?[Ii])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?[Jj])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?[Kk])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.axis"
-        },
-        {
-          "match": "\\b(@?[Rr])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-          "name": "isg-cnc.axis"
-        }
-      ]
-    },
-    "variables": {
-      "patterns": [
-        {
-          "match": "V\\.A\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.SPDL\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.G\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.P\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.S\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.L\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.E\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.TOOL\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.TLM\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "V\\.CYC\\.[.a-zA-Z0-9_]+",
-          "name": "variable"
-        },
-        {
-          "match": "[Pp][0-9]+",
-          "name": "variable"
-        }
-      ]
-    },
-    "programcalls": {
-      "patterns": [
-        {
-          "match": "\\bL\\s*?*+CYCLE",
-          "name": "isg-cnc.call"
-        },
-        {
-          "match": "\\bLL\\s*?*CYCLE",
-          "name": "isg-cnc.call"
-        },
-        {
-          "match": "\\bL\\s*?*SEQUENCE",
-          "name": "isg-cnc.call"
-        },
-        {
-          "match": "\\b[Ll]{1,2}\\b",
-          "name": "isg-cnc.call"
-        },
-        {
-          "match": "\\b\\\\b",
-          "name": "isg-cnc.call"
-        }
-      ]
-    }
-  }
 }
