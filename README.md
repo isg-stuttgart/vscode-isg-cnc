@@ -1,8 +1,5 @@
 # ISG CNC (vscode-isg-cnc README)
 
- [![pipeline status](http://gitlab.isg.lan/kernel/vscode-isg-cnc/badges/master/pipeline.svg)](http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/commits/master)
-
-
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for ISG CNC kernel.
 We support syntax highlghting, snippets and many more features.\
 The keyboard bindings can be changed at the keyboard preferences.\
