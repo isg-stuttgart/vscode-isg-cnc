@@ -1,6 +1,6 @@
 # ISG CNC (vscode-isg-cnc README)
 
- [![pipeline status](http://gitlab.isg.lan/kernel/vscode-isg-cnc/badges/master/pipeline.svg)](http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/commits/master)
+<a href="http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/commits/master"><img alt="pipeline status" src="http://gitlab.isg.lan/kernel/vscode-isg-cnc/badges/master/pipeline.svg" /></a> 
 
 
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for ISG CNC kernel.
