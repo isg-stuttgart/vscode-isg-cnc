@@ -53,8 +53,8 @@
             "patterns": [
                 {
                     "name": "comment.documentation",
-                    "begin": "\\#COMMENT\\s*?*BEGIN",
-                    "end": "\\#COMMENT\\s*?*END"
+                    "begin": "^\\#COMMENT\\s*?*BEGIN",
+                    "end": "^\\#COMMENT\\s*?*END"
                 },
                 {
                     "name": "comment",
