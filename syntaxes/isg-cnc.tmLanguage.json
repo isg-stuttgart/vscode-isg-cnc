@@ -52,12 +52,12 @@
         "comments": {
             "patterns": [
                 {
-                    "name": "comment.documentation",
+                    "name": "isg-cnc.comment",
                     "begin": "^\\#COMMENT\\s*?*BEGIN",
                     "end": "^\\#COMMENT\\s*?*END"
                 },
                 {
-                    "name": "comment",
+                    "name": "isg-cnc.comment",
                     "match": "(\\s*?);.*|\\((.*?)(\\)|\n)"
                 }
             ]
