@@ -6,8 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 
 ## [Unreleased v99.99.99]
+
+### v1.0.9
 - Support List files
-- 
+  
 ### v0.1.8
 - Add finding non ASCII Characters
 - Fix syntax highlighting for L CYCLE command
