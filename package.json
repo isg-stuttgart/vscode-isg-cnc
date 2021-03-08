@@ -185,12 +185,24 @@
                     ".nc",
                     ".cnc",
                     ".cyc",
-                    ".lis",
                     ".ecy",
                     ".sub",
                     ".plc"
                 ],
                 "configuration": "./languages/isg-cnc-language.json"
+            },
+            {
+                "id": "isg-list",
+                "aliases": [
+                    "cnc",
+                    "nc",
+                    "list",
+                    "isg"
+                ],
+                "extensions": [
+                    ".lis"
+                ],
+                "configuration": "./languages/isg-list-language.json"
             }
         ],
         "grammars": [
@@ -198,6 +210,11 @@
                 "language": "isg-cnc",
                 "scopeName": "source.isg-cnc",
                 "path": "./syntaxes/isg-cnc.tmLanguage.json"
+            },
+            {
+                "language": "isg-list",
+                "scopeName": "source.isg-list",
+                "path": "./syntaxes/isg-list.tmLanguage.json"
             }
         ],
         "themes": [

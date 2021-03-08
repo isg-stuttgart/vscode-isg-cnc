@@ -1,0 +1,80 @@
+{
+    "scopeName": "source.isg-list",
+    "name": "VSCode isg-cnc Syntax",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#coords"
+        },
+        {
+            "include": "#common"
+        },
+        {
+            "include": "#operators"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "isg-cnc.comment",
+                    "match": "(\\s*?)(;|#|\\().*?\n"
+                }
+            ]
+        },
+        "common":{
+            "patterns": [
+                {
+                    "match": "\\s{1,}([-]\\d*|\\w*|0x\\d+)",
+                    "name": "isg-cnc.value"
+                },
+                {
+                    "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+?\\s)",
+                    "name": "isg-cnc.keyword.parameter"
+                }
+            ]
+        },
+        "operators": {
+            "patterns": [
+                {
+                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*)",
+                    "name": "isg-cnc.keyword.operator"
+                },
+                {
+                    "match": "(TRUE)|(FALSE)",
+                    "name": "isg-cnc.keyword.operator"
+                }
+            ]
+        },
+        "coords": {
+            "patterns": [
+                {
+                    "match": "\\b(@?X)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?Y)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?Z)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?A)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?B)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                },
+                {
+                    "match": "\\b(@?C)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
+                    "name": "isg-cnc.axis"
+                }
+            ]
+        }
+    }
+}
