@@ -665,7 +665,7 @@
         {
             "scope": "isg-cnc.comment",
             "settings": {
-                "foreground": "#0027d4",
+                "foreground": "#276802",
                 "fontStyle": ""
             }
         },
@@ -679,7 +679,7 @@
         {
             "scope" : "isg-cnc.value",
             "settings": {
-                "foreground": "#bd77ff",
+                "foreground": "#e523ff",
                 "fontStyle": ""
             }
         }
