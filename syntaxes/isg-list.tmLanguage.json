@@ -20,18 +20,23 @@
             "patterns": [
                 {
                     "name": "isg-cnc.comment",
-                    "match": "(\\s*?)(;|#|\\(|\/\\*).*?(\n|\\*\/)"
+                    "begin": "\/\\*",
+                    "end": "\\*\/"
+                },
+                {
+                    "name": "isg-cnc.comment",
+                    "match": "(\\s*?)(;|#|\\().*?\n"
                 }
             ]
         },
         "common":{
             "patterns": [
                 {
-                    "match": "\\s{1,}([-]\\d*|\\w*|0x\\d+)",
+                    "match": "\\s{1,}(-?\\d*\\.?\\d*|\\w*|0x\\d+)",
                     "name": "isg-cnc.value"
                 },
                 {
-                    "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+?\\s)",
+                    "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+?)",
                     "name": "isg-cnc.keyword.parameter"
                 }
             ]
