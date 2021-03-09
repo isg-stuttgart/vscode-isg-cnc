@@ -679,14 +679,14 @@
         {
             "scope": "isg-cnc.comment",
             "settings": {
-                "foreground": "#276802",
+                "foreground": "#3ba001",
                 "fontStyle": ""
             }
         },
         {
             "scope" : "isg-cnc.keyword.parameter",
             "settings": {
-                "foreground": "#f57c0a",
+                "foreground": "#0a9ff5",
                 "fontStyle": ""
             }
         },
