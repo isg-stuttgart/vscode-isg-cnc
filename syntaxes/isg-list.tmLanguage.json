@@ -25,26 +25,34 @@
                 },
                 {
                     "name": "isg-cnc.comment",
-                    "match": "(\\s*?)(;|#|\\().*?\n"
+                    "match": "(\\s*?)(;|#|\\(|\/\\*).*?\n"
                 }
             ]
         },
         "common":{
             "patterns": [
                 {
-                    "match": "\\s+(0x\\d+|-?\\d+\\w*\\.?\\d*|\\.\\.\\\\.+|\\w+:{1}\\\\.*|\\w+.*)",
+                    "match": "\\s+(0x\\d+|-?\\d+\\w*\\.?\\d*|P-AXIS-\\d+\\.\\d+|[\\w:\\\\.+\/-\\[\\]\\s,]+)",
                     "name": "isg-cnc.value"
                 },
                 {
                     "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+?)\\s",
                     "name": "isg-cnc.keyword.parameter"
+                },
+                {
+                    "match": "(\\d\\s)+",
+                    "name": "isg-cnc.keyword.parameter"
+                }                ,
+                {
+                    "match": "[XYZABC]",
+                    "name": "isg-cnc.axis"
                 }
             ]
         },
         "operators": {
             "patterns": [
                 {
-                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*)",
+                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*|\\|)",
                     "name": "isg-cnc.keyword.operator"
                 },
                 {
