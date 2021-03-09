@@ -7,6 +7,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased V99.99.99]
 
+## V0.2.1
+- Optimized syntax highlighting for parameter, value, comment
+- Optimzed colors for better reading in dark and light theme
+
 ## V0.2.0
 - Fix syntax highlighting for comments with /* */
 - Fix colors for light and dark theme for comments and values
