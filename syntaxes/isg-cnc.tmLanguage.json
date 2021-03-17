@@ -53,8 +53,8 @@
             "patterns": [
                 {
                     "name": "isg-cnc.comment",
-                    "begin": "^\\#COMMENT\\s*?*BEGIN",
-                    "end": "^\\#COMMENT\\s*?*END"
+                    "begin": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*BEGIN",
+                    "end": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*END"
                 },
                 {
                     "name": "isg-cnc.comment",

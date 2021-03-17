@@ -7,6 +7,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased V99.99.99]
 
+- Fix syntax highlighting for comments with #COMMENT BEGIN and #COMMENT END (only blocknumbers and whitespaces are allowed before comment commands)
+  
 ## V0.2.1
 - Optimized syntax highlighting for parameter, value, comment
 - Optimzed colors for better reading in dark and light theme
