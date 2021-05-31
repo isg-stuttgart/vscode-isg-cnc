@@ -30,7 +30,7 @@ Copyright 2020, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.
 
 ## Installation
 
-For details look at the project [wiki](http://gitlab.isg.lan/kernel/vscode-isg-cnc/-/wikis/home).
+For details look at the project [wiki](https://github.com/isg-stuttgart/vscode-isg-cnc/wiki).
 
 ## Extension Settings
 
@@ -52,7 +52,7 @@ This extension contributes the following settings with default values (json form
 
 ## Known Issues
 
-Please find and report issues on [git issues](http://gitlab/kernel/vscode-isg-cnc/-/issues).
+Please find and report issues on [git issues](https://github.com/isg-stuttgart/vscode-isg-cnc/issues).
 
 ## Release Notes
 
