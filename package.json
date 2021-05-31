@@ -3,16 +3,16 @@
     "displayName": "vscode-isg-cnc",
     "description": "Support for ISG-CNC in vscode",
     "version": "99.99.99",
-    "publisher": "ISG",
+    "publisher": "isg-cnc",
     "license": "Copyright 2021, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.",
     "engines": {
         "vscode": "^1.46.0"
     },
     "repository": {
         "type": "git",
-        "url": "http://gitlab/kernel/vscode-isg-cnc"
+        "url": "https://github.com/isg-stuttgart/vscode-isg-cnc"
     },
-    "homepage": "http://gitlab/kernel/vscode-isg-cnc",
+    "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc",
     "categories": [
         "Other"
     ],
