@@ -1,21 +1,35 @@
 {
     "name": "vscode-isg-cnc",
     "displayName": "vscode-isg-cnc",
-    "description": "Support for ISG-CNC in vscode",
+    "description": "Support for ISG-CNC NC-Code",
     "version": "99.99.99",
     "publisher": "isg-cnc",
-    "license": "Copyright 2021, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.",
+    "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.46.0"
     },
+    "categories": [
+        "Other",
+        "Programming Languages",
+        "Language Packs"
+    ],
+    "keywords": [
+        "cnc",
+        "gcode",
+        "g-code"
+    ],
+    "preview": true,
+    "badges": [],
+    "bugs": {
+        "url": "https://github.com/isg-stuttgart/vscode-isg-cnc/issues",
+        "email": "smcbreen@microsoft.com"
+    },
     "repository": {
         "type": "git",
-        "url": "https://github.com/isg-stuttgart/vscode-isg-cnc"
+        "url": "https://github.com/isg-stuttgart/vscode-isg-cnc.git"
     },
-    "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc",
-    "categories": [
-        "Other"
-    ],
+    "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
+    "markdown": "github",
     "activationEvents": [
         "onLanguage:isg-cnc"
     ],
