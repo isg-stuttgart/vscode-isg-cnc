@@ -23,7 +23,9 @@ const DocuPath = config.getParam("documentation");
 /** Outputchannel for the extension
  */
 const OutputChannel = vscode.window.createOutputChannel("ISG-CNC");
-/** Decorator
+/** Decorator/
+// create a decorator type that we use to decorate non ascii characters
+let timeout: NodeJS.Timer | undefined = undefined;
  */
 // create a decorator type that we use to decorate non ascii characters
 let timeout: NodeJS.Timer | undefined = undefined;
@@ -122,7 +124,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand("isg-cnc.Beautify", () => Beautify())
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () => FindNonAsciiCharacters())
+        vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
+            FindNonAsciiCharacters()
+        )
     );
 
     // add status bar items
@@ -135,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     /** Decorator
      */
-    let activeEditor=vscode.window.activeTextEditor
+    let activeEditor = vscode.window.activeTextEditor;
 
     if (activeEditor) {
         triggerUpdateDecorations();
@@ -507,6 +511,7 @@ async function AddBlocknumbers() {
                     if (!IsNumeric(parseInt(input, 10))) {
                         return undefined;
                     }
+                    return;
                 },
                 value: step.toString(),
             };
@@ -525,7 +530,6 @@ async function AddBlocknumbers() {
 
             // add new blocknumbers
             let blocknumber = start;
-            const digitsStartBlockNumber = DigitCount(start);
             const maximalLeadingZeros = DigitCount(start + document.lineCount * step);
 
             // edit document line by line
@@ -612,20 +616,21 @@ function StartDocu() {
 
     const terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
-        hideFromUser: false,
-        shellPath: TerminalPathWindows,
+        hideFromUser: false
     } as any);
     let terminalPath = "";
     let args;
     let browserPath = `${config.getParam("browser")}`;
     if (process.platform === "linux") {
         terminalPath = TerminalPathLinux as string;
+        browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
         terminalPath = TerminalPathWindows as string;
+        browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
         if (terminalPath.endsWith("powershell.exe")) {
-            browserPath = `& "${config.getParam("browser")}"`;
+            browserPath = `& "${browserPath}"`;
         } else {
-            browserPath = `"${config.getParam("browser")}"`;
+            browserPath = `"${browserPath}"`;
         }
     }
 
@@ -762,7 +767,7 @@ export function Beautify() {
 
                 // empty line trim whitespaces and write to edits buffer
                 currentLine.trim();
-                if (currentLine.length == 0) {
+                if (currentLine.length === 0) {
                     textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
                     continue;
                 }
@@ -770,29 +775,29 @@ export function Beautify() {
                 currentLine = currentLine.trim();
 
                 if (
-                    currentLine.indexOf("$DO") == 0 ||
-                    currentLine.indexOf("$REPEAT") == 0 ||
-                    currentLine.indexOf("$FOR") == 0 ||
-                    currentLine.indexOf("$IF") == 0 ||
-                    currentLine.indexOf("$WHILE") == 0 ||
-                    currentLine.indexOf("#VAR") == 0
+                    currentLine.indexOf("$DO") === 0 ||
+                    currentLine.indexOf("$REPEAT") === 0 ||
+                    currentLine.indexOf("$FOR") === 0 ||
+                    currentLine.indexOf("$IF") === 0 ||
+                    currentLine.indexOf("$WHILE") === 0 ||
+                    currentLine.indexOf("#VAR") === 0
                 ) {
                     // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
 
                     newLine = NewLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces;
-                } else if (currentLine.indexOf("$SWITCH") == 0) {
+                } else if (currentLine.indexOf("$SWITCH") === 0) {
                     // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
 
                     newLine = NewLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces * 2;
                 } else if (
-                    currentLine.indexOf("$ENDDO") == 0 ||
-                    currentLine.indexOf("$UNTIL") == 0 ||
-                    currentLine.indexOf("$ENDFOR") == 0 ||
-                    currentLine.indexOf("$ENDIF") == 0 ||
-                    currentLine.indexOf("$ENDWHILE") == 0 ||
-                    currentLine.indexOf("#ENDVAR") == 0
+                    currentLine.indexOf("$ENDDO") === 0 ||
+                    currentLine.indexOf("$UNTIL") === 0 ||
+                    currentLine.indexOf("$ENDFOR") === 0 ||
+                    currentLine.indexOf("$ENDIF") === 0 ||
+                    currentLine.indexOf("$ENDWHILE") === 0 ||
+                    currentLine.indexOf("#ENDVAR") === 0
                 ) {
                     // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
 
@@ -802,7 +807,7 @@ export function Beautify() {
                     }
 
                     newLine = NewLineForBeautifier(currentLine, currentPos);
-                } else if (currentLine.indexOf("$ENDSWITCH") == 0) {
+                } else if (currentLine.indexOf("$ENDSWITCH") === 0) {
                     // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
 
                     currentPos = currentPos - whiteSpaces * 2;
@@ -813,10 +818,10 @@ export function Beautify() {
 
                     newLine = NewLineForBeautifier(currentLine, currentPos);
                 } else if (
-                    currentLine.indexOf("$ELSEIF") == 0 ||
-                    currentLine.indexOf("$ELSE") == 0 ||
-                    currentLine.indexOf("$CASE") == 0 ||
-                    currentLine.indexOf("$DEFAULT") == 0
+                    currentLine.indexOf("$ELSEIF") === 0 ||
+                    currentLine.indexOf("$ELSE") === 0 ||
+                    currentLine.indexOf("$CASE") === 0 ||
+                    currentLine.indexOf("$DEFAULT") === 0
                 ) {
                     // Zeile wird an der Aktuellen Position - TabSize eingefügt
 
@@ -851,22 +856,24 @@ function NewLineForBeautifier(line: string, whiteSpaces: number) {
 }
 
 export function FindNonAsciiCharacters() {
-    updateDecorations()    
+    updateDecorations();
 }
 
 function updateDecorations() {
-    let activeEditor=vscode.window.activeTextEditor
+    let activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
         return;
     }
     const regEx = /[^\x00-\x7F]+/gm;
     const text = activeEditor.document.getText();
     const nonAsciiCharacters: vscode.DecorationOptions[] = [];
-    let message: string
+    let message: string;
     let match;
     while ((match = regEx.exec(text))) {
         const startPos = activeEditor.document.positionAt(match.index);
-        const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+        const endPos = activeEditor.document.positionAt(
+            match.index + match[0].length
+        );
         const decoration = {
             range: new vscode.Range(startPos, endPos),
             hoverMessage: "non ASCII Character **" + match[0] + "**",
@@ -877,13 +884,12 @@ function updateDecorations() {
         nonAsciiCharacterDecorationType,
         nonAsciiCharacters
     );
-    for(let nonAsciiChar of nonAsciiCharacters)
-    {
-        let ln = nonAsciiChar.range.end.line+1
-        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage
-        OutputChannel.appendLine(message)  
+    for (let nonAsciiChar of nonAsciiCharacters) {
+        let ln = nonAsciiChar.range.end.line + 1;
+        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
+        OutputChannel.appendLine(message);
     }
-    OutputChannel.show.apply
+    OutputChannel.show.apply;
 }
 
 function triggerUpdateDecorations() {

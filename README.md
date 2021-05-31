@@ -38,8 +38,11 @@ There are some settings to prepare the extension. The Browser path and the ISG d
 
 This extension contributes the following settings with default values (json format, Settings must be seperated by comma):
 
-- Path to the browser to open the documentation. (Standard browser: Firefox)\
-  `"isg-cnc.browser": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"`
+- Path to the browser to open the documentation on windows systems. (Standard browser: Firefox)\
+  `"isg-cnc.browser-windows": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"`
+
+  - Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)\
+  `"isg-cnc.browser-linux": /usr/bin/firefox`
 
 - Path to the ISG documentation\
   `"isg-cnc.documentation": "https://www.isg-stuttgart.de/kernel-html5/"`
