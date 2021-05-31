@@ -24,9 +24,9 @@ If text is selected the documentation will opened with search results in the doc
 
 Visual Studio Code V1.46.0 or higher
 
-## Licence
+## License
 
-Copyright 2020, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.
+See license in file LICENSE
 
 ## Installation
 
