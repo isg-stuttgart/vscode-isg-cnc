@@ -1,278 +1,278 @@
 {
-  "name": "vscode-isg-cnc",
-  "displayName": "vscode-isg-cnc",
-  "description": "Support for ISG-CNC in vscode",
-  "version": "0.2.1",
-  "publisher": "ISG",
-  "license": "Copyright 2021, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.",
-  "engines": {
-    "vscode": "^1.46.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://gitlab/kernel/vscode-isg-cnc"
-  },
-  "homepage": "http://gitlab/kernel/vscode-isg-cnc",
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onLanguage:isg-cnc"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "configurationDefaults": {
-      "[isg-cnc]": {
-        "editor.tabSize": 2
-      }
+    "name": "vscode-isg-cnc",
+    "displayName": "vscode-isg-cnc",
+    "description": "Support for ISG-CNC in vscode",
+    "version": "0.2.1",
+    "publisher": "isg-cnc",
+    "license": "Copyright 2021, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.",
+    "engines": {
+        "vscode": "^1.46.0"
     },
-    "configuration": {
-      "title": "ISG CNC Configuration",
-      "type": "object",
-      "properties": {
-        "isg-cnc.locale": {
-          "type": "string",
-          "default": "de-DE",
-          "description": "Choose the language (en-GB, de-DE ...)"
-        },
-        "isg-cnc.browser": {
-          "type": "string",
-          "default": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-          "description": "Path to the browser to open the documentation. (Standard browser: Firefox)"
-        },
-        "isg-cnc.documentation": {
-          "type": "string",
-          "default": "https://www.isg-stuttgart.de/kernel-html5/",
-          "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: http://docs.isg.lan/)"
-        },
-        "isg-cnc.outputchannel": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable/Disable Outputchannel"
-        }
-      }
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/isg-stuttgart/vscode-isg-cnc"
     },
-    "commands": [
-      {
-        "command": "isg-cnc.GoToPosition",
-        "title": "ISG-CNC: Go to Fileoffset"
-      },
-      {
-        "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-        "title": "ISG-CNC: Show Fileoffset Information"
-      },
-      {
-        "command": "isg-cnc.FindNextTFS",
-        "title": "ISG-CNC: Find next TFS code"
-      },
-      {
-        "command": "isg-cnc.RemoveAllBlocknumbers",
-        "title": "ISG-CNC: Remove all Blocknumbers"
-      },
-      {
-        "command": "isg-cnc.AddBlocknumbers",
-        "title": "ISG-CNC: Add Blocknumbers"
-      },
-      {
-        "command": "isg-cnc.StartDocu",
-        "title": "ISG-CNC: Start the Documentation"
-      },
-      {
-        "command": "isg-cnc.Beautify",
-        "title": "ISG-CNC: Format code"
-      },
-      {
-        "command": "isg-cnc.FindNonAsciiCharacters",
-        "title": "ISG-CNC: Find not ASCII characters"
-      }
+    "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc",
+    "categories": [
+        "Other"
     ],
-    "menus": {
-      "editor/context": [
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.Beautify",
-          "group": "isg-cnc@1"
+    "activationEvents": [
+        "onLanguage:isg-cnc"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configurationDefaults": {
+            "[isg-cnc]": {
+                "editor.tabSize": 2
+            }
         },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.FindNonAsciiCharacters",
-          "group": "isg-cnc@2"
+        "configuration": {
+            "title": "ISG CNC Configuration",
+            "type": "object",
+            "properties": {
+                "isg-cnc.locale": {
+                    "type": "string",
+                    "default": "de-DE",
+                    "description": "Choose the language (en-GB, de-DE ...)"
+                },
+                "isg-cnc.browser": {
+                    "type": "string",
+                    "default": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+                    "description": "Path to the browser to open the documentation. (Standard browser: Firefox)"
+                },
+                "isg-cnc.documentation": {
+                    "type": "string",
+                    "default": "https://www.isg-stuttgart.de/kernel-html5/",
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: http://docs.isg.lan/)"
+                },
+                "isg-cnc.outputchannel": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable/Disable Outputchannel"
+                }
+            }
         },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.GoToPosition",
-          "group": "isg-cnc@3"
+        "commands": [
+            {
+                "command": "isg-cnc.GoToPosition",
+                "title": "ISG-CNC: Go to Fileoffset"
+            },
+            {
+                "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                "title": "ISG-CNC: Show Fileoffset Information"
+            },
+            {
+                "command": "isg-cnc.FindNextTFS",
+                "title": "ISG-CNC: Find next TFS code"
+            },
+            {
+                "command": "isg-cnc.RemoveAllBlocknumbers",
+                "title": "ISG-CNC: Remove all Blocknumbers"
+            },
+            {
+                "command": "isg-cnc.AddBlocknumbers",
+                "title": "ISG-CNC: Add Blocknumbers"
+            },
+            {
+                "command": "isg-cnc.StartDocu",
+                "title": "ISG-CNC: Start the Documentation"
+            },
+            {
+                "command": "isg-cnc.Beautify",
+                "title": "ISG-CNC: Format code"
+            },
+            {
+                "command": "isg-cnc.FindNonAsciiCharacters",
+                "title": "ISG-CNC: Find not ASCII characters"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.Beautify",
+                    "group": "isg-cnc@1"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.FindNonAsciiCharacters",
+                    "group": "isg-cnc@2"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.GoToPosition",
+                    "group": "isg-cnc@3"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.FindNextTFS",
+                    "group": "isg-cnc@4"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.AddBlocknumbers",
+                    "group": "isg-cnc@5"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.RemoveAllBlocknumbers",
+                    "group": "isg-cnc@6"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.StartDocu",
+                    "group": "isg-cnc@7"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "group": "isg-cnc@8"
+                }
+            ]
         },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.FindNextTFS",
-          "group": "isg-cnc@4"
-        },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.AddBlocknumbers",
-          "group": "isg-cnc@5"
-        },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.RemoveAllBlocknumbers",
-          "group": "isg-cnc@6"
-        },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.StartDocu",
-          "group": "isg-cnc@7"
-        },
-        {
-          "when": "resourceLangId == isg-cnc",
-          "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-          "group": "isg-cnc@8"
-        }
-      ]
+        "keybindings": [
+            {
+                "key": "ctrl+i ctrl+g",
+                "command": "isg-cnc.GoToPosition",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+a",
+                "command": "isg-cnc.AddBlocknumbers",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+r",
+                "command": "isg-cnc.RemoveAllBlocknumbers",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+t",
+                "command": "isg-cnc.FindNextTFS",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+d",
+                "command": "isg-cnc.StartDocu",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+f",
+                "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+b",
+                "command": "isg-cnc.Beautify",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+c",
+                "command": "isg-cnc.FindNonAsciiCharacters",
+                "when": "editorTextFocus"
+            }
+        ],
+        "languages": [
+            {
+                "id": "isg-cnc",
+                "aliases": [
+                    "cnc",
+                    "nc",
+                    "gcode",
+                    "isg"
+                ],
+                "extensions": [
+                    ".nc",
+                    ".cnc",
+                    ".cyc",
+                    ".ecy",
+                    ".sub",
+                    ".plc"
+                ],
+                "configuration": "./languages/isg-cnc-language.json"
+            },
+            {
+                "id": "isg-list",
+                "aliases": [
+                    "cnc",
+                    "nc",
+                    "list",
+                    "isg"
+                ],
+                "extensions": [
+                    ".lis"
+                ],
+                "configuration": "./languages/isg-list-language.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "isg-cnc",
+                "scopeName": "source.isg-cnc",
+                "path": "./syntaxes/isg-cnc.tmLanguage.json"
+            },
+            {
+                "language": "isg-list",
+                "scopeName": "source.isg-list",
+                "path": "./syntaxes/isg-list.tmLanguage.json"
+            }
+        ],
+        "themes": [
+            {
+                "label": "ISG-CNC Light",
+                "uiTheme": "vs",
+                "language": "isg-cnc",
+                "path": "./themes/isg-cnc.color-theme-light.json"
+            },
+            {
+                "label": "ISG-CNC Dark",
+                "uiTheme": "vs-dark",
+                "language": "isg-cnc",
+                "path": "./themes/isg-cnc.color-theme-dark.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/gcode-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/mcode-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/general-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/dollar-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/hashtag-snippets.json"
+            }
+        ]
     },
-    "keybindings": [
-      {
-        "key": "ctrl+i ctrl+g",
-        "command": "isg-cnc.GoToPosition",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+a",
-        "command": "isg-cnc.AddBlocknumbers",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+r",
-        "command": "isg-cnc.RemoveAllBlocknumbers",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+t",
-        "command": "isg-cnc.FindNextTFS",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+d",
-        "command": "isg-cnc.StartDocu",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+f",
-        "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+b",
-        "command": "isg-cnc.Beautify",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+i ctrl+c",
-        "command": "isg-cnc.FindNonAsciiCharacters",
-        "when": "editorTextFocus"
-      }
-    ],
-    "languages": [
-      {
-        "id": "isg-cnc",
-        "aliases": [
-          "cnc",
-          "nc",
-          "gcode",
-          "isg"
-        ],
-        "extensions": [
-          ".nc",
-          ".cnc",
-          ".cyc",
-          ".ecy",
-          ".sub",
-          ".plc"
-        ],
-        "configuration": "./languages/isg-cnc-language.json"
-      },
-      {
-        "id": "isg-list",
-        "aliases": [
-          "cnc",
-          "nc",
-          "list",
-          "isg"
-        ],
-        "extensions": [
-          ".lis"
-        ],
-        "configuration": "./languages/isg-list-language.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "isg-cnc",
-        "scopeName": "source.isg-cnc",
-        "path": "./syntaxes/isg-cnc.tmLanguage.json"
-      },
-      {
-        "language": "isg-list",
-        "scopeName": "source.isg-list",
-        "path": "./syntaxes/isg-list.tmLanguage.json"
-      }
-    ],
-    "themes": [
-      {
-        "label": "ISG-CNC Light",
-        "uiTheme": "vs",
-        "language": "isg-cnc",
-        "path": "./themes/isg-cnc.color-theme-light.json"
-      },
-      {
-        "label": "ISG-CNC Dark",
-        "uiTheme": "vs-dark",
-        "language": "isg-cnc",
-        "path": "./themes/isg-cnc.color-theme-dark.json"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "isg-cnc",
-        "path": "./snippets/gcode-snippets.json"
-      },
-      {
-        "language": "isg-cnc",
-        "path": "./snippets/mcode-snippets.json"
-      },
-      {
-        "language": "isg-cnc",
-        "path": "./snippets/general-snippets.json"
-      },
-      {
-        "language": "isg-cnc",
-        "path": "./snippets/dollar-snippets.json"
-      },
-      {
-        "language": "isg-cnc",
-        "path": "./snippets/hashtag-snippets.json"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "lint": "eslint src --ext ts",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/glob": "^7.1.1",
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^14.3.0",
-    "@types/vscode": "^1.45.0",
-    "@typescript-eslint/eslint-plugin": "^3.0.2",
-    "@typescript-eslint/parser": "^3.0.1",
-    "eslint": "^7.1.0",
-    "glob": "^7.1.6",
-    "mocha": "^7.2.0",
-    "typescript": "^3.9.3",
-    "vscode-test": "^1.4.0"
-  }
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "lint": "eslint src --ext ts",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.1",
+        "@types/mocha": "^7.0.2",
+        "@types/node": "^14.3.0",
+        "@types/vscode": "^1.45.0",
+        "@typescript-eslint/eslint-plugin": "^3.0.2",
+        "@typescript-eslint/parser": "^3.0.1",
+        "eslint": "^7.1.0",
+        "glob": "^7.1.6",
+        "mocha": "^7.2.0",
+        "typescript": "^3.9.3",
+        "vscode-test": "^1.4.0"
+    }
 }
