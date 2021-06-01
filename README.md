@@ -1,11 +1,11 @@
 # ISG CNC (vscode-isg-cnc README)
 
-This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for ISG CNC kernel.
-We support syntax highlghting, snippets and many more features.\
+This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for the ISG CNC kernel.
+We support syntax highlighting, snippets and many more features.\
 The keyboard bindings can be changed at the keyboard preferences.\
-For keyboard preferences press _F1_ and type keyboard. Select Preferences: Open Keyboard Shortcuts.
+For keyboard preferences press `CTRL+SHIFT+P` and type keyboard. Select Preferences: Open Keyboard Shortcuts.
 Now you can search for isg-cnc to find or change shortcuts.\
-After pressing _F1_ you can also type ISG-CNC to find all exported commands for this extension.
+After pressing `CTRL+SHIFT+P` you can also type ISG-CNC to find all exported commands for this extension.
 You can choose special color themes ISG-CNC Light and Dark by pressing F1 and type theme, select Preferences: Color Theme.
 The documentation for ISG-CNC start with or without selection.\
 If text is selected the documentation will opened with search results in the documentation.
@@ -24,9 +24,9 @@ If text is selected the documentation will opened with search results in the doc
 
 Visual Studio Code V1.46.0 or higher
 
-## Licence
+## License
 
-Copyright 2020, ISG Industrielle Steuerungstechnik GmbH. All rights reserved.
+See license in file LICENSE
 
 ## Installation
 
@@ -41,8 +41,8 @@ This extension contributes the following settings with default values (json form
 - Path to the browser to open the documentation on windows systems. (Standard browser: Firefox)\
   `"isg-cnc.browser-windows": "C:\\Program Files\\Mozilla Firefox\\firefox.exe"`
 
-  - Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)\
-  `"isg-cnc.browser-linux": /usr/bin/firefox`
+- Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)\
+  `"isg-cnc.browser-linux": "/usr/bin/firefox"`
 
 - Path to the ISG documentation\
   `"isg-cnc.documentation": "https://www.isg-stuttgart.de/kernel-html5/"`

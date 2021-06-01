@@ -1,6 +1,0 @@
-"configurationDefaults": {
-    "terminal.integrated.shell.linux": "/usr/bin/bash",
-    "[isg-cnc]": {
-        "files.encoding": "windows1252"
-    }
-},

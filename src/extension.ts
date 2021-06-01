@@ -11,11 +11,11 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
-const TerminalPathWindows = config.getVscodeParam(
-    "terminal.integrated.shell.windows"
+const TerminalWindows = config.getVscodeParam(
+    "terminal.integrated.defaultProfile.windows"
 );
-const TerminalPathLinux = config.getVscodeParam(
-    "terminal.integrated.shell.linux"
+const TerminalLinux = config.getVscodeParam(
+    "terminal.integrated.defaultProfile.linux"
 );
 const Language = config.getParam("locale");
 const DocuPath = config.getParam("documentation");
@@ -611,36 +611,33 @@ function DigitCount(nr: number): number {
  *
  */
 function StartDocu() {
-    const docuAdress = GetContextbasedSite();
-    OutputChannel.appendLine(docuAdress);
+    const docuAddress = GetContextbasedSite();
+    OutputChannel.appendLine(docuAddress);
 
     const terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
         hideFromUser: false
     } as any);
-    let terminalPath = "";
     let args;
     let browserPath = `${config.getParam("browser")}`;
     if (process.platform === "linux") {
-        terminalPath = TerminalPathLinux as string;
         browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
-        terminalPath = TerminalPathWindows as string;
         browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
-        if (terminalPath.endsWith("powershell.exe")) {
+        if (TerminalWindows === "PowerShell") {
             browserPath = `& "${browserPath}"`;
         } else {
             browserPath = `"${browserPath}"`;
         }
     }
 
-    if (docuAdress !== "" && docuAdress.startsWith("http")) {
-        args = docuAdress;
+    if (docuAddress !== "" && docuAddress.startsWith("http")) {
+        args = docuAddress;
     } else {
-        args = `"file://${docuAdress}"`;
+        args = `"file://${docuAddress}"`;
     }
     OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
-    OutputChannel.appendLine(`Adress to the website: ${docuAdress}`);
+    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
     OutputChannel.appendLine(
         `Commandpart: ${browserPath} and Argumentpart: ${args}`
     );
@@ -651,17 +648,17 @@ function StartDocu() {
 }
 
 /**
- * Function to build the adress to the documentation.
- * Standard web adress is: https://www.isg-stuttgart.de/kernel-html5/
+ * Function to build the Address to the documentation.
+ * Standard web Address is: https://www.isg-stuttgart.de/kernel-html5/
  * Additional read the language from extension settings and the documentation path (local or web)
- * Returns the combined adress string.
+ * Returns the combined Address string.
  *
  * @returns {string}
  */
 function GetContextbasedSite(): string {
     let SearchContext: string;
     let docuPath: string;
-    let DocuAdress: string = "";
+    let DocuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -683,14 +680,14 @@ function GetContextbasedSite(): string {
                 );
                 const query = new URLSearchParams();
                 query.append("q", SearchContext);
-                DocuAdress = docuPath + `search.html?${query.toString()}`;
+                DocuAddress = docuPath + `search.html?${query.toString()}`;
             } else {
-                DocuAdress = docuPath + "index.html";
+                DocuAddress = docuPath + "index.html";
             }
         }
     }
-    DocuAdress = DocuAdress.split("\\").join("/");
-    return DocuAdress;
+    DocuAddress = DocuAddress.split("\\").join("/");
+    return DocuAddress;
 }
 
 /**
