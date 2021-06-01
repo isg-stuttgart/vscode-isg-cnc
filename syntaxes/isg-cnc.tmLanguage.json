@@ -3,7 +3,13 @@
     "name": "VSCode ISG-CNC Syntax",
     "patterns": [
         {
-            "include": "#comments"
+            "include": "#linecomments"
+        },
+        {
+            "include": "#inlinecomments"
+        },
+        {
+            "include": "#blockcomments"
         },
         {
             "include": "#speedsfeeds"
@@ -49,16 +55,28 @@
         }
     ],
     "repository": {
-        "comments": {
+        "linecomments": {
+            "name": "isg-cnc.comment",
+            "begin": ";",
+            "end": "\n"
+        },
+        "inlinecomments": {
+            "name": "isg-cnc.comment",
+            "begin": "\\(",
+            "end": "\\)|\n",
             "patterns": [
                 {
-                    "name": "isg-cnc.comment",
-                    "begin": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*BEGIN",
-                    "end": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*END"
-                },
+                    "include": "#inlinecomments"
+                }
+            ]
+        },
+        "blockcomments": {
+            "name": "isg-cnc.comment",
+            "begin": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*BEGIN",
+            "end": "^(N\\d{1,})?\\s*\\#COMMENT\\s*?*END",
+            "patterns": [
                 {
-                    "name": "isg-cnc.comment",
-                    "match": "(\\s*?);.*|\\((.*?)(\\)|\n)"
+                    "include": "#blockcomments"
                 }
             ]
         },
@@ -617,7 +635,7 @@
         "constants": {
             "patterns": [
                 {
-                    "match": "(PI)",
+                    "match": "(\\bPI\\b)",
                     "name": "isg-cnc.keyword.constant"
                 }
             ]
