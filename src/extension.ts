@@ -624,7 +624,7 @@ function StartDocu() {
         browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
         browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
-        if (TerminalWindows == "PowerShell") {
+        if (TerminalWindows === "PowerShell") {
             browserPath = `& "${browserPath}"`;
         } else {
             browserPath = `"${browserPath}"`;
