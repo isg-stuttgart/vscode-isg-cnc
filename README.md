@@ -1,4 +1,4 @@
-# ISG CNC (vscode-isg-cnc README)
+# ISG CNC (vscode-isg-cnc README)  [![Deploy Extension](https://github.com/isg-stuttgart/vscode-isg-cnc/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/isg-stuttgart/vscode-isg-cnc/actions/workflows/main.yml)
 
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for the ISG CNC kernel.
 We support syntax highlighting, snippets and many more features.\
