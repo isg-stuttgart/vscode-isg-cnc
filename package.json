@@ -3,7 +3,7 @@
     "displayName": "vscode-isg-cnc",
     "description": "Support for ISG-CNC NC-Code",
     "version": "0.2.2",
-    "publisher": "andreashafner-isg",
+    "publisher": "isg-cnc",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.46.0"
