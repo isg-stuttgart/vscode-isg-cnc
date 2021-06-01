@@ -1,6 +1,6 @@
 {
     "name": "vscode-isg-cnc",
-    "displayName": "vscode-isg-cnc",
+    "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
     "version": "0.2.2",
     "publisher": "isg-cnc",
