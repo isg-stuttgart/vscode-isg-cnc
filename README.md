@@ -26,7 +26,7 @@ Visual Studio Code V1.46.0 or higher
 
 ## License
 
-See license in file LICENSE
+See license in [LICENSE](LICENSE)
 
 ## Installation
 
