@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "vscode-isg-cnc",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "99.99.99",
+    "version": "0.2.2",
     "publisher": "isg-cnc",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {

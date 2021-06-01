@@ -14,6 +14,8 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.2]
+
 ### Fixed
 
 - PI detection for syntax highlighting
