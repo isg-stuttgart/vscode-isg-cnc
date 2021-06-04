@@ -93,6 +93,17 @@ export function activate(context: vscode.ExtensionContext) {
         );
     }
 
+    // 👍 formatter implemented using API
+    vscode.languages.registerDocumentFormattingEditProvider('isg-cnc', {
+        provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+            // const firstLine = document.lineAt(0);
+            // if (firstLine.text !== '42') {
+            //     return [vscode.TextEdit.insert(firstLine.range.start, '42\n')];
+            // }
+            return [];
+        }
+    });
+
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.GoToPosition", () =>
@@ -139,7 +150,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     /** Decorator
      */
-    let activeEditor = vscode.window.activeTextEditor;
+    let activeEditor = vscode.window.activeTextEditor
 
     if (activeEditor) {
         triggerUpdateDecorations();
@@ -614,7 +625,7 @@ function StartDocu() {
     const docuAddress = GetContextbasedSite();
     OutputChannel.appendLine(docuAddress);
 
-    const terminal = vscode.window.createTerminal({
+    let terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
         hideFromUser: false
     } as any);
@@ -644,7 +655,9 @@ function StartDocu() {
     // example that works:
     // "C:\Program Files\Mozilla Firefox\firefox.exe"
     // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-    terminal.sendText(browserPath + " " + args);
+    if (terminal !== null) {
+        terminal.sendText(browserPath + " " + args);
+    }
 }
 
 /**
@@ -853,11 +866,11 @@ function NewLineForBeautifier(line: string, whiteSpaces: number) {
 }
 
 export function FindNonAsciiCharacters() {
-    updateDecorations();
+    updateDecorations()
 }
 
 function updateDecorations() {
-    let activeEditor = vscode.window.activeTextEditor;
+    let activeEditor = vscode.window.activeTextEditor
     if (!activeEditor) {
         return;
     }
@@ -882,9 +895,9 @@ function updateDecorations() {
         nonAsciiCharacters
     );
     for (let nonAsciiChar of nonAsciiCharacters) {
-        let ln = nonAsciiChar.range.end.line + 1;
-        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
-        OutputChannel.appendLine(message);
+        let ln = nonAsciiChar.range.end.line + 1
+        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage
+        OutputChannel.appendLine(message)
     }
     OutputChannel.show.apply;
 }

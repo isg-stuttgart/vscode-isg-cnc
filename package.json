@@ -228,17 +228,15 @@
                 "configuration": "./languages/isg-list-language.json"
             }
         ],
-        "grammars": [
-            {
-                "language": "isg-cnc",
-                "scopeName": "source.isg-cnc",
-                "path": "./syntaxes/isg-cnc.tmLanguage.json"
-            },
-            {
-                "language": "isg-list",
-                "scopeName": "source.isg-list",
-                "path": "./syntaxes/isg-list.tmLanguage.json"
-            }
+        "configuration": "./languages/isg-cnc-language-configuration.json"
+      },
+      {
+        "id": "isg-list",
+        "aliases": [
+          "cnc",
+          "nc",
+          "list",
+          "isg"
         ],
         "themes": [
             {
@@ -254,48 +252,77 @@
                 "path": "./themes/isg-cnc.color-theme-dark.json"
             }
         ],
-        "snippets": [
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/gcode-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/mcode-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/general-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/dollar-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/hashtag-snippets.json"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "lint": "eslint src --ext ts",
-        "watch": "tsc -watch -p ./",
-        "pretest": "npm run compile && npm run lint",
-        "test": "node ./out/test/runTest.js"
-    },
-    "devDependencies": {
-        "@types/glob": "^7.1.1",
-        "@types/mocha": "^7.0.2",
-        "@types/node": "^14.3.0",
-        "@types/vscode": "^1.45.0",
-        "@typescript-eslint/eslint-plugin": "^4.26.0",
-        "@typescript-eslint/parser": "^4.26.0",
-        "eslint": "^7.27.0",
-        "glob": "^7.1.6",
-        "mocha": "^7.2.0",
-        "typescript": "^3.9.3",
-        "vscode-test": "^1.4.0"
-    }
+        "configuration": "./languages/isg-list-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "isg-cnc",
+        "scopeName": "source.isg-cnc",
+        "path": "./syntaxes/isg-cnc.tmLanguage.json"
+      },
+      {
+        "language": "isg-list",
+        "scopeName": "source.isg-list",
+        "path": "./syntaxes/isg-list.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "ISG-CNC Light",
+        "uiTheme": "vs",
+        "language": "isg-cnc",
+        "path": "./themes/isg-cnc.color-theme-light.json"
+      },
+      {
+        "label": "ISG-CNC Dark",
+        "uiTheme": "vs-dark",
+        "language": "isg-cnc",
+        "path": "./themes/isg-cnc.color-theme-dark.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "isg-cnc",
+        "path": "./snippets/gcode-snippets.json"
+      },
+      {
+        "language": "isg-cnc",
+        "path": "./snippets/mcode-snippets.json"
+      },
+      {
+        "language": "isg-cnc",
+        "path": "./snippets/general-snippets.json"
+      },
+      {
+        "language": "isg-cnc",
+        "path": "./snippets/dollar-snippets.json"
+      },
+      {
+        "language": "isg-cnc",
+        "path": "./snippets/hashtag-snippets.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint src --ext ts",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.3.0",
+    "@types/vscode": "^1.45.0",
+    "@typescript-eslint/eslint-plugin": "^3.0.2",
+    "@typescript-eslint/parser": "^3.0.1",
+    "eslint": "^7.26.0",
+    "glob": "^7.1.6",
+    "mocha": "^7.2.0",
+    "typescript": "^3.9.3",
+    "vscode-test": "^1.4.0"
+  }
 }

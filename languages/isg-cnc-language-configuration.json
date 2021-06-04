@@ -1,0 +1,89 @@
+{
+    "comments": {
+        "lineComment": ";",
+        "blockComment": [
+            "#COMMENT BEGIN",
+            "#COMMENT END"
+        ]
+    },
+    "brackets": [
+        [
+            "{",
+            "}"
+        ],
+        [
+            "[",
+            "]"
+        ],
+        [
+            "(",
+            ")"
+        ]
+    ],
+    "autoClosingPairs": [
+        {
+            "open": "{",
+            "close": "}"
+        },
+        {
+            "open": "[",
+            "close": "]"
+        },
+        {
+            "open": "(",
+            "close": ")"
+        },
+        {
+            "open": "'",
+            "close": "'",
+            "notIn": [
+                "string",
+                "comment"
+            ]
+        },
+        {
+            "open": "\"",
+            "close": "\"",
+            "notIn": [
+                "string",
+                "comment"
+            ]
+        },
+        {
+            "open": "`",
+            "close": "`",
+            "notIn": [
+                "string",
+                "comment"
+            ]
+        }
+    ],
+    "autoCloseBefore": ";:.,=}])>` \n\t",
+    "surroundingPairs": [
+        [
+            "(",
+            ")"
+        ],
+        [
+            "[",
+            "]"
+        ],
+        [
+            "{",
+            "}"
+        ],
+        [
+            "\"",
+            "\""
+        ],
+        [
+            "'",
+            "'"
+        ]
+    ],
+    "indentationRules": {
+        "increaseIndentPattern": "#VAR|#COMMENT BEGIN|$DO|$REPEAT|$FOR|$IF|$WHILE|$CASE|$DEFAULT|$ELSE|$ELSEIF|$SWITCH",
+        "decreaseIndentPattern": "#ENDVAR|#COMMENT END|$ENDDO|$UNTIL|$ENDFOR|$ENDIF|$ENDWHILE|$ENDSWITCH|$BREAK",
+        "indentNextLinePattern": "\\"
+    }
+}
