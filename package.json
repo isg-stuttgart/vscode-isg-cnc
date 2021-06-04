@@ -199,7 +199,10 @@
                     "cnc",
                     "nc",
                     "gcode",
-                    "isg"
+                    "isg",
+                    "KUKA.CNC",
+                    "TwinCAT CNC",
+                    "KEB CNC"
                 ],
                 "extensions": [
                     ".nc",
