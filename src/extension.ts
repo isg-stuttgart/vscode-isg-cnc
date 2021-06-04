@@ -14,9 +14,10 @@ import { config } from "./util/config";
 const TerminalWindows = config.getVscodeParam(
     "terminal.integrated.defaultProfile.windows"
 );
-const TerminalLinux = config.getVscodeParam(
+/* const TerminalLinux = config.getVscodeParam(
     "terminal.integrated.defaultProfile.linux"
-);
+); */
+
 const Language = config.getParam("locale");
 const DocuPath = config.getParam("documentation");
 
@@ -71,7 +72,7 @@ const regExpBlocknumbers = new RegExp(
  * @export
  * @param {vscode.ExtensionContext} context
  */
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
     // Get package.json informations
     ExtensionPackage = Path.join(context.extensionPath, "package.json");
     PackageFile = JSON.parse(fs.readFileSync(ExtensionPackage, "utf8"));
@@ -139,7 +140,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     /** Decorator
      */
-    let activeEditor = vscode.window.activeTextEditor;
+    const activeEditor = vscode.window.activeTextEditor;
 
     if (activeEditor) {
         triggerUpdateDecorations();
@@ -338,7 +339,7 @@ function GetCurrentFileOffset(): number {
  */
 async function GoToPosition(): Promise<void> {
     // move cursor to file offset
-    let maxOffset: number = 0;
+    let maxOffset = 0;
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -426,8 +427,8 @@ function Reveal(revealType?: vscode.TextEditorRevealType): void {
  * @param {*} n
  * @returns
  */
-function IsNumeric(n: any) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+function IsNumeric(n: number) {
+    return !isNaN(n) && isFinite(n);
 }
 
 /**
@@ -617,7 +618,7 @@ function StartDocu() {
     const terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
         hideFromUser: false
-    } as any);
+    });
     let args;
     let browserPath = `${config.getParam("browser")}`;
     if (process.platform === "linux") {
@@ -658,18 +659,18 @@ function StartDocu() {
 function GetContextbasedSite(): string {
     let SearchContext: string;
     let docuPath: string;
-    let DocuAddress: string = "";
+    let DocuAddress = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
             if (DocuPath !== undefined && DocuPath !== "") {
                 docuPath = DocuPath as string;
-                if (!docuPath.endsWith("\\") && !docuPath.startsWith("http")) {
-                    docuPath = docuPath.split('"').join("");
-                    docuPath += "\\" + `${Language}\\`;
+                docuPath = docuPath.split('"').join("").split('\\').join('/');
+                if (!docuPath.endsWith('/')) {
+                    docuPath += "/" + `${Language}/`;
                 } else {
-                    docuPath += `${Language}\\`;
+                    docuPath += `${Language}/`;
                 }
             } else {
                 docuPath = `https://www.isg-stuttgart.de/kernel-html5/${Language}/`;
@@ -686,7 +687,6 @@ function GetContextbasedSite(): string {
             }
         }
     }
-    DocuAddress = DocuAddress.split("\\").join("/");
     return DocuAddress;
 }
 
@@ -694,17 +694,17 @@ function GetContextbasedSite(): string {
  * This method is called when the extension is deactivated
  *
  */
-export function deactivate() {
+export function deactivate(): void {
     OutputChannel.appendLine("Close vscode-isg-cnc");
     OutputChannel.dispose();
 }
 
-export function Beautify() {
+export function Beautify(): void {
     let currentLine: string;
     let newLine: string;
     let saveBlockNumber: string;
     let whiteSpaces: any;
-    let currentPos: number = 0;
+    let currentPos = 0;
     const textEdits: vscode.TextEdit[] = [];
 
     const { activeTextEditor } = vscode.window;
@@ -852,12 +852,12 @@ function NewLineForBeautifier(line: string, whiteSpaces: number) {
     return newLine;
 }
 
-export function FindNonAsciiCharacters() {
+export function FindNonAsciiCharacters(): void {
     updateDecorations();
 }
 
 function updateDecorations() {
-    let activeEditor = vscode.window.activeTextEditor;
+    const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
         return;
     }
@@ -881,8 +881,8 @@ function updateDecorations() {
         nonAsciiCharacterDecorationType,
         nonAsciiCharacters
     );
-    for (let nonAsciiChar of nonAsciiCharacters) {
-        let ln = nonAsciiChar.range.end.line + 1;
+    for (const nonAsciiChar of nonAsciiCharacters) {
+        const ln = nonAsciiChar.range.end.line + 1;
         message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
         OutputChannel.appendLine(message);
     }
