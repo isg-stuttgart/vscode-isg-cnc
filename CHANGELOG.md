@@ -14,6 +14,16 @@ Types of changes
 
 ## [Unreleased]
 
+### Added
+
+- More Tags for the Marketplace
+
+### Changed
+
+- Simplified the StartDocu and GetContextbasedSite function to start browser with search url
+- Example Url for the documentation setting
+- IsNumeric return typ from any to number
+
 ## [V0.2.2]
 
 ### Fixed

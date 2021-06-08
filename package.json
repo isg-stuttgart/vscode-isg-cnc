@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "publisher": "isg-cnc",
     "icon": "images/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
@@ -15,9 +15,12 @@
         "Language Packs"
     ],
     "keywords": [
-        "cnc",
+        "nc",
         "gcode",
-        "g-code"
+        "isg",
+        "KUKA.CNC",
+        "TwinCAT CNC",
+        "KEB CNC"
     ],
     "preview": true,
     "badges": [],
@@ -63,7 +66,7 @@
                 "isg-cnc.documentation": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/kernel-html5/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: http://docs.isg.lan/)"
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: https://www.isg-stuttgart.de/kernel-html5/)"
                 },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",

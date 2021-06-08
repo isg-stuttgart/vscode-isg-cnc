@@ -11,12 +11,14 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
-const TerminalWindows = config.getVscodeParam(
-    "terminal.integrated.defaultProfile.windows"
-);
-const TerminalLinux = config.getVscodeParam(
-    "terminal.integrated.defaultProfile.linux"
-);
+ let Terminal : any;
+ if (process.platform === "linux") {
+    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
+} else if (process.platform === "win32") {
+    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
+}
+
+
 const Language = config.getParam("locale");
 const DocuPath = config.getParam("documentation");
 
@@ -71,7 +73,7 @@ const regExpBlocknumbers = new RegExp(
  * @export
  * @param {vscode.ExtensionContext} context
  */
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
     // Get package.json informations
     ExtensionPackage = Path.join(context.extensionPath, "package.json");
     PackageFile = JSON.parse(fs.readFileSync(ExtensionPackage, "utf8"));
@@ -150,7 +152,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     /** Decorator
      */
-    let activeEditor = vscode.window.activeTextEditor
+    const activeEditor = vscode.window.activeTextEditor;
 
     if (activeEditor) {
         triggerUpdateDecorations();
@@ -349,7 +351,7 @@ function GetCurrentFileOffset(): number {
  */
 async function GoToPosition(): Promise<void> {
     // move cursor to file offset
-    let maxOffset: number = 0;
+    let maxOffset = 0;
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -437,8 +439,8 @@ function Reveal(revealType?: vscode.TextEditorRevealType): void {
  * @param {*} n
  * @returns
  */
-function IsNumeric(n: any) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
+function IsNumeric(n: number) {
+    return !isNaN(n) && isFinite(n);
 }
 
 /**
@@ -628,18 +630,14 @@ function StartDocu() {
     let terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
         hideFromUser: false
-    } as any);
+    });
     let args;
-    let browserPath = `${config.getParam("browser")}`;
+    let browserPath;
+
     if (process.platform === "linux") {
         browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
         browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
-        if (TerminalWindows === "PowerShell") {
-            browserPath = `& "${browserPath}"`;
-        } else {
-            browserPath = `"${browserPath}"`;
-        }
     }
 
     if (docuAddress !== "" && docuAddress.startsWith("http")) {
@@ -647,17 +645,22 @@ function StartDocu() {
     } else {
         args = `"file://${docuAddress}"`;
     }
-    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
-    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    OutputChannel.appendLine(
-        `Commandpart: ${browserPath} and Argumentpart: ${args}`
-    );
+
     // example that works:
     // "C:\Program Files\Mozilla Firefox\firefox.exe"
     // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-    if (terminal !== null) {
-        terminal.sendText(browserPath + " " + args);
+
+    if (Terminal !== "PowerShell") {
+        browserPath = `"${browserPath}"`;
+    } else {
+        browserPath = `& "${browserPath}"`;
     }
+
+    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
+    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
+    OutputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
+
+    terminal.sendText(browserPath + " " + args);
 }
 
 /**
@@ -671,18 +674,18 @@ function StartDocu() {
 function GetContextbasedSite(): string {
     let SearchContext: string;
     let docuPath: string;
-    let DocuAddress: string = "";
+    let DocuAddress = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
             if (DocuPath !== undefined && DocuPath !== "") {
                 docuPath = DocuPath as string;
-                if (!docuPath.endsWith("\\") && !docuPath.startsWith("http")) {
-                    docuPath = docuPath.split('"').join("");
-                    docuPath += "\\" + `${Language}\\`;
+                docuPath = docuPath.split('"').join("").split('\\').join('/');
+                if (!docuPath.endsWith('/')) {
+                    docuPath += "/" + `${Language}/`;
                 } else {
-                    docuPath += `${Language}\\`;
+                    docuPath += `${Language}/`;
                 }
             } else {
                 docuPath = `https://www.isg-stuttgart.de/kernel-html5/${Language}/`;
@@ -699,7 +702,6 @@ function GetContextbasedSite(): string {
             }
         }
     }
-    DocuAddress = DocuAddress.split("\\").join("/");
     return DocuAddress;
 }
 
@@ -707,17 +709,17 @@ function GetContextbasedSite(): string {
  * This method is called when the extension is deactivated
  *
  */
-export function deactivate() {
+export function deactivate(): void {
     OutputChannel.appendLine("Close vscode-isg-cnc");
     OutputChannel.dispose();
 }
 
-export function Beautify() {
+export function Beautify(): void {
     let currentLine: string;
     let newLine: string;
     let saveBlockNumber: string;
     let whiteSpaces: any;
-    let currentPos: number = 0;
+    let currentPos = 0;
     const textEdits: vscode.TextEdit[] = [];
 
     const { activeTextEditor } = vscode.window;
@@ -865,12 +867,12 @@ function NewLineForBeautifier(line: string, whiteSpaces: number) {
     return newLine;
 }
 
-export function FindNonAsciiCharacters() {
-    updateDecorations()
+export function FindNonAsciiCharacters(): void {
+    updateDecorations();
 }
 
 function updateDecorations() {
-    let activeEditor = vscode.window.activeTextEditor
+    const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
         return;
     }
@@ -894,10 +896,10 @@ function updateDecorations() {
         nonAsciiCharacterDecorationType,
         nonAsciiCharacters
     );
-    for (let nonAsciiChar of nonAsciiCharacters) {
-        let ln = nonAsciiChar.range.end.line + 1
-        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage
-        OutputChannel.appendLine(message)
+    for (const nonAsciiChar of nonAsciiCharacters) {
+        const ln = nonAsciiChar.range.end.line + 1;
+        message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
+        OutputChannel.appendLine(message);
     }
     OutputChannel.show.apply;
 }
