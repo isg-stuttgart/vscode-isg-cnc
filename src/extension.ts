@@ -11,12 +11,13 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
-const TerminalWindows = config.getVscodeParam(
-    "terminal.integrated.defaultProfile.windows"
-);
-/* const TerminalLinux = config.getVscodeParam(
-    "terminal.integrated.defaultProfile.linux"
-); */
+ let Terminal : any;
+ if (process.platform === "linux") {
+    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
+} else if (process.platform === "win32") {
+    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
+}
+
 
 const Language = config.getParam("locale");
 const DocuPath = config.getParam("documentation");
@@ -620,16 +621,12 @@ function StartDocu() {
         hideFromUser: false
     });
     let args;
-    let browserPath = `${config.getParam("browser")}`;
+    let browserPath;
+
     if (process.platform === "linux") {
         browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
         browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
-        if (TerminalWindows === "PowerShell") {
-            browserPath = `& "${browserPath}"`;
-        } else {
-            browserPath = `"${browserPath}"`;
-        }
     }
 
     if (docuAddress !== "" && docuAddress.startsWith("http")) {
@@ -637,14 +634,21 @@ function StartDocu() {
     } else {
         args = `"file://${docuAddress}"`;
     }
-    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
-    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    OutputChannel.appendLine(
-        `Commandpart: ${browserPath} and Argumentpart: ${args}`
-    );
+
     // example that works:
     // "C:\Program Files\Mozilla Firefox\firefox.exe"
     // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
+
+    if (Terminal !== "PowerShell") {
+        browserPath = `"${browserPath}"`;
+    } else {
+        browserPath = `& "${browserPath}"`;
+    }
+
+    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
+    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
+    OutputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
+
     terminal.sendText(browserPath + " " + args);
 }
 
