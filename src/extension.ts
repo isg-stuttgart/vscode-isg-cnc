@@ -11,7 +11,7 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
- let Terminal : any;
+ let Terminal : unknown;
  if (process.platform === "linux") {
     Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
 } else if (process.platform === "win32") {
@@ -97,7 +97,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // 👍 formatter implemented using API
     vscode.languages.registerDocumentFormattingEditProvider('isg-cnc', {
-        provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
+        provideDocumentFormattingEdits(): vscode.TextEdit[] { //document: vscode.TextDocument
             // const firstLine = document.lineAt(0);
             // if (firstLine.text !== '42') {
             //     return [vscode.TextEdit.insert(firstLine.range.start, '42\n')];
@@ -627,7 +627,7 @@ function StartDocu() {
     const docuAddress = GetContextbasedSite();
     OutputChannel.appendLine(docuAddress);
 
-    let terminal = vscode.window.createTerminal({
+    const terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
         hideFromUser: false
     });
@@ -718,7 +718,7 @@ export function Beautify(): void {
     let currentLine: string;
     let newLine: string;
     let saveBlockNumber: string;
-    let whiteSpaces: any;
+    let whiteSpaces: number;
     let currentPos = 0;
     const textEdits: vscode.TextEdit[] = [];
 
@@ -726,8 +726,14 @@ export function Beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            whiteSpaces = 2;
             // edit document line by line
-            whiteSpaces = activeTextEditor.options.tabSize;
+            if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
+                whiteSpaces = activeTextEditor.options.tabSize;
+            }
+            if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize !== 'number') {
+                whiteSpaces = parseInt(activeTextEditor.options.tabSize);
+            }
             let isCommentBlock = false;
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
@@ -876,6 +882,7 @@ function updateDecorations() {
     if (!activeEditor) {
         return;
     }
+    // eslint-disable-next-line no-control-regex
     const regEx = /[^\x00-\x7F]+/gm;
     const text = activeEditor.document.getText();
     const nonAsciiCharacters: vscode.DecorationOptions[] = [];
