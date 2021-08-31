@@ -14,6 +14,24 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.3]
+
+### Fixed
+
+- Fixed aliases for language selection list. Now you can select CNC or List format
+- Fixed some type warnings
+
+### Added
+
+- More Tags for the Marketplace
+
+### Changed
+
+- Simplified the StartDocu and GetContextbasedSite function to start browser with search url
+- Example Url for the documentation setting
+- IsNumeric return typ from any to number
+- Color for numbers in the light theme for better reading
+
 ## [V0.2.2]
 
 ### Fixed
@@ -182,7 +200,8 @@ Types of changes
 - Adding color themes
 - Initial release of the extension for testing
 
-[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...HEAD
+[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...HEAD
+[V0.2.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...V0.2.2
 [V0.2.1]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.0...V0.2.1
 [V0.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.1.9...V0.2.0
 [V0.1.9]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.1.8...V0.1.9
