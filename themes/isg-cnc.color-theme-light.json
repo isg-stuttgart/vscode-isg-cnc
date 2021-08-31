@@ -77,7 +77,7 @@
                 "keyword.operator.minus.exponent"
             ],
             "settings": {
-                "foreground": "#B5CEA8"
+                "foreground": "#5f55ec"
             }
         },
         {
@@ -212,7 +212,7 @@
         {
             "scope": "meta.preprocessor.numeric",
             "settings": {
-                "foreground": "#B5CEA8"
+                "foreground": "#5f55ec"
             }
         },
         {
