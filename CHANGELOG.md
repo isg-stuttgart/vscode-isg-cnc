@@ -14,6 +14,13 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.3]
+
+### Fixed
+
+- Fixed aliases for language selection list. Now you can select CNC or List format
+- Fixed some type warnings
+
 ### Added
 
 - More Tags for the Marketplace
@@ -23,6 +30,7 @@ Types of changes
 - Simplified the StartDocu and GetContextbasedSite function to start browser with search url
 - Example Url for the documentation setting
 - IsNumeric return typ from any to number
+- Color for numbers in the light theme for better reading
 
 ## [V0.2.2]
 
