@@ -63,12 +63,7 @@
         "inlinecomments": {
             "name": "isg-cnc.comment",
             "begin": "\\(",
-            "end": "\\)|\n",
-            "patterns": [
-                {
-                    "include": "#inlinecomments"
-                }
-            ]
+            "end": "\\)|\n"
         },
         "blockcomments": {
             "name": "isg-cnc.comment",
