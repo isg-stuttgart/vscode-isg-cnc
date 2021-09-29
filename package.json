@@ -249,5 +249,6 @@
                 "language": "isg-cnc",
                 "path": "./themes/isg-cnc.color-theme-dark.json"
             }
-        ],
+        ]
+    }
 }
