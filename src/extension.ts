@@ -1,4 +1,3 @@
-"use strict";
 // The module "vscode" contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs";
@@ -11,20 +10,20 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
- let Terminal : unknown;
- if (process.platform === "linux") {
-    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
+let terminal: unknown;
+if (process.platform === "linux") {
+    terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
 } else if (process.platform === "win32") {
-    Terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
+    terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
 }
 
 
-const Language = config.getParam("locale");
-const DocuPath = config.getParam("documentation");
+const langauge = config.getParam("locale");
+const docuPath = config.getParam("documentation");
 
 /** Outputchannel for the extension
  */
-const OutputChannel = vscode.window.createOutputChannel("ISG-CNC");
+const outputChannel = vscode.window.createOutputChannel("ISG-CNC");
 /** Decorator/
 // create a decorator type that we use to decorate non ascii characters
 let timeout: NodeJS.Timer | undefined = undefined;
@@ -52,12 +51,12 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
 /**
  * Statusbar items
  */
-let SelectedLinesStatusBarItem: vscode.StatusBarItem;
-let CurrentOffsetStatusBarItem: vscode.StatusBarItem;
+let selectedLinesStatusBarItem: vscode.StatusBarItem;
+let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
 // package.json information
-let PackageFile;
-let ExtensionPackage;
+let packageFile;
+let extensionPackage;
 
 // Regular expression variables
 // Technology regex for too, feed, spindle rpm
@@ -75,23 +74,23 @@ const regExpBlocknumbers = new RegExp(
  */
 export function activate(context: vscode.ExtensionContext): void {
     // Get package.json informations
-    ExtensionPackage = Path.join(context.extensionPath, "package.json");
-    PackageFile = JSON.parse(fs.readFileSync(ExtensionPackage, "utf8"));
+    extensionPackage = Path.join(context.extensionPath, "package.json");
+    packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
 
     // enable/disable outputchannel
     if (config.getParam("outputchannel")) {
-        OutputChannel.show();
+        outputChannel.show();
     } else {
-        OutputChannel.hide();
+        outputChannel.hide();
     }
 
     // Output extension name and version number in console and output window ISG-CNC
-    if (PackageFile) {
+    if (packageFile) {
         vscode.window.showInformationMessage(
-            "Started: " + PackageFile.displayName + " V" + PackageFile.version
+            "Started: " + packageFile.displayName + " V" + packageFile.version
         );
-        OutputChannel.appendLine(
-            "Started: " + PackageFile.displayName + " V" + PackageFile.version
+        outputChannel.appendLine(
+            "Started: " + packageFile.displayName + " V" + packageFile.version
         );
     }
 
@@ -109,46 +108,46 @@ export function activate(context: vscode.ExtensionContext): void {
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.GoToPosition", () =>
-            GoToPosition()
+            goToPosition()
         )
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.ShowCursorFileOffsetInfobox", () =>
-            ShowCursorFileOffsetInfobox()
+            showCursorFileOffsetInfobox()
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.FindNextTFS", () => FindNextTFS())
+        vscode.commands.registerCommand("isg-cnc.FindNextTFS", () => findNextTFS())
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.RemoveAllBlocknumbers", () =>
-            RemoveAllBlocknumbers()
+            removeAllBlocknumbers()
         )
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.AddBlocknumbers", () =>
-            AddBlocknumbers()
+            addBlocknumbers()
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.StartDocu", () => StartDocu())
+        vscode.commands.registerCommand("isg-cnc.StartDocu", () => startDocu())
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.Beautify", () => Beautify())
+        vscode.commands.registerCommand("isg-cnc.Beautify", () => beautify())
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
-            FindNonAsciiCharacters()
+            findNonAsciiCharacters()
         )
     );
 
     // add status bar items
-    AddSelectedLinesStatusBarItem(context);
-    AddCurrentOffsetStatusBarItem(context);
+    addSelectedLinesStatusBarItem(context);
+    addCurrentOffsetStatusBarItem(context);
 
     // update status bar items once at start
-    UpdateSelectedLinesStatusBarItem();
-    UpdateCurrentOffsetStatusBarItem();
+    updateSelectedLinesStatusBarItem();
+    updateCurrentOffsetStatusBarItem();
 
     /** Decorator
      */
@@ -178,7 +177,7 @@ export function activate(context: vscode.ExtensionContext): void {
  *
  * @returns {boolean}
  */
-function FindNextTFS(): boolean {
+function findNextTFS(): boolean {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -196,7 +195,7 @@ function FindNextTFS(): boolean {
             const match = regExTechnology.exec(textToMatch);
             if (match !== null) {
                 const startoffset = match.index + document.offsetAt(startposition);
-                SetCursorPosition(startoffset);
+                setCursorPosition(startoffset);
                 const startPos = document.positionAt(startoffset);
                 const endPos = document.positionAt(startoffset + match[0].length);
                 const range = new vscode.Range(startPos, endPos);
@@ -220,34 +219,34 @@ function FindNextTFS(): boolean {
  *
  * @param {vscode.ExtensionContext} context
  */
-function AddSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
+function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     // register a command that is invoked when the status bar
     // item is selected
-    const MyCommandId = "isg-cnc.showSelectedLinesCount";
+    const myCommandId = "isg-cnc.ShowSelectedLinesCount";
 
     context.subscriptions.push(
-        vscode.commands.registerCommand(MyCommandId, () => {
-            const n = GetNumberOfSelectedLines();
+        vscode.commands.registerCommand(myCommandId, () => {
+            const n = getNumberOfSelectedLines();
             vscode.window.showInformationMessage(`${n} line(s) are selected.`);
         })
     );
 
     // create a new status bar item that we can now manage
-    SelectedLinesStatusBarItem = vscode.window.createStatusBarItem(
+    selectedLinesStatusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
         100
     );
-    SelectedLinesStatusBarItem.command = MyCommandId;
-    context.subscriptions.push(SelectedLinesStatusBarItem);
+    selectedLinesStatusBarItem.command = myCommandId;
+    context.subscriptions.push(selectedLinesStatusBarItem);
 
     // register some listener that make sure the status bar
     // item always up-to-date
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(UpdateSelectedLinesStatusBarItem)
+        vscode.window.onDidChangeActiveTextEditor(updateSelectedLinesStatusBarItem)
     );
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection(
-            UpdateSelectedLinesStatusBarItem
+            updateSelectedLinesStatusBarItem
         )
     );
 }
@@ -257,13 +256,13 @@ function AddSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
  * Hide item when no lines are selected.
  *
  */
-function UpdateSelectedLinesStatusBarItem(): void {
-    const n = GetNumberOfSelectedLines();
+function updateSelectedLinesStatusBarItem(): void {
+    const n = getNumberOfSelectedLines();
     if (n > 0) {
-        SelectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
-        SelectedLinesStatusBarItem.show();
+        selectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
+        selectedLinesStatusBarItem.show();
     } else {
-        SelectedLinesStatusBarItem.hide();
+        selectedLinesStatusBarItem.hide();
     }
 }
 
@@ -272,26 +271,26 @@ function UpdateSelectedLinesStatusBarItem(): void {
  *
  * @param {vscode.ExtensionContext} context
  */
-function AddCurrentOffsetStatusBarItem(context: vscode.ExtensionContext) {
+function addCurrentOffsetStatusBarItem(context: vscode.ExtensionContext) {
     // register a command that is invoked when the status bar
     // fileoffset of the cursor
 
     // create a new status bar item that we can now manage
-    CurrentOffsetStatusBarItem = vscode.window.createStatusBarItem(
+    currentOffsetStatusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
         100
     );
-    CurrentOffsetStatusBarItem.command = "isg-cnc.GoToPosition";
-    context.subscriptions.push(CurrentOffsetStatusBarItem);
+    currentOffsetStatusBarItem.command = "isg-cnc.GoToPosition";
+    context.subscriptions.push(currentOffsetStatusBarItem);
 
     // register some listener that make sure the status bar
     // item always up-to-date
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(UpdateCurrentOffsetStatusBarItem)
+        vscode.window.onDidChangeActiveTextEditor(updateCurrentOffsetStatusBarItem)
     );
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection(
-            UpdateCurrentOffsetStatusBarItem
+            updateCurrentOffsetStatusBarItem
         )
     );
 }
@@ -300,7 +299,7 @@ function AddCurrentOffsetStatusBarItem(context: vscode.ExtensionContext) {
  * Opens a infobox with current fileoffset and max fileoffset.
  *
  */
-function ShowCursorFileOffsetInfobox() {
+function showCursorFileOffsetInfobox() {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -308,7 +307,7 @@ function ShowCursorFileOffsetInfobox() {
             const maxOffset = document.offsetAt(
                 new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
             );
-            const n = GetCurrentFileOffset();
+            const n = getCurrentFileOffset();
             vscode.window.showInformationMessage(
                 `The current fileoffset is ${n} from ${maxOffset}.`
             );
@@ -320,10 +319,10 @@ function ShowCursorFileOffsetInfobox() {
  * Update the status bar item for fileoffset.
  *
  */
-function UpdateCurrentOffsetStatusBarItem(): void {
-    const n = GetCurrentFileOffset();
-    CurrentOffsetStatusBarItem.text = `$(arrow-right) Fileoffset: ${n}`;
-    CurrentOffsetStatusBarItem.show();
+function updateCurrentOffsetStatusBarItem(): void {
+    const n = getCurrentFileOffset();
+    currentOffsetStatusBarItem.text = `$(arrow-right) Fileoffset: ${n}`;
+    currentOffsetStatusBarItem.show();
 }
 
 /**
@@ -331,7 +330,7 @@ function UpdateCurrentOffsetStatusBarItem(): void {
  *
  * @returns {number}
  */
-function GetCurrentFileOffset(): number {
+function getCurrentFileOffset(): number {
     // get current file offset position of the caret
     let offset = 0;
     const { activeTextEditor } = vscode.window;
@@ -349,7 +348,7 @@ function GetCurrentFileOffset(): number {
  *
  * @returns {Promise<void>}
  */
-async function GoToPosition(): Promise<void> {
+async function goToPosition(): Promise<void> {
     // move cursor to file offset
     let maxOffset = 0;
     const { activeTextEditor } = vscode.window;
@@ -365,7 +364,7 @@ async function GoToPosition(): Promise<void> {
                 .showInputBox({
                     prompt: `Type an offset number from 0 to ${maxOffset}.`,
                     validateInput: (input: string) => {
-                        if (!IsNumeric(parseFloat(String(input)))) {
+                        if (!isNumeric(parseFloat(String(input)))) {
                             return undefined;
                         }
                     },
@@ -373,8 +372,8 @@ async function GoToPosition(): Promise<void> {
                 })
                 .then((input?: string) => {
                     input !== undefined
-                        ? SetCursorPosition(parseFloat(String(input)))
-                        : SetCursorPosition(cursorOffset);
+                        ? setCursorPosition(parseFloat(String(input)))
+                        : setCursorPosition(cursorOffset);
                 });
         }
     }
@@ -385,7 +384,7 @@ async function GoToPosition(): Promise<void> {
  *
  * @param {number} pos
  */
-function SetCursorPosition(pos: number) {
+function setCursorPosition(pos: number) {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -395,8 +394,8 @@ function SetCursorPosition(pos: number) {
                 newPosition,
                 newPosition
             );
-            Reveal();
-            UpdateCurrentOffsetStatusBarItem();
+            reveal();
+            updateCurrentOffsetStatusBarItem();
         }
     }
 }
@@ -406,12 +405,12 @@ function SetCursorPosition(pos: number) {
  *
  * @returns {number}
  */
-function GetNumberOfSelectedLines(): number {
+function getNumberOfSelectedLines(): number {
     // get number of selected lines
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         return activeTextEditor.selections.reduce(
-            (prev, curr) => prev + (curr.end.line - curr.start.line),
+            (prev: number, curr: { end: { line: number; }; start: { line: number; }; }) => prev + (curr.end.line - curr.start.line),
             0
         );
     }
@@ -423,7 +422,7 @@ function GetNumberOfSelectedLines(): number {
  *
  * @param {vscode.TextEditorRevealType} [revealType]
  */
-function Reveal(revealType?: vscode.TextEditorRevealType): void {
+function reveal(revealType?: vscode.TextEditorRevealType): void {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         revealType =
@@ -439,7 +438,7 @@ function Reveal(revealType?: vscode.TextEditorRevealType): void {
  * @param {*} n
  * @returns
  */
-function IsNumeric(n: number) {
+function isNumeric(n: number) {
     return !isNaN(n) && isFinite(n);
 }
 
@@ -447,7 +446,7 @@ function IsNumeric(n: number) {
  * Remove all block numbers
  *
  */
-function RemoveAllBlocknumbers() {
+function removeAllBlocknumbers() {
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
@@ -486,7 +485,7 @@ function RemoveAllBlocknumbers() {
  *
  * @returns
  */
-async function AddBlocknumbers() {
+async function addBlocknumbers() {
     let start = 10;
     let step = 10;
     const textEdits: vscode.TextEdit[] = [];
@@ -498,7 +497,7 @@ async function AddBlocknumbers() {
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
                 validateInput: (input: string) => {
-                    if (!IsNumeric(parseInt(input, 10))) {
+                    if (!isNumeric(parseInt(input, 10))) {
                         return undefined;
                     }
                 },
@@ -521,7 +520,7 @@ async function AddBlocknumbers() {
             inputOptions = {
                 prompt: `Type an step size.`,
                 validateInput: (input: string) => {
-                    if (!IsNumeric(parseInt(input, 10))) {
+                    if (!isNumeric(parseInt(input, 10))) {
                         return undefined;
                     }
                     return;
@@ -543,7 +542,7 @@ async function AddBlocknumbers() {
 
             // add new blocknumbers
             let blocknumber = start;
-            const maximalLeadingZeros = DigitCount(start + document.lineCount * step);
+            const maximalLeadingZeros = digitCount(start + document.lineCount * step);
 
             // edit document line by line
             let isCommentBlock = false;
@@ -609,7 +608,7 @@ async function AddBlocknumbers() {
  * @param {number} nr
  * @returns {number}
  */
-function DigitCount(nr: number): number {
+function digitCount(nr: number): number {
     let digitCount = 0;
     do {
         nr /= 10;
@@ -623,9 +622,9 @@ function DigitCount(nr: number): number {
  * Webbrowser location reading from extension setting browser.
  *
  */
-function StartDocu() {
-    const docuAddress = GetContextbasedSite();
-    OutputChannel.appendLine(docuAddress);
+function startDocu() {
+    const docuAddress = getContextbasedSite();
+    outputChannel.appendLine(docuAddress);
 
     const terminal = vscode.window.createTerminal({
         name: "ISG-CNC",
@@ -637,7 +636,7 @@ function StartDocu() {
     if (process.platform === "linux") {
         browserPath = `${config.getParam("browser-linux")}`;
     } else if (process.platform === "win32") {
-        browserPath = `${config.getParam("browser-windows")}`.replaceAll("\"", "");
+        browserPath = `${config.getParam("browser-windows")}`.replace("\"", "");
     }
 
     if (docuAddress !== "" && docuAddress.startsWith("http")) {
@@ -650,15 +649,15 @@ function StartDocu() {
     // "C:\Program Files\Mozilla Firefox\firefox.exe"
     // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
 
-    if (Terminal !== "PowerShell") {
+    if (terminal.name !== "PowerShell") {
         browserPath = `"${browserPath}"`;
     } else {
         browserPath = `& "${browserPath}"`;
     }
 
-    OutputChannel.appendLine(`Path to the documentation: ${DocuPath}`);
-    OutputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    OutputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
+    outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
+    outputChannel.appendLine(`Address to the website: ${docuAddress}`);
+    outputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
 
     terminal.sendText(browserPath + " " + args);
 }
@@ -671,38 +670,38 @@ function StartDocu() {
  *
  * @returns {string}
  */
-function GetContextbasedSite(): string {
-    let SearchContext: string;
-    let docuPath: string;
-    let DocuAddress = "";
+function getContextbasedSite(): string {
+    let searchContext: string;
+    let docuPath: string = "";
+    let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            if (DocuPath !== undefined && DocuPath !== "") {
-                docuPath = DocuPath as string;
+            if (docuPath !== undefined && docuPath !== "") {
+                docuPath = docuPath as string;
                 docuPath = docuPath.split('"').join("").split('\\').join('/');
                 if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${Language}/`;
+                    docuPath += "/" + `${langauge}/`;
                 } else {
-                    docuPath += `${Language}/`;
+                    docuPath += `${langauge}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${Language}/`;
+                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${langauge}/`;
             }
             if (activeTextEditor.selection.isEmpty !== true) {
-                SearchContext = activeTextEditor.document.getText(
+                searchContext = activeTextEditor.document.getText(
                     activeTextEditor.selection
                 );
                 const query = new URLSearchParams();
-                query.append("q", SearchContext);
-                DocuAddress = docuPath + `search.html?${query.toString()}`;
+                query.append("q", searchContext);
+                docuAddress = docuPath + `search.html?${query.toString()}`;
             } else {
-                DocuAddress = docuPath + "index.html";
+                docuAddress = docuPath + "index.html";
             }
         }
     }
-    return DocuAddress;
+    return docuAddress;
 }
 
 /**
@@ -710,11 +709,11 @@ function GetContextbasedSite(): string {
  *
  */
 export function deactivate(): void {
-    OutputChannel.appendLine("Close vscode-isg-cnc");
-    OutputChannel.dispose();
+    outputChannel.appendLine("Close vscode-isg-cnc");
+    outputChannel.dispose();
 }
 
-export function Beautify(): void {
+export function beautify(): void {
     let currentLine: string;
     let newLine: string;
     let saveBlockNumber: string;
@@ -802,12 +801,12 @@ export function Beautify(): void {
                 ) {
                     // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
 
-                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    newLine = newLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces;
                 } else if (currentLine.indexOf("$SWITCH") === 0) {
                     // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
 
-                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    newLine = newLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces * 2;
                 } else if (
                     currentLine.indexOf("$ENDDO") === 0 ||
@@ -824,7 +823,7 @@ export function Beautify(): void {
                         currentPos = 0;
                     }
 
-                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    newLine = newLineForBeautifier(currentLine, currentPos);
                 } else if (currentLine.indexOf("$ENDSWITCH") === 0) {
                     // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
 
@@ -834,7 +833,7 @@ export function Beautify(): void {
                         currentPos = 0;
                     }
 
-                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    newLine = newLineForBeautifier(currentLine, currentPos);
                 } else if (
                     currentLine.indexOf("$ELSEIF") === 0 ||
                     currentLine.indexOf("$ELSE") === 0 ||
@@ -843,10 +842,10 @@ export function Beautify(): void {
                 ) {
                     // Zeile wird an der Aktuellen Position - TabSize eingefügt
 
-                    newLine = NewLineForBeautifier(currentLine, currentPos - whiteSpaces);
+                    newLine = newLineForBeautifier(currentLine, currentPos - whiteSpaces);
                 } else {
                     // Zeile wird an der Aktuellen Position eingefügt
-                    newLine = NewLineForBeautifier(currentLine, currentPos);
+                    newLine = newLineForBeautifier(currentLine, currentPos);
                 }
 
                 newLine = saveBlockNumber + newLine;
@@ -863,7 +862,7 @@ export function Beautify(): void {
     }
 }
 
-function NewLineForBeautifier(line: string, whiteSpaces: number) {
+function newLineForBeautifier(line: string, whiteSpaces: number) {
     let newLine = "";
 
     for (let i = 0; i < whiteSpaces; i++) {
@@ -873,7 +872,7 @@ function NewLineForBeautifier(line: string, whiteSpaces: number) {
     return newLine;
 }
 
-export function FindNonAsciiCharacters(): void {
+export function findNonAsciiCharacters(): void {
     updateDecorations();
 }
 
@@ -906,9 +905,9 @@ function updateDecorations() {
     for (const nonAsciiChar of nonAsciiCharacters) {
         const ln = nonAsciiChar.range.end.line + 1;
         message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
-        OutputChannel.appendLine(message);
+        outputChannel.appendLine(message);
     }
-    OutputChannel.show.apply;
+    outputChannel.show.apply;
 }
 
 function triggerUpdateDecorations() {

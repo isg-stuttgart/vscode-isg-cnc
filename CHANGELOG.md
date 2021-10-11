@@ -14,6 +14,11 @@ Types of changes
 
 ## [Unreleased]
 
+- Removed unused files
+- Removed gitlab files
+- Added snippets for isg cnc cycle error definition files
+- Fixed typescript issues and namespace convention
+
 ## [V0.2.3]
 
 ### Fixed
