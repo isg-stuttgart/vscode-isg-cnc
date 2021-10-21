@@ -10,15 +10,15 @@ import { config } from "./util/config";
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
  */
-let terminal: unknown;
-if (process.platform === "linux") {
-    terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
-} else if (process.platform === "win32") {
-    terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
-}
+// let terminal: unknown;
+// if (process.platform === "linux") {
+//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
+// } else if (process.platform === "win32") {
+//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
+// }
 
 
-const langauge = config.getParam("locale");
+const language = config.getParam("locale");
 const docuPath = config.getParam("documentation");
 
 /** Outputchannel for the extension
@@ -682,12 +682,12 @@ function getContextbasedSite(): string {
                 docuPath = docuPath as string;
                 docuPath = docuPath.split('"').join("").split('\\').join('/');
                 if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${langauge}/`;
+                    docuPath += "/" + `${language}/`;
                 } else {
-                    docuPath += `${langauge}/`;
+                    docuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${langauge}/`;
+                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${language}/`;
             }
             if (activeTextEditor.selection.isEmpty !== true) {
                 searchContext = activeTextEditor.document.getText(
