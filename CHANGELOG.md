@@ -205,7 +205,7 @@ Types of changes
 - Adding color themes
 - Initial release of the extension for testing
 
-[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...HEAD
+[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...HEAD
 [V0.2.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...V0.2.3
 [V0.2.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...V0.2.2
 [V0.2.1]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.0...V0.2.1
