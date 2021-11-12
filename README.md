@@ -22,7 +22,7 @@ If text is selected the documentation will opened with search results in the doc
 
 ## Requirements
 
-Visual Studio Code V1.46.0 or higher
+Visual Studio Code V1.59.0 or higher
 
 ## License
 

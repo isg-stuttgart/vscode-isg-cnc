@@ -14,6 +14,22 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.4]
+
+### Added
+
+- Added snippets for isg cnc cycle error definition files
+
+### Fixed
+
+- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:)
+- Fixed typescript issues and namespace convention
+
+### Removed
+
+- Removed unused files
+- Removed gitlab files
+
 ## [V0.2.3]
 
 ### Fixed
@@ -200,7 +216,9 @@ Types of changes
 - Adding color themes
 - Initial release of the extension for testing
 
-[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...HEAD
+[Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.2.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.3...V0.2.4
+[V0.2.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...V0.2.3
 [V0.2.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...V0.2.2
 [V0.2.1]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.0...V0.2.1
 [V0.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.1.9...V0.2.0

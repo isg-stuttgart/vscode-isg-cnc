@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "publisher": "isg-cnc",
     "icon": "images/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
@@ -222,6 +222,13 @@
                     ".lis"
                 ],
                 "configuration": "./languages/isg-list-language-configuration.json"
+            },
+            {
+                "id": "isg-cnc-cycle-error",
+                "aliases": [
+                    "isg cnc cycle error definition file",
+                    "ISG CNC Zyklen Fehlerdefinitionddatei"
+                ]
             }
         ],
         "grammars": [
@@ -234,6 +241,32 @@
                 "language": "isg-list",
                 "scopeName": "source.isg-list",
                 "path": "./syntaxes/isg-list.tmLanguage.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/dollar-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/gcode-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/general-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/hashtag-snippets.json"
+            },
+            {
+                "language": "isg-cnc",
+                "path": "./snippets/mcode-snippets.json"
+            },
+            {
+                "language": "isg-cnc-cycle-error",
+                "path": "./snippets/cnc-cycles-error-definition-snippets.json"
             }
         ],
         "themes": [
@@ -249,5 +282,27 @@
                 "language": "isg-cnc",
                 "path": "./themes/isg-cnc.color-theme-dark.json"
             }
-        ],
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.61.0",
+        "@types/glob": "^7.1.4",
+        "@types/mocha": "^9.0.0",
+        "@types/node": "14.x",
+        "@typescript-eslint/eslint-plugin": "^4.31.1",
+        "@typescript-eslint/parser": "^4.31.1",
+        "eslint": "^7.32.0",
+        "glob": "^7.1.7",
+        "mocha": "^9.1.1",
+        "typescript": "^4.4.3",
+        "@vscode/test-electron": "^1.6.2"
+    }
 }

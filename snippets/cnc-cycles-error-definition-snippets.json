@@ -1,0 +1,49 @@
+{
+    "cncerror": {
+        "scope": "isg-cnc-cycle-error",
+        "prefix": "err",
+        "body": [
+            "{",
+            "\t\"id\": ${1:[13000]},",
+            "\t\"error_class\": \"${2:error}\",",
+            "\t\"error_type\": \"${3:nc_error}\",",
+            "\t\"languages\": {",
+            "\t\t\"${4|de-DE,en-GB|}\": {",
+            "\t\t\t\"message\": \"${5:[message]}\",",
+            "\t\t\t\"description\": \"${6:[description]}\",",
+            "\t\t\t\"solution\": \"${7:[solution]}\"",
+            "\t\t}",
+            "\t},",
+            "\t\"parameter_value_descriptions\": {",
+            "\t\t\"1\": {",
+            "\t\t\t\"meaning_type\": \"${8:[meaning type, for example: current]}\",",
+            "\t\t\t\"meaning_description_localized\": {",
+            "\t\t\t\t\"${9|de-DE,en-GB|}\": \"${10:[text]}\"",
+            "\t\t\t}",
+            "\t\t}",
+            "\t}",
+            "}"
+        ],
+        "description": "isg-cnc-cycles error definition file snippet"
+    },
+    "language": {
+        "scope": "isg-cnc-cycle-error",
+        "prefix": "errlang",
+        "body": [
+            "\"${1|de-DE,en-GB|}\": {",
+            "\t\"message\": \"${5:[message]}\",",
+            "\t\"description\": \"${6:[description]}\",",
+            "\t\"solution\": \"${7:[solution]}\"",
+            "}"
+        ],
+        "description": "isg-cnc-cycles error message language part"
+    },
+    "parameterlanguage": {
+        "scope": "isg-cnc-cycle-error",
+        "prefix": "paramlang",
+        "body": [
+            "\"${1|de-DE,en-GB|}\": \"${10:[text]}\""
+        ],
+        "description": "isg-cnc-cycles error parameter language part"
+    }
+}
