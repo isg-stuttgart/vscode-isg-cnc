@@ -63,7 +63,7 @@ let extensionPackage;
 const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(
-    /^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/
+    /^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*[:]*(\s?))/
 );
 
 /**
@@ -449,6 +449,7 @@ function isNumeric(n: number) {
 function removeAllBlocknumbers() {
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
+    let blocknumbertext : string;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
@@ -467,8 +468,11 @@ function removeAllBlocknumbers() {
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
+                    blocknumbertext = document.getText(range);
+                    if (blocknumbertext.trim().endsWith(':')){
+                        continue;
+                    }
                     textEdits.push(vscode.TextEdit.replace(range, ""));
-                    // textEdits.push(vscode.TextEdit.insert(...));
                 }
             }
             const workEdits = new vscode.WorkspaceEdit();
@@ -488,6 +492,8 @@ function removeAllBlocknumbers() {
 async function addBlocknumbers() {
     let start = 10;
     let step = 10;
+    let blocknumber = start;
+    let blocknumbertext : string;
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
@@ -541,7 +547,6 @@ async function addBlocknumbers() {
             }
 
             // add new blocknumbers
-            let blocknumber = start;
             const maximalLeadingZeros = digitCount(start + document.lineCount * step);
 
             // edit document line by line
@@ -584,6 +589,11 @@ async function addBlocknumbers() {
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
+                    blocknumbertext = document.getText(range);
+                    if (blocknumbertext.trim().endsWith(':')){
+                        continue;
+                    }
+
                     textEdits.push(vscode.TextEdit.replace(range, block));
                 } else {
                     textEdits.push(
@@ -847,9 +857,14 @@ export function beautify(): void {
                     // Zeile wird an der Aktuellen Position eingefügt
                     newLine = newLineForBeautifier(currentLine, currentPos);
                 }
-
-                newLine = saveBlockNumber + newLine;
-
+                
+                if (saveBlockNumber.trim().endsWith(":")){
+                    newLine = saveBlockNumber.trim() + newLine; 
+                }
+                else {
+                    newLine = saveBlockNumber + newLine;
+                }
+                
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
         }
