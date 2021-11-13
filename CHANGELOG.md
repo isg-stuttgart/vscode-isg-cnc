@@ -14,6 +14,8 @@ Types of changes
 
 ## [Unreleased]
 
+- added visual studio code market and open vsx registry to the action main.yml
+
 ## [V0.2.4]
 
 ### Added
