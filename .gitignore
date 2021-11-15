@@ -8,3 +8,4 @@ test_and_info/
 *.zip
 *.7z
 *.tgz
+docs/book/

@@ -1,12 +1,4 @@
-# vscode-isg-cnc
-
-## Getting started
-
-### [Installation](installation.md)
-
-### [Configuration](configuration.md)
-
-## FAQ
+# FAQ
 
 1. I have installed the extension, but the syntax highlighting is not correct. What can I do?  
 
