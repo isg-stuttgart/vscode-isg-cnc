@@ -1,7 +1,11 @@
 # Installation
 
+## Requirements
+
+Visual Studio Code V1.59.0 or higher
+
 - Install Visual Studio Code first.
-- Install the extension.
+- Install the extension isg-cnc.
 
 There are two ways to do that:  
 

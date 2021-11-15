@@ -1,3 +1,5 @@
 # Visual Studio Code extension for ISG CNC
 
-[Installation](mdbook/src/configuration.md)
+[Installation](installation.md)
+[Configuration](configuration.md)
+[FAQ](faq.md)
