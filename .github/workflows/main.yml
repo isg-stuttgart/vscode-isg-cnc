@@ -27,7 +27,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.PAGES_TOKEN }}
-          publish_dir: ./book
+          publish_dir: ./docs/book
 
   deploy_extension:
     runs-on: ubuntu-latest
