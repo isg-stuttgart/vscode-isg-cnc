@@ -9,7 +9,7 @@ name: Deploy Extension
 
 jobs:
   deploy_mdbook:
-    runs-on: buntu-latest
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
