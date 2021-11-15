@@ -2,4 +2,4 @@
 
 [Installation](installation.md)  
 [Configuration](configuration.md)  
-[FAQ](faq.md)
+[FAQ](faq.md)  
