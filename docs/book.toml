@@ -1,0 +1,16 @@
+[book]
+title = "Visual Studio Code extension for ISG CNC Code"
+authors = ["Andreas Hafner"]
+language = "en"
+multilingual = false
+src = "src"
+
+[output.html]
+default-theme = "isg"
+preferred-dark-theme = "isg"
+
+[output.html.fold]
+enable = true
+level = 0
+
+# [output.linkcheck]
