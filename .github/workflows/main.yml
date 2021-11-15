@@ -8,23 +8,27 @@ on:
 name: Deploy Extension
 
 jobs:
-
   deploy_mdbook:
-    runs-on: ubuntu-latest
+    runs-on: buntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: XAMPPRocky/deploy-mdbook@v1
+      - uses: actions/checkout@v2
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v1
         with:
-          # The branch to deploy to.
-          # branch: # optional, default is gh-pages
-          # The github reposistory in `owner/repo` format.
-          # repository: 
-          # Disable deployment.
-          # build_only: # optional
-          # The working directory for the action. Default $GITHUB_WORKSPACE
-          workspace: docs
-          # The GitHub token for deploying mdbook.
-          token: ${{ secrets.PAGES_TOKEN }}
-          
+          mdbook-version: 'latest'
+
+      - run: mdbook build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.PAGES_TOKEN }}
+          publish_dir: ./book
+
   deploy_extension:
     runs-on: ubuntu-latest
     steps:
