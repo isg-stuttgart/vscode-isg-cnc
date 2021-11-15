@@ -1,6 +1,12 @@
-# Installation
+# Visual Studio Code extension for ISG CNC
 
-## Requirements
+[Installation](installation.md)  
+[Configuration](configuration.md)  
+[FAQ](faq.md)  
+
+## Installation
+
+### Requirements
 
 Visual Studio Code V1.59.0 or higher
 
