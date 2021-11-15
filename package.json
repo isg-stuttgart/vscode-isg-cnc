@@ -4,7 +4,7 @@
     "description": "Support for ISG-CNC NC-Code",
     "version": "0.2.4",
     "publisher": "isg-cnc",
-    "icon": "images/ISGCncEditor.png",
+    "icon": "ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.59.0"

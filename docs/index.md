@@ -1,14 +1,14 @@
-# ![ISG-CNC](../images/ISGCncEditor.png) vscode-isg-cnc
+# vscode-isg-cnc
 
 ## Getting started
 
-### [Installation](./installation.md)
+### [Installation](installation.md)
 
-### [Configuration](./configuration.md)
+### [Configuration](configuration.md)
 
 ## FAQ
 
 1. I have installed the extension, but the syntax highlighting is not correct. What can I do?  
 
 - We use a separate scope namespace for syntax highlighting. Please set the color theme in the extension settings to isg-dark or isg-light.  
-  [See also color theme settings](./configuration.md/#color-theme)
+  [See also color theme settings](configuration.md/#color-theme)
