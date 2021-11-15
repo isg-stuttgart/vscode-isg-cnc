@@ -20,7 +20,7 @@ Important: Doubleclick on vsix file didn't work! Install inside Visual Studio Co
 
 ### Configuration
 
-After the installation you should select a color theme. You can choose isg-dark or isg-light so that the syntax highlighting is displayed correctly. Because we use our own scope names.  
+Because of plug-in specific syntax highlighting (we use own scope names) you should select a color theme. You can choose between isg-dark or isg-light  
 
 #### Color Theme
 
