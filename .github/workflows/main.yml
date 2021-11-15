@@ -21,7 +21,7 @@ jobs:
           # Disable deployment.
           # build_only: # optional
           # The working directory for the action. Default $GITHUB_WORKSPACE
-          # workspace: # optional
+          workspace: docs
           # The GitHub token for deploying mdbook.
           token: ${{ secrets.PAGES_TOKEN }}
           
