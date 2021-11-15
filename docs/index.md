@@ -1,4 +1,4 @@
-# vscode-isg-cnc
+# ![ISG-CNC](../images/ISGCncEditor.png) vscode-isg-cnc
 
 ## Getting started
 
@@ -26,30 +26,31 @@ After the installation you should select a color theme. You can choose isg-dark 
 
 - Choose your favorite color theme
 
-![change color theme](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc-change-color-theme.png)
+![change color theme](../images/vscode-isg-cnc-change-color-theme.png)
 
 #### Common setting information
 
 - You can change some more settings, the shown settings are the default settings:  
 
-![settings](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_settings.png)
+![settings](../images/vscode-isg-cnc_settings.png)
 
 - You can reset every setting by clicking the marked button and choose reset setting.  
 
-![reset settings](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_reset_setting.png)
+![reset settings](../images/vscode-isg-cnc_reset_setting.png)
 
 #### Documentation settings
+
 - Check the correct path to your documentation. [Default is ISG online documentation](https://www.isg-stuttgart.de/kernel-html5/)
 
-![settings documentation](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_documentation_settings.png)
+![settings documentation](../images/vscode-isg-cnc_documentation_settings.png)
 
 - Check the correct path to your browser for linux or windows.
 
-![settings browser](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_browser_settings.png)
+![settings browser](../images/vscode-isg-cnc_browser_settings.png)
 
 ## FAQ
 
 1. I have installed the extension, but the syntax highlighting is not correct. What can I do?  
 
 - We use a separate scope namespace for syntax highlighting. Please set the color theme in the extension settings to isg-dark or isg-light.  
-  [See also color theme settings](https://github.com/isg-stuttgart/vscode-isg-cnc/wiki#color-theme)
+  [See also color theme settings](#color-theme)
