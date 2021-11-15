@@ -10,7 +10,7 @@
 There are two ways to do that:  
 
 1. You can install the extension in the Visual Studio Code extension manager by searching for isg-cnc.
-1. If you dont have internet on the computer zou are want to install the extension you can download the vsix file and install Extension vscode-isg-cnc-<VERSIONNUMBER>.vsix (for example: vscode-isg-cnc-0.2.4.vsix) from Marketplaces.
+1. If you dont have internet you can download the vsix file from marketplaces and install extension locally.
 
 Downloadlinks:  
 [Visual Studio Code Marketplace - vscode-isg-cnc](https://marketplace.visualstudio.com/items?itemName=isg-cnc.vscode-isg-cnc&ssr=false#overview)  
