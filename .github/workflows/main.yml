@@ -1,35 +1,11 @@
 on:
-  push:
-    branches:
-      - "main"
+  push:    
     tags:
       - "V*"
-  pull_request:
 
 name: Deploy Extension
 
 jobs:
-  deploy_mdbook:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
-        with:
-          mdbook-version: 'latest'
-
-      - run: mdbook build docs
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.PAGES_TOKEN }}
-          publish_dir: ./book
-
   deploy_extension:
     runs-on: ubuntu-latest
     steps:
