@@ -16,7 +16,7 @@ Visual Studio Code V1.59.0 or higher
 
 ## Manual
 
-For details look at the project [Pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
+For details look at the project [pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
 
 ## Features
 
