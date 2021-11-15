@@ -24,7 +24,7 @@ Types of changes
 
 ### Fixed
 
-- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:)
+- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
 - Fixed typescript issues and namespace convention
 
 ### Removed
