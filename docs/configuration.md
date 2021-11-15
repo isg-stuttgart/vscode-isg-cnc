@@ -6,11 +6,14 @@ Because of plug-in specific syntax highlighting (we use own scope names) you sho
 
 - Choose your favorite color theme
 
-![change color theme](../images/vscode-isg-cnc-change-color-theme.png)
+![change color theme](../images/vscode-isg-cnc_change_color_theme.png)
 
 ## Common setting information
 
-- You can change some more settings, the shown settings are the default settings:  
+You can change some more settings, the shown settings are the default settings:  
+There are some settings to prepare the extension. The Browser path and the ISG documentation path must be set correctly. You can easily change it at the extensionsettings.
+
+You can change the settings in the graphical settings in visual studio code.
 
 ![settings](../images/vscode-isg-cnc_settings.png)
 
