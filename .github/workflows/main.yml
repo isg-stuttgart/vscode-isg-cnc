@@ -4,6 +4,7 @@ on:
       - "main"
     tags:
       - "V*"
+  pull_request:
 
 name: Deploy Extension
 
