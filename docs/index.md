@@ -1,37 +1,55 @@
-## Welcome to GitHub Pages
+# vscode-isg-cnc
 
-You can use the [editor on GitHub](https://github.com/isg-stuttgart/vscode-isg-cnc/edit/develop/docs/index.md) to maintain and preview the content for your website in Markdown files.
+## Getting started
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Installation
 
-### Markdown
+- Install Visual Studio Code first.
+- Install the extension.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+There are two ways to do that:  
 
-```markdown
-Syntax highlighted code block
+1. You can install the extension in the Visual Studio Code extension manager by searching for isg-cnc.
+1. If you dont have internet on the computer zou are want to install the extension you can download the vsix file and install Extension vscode-isg-cnc-<VERSIONNUMBER>.vsix (for example: vscode-isg-cnc-0.2.4.vsix) from Marketplaces.
 
-# Header 1
-## Header 2
-### Header 3
+Downloadlinks:  
+[Visual Studio Code Marketplace - vscode-isg-cnc](https://marketplace.visualstudio.com/items?itemName=isg-cnc.vscode-isg-cnc&ssr=false#overview)  
+[Open VSX Registry - vscode-isg-cnc](https://open-vsx.org/extension/isg-cnc/vscode-isg-cnc)  
 
-- Bulleted
-- List
+Important: Doubleclick on vsix file didn't work! Install inside Visual Studio Code via **Visual Studio Code - Extensions - ... - Install from VSIX...**
 
-1. Numbered
-2. List
+### Configuration
 
-**Bold** and _Italic_ and `Code` text
+After the installation you should select a color theme. You can choose isg-dark or isg-light so that the syntax highlighting is displayed correctly. Because we use our own scope names.  
 
-[Link](url) and ![Image](src)
-```
+#### Color Theme
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+- Choose your favorite color theme
 
-### Jekyll Themes
+![change color theme](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc-change-color-theme.png)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/isg-stuttgart/vscode-isg-cnc/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+#### Common setting information
 
-### Support or Contact
+- You can change some more settings, the shown settings are the default settings:  
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+![settings](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_settings.png)
+
+- You can reset every setting by clicking the marked button and choose reset setting.  
+
+![reset settings](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_reset_setting.png)
+
+#### Documentation settings
+- Check the correct path to your documentation. [Default is ISG online documentation](https://www.isg-stuttgart.de/kernel-html5/)
+
+![settings documentation](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_documentation_settings.png)
+
+- Check the correct path to your browser for linux or windows.
+
+![settings browser](https://github.com/isg-stuttgart/vscode-isg-cnc/blob/develop/images/vscode-isg-cnc_browser_settings.png)
+
+## FAQ
+
+1. I have installed the extension, but the syntax highlighting is not correct. What can I do?  
+
+- We use a separate scope namespace for syntax highlighting. Please set the color theme in the extension settings to isg-dark or isg-light.  
+  [See also color theme settings](https://github.com/isg-stuttgart/vscode-isg-cnc/wiki#color-theme)
