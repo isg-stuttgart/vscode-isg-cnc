@@ -14,7 +14,10 @@ Types of changes
 
 ## [Unreleased]
 
-- added visual studio code market and open vsx registry to the action main.yml
+### Added
+
+- Added documentation
+- Added visual studio code market and open vsx registry to the action main.yml
 
 ## [V0.2.4]
 
@@ -24,7 +27,7 @@ Types of changes
 
 ### Fixed
 
-- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:)
+- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
 - Fixed typescript issues and namespace convention
 
 ### Removed
