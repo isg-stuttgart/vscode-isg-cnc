@@ -4,7 +4,25 @@ on:
       - "V*"
 
 name: Deploy Extension
+
 jobs:
+
+  deploy_mdbook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: XAMPPRocky/deploy-mdbook@v1
+        with:
+          # The branch to deploy to.
+          # branch: # optional, default is gh-pages
+          # The github reposistory in `owner/repo` format.
+          # repository: 
+          # Disable deployment.
+          # build_only: # optional
+          # The working directory for the action. Default $GITHUB_WORKSPACE
+          # workspace: # optional
+          # The GitHub token for deploying mdbook.
+          token: ${{ secrets.PAGES_TOKEN }}
+          
   deploy_extension:
     runs-on: ubuntu-latest
     steps:
@@ -22,19 +40,3 @@ jobs:
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
-
-  deploy_mdbook:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: XAMPPRocky/deploy-mdbook@v1
-        with:
-          # The branch to deploy to.
-          # branch: # optional, default is gh-pages
-          # The github reposistory in `owner/repo` format.
-          # repository: 
-          # Disable deployment.
-          # build_only: # optional
-          # The working directory for the action. Default $GITHUB_WORKSPACE
-          # workspace: # optional
-          # The GitHub token for deploying mdbook.
-          token: ${{ secrets.PAGES_TOKEN }}
