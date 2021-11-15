@@ -30,7 +30,7 @@ See license in [LICENSE](LICENSE)
 
 ## Installation
 
-For details look at the project [wiki](https://github.com/isg-stuttgart/vscode-isg-cnc/wiki).
+For details look at the project [Pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
 
 ## Extension Settings
 
