@@ -27,7 +27,7 @@ Types of changes
 - Fixed startnumber for adding blocknumbers didnt work
 - Fixed adding or renumber blocknumbers in conjunction with nc labels
 - Fixed format code issue. Sometimes the current position was wrong calculated
-- Fixed format code issue. Formating in conjunction with blocknumbers [Issue #10](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/10)
+- Fixed format code issue. Formating in conjunction with blocknumbers [Issue #10 reported by AurelWM](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/10)
 
 ## [V0.2.4]
 
@@ -37,7 +37,7 @@ Types of changes
 
 ### Fixed
 
-- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
+- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6 reported by AurelWM](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
 - Fixed typescript issues and namespace convention
 
 ### Removed
