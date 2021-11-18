@@ -14,10 +14,20 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.5]
+
 ### Added
 
-- Added documentation
+- Added NC labels to syntax highlighting
+- Added extension documentation
 - Added visual studio code market and open vsx registry to the action main.yml
+
+### Fixed
+
+- Fixed startnumber for adding blocknumbers didnt work
+- Fixed adding or renumber blocknumbers in conjunction with nc labels
+- Fixed format code issue. Sometimes the current position was wrong calculated
+- Fixed format code issue. Formating in conjunction with blocknumbers [Issue #10 reported by AurelWM](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/10)
 
 ## [V0.2.4]
 
@@ -27,7 +37,7 @@ Types of changes
 
 ### Fixed
 
-- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
+- Fixed format code, add blocknumbers, remove blocknumbers function for nc labels (example N10:) [Issue #6 reported by AurelWM](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/6)
 - Fixed typescript issues and namespace convention
 
 ### Removed
@@ -222,6 +232,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.2.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.4...V0.2.5
 [V0.2.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.3...V0.2.4
 [V0.2.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...V0.2.3
 [V0.2.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...V0.2.2

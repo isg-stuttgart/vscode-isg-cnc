@@ -27,6 +27,9 @@
             "include": "#modifiers"
         },
         {
+            "include": "#labels"
+        },
+        {
             "include": "#variables"
         },
         {
@@ -736,6 +739,14 @@
                 {
                     "match": "\\b(@?[Rr])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
                     "name": "isg-cnc.axis"
+                }
+            ]
+        },
+        "labels": {
+            "patterns": [
+                {
+                    "match": "(\\s?)N[0-9]*:{1}(\\s?)|\\[.*\\]:{1}",
+                    "name": "isg-cnc.keyword.operator"
                 }
             ]
         },
