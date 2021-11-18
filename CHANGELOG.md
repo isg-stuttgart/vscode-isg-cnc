@@ -16,8 +16,16 @@ Types of changes
 
 ### Added
 
-- Added documentation
+- Added NC labels to syntax highlighting
+- Added extension documentation
 - Added visual studio code market and open vsx registry to the action main.yml
+
+### Fixed
+
+- Fixed startnumber for adding blocknumbers didnt work
+- Fixed adding or renumber blocknumbers in conjunction with nc labels
+- Fixed format code issue. Sometimes the current position was wrong calculated
+- Fixed format code issue. Formating in conjunction with blocknumbers [Issue #10](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/10)
 
 ## [V0.2.4]
 
