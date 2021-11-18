@@ -831,7 +831,9 @@ export function beautify(): void {
                         }
                     } else {
                         saveBlockNumber = activeTextEditor.document.getText(range).trim();
-                        currentLine = activeTextEditor.document.getText(line.range).trim();
+                        currentLine = activeTextEditor.document.getText(
+                            new vscode.Range(document.positionAt(endPos), line.range.end)
+                        ).trim();
                     }
                 } else {
                     currentLine = activeTextEditor.document.getText(line.range).trim();
@@ -886,7 +888,12 @@ export function beautify(): void {
                     currentLine.indexOf("$DEFAULT") === 0
                 ) {
                     // insert line at actual position - TabSize inserted
-                    newLine = newLineForBeautifier(currentLine, currentPos - whiteSpaces);
+                    currentPos = currentPos - whiteSpaces;
+                    if (currentPos < 0) {
+                        currentPos = 0;
+                    }
+                    newLine = newLineForBeautifier(currentLine, currentPos);
+                    currentPos = currentPos + whiteSpaces;
                 } else {
                     // insert line at actual position
                     newLine = newLineForBeautifier(currentLine, currentPos);
@@ -902,6 +909,7 @@ export function beautify(): void {
                 } else {
                     newLine = newLine.trimEnd();
                 }
+                outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
         }
