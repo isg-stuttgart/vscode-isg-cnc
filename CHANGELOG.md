@@ -14,6 +14,8 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.5]
+
 ### Added
 
 - Added NC labels to syntax highlighting
@@ -230,6 +232,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.2.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.4...V0.2.5
 [V0.2.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.3...V0.2.4
 [V0.2.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...V0.2.3
 [V0.2.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.1...V0.2.2
