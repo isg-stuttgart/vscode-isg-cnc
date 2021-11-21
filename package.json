@@ -5,9 +5,9 @@
     "version": "0.2.5",
     "publisher": "isg-cnc",
     "galleryBanner": {
-    "color": "#0BA1E2",
-    "theme": "dark"
-  },
+        "color": "#0BA1E2",
+        "theme": "dark"
+    },
     "icon": "ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
