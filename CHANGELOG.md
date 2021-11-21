@@ -14,6 +14,10 @@ Types of changes
 
 ## [Unreleased]
 
+### Added
+
+- Added galleryBanner in package.json
+
 ## [V0.2.5]
 
 ### Added
