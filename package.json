@@ -18,8 +18,9 @@
         "nc",
         "gcode",
         "isg",
-        "KUKA.CNC",
+        "KUKA CNC",
         "TwinCAT CNC",
+        "Beckhoff CNC",
         "KEB CNC"
     ],
     "preview": true,
@@ -51,7 +52,7 @@
                 "isg-cnc.locale": {
                     "type": "string",
                     "default": "de-DE",
-                    "description": "Choose the language (en-GB, de-DE ...)"
+                    "description": "Choose the documentation language (en-GB, de-DE ...)"
                 },
                 "isg-cnc.browser-windows": {
                     "type": "string",
@@ -216,7 +217,7 @@
                 "id": "isg-list",
                 "aliases": [
                     "List",
-                    "ISG Liste"
+                    "ISG List"
                 ],
                 "extensions": [
                     ".lis"
@@ -226,7 +227,7 @@
             {
                 "id": "isg-cnc-cycle-error",
                 "aliases": [
-                    "isg cnc cycle error definition file",
+                    "ISG CNC cycle error definition file",
                     "ISG CNC Zyklen Fehlerdefinitionddatei"
                 ]
             }
