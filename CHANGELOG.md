@@ -14,6 +14,18 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.2.6]
+
+### Added
+
+    - #RT CYCLE command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+    - SYN snippet after #WAIT and #SIGNAL command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+
+### Fixed
+
+    - Syntax highlighting of coordinates with '+' (e.g. X+10) [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+    - Syntax highlighting of SYN after #WAIT and #SIGNAL command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+
 ## [V0.2.5]
 
 ### Added
