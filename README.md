@@ -7,8 +7,11 @@ For keyboard preferences press `CTRL+SHIFT+P` and type keyboard. Select Preferen
 Now you can search for isg-cnc to find or change shortcuts.\
 After pressing `CTRL+SHIFT+P` you can also type ISG-CNC to find all exported commands for this extension.
 You can choose special color themes ISG-CNC Light and Dark by pressing F1 and type theme, select Preferences: Color Theme.
-The documentation for ISG-CNC start with or without selection.\
-If text is selected the documentation will opened with search results in the documentation.
+The documentation for ISG-CNC start with or without selection.
+
+You can find and download the extension in the following marketplaces:
+- [Microsoft Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=isg-cnc.vscode-isg-cnc)
+- [Eclipse Foundation Open VSX Registry](https://open-vsx.org/extension/isg-cnc/vscode-isg-cnc)
 
 ## Requirements
 
