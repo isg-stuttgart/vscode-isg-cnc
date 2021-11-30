@@ -20,6 +20,7 @@ Types of changes
 
     - #RT CYCLE command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
     - SYN snippet after #WAIT and #SIGNAL command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+    - Add 'U','V','W' to syntax highlighting coordinates
 
 ### Fixed
 

@@ -685,7 +685,7 @@
         "scope": "isg-cnc",
         "prefix": "#RT CYCLE",
         "body": [
-            "#RT CYCLE ${1|DELETE,END|}"
+            "#RT CYCLE${1|\u200B, DELETE, END|}"
         ],
         "description": "#RT CYCLE"
     },
