@@ -14,9 +14,12 @@ If text is selected the documentation will opened with search results in the doc
 
 Visual Studio Code V1.59.0 or higher
 
-## Manual
+## Manuals
 
-For details look at the project [pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
+- For more project details look at the project [pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
+- More information about the nc code syntax look at the [ISG documentation](https://www.isg-stuttgart.de/kernel-html5/).
+  - Direktlink to the [german programming manual](https://www.isg-stuttgart.de/kernel-html5/de-DE/index.html#414992651)
+  - Direktlink to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 
 ## Features
 
