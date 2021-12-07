@@ -10,6 +10,7 @@ You can choose special color themes ISG-CNC Light and Dark by pressing F1 and ty
 The documentation for ISG-CNC start with or without selection.
 
 You can find and download the extension in the following marketplaces:
+
 - [Microsoft Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=isg-cnc.vscode-isg-cnc)
 - [Eclipse Foundation Open VSX Registry](https://open-vsx.org/extension/isg-cnc/vscode-isg-cnc)
 
