@@ -681,6 +681,14 @@
         ],
         "description": "#RTCP"
     },
+    "#RT CYCLE": {
+        "scope": "isg-cnc",
+        "prefix": "#RT CYCLE",
+        "body": [
+            "#RT CYCLE${1|\u200B, DELETE, END|}"
+        ],
+        "description": "#RT CYCLE"
+    },
     "#SAVE CONFIG": {
         "scope": "isg-cnc",
         "prefix": "#SAVE CONFIG",
@@ -733,7 +741,7 @@
         "scope": "isg-cnc",
         "prefix": "#SIGNAL",
         "body": [
-            "#SIGNAL ${1|REMOVE|}"
+            "#SIGNAL ${1|REMOVE,SYN|}"
         ],
         "description": "#SIGNAL"
     },
@@ -935,7 +943,7 @@
         "scope": "isg-cnc",
         "prefix": "#WAIT",
         "body": [
-            "#WAIT ${1|FOR,INDP,INDP ALL|}"
+            "#WAIT ${1|FOR,INDP,INDP ALL,SYN|}"
         ],
         "description": "#WAIT"
     },

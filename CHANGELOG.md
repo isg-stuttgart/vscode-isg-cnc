@@ -14,6 +14,21 @@ Types of changes
 
 ## [Unreleased]
 
+
+## [V0.2.6]
+
+### Added
+
+- #RT CYCLE command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+- SYN snippet after #WAIT and #SIGNAL command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+- Add 'U','V','W' to syntax highlighting coordinates
+- Added galleryBanner in package.json
+    
+### Fixed
+
+- Syntax highlighting of coordinates with '+' (e.g. X+10) [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+- Syntax highlighting of SYN after #WAIT and #SIGNAL command [Issue #12 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/12)
+
 ## [V0.2.5]
 
 ### Added
@@ -232,6 +247,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.2.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.5...V0.2.6
 [V0.2.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.4...V0.2.5
 [V0.2.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.3...V0.2.4
 [V0.2.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.2...V0.2.3
