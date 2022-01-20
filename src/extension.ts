@@ -106,6 +106,11 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // commands
     context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
+            findAllToolCalls()
+        )
+    );
+    context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.GoToPosition", () =>
             goToPosition()
         )
@@ -977,4 +982,14 @@ function triggerUpdateDecorations() {
         timeout = undefined;
     }
     timeout = setTimeout(updateDecorations, 50);
+}
+
+function findAllToolCalls(): any {
+    let params = {
+        query: "[^a-zA-Z0-9](T[0-9]+)",
+        triggerSearch: true,
+        isRegex: true,
+        isCaseSensitive: true,
+    };
+    vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }

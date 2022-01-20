@@ -82,6 +82,10 @@
         },
         "commands": [
             {
+                "command": "isg-cnc.FindAllToolCalls",
+                "title": "ISG-CNC: Find all tool calls in opened nc files"
+            },
+            {
                 "command": "isg-cnc.GoToPosition",
                 "title": "ISG-CNC: Go to Fileoffset"
             },
@@ -138,23 +142,28 @@
                 },
                 {
                     "when": "resourceLangId == isg-cnc",
-                    "command": "isg-cnc.AddBlocknumbers",
+                    "command": "isg-cnc.FindAllToolCalls",
                     "group": "isg-cnc@5"
                 },
                 {
                     "when": "resourceLangId == isg-cnc",
-                    "command": "isg-cnc.RemoveAllBlocknumbers",
+                    "command": "isg-cnc.AddBlocknumbers",
                     "group": "isg-cnc@6"
                 },
                 {
                     "when": "resourceLangId == isg-cnc",
-                    "command": "isg-cnc.StartDocu",
+                    "command": "isg-cnc.RemoveAllBlocknumbers",
                     "group": "isg-cnc@7"
                 },
                 {
                     "when": "resourceLangId == isg-cnc",
-                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "command": "isg-cnc.StartDocu",
                     "group": "isg-cnc@8"
+                },
+                {
+                    "when": "resourceLangId == isg-cnc",
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "group": "isg-cnc@9"
                 }
             ]
         },
