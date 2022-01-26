@@ -601,7 +601,7 @@
         "operators": {
             "patterns": [
                 {
-                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*)",
+                    "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD[^a-zA-Z]\\s*?*)",
                     "name": "isg-cnc.keyword.operator"
                 },
                 {
