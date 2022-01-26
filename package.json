@@ -80,6 +80,27 @@
                 }
             }
         },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "cnc-views-container",
+                    "title": "CNC",
+                    "icon": "ISGCncEditor.png"
+                }
+            ]
+        },
+        "views": {
+            "cnc-views-container": [
+                {
+                    "id": "cnc-view-tools",
+                    "name": "Tools"
+                },
+                {
+                    "id": "cnc-view-programs",
+                    "name": "Programs"
+                }
+            ]
+        },
         "commands": [
             {
                 "command": "isg-cnc.FindAllToolCalls",
