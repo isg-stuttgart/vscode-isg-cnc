@@ -684,7 +684,7 @@ function startDocu() {
     }
 
     if (docuAddress !== "" && docuAddress.startsWith("http")) {
-        args = docuAddress;
+        args = '"' + docuAddress + '"';
     } else {
         args = `"file://${docuAddress}"`;
     }
