@@ -20,6 +20,7 @@ Types of changes
 
 ### Fixed
 
+- Added standard scopes for syntax highlighting to use more themes than isg themes
 - Fix syntax highlighting for nc MOD operator
 
 ## [V0.2.6]
