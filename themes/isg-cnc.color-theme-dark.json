@@ -24,23 +24,23 @@
     },
     "tokenColors": [
         {
-            "scope": "keyword.command.gcode",
+            "scope": "keyword.other.gmcode",
             "settings": {
                 "foreground": "#ce87fd",
                 "fontStyle": ""
             }
         },
         {
-            "scope": "keyword.command.mcode",
+            "scope": "keyword.other.hashtagcommand",
             "settings": {
-                "foreground": "#9665f3",
+                "foreground": "#2eb9fa",
                 "fontStyle": ""
             }
         },
         {
-            "scope": "keyword.command.hashtag",
+            "scope": "keyword.other.technology",
             "settings": {
-                "foreground": "#2eb9fa",
+                "foreground": "#ff6600",
                 "fontStyle": ""
             }
         },
@@ -52,6 +52,13 @@
             }
         },
         {
+            "scope": "keyword.control.call",
+            "settings": {
+                "foreground": "#ff0000",
+                "fontStyle": ""
+            }
+        },
+        {
             "scope": "keyword.operator",
             "settings": {
                 "foreground": "#ff0000",
@@ -59,52 +66,31 @@
             }
         },
         {
-            "scope": "constant",
+            "scope": "constant.other",
             "settings": {
                 "foreground": "#a00078",
-                "fontStyle": "italic bold"
+                "fontStyle": ""
+            }
+        },
+        {
+            "scope": "constant.numeric",
+            "settings": {
+                "foreground": "#a00078",
+                "fontStyle": ""
             }
         },
         {
             "scope": "storage.type.programnumber",
             "settings": {
                 "foreground": "#486e00",
-                "fontStyle": "bold"
-            }
-        },
-        {
-            "scope": "keywords.other.technology",
-            "settings": {
-                "foreground": "#ff6600",
-                "fontStyle": "bold"
+                "fontStyle": ""
             }
         },
         {
             "scope": "storage.type.blocknumber",
             "settings": {
                 "foreground": "#727272",
-                "fontStyle": "italic"
-            }
-        },
-        {
-            "scope": "keyword.axis",
-            "settings": {
-                "foreground": "#ffbd2f",
                 "fontStyle": ""
-            }
-        },
-        {
-            "scope": "keyword.tool",
-            "settings": {
-                "foreground": "#008871",
-                "fontStyle": "bold"
-            }
-        },
-        {
-            "scope": "keyword.control.call",
-            "settings": {
-                "foreground": "#ff0000",
-                "fontStyle": "italic bold"
             }
         },
         {
@@ -129,10 +115,17 @@
             }
         },
         {
+            "scope" : "variable.language",
+            "settings": {
+                "foreground": "#e523ff",
+                "fontStyle": ""
+            }
+        },
+        {
             "scope" : "string.quoted.double",
             "settings": {
                 "foreground": "#96712d",
-                "fontStyle": "bold"
+                "fontStyle": ""
             }
         }
     ]

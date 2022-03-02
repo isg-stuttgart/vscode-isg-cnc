@@ -42,7 +42,7 @@
             "include": "#dollarkeywords"
         },
         {
-            "include": "#hashtagkeywords"
+            "include": "#hashtagcommandkeywords"
         },
         {
             "include": "#operators"
@@ -85,7 +85,7 @@
             "patterns": [
                 {
                     "match": "\\b[Gg][0-9]{1,3}\\b",
-                    "name": "keyword.command.gcode"
+                    "name": "keyword.other.gmcode"
                 }
             ]
         },
@@ -93,7 +93,7 @@
             "patterns": [
                 {
                     "match": "\\b[Mm][0-9]{1,3}\\b",
-                    "name": "keyword.command.mcode"
+                    "name": "keyword.other.gmcode"
                 }
             ]
         },
@@ -177,427 +177,427 @@
                 }
             ]
         },
-        "hashtagkeywords": {
+        "hashtagcommandkeywords": {
             "patterns": [
                 {
                     "match": "\\#GANTRY\\s*?*((ON\\s*?*ALL)|ON\\s*?|(OFF\\s*?*ALL)|OFF\\s*?)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ACHSE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ACHSTAUSCH",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ACS\\s*?*((DEF\\s*?*ACT)|DEF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ACS\\s*?*(ON|(OFF\\s*?*ALL)|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ADD",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#AKIMA\\s*?*(STARTVECTOR|ENDVECTOR|TRANS)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ANG",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#AX\\s*?*((DEF\\s*?*DEFAULT)|DEF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#AX\\s*?*(LINK\\s*?*(ON|OFF|ALL)|REQUEST|((RELEASE\\s*?*ALL)|(UNLOCK\\s*?*ALL)|RELEASE)|LOCK)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#BACKWARD\\s*?*STORAGE\\s*?*CLEAR",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#BLOCKSEARCH\\s*?*(LOCKED|RELEASED)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CACHE\\s*?*(CLEAR|LOAD)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CALL\\s*?*AX",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CAXTRACK\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#CAX\\s*?(OFF|ON|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|#CAX",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CHANNEL\\s*?*(INIT|SET|(INTERFACE\\s*?*(ON|OFF)))",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CHR",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CHF",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CLEAR\\s*?*CONFIG",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#COMMAND\\s*?*((WR\\s*?*SYN|WR)|(WAIT\\s*?*SYN|WAIT))",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#CONTOUR\\s*?*(MODE\\s*?*ON|MODE))",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CONTROL\\s*?*AREA\\s*?*(BEGIN|END|OFF|ON|CLEAR)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CORNER\\s*?*PARAM",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CYL\\s*?*ORI\\s*?*(LATERAL|PROFILE)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#CS\\s*?*((ADD|(DEF\\s*?*ACT)|DEF|(DEL\\s*?*ALL)|MODE\\s*?*(ON|OFF))|ON|(OFF\\s*?*ALL)|OFF|SELECT)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#CYL\\s*?(OFF|(\\[(-?(?:\\d+(?:\\.\\d*)?))\\])))|\\#CYL",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DELETE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DEL\\s*?*DIST2GO",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DISTANCE\\s*?*PROG\\s*?*START\\s*?*(ON|OFF|CLEAR)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DRIVE\\s*?*(WR|WAIT)\\s*?*SYN",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DYN_WEIGHT\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#DYNAMIC\\s*?*WEIGHT\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ECS\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#EDM\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#EDGE\\s*?*MACHINING\\s*?*(ON\\s*?*DEFAULT|ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#DISABLE|\\#ENABLE)\\s*?*AX\\s*?*LINK",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ERROR",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#EXPORT\\s*?*VE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#EXPL\\s*?*SYN",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#FACE\\s*?(OFF|\\[(-?(?:\\d+(?:\\.\\d*)?))\\])|\\#FACE)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#FGROUP\\s*?*(ROT|WAXIS)|\\#FGROUP)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#FILE\\s*?*(NAME|EXIST|DELETE|RENAME)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#FILTER\\s*?*(ON|OFF)|\\#FILTER|\\s*?*\\[HSC\\])",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#FLUSH\\s*?*(CONTINUE|WAIT)|\\#FLUSH)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#FRC",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#FREE\\s*?*TOOL\\s*?*CHANGE\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#GET\\s*?*((CMDPOS|ACTPOS)|MANUAL\\s*?*OFFSETS|WCS\\s*?*POSLIMIT)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#HANDWHEEL",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#HSC\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#IDENT\\s*?*((WR|RD)\\s*?*SYN|(WR|RD))",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#INIT\\s*?*MACRO\\s*?*TAB",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#INIT\\s*?*V\\.E\\.",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#JOG\\s*?*(CONT|INCR)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#KIN\\s*?*ID",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#LOAD\\s*?*CONFIG",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#MACHINE\\s*?*DATA",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#MAIN\\s*?*SPINDLE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#MANUAL\\s*?*LIMITS",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#MCS\\s*?*(ON\\s*?*EX\\s*?*TOOL|ON|OFF|TO\\s*?*WCS)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#MEAS\\s*?*(MODE|DEFAULT)|\\#MEAS)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#MICROJOINT",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#MSG\\s*?*(INFO|SAVE\\s*?*EXCLUSIVE|SAVE|(SYN\\s*?*ACK|SYN))|\\#MSG)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#NIBBLE\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#OPTIONAL\\s*?*EXECUTION\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#OTC\\s*?*(ON|OFF)|\\#OTC)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#OVERRIDE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#PSET",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#PRESET",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#PTP\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#PUNCH\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#PUT\\s*?*(AX\\s*?*ALL|AX)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#RND",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ROTATION\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#RTCP\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#RT CYCLE(\\s*?*(DELETE|END))?",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SAVE\\s*?*CONFIG",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#SCALE\\s*?*(ON|OFF)|\\#SCALE)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SEGMENTATION\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SET\\s*?*(SLOPE\\s*?*PROFIL|(AX\\s*?*LINK|AX))",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SINGLE\\s*?*STEP|\\s*?*(\\[ENABLE\\]|\\[DISABLE\\]|\\[RESOLUTION\\s*?\\=\\s*?((-?(?:\\d+(?:\\.\\d*)?)))?\\])",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SPLINE\\s*?*(ON|OFF|TYPE\\s*?*AKIMA|TYPE\\s*?*BSPLINE)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#SIGNAL\\s*?*(REMOVE|SYN)|\\#SIGNAL)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#SLOPE\\s*?*DEFAULT|\\#SLOPE)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#SUPPRESS\\s*?*OFFSETS",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#STROKE\\s*?*DEF\\s*?*(BEGIN|END)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TANGFEED",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TIMER",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TIME",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TLC\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TOOL\\s*?*(DATA|LIFE\\s*?*READ|LIFE\\s*?*REMOVE|ORI\\s*?*CS|PREP|REFRESH)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TRACK\\s*?*CS\\s*?*(ON|OFF|ABS)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#TRAFO\\s*?*(ON|OFF)|\\#TRAFO)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TRANSVELMIN\\s*?*(ON|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#TRC",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#VAR",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ENDVAR",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#VECTOR\\s*?*LIMIT\\s*?*(ON\\s*?*ALL|ON|OFF\\s*?*ALL|OFF)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#VOLCOMP\\s*?*(ON|OFF)|\\#VOLCOMP)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "(\\#WAIT\\s*?*(FOR|INDP\\s*?*ALL|INDP|SYN)|\\#WAIT)",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#WCS\\s*?*TO\\s*?*MCS",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#INFO",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#IF",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ELSE",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 },
                 {
                     "match": "\\#ENDIF",
-                    "name": "keyword.command.hashtag"
+                    "name": "keyword.other.hashtagcommand"
                 }
             ]
         },
@@ -649,19 +649,19 @@
             "patterns": [
                 {
                     "match": "\\b(@?[Ss])((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keywords.other.technology"
+                    "name": "keyword.other.technology"
                 },
                 {
                     "match": "\\b[Ff]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keywords.other.technology"
+                    "name": "keyword.other.technology"
                 },
                 {
                     "match": "\\b[Ee]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keywords.other.technology"
+                    "name": "keyword.other.technology"
                 },
                 {
                     "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keywords.other.technology"
+                    "name": "keyword.other.technology"
                 }
             ]
         },
@@ -669,6 +669,10 @@
             "patterns": [
                 {
                     "match": "^%(-?(?:\\d+(?:\\.\\d*)?))\n",
+                    "name": "storage.type.programnumber"
+                },
+                {
+                    "match": "^%(.*)\n",
                     "name": "storage.type.programnumber"
                 },
                 {
@@ -697,15 +701,11 @@
             "patterns": [
                 {
                     "match": "\\b[Dd]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keyword.tool"
-                },
-                {
-                    "match": "\\b[Hh]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keyword.tool"
+                    "name": "keyword.other.technology"
                 },
                 {
                     "match": "\\b[Tt]((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?)))",
-                    "name": "keyword.tool"
+                    "name": "keyword.other.technology"
                 }
             ]
         },
@@ -733,7 +733,7 @@
             "patterns": [
                 {
                     "match": "(\\s?)N[0-9]*:{1}(\\s?)|\\[.*\\]:{1}",
-                    "name": "keyword.operator"
+                    "name": "keyword.control"
                 }
             ]
         },
@@ -741,43 +741,43 @@
             "patterns": [
                 {
                     "match": "V\\.A\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.SPDL\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.G\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.P\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.S\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.L\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.E\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.TOOL\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.TLM\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "V\\.CYC\\.[.a-zA-Z0-9_]+",
-                    "name": "variable.parameter"
+                    "name": "variable.language"
                 },
                 {
                     "match": "[Pp][0-9]+",
