@@ -21,6 +21,7 @@ Types of changes
 ### Fixed
 
 - Fix syntax highlighting for nc MOD operator
+- Fix folding for lines with NC-block number [Issue #23 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/23)
 
 ## [V0.2.6]
 
