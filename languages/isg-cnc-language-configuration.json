@@ -82,8 +82,14 @@
         ]
     ],
     "indentationRules": {
-        "increaseIndentPattern": "#VAR|#COMMENT BEGIN|$DO|$REPEAT|$FOR|$IF|$WHILE|$CASE|$DEFAULT|$ELSE|$ELSEIF|$SWITCH",
-        "decreaseIndentPattern": "#ENDVAR|#COMMENT END|$ENDDO|$UNTIL|$ENDFOR|$ENDIF|$ENDWHILE|$ENDSWITCH|$BREAK",
+        "increaseIndentPattern": "^(N\\d*)? *(#VAR|#COMMENT BEGIN|\\$DO|\\$REPEAT|\\$FOR|\\$IF|\\$WHILE|\\$CASE|\\$DEFAULT|\\$ELSE|\\$ELSEIF|\\$SWITCH)",
+        "decreaseIndentPattern": "^(N\\d*)? *(#ENDVAR|#COMMENT END|\\$ENDDO|\\$UNTIL|\\$ENDFOR|\\$ENDIF|\\$ENDWHILE|\\$ENDSWITCH|\\$BREAK)",
         "indentNextLinePattern": "\\"
+    },
+    "folding": {
+        "markers": {
+            "start": "^(N\\d*)? *(#VAR|#COMMENT BEGIN|\\$DO|\\$REPEAT|\\$FOR|\\$IF|\\$WHILE|\\$SWITCH|\\$CASE)",
+            "end": "^(N\\d*)? *(#ENDVAR|#COMMENT END|\\$ENDDO|\\$UNTIL|\\$ENDFOR|\\$ENDIF|\\$ENDWHILE|\\$ENDSWITCH|\\$BREAK)"
+        }
     }
 }
