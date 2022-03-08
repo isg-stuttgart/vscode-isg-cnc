@@ -20,6 +20,7 @@ Types of changes
 
 ### Fixed
 
+- Added standard scopes for syntax highlighting to use more themes than isg themes [Issue #18 reported by mpacher](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/18)
 - Fix syntax highlighting for nc MOD operator
 - Fix folding for lines with NC-block number [Issue #23 reported by lukashettler](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/23)
 
