@@ -20,7 +20,7 @@ Types of changes
 
 ### Fixed
 
-- Added standard scopes for syntax highlighting to use more themes than isg themes
+- Added standard scopes for syntax highlighting to use more themes than isg themes [Issue #18 reported by mpacher](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/18)
 - Fix syntax highlighting for nc MOD operator
 
 ## [V0.2.6]
