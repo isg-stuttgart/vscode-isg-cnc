@@ -6,9 +6,6 @@
             "include": "#comments"
         },
         {
-            "include": "#coords"
-        },
-        {
             "include": "#common"
         },
         {
@@ -19,12 +16,12 @@
         "comments": {
             "patterns": [
                 {
-                    "name": "isg-cnc.comment",
+                    "name": "comment.block",
                     "begin": "\/\\*",
                     "end": "\\*\/"
                 },
                 {
-                    "name": "isg-cnc.comment",
+                    "name": "comment.line",
                     "match": "(\\s*?)(;|#|\\(|\/\\*).*?\n"
                 }
             ]
@@ -33,19 +30,19 @@
             "patterns": [
                 {
                     "match": "\\s+(0x\\d+|[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+(\\.[0-9]+\\.[0-9]+)?|-?\\d+\\w*\\.?\\d*|P-AXIS-\\d+(\\.\\d+)?|[\\w:\\\\.+\/-\\[\\]\\s,]+)",
-                    "name": "isg-cnc.value"
+                    "name": "variable"
                 },
                 {
                     "match": "(\\s*)(\\w+?[\\[\\d{1,3}\\]\\.\\w_\\w\\[\\d{1,3}\\]]+)",
-                    "name": "isg-cnc.keyword.parameter"
+                    "name": "variable.parameter"
                 },
                 {
                     "match": "(\\d\\s)+",
-                    "name": "isg-cnc.keyword.parameter"
+                    "name": "variable.parameter"
                 }                ,
                 {
                     "match": "[XYZABC]",
-                    "name": "isg-cnc.axis"
+                    "name": "constant.language.axis"
                 }
             ]
         },
@@ -53,39 +50,11 @@
             "patterns": [
                 {
                     "match": "(\\+)|(\\-)|(\\*)|(\\/)|(\\*\\*)|(\\sMOD\\s*?*|\\|)",
-                    "name": "isg-cnc.keyword.operator"
+                    "name": "keyword.operator"
                 },
                 {
                     "match": "(TRUE)|(FALSE)",
-                    "name": "isg-cnc.keyword.operator"
-                }
-            ]
-        },
-        "coords": {
-            "patterns": [
-                {
-                    "match": "\\b(@?X)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
-                },
-                {
-                    "match": "\\b(@?Y)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
-                },
-                {
-                    "match": "\\b(@?Z)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
-                },
-                {
-                    "match": "\\b(@?A)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
-                },
-                {
-                    "match": "\\b(@?B)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
-                },
-                {
-                    "match": "\\b(@?C)((?=P[0-9]+)|(?=V\\.)|(-?(?:\\d+(?:\\.\\d*)?))|(?=\\[.+\\]))",
-                    "name": "isg-cnc.axis"
+                    "name": "keyword.operator"
                 }
             ]
         }
