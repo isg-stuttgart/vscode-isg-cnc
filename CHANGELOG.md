@@ -16,6 +16,12 @@ Types of changes
 
 ### Added
 
+### Fixed
+
+## [V0.2.7]
+
+### Added
+
 - Add function to search for all toolcalls
 
 ### Fixed
@@ -256,6 +262,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.2.7]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.6...V0.2.7
 [V0.2.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.5...V0.2.6
 [V0.2.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.4...V0.2.5
 [V0.2.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.3...V0.2.4
