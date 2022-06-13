@@ -80,7 +80,42 @@
                 }
             }
         },
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "cnc-views-container",
+                    "title": "CNC",
+                    "icon": "ISGCncEditor.png"
+                }
+            ]
+        },
+        "views": {
+            "cnc-views-container": [
+                {
+                    "type":"webview",
+                    "id": "cnc-view-crypter",
+                    "name": "Crypter"
+                }
+            ]
+        },
         "commands": [
+            {
+                "command": "isg-cnc.EncryptFile",
+                "title": "ISG-CNC: Encrypt file"
+            },
+            {
+                "command": "isg-cnc.DecryptFile",
+                "title": "ISG-CNC: Decrypt file"
+            },
+            {
+                "command": "isg-cnc.EncryptFolder",
+                "title": "ISG-CNC: Encrypt folder"
+            },
+            {
+                "command": "isg-cnc.DecryptFolder",
+                "title": "ISG-CNC: Decrypt folder"
+
+            },
             {
                 "command": "isg-cnc.FindAllToolCalls",
                 "title": "ISG-CNC: Find all tool calls in opened nc files"
@@ -309,7 +344,7 @@
     "devDependencies": {
         "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
-        "@types/node": "14.x",
+        "@types/node": "^14.18.18",
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",

@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		
 		"module": "commonjs",
 		"target": "ES2021",
 		"outDir": "out",
@@ -17,5 +18,6 @@
 	"exclude": [
 		"node_modules",
 		".vscode-test"
-	]
+	],
+	"include": ["src/**/*"]
 }

@@ -6,6 +6,8 @@ import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";
+import * as blowfish from "./util/blowfish/blowfishIntegration";
+
 
 /**
  * Get vscode config data and extension config
@@ -66,6 +68,8 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 
+//
+
 /**
  * This method is called when the extension is activated
  *
@@ -105,6 +109,8 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
+    // create Crypter-Webview-Provider
+    const crypterProvider = new blowfish.CrypterViewProvider(context.extensionUri);
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -144,6 +150,30 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
             findNonAsciiCharacters()
         )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptFile", () =>
+            blowfish.encryptFile()
+
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptFile", () =>
+            blowfish.decryptFile()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptFolder", () =>
+            blowfish.encryptFolder()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptFolder", () =>
+            blowfish.decryptFolder()
+        )
+    );
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(blowfish.CrypterViewProvider.viewType, crypterProvider)
     );
 
     // add status bar items
@@ -671,7 +701,7 @@ function startDocu() {
 
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
-   
+
     open(docuAddress);
 }
 
@@ -962,3 +992,4 @@ function findAllToolCalls(): any {
     };
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
+
