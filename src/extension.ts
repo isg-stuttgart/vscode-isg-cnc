@@ -110,7 +110,8 @@ export function activate(context: vscode.ExtensionContext): void {
     });
 
     // create Crypter-Webview-Provider
-    const crypterProvider = new blowfish.CrypterViewProvider(context.extensionUri);
+    const crypterPanel = new blowfish.CrypterPanel(context.extensionUri);
+   
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -173,7 +174,7 @@ export function activate(context: vscode.ExtensionContext): void {
         )
     );
     context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(blowfish.CrypterViewProvider.viewType, crypterProvider)
+        vscode.window.registerWebviewViewProvider(blowfish.CrypterPanel.viewType, crypterPanel)
     );
 
     // add status bar items

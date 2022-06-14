@@ -40,7 +40,8 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "activationEvents": [
-        "onLanguage:isg-cnc"
+        "onLanguage:isg-cnc",
+        "onView:cnc-view-crypter"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -92,7 +93,7 @@
         "views": {
             "cnc-views-container": [
                 {
-                    "type":"webview",
+                    "type": "webview",
                     "id": "cnc-view-crypter",
                     "name": "Crypter"
                 }
@@ -114,7 +115,6 @@
             {
                 "command": "isg-cnc.DecryptFolder",
                 "title": "ISG-CNC: Decrypt folder"
-
             },
             {
                 "command": "isg-cnc.FindAllToolCalls",
@@ -354,5 +354,8 @@
         "mocha": "^9.1.1",
         "open": "^8.4.0",
         "typescript": "^4.4.3"
+    },
+    "dependencies": {
+        "@vscode/webview-ui-toolkit": "^1.0.0"
     }
 }

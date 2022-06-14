@@ -11,12 +11,16 @@ const filters = {
 };
 
 
-export class CrypterViewProvider implements vscode.WebviewViewProvider {
+export class CrypterPanel implements vscode.WebviewViewProvider {
     public static readonly viewType = 'cnc-view-crypter';
+    private view?: vscode.WebviewView;
+
     constructor(private readonly extensionUri: vscode.Uri) {
 
     }
-    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void | Thenable<void> {
+    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext, token: vscode.CancellationToken): void{
+        this.view=webviewView;
+
         webviewView.webview.options = {
             enableScripts: true,
             localResourceRoots: [
@@ -26,26 +30,44 @@ export class CrypterViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
         webviewView.webview.onDidReceiveMessage(data => {
             switch (data.type) {
-                //TODO
             }
         });
+        console.log("test");
+
     }
 
 
 
-    getHtmlForWebview(webview: any): string {
-     //   const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'out', 'util', 'blowfish', 'crypterViewScript'));
+    private getHtmlForWebview(webview: vscode.Webview): string {
+    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'out', 'util', 'blowfish', 'crypterViewScript'));
+    const mainStyleUri =  webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'main.css'));
+    const vscodeStyleUri =  webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'vscode.css'));
+    vscode.window.showInformationMessage(mainStyleUri.toString());
+        return `
+        <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <!-- only load local files -->
+                    <meta
+                    http-equiv="Content-Security-Policy"
+                    content="default-src 'none'; img-src ${webview.cspSource}; script-src ${webview.cspSource}; style-src ${webview.cspSource};"
+                    />                    
+                    
+                    <title>Example</title>
+                    <link href="${mainStyleUri}" rel="stylesheet">
+                    <link href="${vscodeStyleUri}" rel="stylesheet">
 
+                </head>
+                <body>
+                    <h1>ISG Crypter</h1>
 
-        return `<!DOCTYPE html>
-    <html>
-        <head>
-            <title>Example</title>
-        </head>
-        <body>
-            <p>This is an example of a simple HTML page with one paragraph.</p>
-        </body>
-    </html>
+                    <vscode-text-field id="password">Password</vscode-text-field>
+
+                    <button class="vsButton">Execute</button>
+                    <script src="${scriptUri}"></script>
+                </body>
+            </html>
     `;
     }
 }
