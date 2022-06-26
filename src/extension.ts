@@ -9,17 +9,6 @@ import * as open from "open";
 import * as blowfish from "./util/blowfish/blowfishIntegration";
 
 
-/**
- * Get vscode config data and extension config
- * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
- */
-// let terminal: unknown;
-// if (process.platform === "linux") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
-// } else if (process.platform === "win32") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
-// }
-
 
 const language = config.getParam("locale");
 const docuPath = config.getParam("documentation");
@@ -109,8 +98,7 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
-    // create Crypter-Webview-Provider
-    const crypterPanel = new blowfish.CrypterPanel(context.extensionUri);
+ 
    
     // commands
     context.subscriptions.push(
@@ -153,30 +141,26 @@ export function activate(context: vscode.ExtensionContext): void {
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.EncryptFile", () =>
-            blowfish.encryptFile()
-
+        vscode.commands.registerCommand("isg-cnc.EncryptAnyFile", () =>
+            blowfish.encryptFileFromSystem()
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.DecryptFile", () =>
-            blowfish.decryptFile()
+        vscode.commands.registerCommand("isg-cnc.DecryptAnyFile", () =>
+            blowfish.decryptFileFromSystem()
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.EncryptFolder", () =>
-            blowfish.encryptFolder()
+        vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
+            blowfish.encryptThis(inputUri)
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.DecryptFolder", () =>
-            blowfish.decryptFolder()
+        vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
+            blowfish.decryptThis(inputUri)
         )
     );
-    context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider(blowfish.CrypterPanel.viewType, crypterPanel)
-    );
-
+    
     // add status bar items
     addSelectedLinesStatusBarItem(context);
     addCurrentOffsetStatusBarItem(context);

@@ -1,121 +1,160 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as blowfish from "./blowfish";
 import * as vscode from "vscode";
-import * as fs from "fs";
 import * as path from "path";
+import * as fs from "fs";
+
 
 // Possible filters for file-explorer navigation
 const filters = {
-    "cnc": ["nc", "ecy", "cyc"],
+    "cnc": [
+        ".nc",
+        ".cnc",
+        ".cyc",
+        ".ecy",
+        ".sub",
+        ".plc"],
     "all": ["*"]
 };
 
-
-export class CrypterPanel implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'cnc-view-crypter';
-    private view?: vscode.WebviewView;
-
-    constructor(private readonly extensionUri: vscode.Uri) {
-
-    }
-    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext, token: vscode.CancellationToken): void{
-        this.view=webviewView;
-
-        webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [
-                this.extensionUri
-            ]
-        };
-        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
-        webviewView.webview.onDidReceiveMessage(data => {
-            switch (data.type) {
-            }
-        });
-        console.log("test");
-
-    }
-
-
-
-    private getHtmlForWebview(webview: vscode.Webview): string {
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'out', 'util', 'blowfish', 'crypterViewScript'));
-    const mainStyleUri =  webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'main.css'));
-    const vscodeStyleUri =  webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'media', 'vscode.css'));
-    vscode.window.showInformationMessage(mainStyleUri.toString());
-        return `
-        <!DOCTYPE html>
-            <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <!-- only load local files -->
-                    <meta
-                    http-equiv="Content-Security-Policy"
-                    content="default-src 'none'; img-src ${webview.cspSource}; script-src ${webview.cspSource}; style-src ${webview.cspSource};"
-                    />                    
-                    
-                    <title>Example</title>
-                    <link href="${mainStyleUri}" rel="stylesheet">
-                    <link href="${vscodeStyleUri}" rel="stylesheet">
-
-                </head>
-                <body>
-                    <h1>ISG Crypter</h1>
-
-                    <vscode-text-field id="password">Password</vscode-text-field>
-
-                    <button class="vsButton">Execute</button>
-                    <script src="${scriptUri}"></script>
-                </body>
-            </html>
-    `;
-    }
-}
+//Option parameter for asking for encryption/decryption key
+const keyInputOptions: vscode.InputBoxOptions = {
+    ignoreFocusOut: true,
+    title: "KEY",
+    prompt: "Type your key to use for encryption",
+    placeHolder: "key",
+    password: true,
+};
 /**
- * Let the user pick inputFile, outputFile and key. 
- * The inputFile will be encrypted by the key and written in the outputFile.
- */
-export async function encryptFile(): Promise<void> {
-    let key: string | undefined;
-    let inputURI: vscode.Uri[] | undefined;
-    let outputURI: vscode.Uri[] | undefined;
+ * Encrypts the file at the specified inputUri. The outputName and key will be specified by InputBox-prompts.
+ * The encrypted file will be at the same directory as the input file and will have the specified outputName.
 
-    inputURI = await vscode.window.showOpenDialog({
+ * If inputUri doesn't describe a file location or an InputBox-prompt didn't resolve, 
+ * the process will be canceled and an information message will be shown.
+ * @param inputUri - URI representaion of the location of the fiel to encrypt
+ */
+export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
+    const inputPath: string = inputUri.fsPath;
+    const inputName: string = path.basename(inputPath);
+    let outputName: string | undefined;
+    let key: string | undefined;
+
+    if (inputUri !== undefined && fs.lstatSync(inputUri.fsPath).isFile()) {
+        outputName = await vscode.window.showInputBox({
+            ignoreFocusOut: true,
+            title: "Encrypted File",
+            prompt: "Type the name of the encrypted file",
+            value: path.basename(inputPath) + ".ecy",
+            valueSelection: undefined
+        });
+    } else {
+        vscode.window.showInformationMessage("No file to encrypt is currently selected");
+    }
+
+    if (inputUri !== undefined && outputName !== undefined) {
+        key = await vscode.window.showInputBox(keyInputOptions);
+    }
+
+    if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
+        const outputPath: string = path.join(path.dirname(inputPath), outputName);
+        blowfish.encryptFileToFileByKey(inputPath, outputPath, key);
+        vscode.window.showInformationMessage(inputName + " was encrypted into " + outputName);
+    } else {
+        vscode.window.showInformationMessage("Encryption canceled");
+    }
+
+}
+
+/**
+ * Decrypts the file at the specified inputUri. The outputName and key will be specified by InputBox-prompts.
+ * The decrypted file will be at the same directory as the input file and will have the specified outputName.
+ * 
+ * If inputUri doesn't describe a file location or an InputBox-prompt didn't resolve, 
+ * the process will be canceled and an information message will be shown.
+ * @param inputUri - URI representaion of the location of the fiel to decrypt
+ */
+export async function decryptThis(inputUri: vscode.Uri): Promise<void> {
+    const inputPath: string = inputUri.fsPath;
+    const inputName: string = path.basename(inputPath);
+    let outputName: string | undefined = path.basename(inputUri.fsPath).replace(/(.ecy)$/, "");
+    let key: string | undefined;
+    if (inputUri !== undefined && fs.lstatSync(inputUri.fsPath).isFile()) {
+        outputName = await vscode.window.showInputBox({
+            ignoreFocusOut: true,
+            title: "Decrypted File",
+            prompt: "Type the name of the decrypted file",
+            value: outputName,
+            valueSelection: undefined
+        });
+    } else {
+        vscode.window.showInformationMessage("No file to decrypt is currently selected");
+    }
+    if (inputUri !== undefined && outputName !== undefined) {
+        key = await vscode.window.showInputBox(keyInputOptions);
+    }
+
+    if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
+        const outputPath: string = path.join(path.dirname(inputPath), outputName);
+        blowfish.decryptFileToFileByKey(inputPath, outputPath, key);
+        vscode.window.showInformationMessage(inputName + " was decrypted into " + outputName);
+    } else {
+        vscode.window.showInformationMessage("Decryption canceled");
+    }
+
+}
+
+
+
+/**
+ * Encrypts a file which is chosen by user input.
+ * 
+ * Let the user pick inputUri, outputName and key by input-prompts. 
+ * The encrypted output file will be in the same directory as the file at inputUri and will have the specified outputName. 
+ */
+export async function encryptFileFromSystem(): Promise<void> {
+    let key: string | undefined;
+    let inputUri: vscode.Uri[] | undefined;
+    let filename: string | undefined;
+
+    inputUri = await vscode.window.showOpenDialog({
         canSelectMany: true,
         filters,
         openLabel: "Choose",
         title: "Choose the file you want to encrypt",
     });
 
-    if (inputURI !== undefined) {
-        outputURI = await vscode.window.showOpenDialog({
-            canSelectMany: false,
-            filters,
-            openLabel: "Choose",
-            title: "Choose the destination of the encrypted file",
-        });
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined) {
-        key = await vscode.window.showInputBox({
+    if (inputUri !== undefined) {
+        filename = await vscode.window.showInputBox({
             ignoreFocusOut: true,
-            title: "KEY",
-            prompt: "Type your key to use for encryption",
+            title: "Encrypted File",
+            prompt: "Type the name of the encrypted file",
+            value: path.basename(inputUri[0].fsPath) + ".ecy",
+            valueSelection: undefined
         });
     }
 
-    if (inputURI !== undefined && outputURI !== undefined && key !== undefined) {
-        blowfish.encryptFileToFileByKey(inputURI[0].fsPath, outputURI[0].fsPath, key);
+    if (inputUri !== undefined && filename !== undefined) {
+        key = await vscode.window.showInputBox(keyInputOptions);
+
+    }
+
+    if (inputUri !== undefined && key !== undefined && filename !== undefined) {
+        const outputFolder = path.dirname(inputUri[0].fsPath);
+        blowfish.encryptFileToFileByKey(inputUri[0].fsPath, path.join(outputFolder, filename), key);
+        vscode.window.showInformationMessage(path.basename(inputUri[0].fsPath) + " was encrypted into " + filename);
+
     }
 }
 /**
- * Let the user pick inputFile, outputFile and key. 
- * The inputFile will be decrypted by the key and written in the outputFile.
+ * Decrypts a file which is chosen by user input.
+ * 
+ * Let the user pick inputUri, outputName and key by input-prompts. 
+ * The decrypted output file will be in the same directory as the file at inputUri and will have the specified outputName. 
  */
-export async function decryptFile(): Promise<void> {
+export async function decryptFileFromSystem(): Promise<void> {
     let key: string | undefined;
     let inputURI: vscode.Uri[] | undefined;
-    let outputURI: vscode.Uri[] | undefined;
+    let outputName: string | undefined;
 
     inputURI = await vscode.window.showOpenDialog({
         canSelectMany: false,
@@ -125,119 +164,25 @@ export async function decryptFile(): Promise<void> {
     });
 
     if (inputURI !== undefined) {
-        outputURI = await vscode.window.showOpenDialog({
-            canSelectMany: false,
-            filters,
-            openLabel: "Choose",
-            title: "Choose the destination of the decrypted file",
-        });
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined) {
-        key = await vscode.window.showInputBox({
+        outputName = path.basename(inputURI[0].fsPath).replace(/(.ecy)$/, "");
+        outputName = await vscode.window.showInputBox({
             ignoreFocusOut: true,
-            title: "KEY",
-            prompt: "Type your key to use for decryption",
+            title: "Decrypted File",
+            prompt: "Type the name of the decrypted file",
+            value: outputName,
+            valueSelection: undefined
         });
     }
+    if (inputURI !== undefined && outputName !== undefined) {
+        key = await vscode.window.showInputBox(keyInputOptions);
 
-    if (inputURI !== undefined && outputURI !== undefined && key !== undefined) {
-        blowfish.decryptFileToFileByKey(inputURI[0].fsPath, outputURI[0].fsPath, key);
+    }
+
+    if (inputURI !== undefined && key !== undefined && outputName !== undefined) {
+        blowfish.decryptFileToFileByKey(inputURI[0].fsPath, path.join(path.dirname(inputURI[0].fsPath), outputName), key);
+        vscode.window.showInformationMessage(path.basename(inputURI[0].fsPath) + " was decrypted into " + outputName);
     }
 }
 
-/**
- * Let the user pick inputFolder, outputFolder and key. 
- * The inputFolder-files will be encrypted by the key and written in the outputFolder.
- */
-export async function encryptFolder(): Promise<void> {
-    let key: string | undefined;
-    let inputURI: vscode.Uri[] | undefined;
-    let outputURI: vscode.Uri[] | undefined;
 
-    inputURI = await vscode.window.showOpenDialog({
-        canSelectMany: false,
-        filters,
-        openLabel: "Choose",
-        title: "Choose the folder you want to encrypt",
-        canSelectFiles: false,
-        canSelectFolders: true
-    });
-
-    if (inputURI !== undefined) {
-        outputURI = await vscode.window.showOpenDialog({
-            canSelectMany: false,
-            filters,
-            openLabel: "Choose",
-            title: "Choose the destination of the encrypted files",
-            canSelectFiles: false,
-            canSelectFolders: true
-        });
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined) {
-        key = await vscode.window.showInputBox({
-            ignoreFocusOut: true,
-            title: "KEY",
-            prompt: "Type your key to use for encryption",
-        });
-
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined && key !== undefined) {
-        const inputFolder: string = inputURI[0].fsPath;
-        const outputFolder: string = outputURI[0].fsPath;
-        const definedKey: string = key;
-        fs.readdirSync(inputURI[0].fsPath).forEach(filename => {
-            blowfish.encryptFileToFileByKey(path.join(inputFolder, filename), path.join(outputFolder, filename), definedKey);
-        });
-    }
-}
-/**
- * Let the user pick inputFolder, outputFolder and key. 
- * The inputFolder-files will be decrypted by the key and written in the outputFolder.
- */
-export async function decryptFolder(): Promise<void> {
-    let key: string | undefined;
-    let inputURI: vscode.Uri[] | undefined;
-    let outputURI: vscode.Uri[] | undefined;
-
-    inputURI = await vscode.window.showOpenDialog({
-        canSelectMany: false,
-        filters,
-        openLabel: "Choose",
-        title: "Choose the folder you want to decrypt",
-        canSelectFiles: false,
-        canSelectFolders: true
-    });
-
-    if (inputURI !== undefined) {
-        outputURI = await vscode.window.showOpenDialog({
-            canSelectMany: false,
-            filters,
-            openLabel: "Choose",
-            title: "Choose the destination of the decrypted files",
-            canSelectFiles: false,
-            canSelectFolders: true
-        });
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined) {
-        key = await vscode.window.showInputBox({
-            ignoreFocusOut: true,
-            title: "KEY",
-            prompt: "Type your key to use for decryption",
-        });
-
-    }
-
-    if (inputURI !== undefined && outputURI !== undefined && key !== undefined) {
-        const inputFolder: string = inputURI[0].fsPath;
-        const outputFolder: string = outputURI[0].fsPath;
-        const definedKey: string = key;
-        fs.readdirSync(inputURI[0].fsPath).forEach(filename => {
-            blowfish.decryptFileToFileByKey(path.join(inputFolder, filename), path.join(outputFolder, filename), definedKey);
-        });
-    }
-}
 
