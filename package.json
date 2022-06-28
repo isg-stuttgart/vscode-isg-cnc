@@ -41,8 +41,6 @@
     "markdown": "github",
     "activationEvents": [
         "onLanguage:isg-cnc",
-        "onView:cnc-view-crypter",
-
         "onCommand:isg-cnc.EncryptThis",
         "onCommand:isg-cnc.DecryptThis",
         "onCommand:isg-cnc.EncryptAnyFile",
@@ -56,8 +54,6 @@
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
         "onCommand:isg-cnc.FindNonAsciiCharacters"
-
-
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -395,9 +391,7 @@
         "glob": "^7.1.7",
         "mocha": "^9.1.1",
         "open": "^8.4.0",
+        "typedoc": "^0.22.18",
         "typescript": "^4.4.3"
-    },
-    "dependencies": {
-        "@vscode/webview-ui-toolkit": "^1.0.0"
-    }
+    }  
 }

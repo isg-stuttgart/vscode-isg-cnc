@@ -37,11 +37,11 @@ export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
     const inputPath: string = inputUri.fsPath;
     const inputName: string = path.basename(inputPath);
     let outputName: string | undefined;
-    
+
     let key: string | undefined;
 
     if (inputUri !== undefined && fs.lstatSync(inputUri.fsPath).isFile()) {
-        outputName = await askForEncryptedFilename(inputPath);       
+        outputName = await askForEncryptedFilename(inputPath);
     } else {
         vscode.window.showInformationMessage("No file to encrypt is currently selected");
     }
@@ -172,10 +172,10 @@ export async function decryptFileFromSystem(): Promise<void> {
  * @param inputPath - path of the file to decrypt 
  * @returns Promise of the name-String chosen by the user, or if Promise<undefined> if the input was canceled
  */
-async function askForDecryptedFilename(inputPath: string) :Promise<string|undefined>{
-    let currentOutputName:string|undefined;
-    let currentOutputPath:string|undefined=undefined;
-    let finalOutputName:string|undefined=undefined;
+async function askForDecryptedFilename(inputPath: string): Promise<string | undefined> {
+    let currentOutputName: string | undefined;
+    let currentOutputPath: string | undefined = undefined;
+    let finalOutputName: string | undefined = undefined;
     let endSelection = false;
     do {
         currentOutputName === undefined;
@@ -183,21 +183,21 @@ async function askForDecryptedFilename(inputPath: string) :Promise<string|undefi
             ignoreFocusOut: true,
             title: "Decrypted File",
             prompt: "Type the name of the decrypted file",
-            value:path.basename(inputPath).replace(/(.ecy)$/, ""),
+            value: path.basename(inputPath).replace(/(.ecy)$/, ""),
             valueSelection: undefined
         });
-        if(currentOutputName!== undefined){
-            currentOutputPath = path.join(path.dirname(inputPath),currentOutputName);
+        if (currentOutputName !== undefined) {
+            currentOutputPath = path.join(path.dirname(inputPath), currentOutputName);
             endSelection = (await isFinalDestinationFound(currentOutputPath)).valueOf();
-            finalOutputName=endSelection?currentOutputName:undefined;
-        }else{
-            endSelection=true;
+            finalOutputName = endSelection ? currentOutputName : undefined;
+        } else {
+            endSelection = true;
         }
-        
-       
+
+
     } while (!endSelection);
-   
-   
+
+
     return finalOutputName;
 }
 /**
@@ -206,10 +206,10 @@ async function askForDecryptedFilename(inputPath: string) :Promise<string|undefi
  * @param inputPath - path of the file to decrypt 
  * @returns Promise of the name-String chosen by the user, or if Promise<undefined> if the input was canceled
  */
-async function askForEncryptedFilename(inputPath: string):Promise<string|undefined> {
-    let currentOutputName:string|undefined;
-    let currentOutputPath:string|undefined=undefined;
-    let finalOutputName:string|undefined=undefined;
+async function askForEncryptedFilename(inputPath: string): Promise<string | undefined> {
+    let currentOutputName: string | undefined;
+    let currentOutputPath: string | undefined = undefined;
+    let finalOutputName: string | undefined = undefined;
     let endSelection = false;
     do {
         currentOutputName === undefined;
@@ -217,22 +217,22 @@ async function askForEncryptedFilename(inputPath: string):Promise<string|undefin
             ignoreFocusOut: true,
             title: "Encrypted File",
             prompt: "Type the name of the encrypted file",
-            value:  path.basename(inputPath) + ".ecy",
+            value: path.basename(inputPath) + ".ecy",
             valueSelection: undefined
-    
+
         });
-        if(currentOutputName!== undefined){
-            currentOutputPath = path.join(path.dirname(inputPath),currentOutputName);
+        if (currentOutputName !== undefined) {
+            currentOutputPath = path.join(path.dirname(inputPath), currentOutputName);
             endSelection = (await isFinalDestinationFound(currentOutputPath)).valueOf();
-            finalOutputName=endSelection?currentOutputName:undefined;
-        }else{
-            endSelection=true;
+            finalOutputName = endSelection ? currentOutputName : undefined;
+        } else {
+            endSelection = true;
         }
-        
-       
+
+
     } while (!endSelection);
-   
-   
+
+
     return finalOutputName;
 }
 
@@ -243,26 +243,24 @@ async function askForEncryptedFilename(inputPath: string):Promise<string|undefin
  * @returns Returns true if the files-destination exists or the user wants to overwrite the already existing file.
  * Returns false if the file alreadx exists and the user wants to rename his new file
  */
-async function isFinalDestinationFound(destination:string): Promise<boolean>{
-    let found:boolean =true;
+async function isFinalDestinationFound(destination: string): Promise<boolean> {
+    let found: boolean = true;
 
-  //if file already exists
-  if(fs.existsSync(destination)){
- 
-    await vscode.window.showWarningMessage(
-        "File already exists in workspace",
-        ...[
-        "Overwrite",
-        "Rename"
-        ]
-        ).then(selection=>{
-            if(selection==="Overwrite"){
-                found=true;
-            }else if(selection==="Rename"){
-                found=false;
+    //if file already exists
+    if (fs.existsSync(destination)) {
+        await vscode.window.showQuickPick(
+            ["Overwrite", "Rename"],
+            {
+                "title": "File already exists in workspace"
+            }
+        ).then(selection => {
+            if (selection === "Overwrite") {
+                found = true;
+            } else if (selection === "Rename") {
+                found = false;
             }
         });
-}
+    }
 
     return found;
 }
