@@ -677,7 +677,7 @@ function startDocu() {
 
 /**
  * Function to build the Address to the documentation.
- * Standard web Address is: https://www.isg-stuttgart.de/kernel-html5/
+ * Standard web Address is: https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html
  * Additional read the language from extension settings and the documentation path (local or web)
  * Returns the combined Address string.
  *
@@ -700,7 +700,7 @@ function getContextbasedSite(): string {
                     docuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${language}/`;
+                docuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
             if (activeTextEditor.selection.isEmpty !== true) {
                 searchContext = activeTextEditor.document.getText(
