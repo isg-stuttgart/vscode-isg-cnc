@@ -5,6 +5,7 @@ import * as Path from "path";
 import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { config } from "./util/config";
+import * as open from "open";
 
 /**
  * Get vscode config data and extension config
@@ -662,48 +663,16 @@ function digitCount(nr: number): number {
 }
 
 /**
- * Generate an terminal and load the html documentation in webbrowser.
- * Webbrowser location reading from extension setting browser.
- *
+ *Load the html documentation in default webbrowser.
  */
 function startDocu() {
     const docuAddress = getContextbasedSite();
     outputChannel.appendLine(docuAddress);
 
-    const terminal = vscode.window.createTerminal({
-        name: "ISG-CNC",
-        hideFromUser: false
-    });
-    let args;
-    let browserPath;
-
-    if (process.platform === "linux") {
-        browserPath = `${config.getParam("browser-linux")}`;
-    } else if (process.platform === "win32") {
-        browserPath = `${config.getParam("browser-windows")}`.replace("\"", "");
-    }
-
-    if (docuAddress !== "" && docuAddress.startsWith("http")) {
-        args = docuAddress;
-    } else {
-        args = `"file://${docuAddress}"`;
-    }
-
-    // example that works:
-    // "C:\Program Files\Mozilla Firefox\firefox.exe"
-    // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-
-    if (terminal.name !== "PowerShell") {
-        browserPath = `"${browserPath}"`;
-    } else {
-        browserPath = `& "${browserPath}"`;
-    }
-
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    outputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
-
-    terminal.sendText(browserPath + " " + args);
+   
+    open(docuAddress);
 }
 
 /**
