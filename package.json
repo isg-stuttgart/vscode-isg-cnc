@@ -50,7 +50,7 @@
             }
         },
         "configuration": {
-            "title": "ISG CNC Configuration",
+            "title": "ISG CNC",
             "type": "object",
             "properties": {
                 "isg-cnc.locale": {
