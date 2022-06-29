@@ -68,11 +68,6 @@
                     "default": "/usr/bin/firefox",
                     "description": "Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)"
                 },
-                "isg-cnc.documentation": {
-                    "type": "string",
-                    "default": "https://www.isg-stuttgart.de/kernel-html5/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: https://www.isg-stuttgart.de/kernel-html5/)"
-                },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",
                     "default": false,
