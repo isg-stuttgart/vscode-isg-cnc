@@ -62,7 +62,7 @@
                 "isg-cnc.documentation": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: https://www.isg-stuttgart.de/kernel-html5/)"
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)"
                 },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",

@@ -7,8 +7,8 @@ import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";
 
-const language = config.getParam("locale");
-const docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');;
+let language: string;
+let docuPath: string;
 
 /** Outputchannel for the extension
  */
@@ -65,12 +65,9 @@ export function activate(context: vscode.ExtensionContext): void {
     extensionPackage = Path.join(context.extensionPath, "package.json");
     packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
 
-    // enable/disable outputchannel
-    if (config.getParam("outputchannel")) {
-        outputChannel.show();
-    } else {
-        outputChannel.hide();
-    }
+    //get config params in module scope lets
+    updateConfig();
+
 
     // Output extension name and version number in console and output window ISG-CNC
     if (packageFile) {
@@ -91,6 +88,10 @@ export function activate(context: vscode.ExtensionContext): void {
             // }
             return [];
         }
+    });
+
+    vscode.workspace.onDidChangeConfiguration(() => {
+        updateConfig();
     });
 
     // commands
@@ -149,6 +150,7 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
+
 
     // vscode.window.onDidChangeActiveTextEditor((editor) => {
     //     activeEditor = editor;
@@ -242,6 +244,23 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
             updateSelectedLinesStatusBarItem
         )
     );
+}
+
+
+/**
+ * Updates the config parameters saved in the module-scoped lets and settings.
+ */
+function updateConfig() {
+    language = config.getParam("locale");
+    docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');
+
+
+    // enable/disable outputchannel
+    if (config.getParam("outputchannel")) {
+        outputChannel.show();
+    } else {
+        outputChannel.hide();
+    }
 }
 
 /**
@@ -659,7 +678,7 @@ function startDocu() {
 
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
-   
+
     open(docuAddress);
 }
 
