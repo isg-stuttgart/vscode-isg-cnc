@@ -17,5 +17,10 @@
 	"exclude": [
 		"node_modules",
 		".vscode-test"
-	]
+	],
+	"typedocOptions":{
+		"entryPoints": ["./src"],
+		"out": "docs/api",
+	}
+	
 }
