@@ -8,7 +8,7 @@ import { config } from "./util/config";
 import * as open from "open";
 
 const language = config.getParam("locale");
-const docuPath = config.getParam("documentation");
+const docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');;
 
 /** Outputchannel for the extension
  */
@@ -673,32 +673,30 @@ function startDocu() {
  */
 function getContextbasedSite(): string {
     let searchContext: string;
-    let docuPath: string = "";
+    let localeDocuPath: string = docuPath;
     let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            if (docuPath !== undefined && docuPath !== "") {
-                docuPath = docuPath as string;
-                docuPath = docuPath.split('"').join("").split('\\').join('/');
-                if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${language}/`;
+            if (localeDocuPath !== undefined && localeDocuPath !== "") {
+                if (!localeDocuPath.endsWith('/')) {
+                    localeDocuPath += "/" + `${language}/`;
                 } else {
-                    docuPath += `${language}/`;
+                    localeDocuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
+                localeDocuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
-            if (activeTextEditor.selection.isEmpty !== true) {
+            if (!activeTextEditor.selection.isEmpty) {
                 searchContext = activeTextEditor.document.getText(
                     activeTextEditor.selection
                 );
                 const query = new URLSearchParams();
                 query.append("q", searchContext);
-                docuAddress = docuPath + `search.html?${query.toString()}`;
+                docuAddress = localeDocuPath + `search.html?${query.toString()}`;
             } else {
-                docuAddress = docuPath + "index.html";
+                docuAddress = localeDocuPath + "index.html";
             }
         }
     }
