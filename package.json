@@ -58,6 +58,11 @@
                     "default": "de-DE",
                     "description": "Choose the documentation language (en-GB, de-DE ...)"
                 },
+                "isg-cnc.documentation": {
+                    "type": "string",
+                    "default": "https://www.isg-stuttgart.de/kernel-html5/",
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: https://www.isg-stuttgart.de/kernel-html5/)"
+                },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",
                     "default": false,
