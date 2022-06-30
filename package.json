@@ -59,16 +59,6 @@
                     "enum": ["de-DE", "en-GB"],
                     "description": "Choose the documentation language"
                 },
-                "isg-cnc.browser-windows": {
-                    "type": "string",
-                    "default": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-                    "description": "Path to the browser to open the documentation on windows systems. (Standard browser: Firefox)"
-                },
-                "isg-cnc.browser-linux": {
-                    "type": "string",
-                    "default": "/usr/bin/firefox",
-                    "description": "Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)"
-                },
                 "isg-cnc.documentation": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/kernel-html5/",

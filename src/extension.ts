@@ -7,18 +7,6 @@ import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";
 
-/**
- * Get vscode config data and extension config
- * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
- */
-// let terminal: unknown;
-// if (process.platform === "linux") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
-// } else if (process.platform === "win32") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
-// }
-
-
 const language = config.getParam("locale");
 const docuPath = config.getParam("documentation");
 
@@ -663,7 +651,7 @@ function digitCount(nr: number): number {
 }
 
 /**
- *Load the html documentation in default webbrowser.
+ *Load the ISG-CNC Kernel html documentation in default webbrowser.
  */
 function startDocu() {
     const docuAddress = getContextbasedSite();
