@@ -50,13 +50,14 @@
             }
         },
         "configuration": {
-            "title": "ISG CNC Configuration",
+            "title": "ISG CNC",
             "type": "object",
             "properties": {
                 "isg-cnc.locale": {
                     "type": "string",
                     "default": "de-DE",
-                    "description": "Choose the documentation language (en-GB, de-DE ...)"
+                    "enum": ["de-DE", "en-GB"],
+                    "description": "Choose the documentation language"
                 },
                 "isg-cnc.browser-windows": {
                     "type": "string",
