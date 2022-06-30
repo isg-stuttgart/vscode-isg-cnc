@@ -707,16 +707,22 @@ function getContextbasedSite(): string {
             } else {
                 localeDocuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
-            if (!activeTextEditor.selection.isEmpty) {
-                searchContext = activeTextEditor.document.getText(
-                    activeTextEditor.selection
-                );
-                const query = new URLSearchParams();
-                query.append("q", searchContext);
-                docuAddress = localeDocuPath + `search.html?${query.toString()}`;
-            } else {
-                docuAddress = localeDocuPath + "index.html";
-            }
+            //IMPORTANT: THE FOLLOWING BLOCK IS FOR OPEN DOCU WITH SELECTED SEARCHING KEYWORD
+            //THE WEBSITE IS BROKEN AT THE MOMENT SO IT WILL JUST LOAD THE GENERAL DOCU WEBSITE
+            //UNCOMMENT IF THE WEBSITE WAS FIXES AND DELETE THE ASSIGNMENT UNDER THE COMMENT:
+            //  "docuAddress = localeDocuPath + "index.html";"
+            /*  if (!activeTextEditor.selection.isEmpty) {
+                 searchContext = activeTextEditor.document.getText(
+                     activeTextEditor.selection
+                 );
+                 const query = new URLSearchParams();
+                 query.append("q", searchContext);
+                 docuAddress = localeDocuPath + `search.html?${query.toString()}`;
+             } else {
+                  docuAddress = localeDocuPath + "index.html";
+             } */
+            docuAddress = localeDocuPath + "index.html";
+
         }
     }
     return docuAddress;
