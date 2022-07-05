@@ -18,14 +18,17 @@ Types of changes
 
 ### Fixed
 
+- Fix open ISG-Documentation per command [Issue #19 reported by georgulbrich-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/19) [Issue #31 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/31)
+- Fix lack of usability in the Extension Configuration-Settings (default browser and language) [Issue #32 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/32) [Issue #33 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/33)
+
+
 ## [V0.2.8]
 
 ### Added
 
 ### Fixed
 
-- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26)
-
+- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26) 
 ## [V0.2.7]
 
 ### Added
