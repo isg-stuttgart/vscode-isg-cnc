@@ -18,8 +18,8 @@ Types of changes
 
 ### Fixed
 
-- Fix open ISG-Documentation per command [Issue #19 reported by georgulbrich-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/19) [Issue #31 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/31)
-- Fix lack of usability in the Extension Configuration-Settings (default browser and language) [Issue #32 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/32) [Issue #33 reported by jurekseverin-isg] (https://github.com/isg-stuttgart/vscode-isg-cnc/issues/33)
+- Fix open ISG-Documentation per command [Issue #19 reported by georgulbrich-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/19) and [Issue #31 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/31)
+- Fix lack of usability in the Extension Configuration-Settings (default browser and language) [Issue #32 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/32) and [Issue #33 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/33)
 
 
 ## [V0.2.8]
