@@ -16,14 +16,29 @@ const filter = {
     "all": ["*"]
 };
 
-//Option parameter for asking for encryption/decryption key by InputBox
-const keyInputOptions: vscode.InputBoxOptions = {
-    ignoreFocusOut: true,
-    title: "KEY",
-    prompt: "Type your key to use for encryption",
-    placeHolder: "key",
-    password: true,
-};
+/**
+ * Let the user enter a key for en/decryption via an InputBox. 
+ * The key can only be accepted if it contains no non-ASCII Characters.
+ * @returns the key for en/decryption
+ */
+async function askForKey(): Promise<string | undefined> {
+    //Option parameter for asking for encryption/decryption key by InputBox
+    let keyInputOptions: vscode.InputBoxOptions = {
+        ignoreFocusOut: true,
+        title: "Key",
+        prompt: "Type the key to use for en/decryption",
+        placeHolder: "key...",
+        password: true,
+        validateInput: key => {
+            if (testIfContainsNonASCIIChar(key)) {
+                return "Key must not contain non-ASCII characters";
+            } else {
+                return null;
+            }
+        }
+    };
+    return await vscode.window.showInputBox(keyInputOptions);;
+}
 
 /**
  * Encrypts the file at the specified inputUri. The outputName and key will be specified by InputBox-prompts.
@@ -48,18 +63,20 @@ export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
 
 
     if (inputUri !== undefined && outputName !== undefined) {
-        key = await vscode.window.showInputBox(keyInputOptions);
+        key = await askForKey();
     }
 
     if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
         const outputPath: string = path.join(path.dirname(inputPath), outputName);
-        blowfish.encryptFileToFileByKey(inputPath, outputPath, key);
+        blowfish.encryptFileToFile(inputPath, outputPath, key);
         vscode.window.showInformationMessage(inputName + " was encrypted into " + outputName);
     } else {
         vscode.window.showInformationMessage("Encryption canceled");
     }
 
 }
+
+
 
 
 /**
@@ -82,12 +99,12 @@ export async function decryptThis(inputUri: vscode.Uri): Promise<void> {
     }
 
     if (inputUri !== undefined && outputName !== undefined) {
-        key = await vscode.window.showInputBox(keyInputOptions);
+        key = await askForKey();
     }
 
     if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
         const outputPath: string = path.join(path.dirname(inputPath), outputName);
-        blowfish.decryptFileToFileByKey(inputPath, outputPath, key);
+        blowfish.decryptFileToFile(inputPath, outputPath, key);
         vscode.window.showInformationMessage(inputName + " was decrypted into " + outputName);
     } else {
         vscode.window.showInformationMessage("Decryption canceled");
@@ -120,13 +137,13 @@ export async function encryptFileFromSystem(): Promise<void> {
     }
 
     if (inputUri !== undefined && outputName !== undefined) {
-        key = await vscode.window.showInputBox(keyInputOptions);
+        key = await askForKey();
 
     }
 
     if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
         const outputFolder = path.dirname(inputUri[0].fsPath);
-        blowfish.encryptFileToFileByKey(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
+        blowfish.encryptFileToFile(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
         vscode.window.showInformationMessage(path.basename(inputUri[0].fsPath) + " was encrypted into " + outputName);
 
     }
@@ -155,12 +172,12 @@ export async function decryptFileFromSystem(): Promise<void> {
         outputName = await askForDecryptedFilename(inputURI[0].fsPath);
     }
     if (inputURI !== undefined && outputName !== undefined) {
-        key = await vscode.window.showInputBox(keyInputOptions);
+        key = await askForKey();
 
     }
 
     if (inputURI !== undefined && key !== undefined && outputName !== undefined) {
-        blowfish.decryptFileToFileByKey(inputURI[0].fsPath, path.join(path.dirname(inputURI[0].fsPath), outputName), key);
+        blowfish.decryptFileToFile(inputURI[0].fsPath, path.join(path.dirname(inputURI[0].fsPath), outputName), key);
         vscode.window.showInformationMessage(path.basename(inputURI[0].fsPath) + " was decrypted into " + outputName);
     }
 }
@@ -264,3 +281,13 @@ async function isFinalDestinationFound(destination: string): Promise<boolean> {
 
     return found;
 }
+
+/**
+ * Tests if string contains non-ASCII Character
+ * @param text 
+ * @returns true if the string contains at least one non-ASCII Character, false otherwise.
+ */
+function testIfContainsNonASCIIChar(text: string) {
+    return !/^[\u0000-\u007f]*$/.test(text);
+}
+

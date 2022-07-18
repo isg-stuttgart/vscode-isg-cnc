@@ -8,3 +8,4 @@ test_and_info/
 *.7z
 *.tgz
 docs/book/
+src/util/blowfish/blowfish.ts
