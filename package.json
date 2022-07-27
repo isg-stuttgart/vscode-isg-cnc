@@ -40,7 +40,8 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "activationEvents": [
-        "onLanguage:isg-cnc"
+        "onLanguage:isg-cnc",
+        "onView:cnc-views-container"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -92,12 +93,8 @@
         "views": {
             "cnc-views-container": [
                 {
-                    "id": "cnc-view-tools",
-                    "name": "Tools"
-                },
-                {
-                    "id": "cnc-view-programs",
-                    "name": "Programs"
+                    "id": "cnc-show-filecontent",
+                    "name": "File content"
                 }
             ]
         },

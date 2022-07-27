@@ -4,6 +4,7 @@ import * as fs from "fs";
 import * as Path from "path";
 import { URLSearchParams } from "url";
 import * as vscode from "vscode";
+import { FileContentProvider } from "./cncView/FileContentTree";
 import { config } from "./util/config";
 
 /**
@@ -53,6 +54,10 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
  */
 let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
+
+let fileContentTreeView: vscode.TreeView<vscode.TreeItem>|undefined;
+
+let currentFileWatcher: fs.FSWatcher;
 
 // package.json information
 let packageFile;
@@ -153,6 +158,8 @@ export function activate(context: vscode.ExtensionContext): void {
     updateSelectedLinesStatusBarItem();
     updateCurrentOffsetStatusBarItem();
 
+
+
     /** Decorator
      */
     const activeEditor = vscode.window.activeTextEditor;
@@ -243,16 +250,43 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     selectedLinesStatusBarItem.command = myCommandId;
     context.subscriptions.push(selectedLinesStatusBarItem);
 
-    // register some listener that make sure the status bar
-    // item always up-to-date
+    // register some listener that make sure the status bar 
+    // item and the currently opened file always up-to-date
+
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(updateSelectedLinesStatusBarItem)
+        vscode.window.onDidChangeActiveTextEditor(activeTextEditorChanged)
     );
+    // refresh status bar and current open file once at start
+    activeTextEditorChanged();
+
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection(
             updateSelectedLinesStatusBarItem
         )
     );
+}
+
+/**
+ * Will be called by onDidChangeActiveTextEditor-Listener.
+ * Updates the file-content-treeview and the selected
+ * status bar lines.
+ */
+function activeTextEditorChanged() {
+    if (currentFileWatcher !== undefined) {
+        currentFileWatcher.close();
+    }
+    const currentFile = vscode.window.activeTextEditor?.document.uri;
+    if (currentFile !== undefined) {
+        const fileContentProvider = new FileContentProvider(currentFile); 
+        fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
+            treeDataProvider: fileContentProvider
+        });
+        currentFileWatcher = fs.watch(currentFile.fsPath, (eventType, filename) => {
+            fileContentProvider.refresh();
+        });
+        fileContentProvider.refresh();
+    }
+    updateSelectedLinesStatusBarItem();
 }
 
 /**
