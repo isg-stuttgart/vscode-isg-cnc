@@ -276,7 +276,7 @@ function activeTextEditorChanged() {
         currentFileWatcher.close();
     }
     const currentFile = vscode.window.activeTextEditor?.document.uri;
-    if (currentFile !== undefined) {
+    if (currentFile !== undefined && isNcFile(currentFile)) {
         const fileContentProvider = new FileContentProvider(currentFile); 
         fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
             treeDataProvider: fileContentProvider
@@ -289,6 +289,9 @@ function activeTextEditorChanged() {
     updateSelectedLinesStatusBarItem();
 }
 
+function isNcFile(file: vscode.Uri): boolean {
+    return Path.extname(file.fsPath) === ".nc";
+}
 /**
  * Update statusbar item for selected lines.
  * Hide item when no lines are selected.
