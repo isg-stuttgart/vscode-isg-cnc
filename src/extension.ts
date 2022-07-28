@@ -6,7 +6,7 @@ import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";
-import * as blowfish from "./util/blowfish/blowfishIntegration";
+import * as blowfish from "./util/encryption/encryption";
 
 
 
