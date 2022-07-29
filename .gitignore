@@ -9,3 +9,4 @@ test_and_info/
 *.tgz
 docs/book/
 src/util/blowfish/blowfish.ts
+src/util/encryption/blowfish.ts
