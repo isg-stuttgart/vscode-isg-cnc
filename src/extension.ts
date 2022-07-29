@@ -8,10 +8,8 @@ import { config } from "./util/config";
 import * as open from "open";
 import * as blowfish from "./util/encryption/encryption";
 
-
-
-const language = config.getParam("locale");
-const docuPath = config.getParam("documentation");
+let language: string;
+let docuPath: string;
 
 /** Outputchannel for the extension
  */
@@ -70,12 +68,9 @@ export function activate(context: vscode.ExtensionContext): void {
     extensionPackage = Path.join(context.extensionPath, "package.json");
     packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
 
-    // enable/disable outputchannel
-    if (config.getParam("outputchannel")) {
-        outputChannel.show();
-    } else {
-        outputChannel.hide();
-    }
+    //get config params in module scope lets
+    updateConfig();
+
 
     // Output extension name and version number in console and output window ISG-CNC
     if (packageFile) {
@@ -98,8 +93,10 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
- 
-   
+    vscode.workspace.onDidChangeConfiguration(() => {
+        updateConfig();
+    });
+
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -178,6 +175,18 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
 
+    // vscode.window.onDidChangeActiveTextEditor((editor) => {
+    //     activeEditor = editor;
+    //     if (editor) {
+    //         triggerUpdateDecorations();
+    //     }
+    // }, null);
+
+    // vscode.workspace.onDidChangeTextDocument((event) => {
+    //     if (activeEditor && event.document === activeEditor.document) {
+    //         triggerUpdateDecorations();
+    //     }
+    // }, null);
 }
 
 /**
@@ -258,6 +267,23 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
             updateSelectedLinesStatusBarItem
         )
     );
+}
+
+
+/**
+ * Updates the config parameters saved in the module-scoped lets and settings.
+ */
+function updateConfig() {
+    language = config.getParam("locale");
+    docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');
+
+
+    // enable/disable outputchannel
+    if (config.getParam("outputchannel")) {
+        outputChannel.show();
+    } else {
+        outputChannel.hide();
+    }
 }
 
 /**
@@ -667,7 +693,7 @@ function digitCount(nr: number): number {
 }
 
 /**
- *Load the html documentation in default webbrowser.
+ *Load the ISG-CNC Kernel html documentation in default webbrowser.
  */
 function startDocu() {
     const docuAddress = getContextbasedSite();
@@ -681,7 +707,7 @@ function startDocu() {
 
 /**
  * Function to build the Address to the documentation.
- * Standard web Address is: https://www.isg-stuttgart.de/kernel-html5/
+ * Standard web Address is: https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html
  * Additional read the language from extension settings and the documentation path (local or web)
  * Returns the combined Address string.
  *
@@ -689,33 +715,37 @@ function startDocu() {
  */
 function getContextbasedSite(): string {
     let searchContext: string;
-    let docuPath: string = "";
+    let localeDocuPath: string = docuPath;
     let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            if (docuPath !== undefined && docuPath !== "") {
-                docuPath = docuPath as string;
-                docuPath = docuPath.split('"').join("").split('\\').join('/');
-                if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${language}/`;
+            if (localeDocuPath !== undefined && localeDocuPath !== "") {
+                if (!localeDocuPath.endsWith('/')) {
+                    localeDocuPath += "/" + `${language}/`;
                 } else {
-                    docuPath += `${language}/`;
+                    localeDocuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${language}/`;
+                localeDocuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
-            if (activeTextEditor.selection.isEmpty !== true) {
-                searchContext = activeTextEditor.document.getText(
-                    activeTextEditor.selection
-                );
-                const query = new URLSearchParams();
-                query.append("q", searchContext);
-                docuAddress = docuPath + `search.html?${query.toString()}`;
-            } else {
-                docuAddress = docuPath + "index.html";
-            }
+            //IMPORTANT: THE FOLLOWING BLOCK IS FOR OPEN DOCU WITH SELECTED SEARCHING KEYWORD
+            //THE WEBSITE IS BROKEN AT THE MOMENT SO IT WILL JUST LOAD THE GENERAL DOCU WEBSITE
+            //UNCOMMENT IF THE WEBSITE WAS FIXES AND DELETE THE ASSIGNMENT UNDER THE COMMENT:
+            //  "docuAddress = localeDocuPath + "index.html";"
+            /*  if (!activeTextEditor.selection.isEmpty) {
+                 searchContext = activeTextEditor.document.getText(
+                     activeTextEditor.selection
+                 );
+                 const query = new URLSearchParams();
+                 query.append("q", searchContext);
+                 docuAddress = localeDocuPath + `search.html?${query.toString()}`;
+             } else {
+                  docuAddress = localeDocuPath + "index.html";
+             } */
+            docuAddress = localeDocuPath + "index.html";
+
         }
     }
     return docuAddress;
