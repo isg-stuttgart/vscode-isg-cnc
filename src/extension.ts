@@ -6,7 +6,6 @@ import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { FileContentProvider } from "./cncView/FileContentTree";
 import { config } from "./util/config";
-
 /**
  * Get vscode config data and extension config
  * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
@@ -55,7 +54,8 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
 let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
-let fileContentTreeView: vscode.TreeView<vscode.TreeItem>|undefined;
+let fileContentProvider: FileContentProvider;
+let fileContentTreeView: vscode.TreeView<vscode.TreeItem> | undefined;
 
 let currentFileWatcher: fs.FSWatcher;
 
@@ -63,6 +63,7 @@ let currentFileWatcher: fs.FSWatcher;
 let packageFile;
 let extensionPackage;
 
+let extContext: vscode.ExtensionContext;
 // Regular expression variables
 // Technology regex for too, feed, spindle rpm
 const regExTechnology = new RegExp("([TFS])([0-9]+)");
@@ -77,6 +78,8 @@ const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
  * @param {vscode.ExtensionContext} context
  */
 export function activate(context: vscode.ExtensionContext): void {
+    //save the context for dynamical command registeration
+    extContext = context;
     // Get package.json informations
     extensionPackage = Path.join(context.extensionPath, "package.json");
     packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
@@ -149,6 +152,8 @@ export function activate(context: vscode.ExtensionContext): void {
             findNonAsciiCharacters()
         )
     );
+
+
 
     // add status bar items
     addSelectedLinesStatusBarItem(context);
@@ -277,7 +282,10 @@ function activeTextEditorChanged() {
     }
     const currentFile = vscode.window.activeTextEditor?.document.uri;
     if (currentFile !== undefined && isNcFile(currentFile)) {
-        const fileContentProvider = new FileContentProvider(currentFile); 
+        if (fileContentTreeView !== undefined) {
+            fileContentProvider.disposeCommands();
+        }
+        fileContentProvider = new FileContentProvider(currentFile, extContext);
         fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
             treeDataProvider: fileContentProvider
         });
@@ -425,7 +433,7 @@ async function goToPosition(): Promise<void> {
  *
  * @param {number} pos
  */
-function setCursorPosition(pos: number) {
+export function setCursorPosition(pos: number) {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
