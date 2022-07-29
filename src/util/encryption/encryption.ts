@@ -2,13 +2,13 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import * as ffi from "ffi-napi";
-
-const crypter = ffi.Library("ISGEncrypt_x64", {
+import * as blowfish from "./blowfish";
+/* const crypter = ffi.Library("ISGEncrypt_x64", {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "encrypt_file": ['void', ['string', 'string', 'string'] ],
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "decrypt_file": ['void', ['string', 'string', 'string']]
-});
+}); */
 // CNC filters for file-explorer navigation
 const filter = {
     "cnc": [
@@ -73,8 +73,8 @@ export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
 
     if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
         const outputPath: string = path.join(path.dirname(inputPath), outputName);
-        //blowfish.encryptFileToFile(inputPath, outputPath, key);
-        crypter.encrypt_file(inputPath, outputPath, key);
+        blowfish.encryptFileToFile(inputPath, outputPath, key);
+       // crypter.encrypt_file(inputPath, outputPath, key);
 
         vscode.window.showInformationMessage(inputName + " was encrypted into " + outputName);
     } else {
@@ -111,8 +111,8 @@ export async function decryptThis(inputUri: vscode.Uri): Promise<void> {
 
     if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
         const outputPath: string = path.join(path.dirname(inputPath), outputName);
-        //blowfish.decryptFileToFile(inputPath, outputPath, key);
-        crypter.decrypt_file(inputPath, outputPath, key);
+        blowfish.decryptFileToFile(inputPath, outputPath, key);
+        //crypter.decrypt_file(inputPath, outputPath, key);
         vscode.window.showInformationMessage(inputName + " was decrypted into " + outputName);
     } else {
         vscode.window.showWarningMessage("Decryption canceled");
@@ -151,8 +151,8 @@ export async function encryptFileFromSystem(): Promise<void> {
 
     if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
         const outputFolder = path.dirname(inputUri[0].fsPath);
-        //blowfish.encryptFileToFile(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
-        crypter.encrypt_file(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
+        blowfish.encryptFileToFile(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
+        //crypter.encrypt_file(inputUri[0].fsPath, path.join(outputFolder, outputName), key);
         vscode.window.showInformationMessage(path.basename(inputUri[0].fsPath) + " was encrypted into " + outputName);
     } else {
         vscode.window.showWarningMessage("Encryption canceled");
@@ -187,8 +187,8 @@ export async function decryptFileFromSystem(): Promise<void> {
     }
 
     if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
-        //blowfish.decryptFileToFile(inputURI[0].fsPath, path.join(path.dirname(inputURI[0].fsPath), outputName), key);
-        crypter.decrypt_file(inputUri[0].fsPath, path.join(path.dirname(inputUri[0].fsPath), outputName), key);
+        blowfish.decryptFileToFile(inputUri[0].fsPath, path.join(path.dirname(inputUri[0].fsPath), outputName), key);
+        //crypter.decrypt_file(inputUri[0].fsPath, path.join(path.dirname(inputUri[0].fsPath), outputName), key);
         vscode.window.showInformationMessage(path.basename(inputUri[0].fsPath) + " was decrypted into " + outputName);
     } else {
         vscode.window.showWarningMessage("Decryption canceled");
