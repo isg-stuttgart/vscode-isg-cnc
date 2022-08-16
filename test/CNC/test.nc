@@ -2,11 +2,11 @@ G01 X20 Y10
 G03 J10 (T10)
 T99 ; T101
 L CYCLE [NAME = "W23.nc"]
-T55 T45
+T55 T30
 N20 G90T12X20Y56
 M30
-T99 T99 T98 T23 T10
+T99 T99 T3  
 ; erwartete T-Matches
 ; T99 in Zeile 3
-T99
+T99 
 ; T12 in Zeile 6 

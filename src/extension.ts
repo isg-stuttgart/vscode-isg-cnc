@@ -6,16 +6,6 @@ import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { FileContentProvider } from "./cncView/FileContentTree";
 import { config } from "./util/config";
-/**
- * Get vscode config data and extension config
- * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
- */
-// let terminal: unknown;
-// if (process.platform === "linux") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
-// } else if (process.platform === "win32") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
-// }
 
 
 const language = config.getParam("locale");
@@ -57,7 +47,6 @@ let currentOffsetStatusBarItem: vscode.StatusBarItem;
 let fileContentProvider: FileContentProvider;
 let fileContentTreeView: vscode.TreeView<vscode.TreeItem> | undefined;
 
-let currentFileWatcher: fs.FSWatcher;
 
 // package.json information
 let packageFile;
@@ -277,23 +266,22 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
  * status bar lines.
  */
 function activeTextEditorChanged() {
-    if (currentFileWatcher !== undefined) {
-        currentFileWatcher.close();
-    }
+    
+    //Tree view
     const currentFile = vscode.window.activeTextEditor?.document.uri;
     if (currentFile !== undefined && isNcFile(currentFile)) {
-        if (fileContentTreeView !== undefined) {
-            fileContentProvider.disposeCommands();
+        if (fileContentProvider === undefined) {
+            fileContentProvider = new FileContentProvider(currentFile, extContext);
+        }else{
+            fileContentProvider.changeFile(currentFile);
         }
-        fileContentProvider = new FileContentProvider(currentFile, extContext);
         fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
             treeDataProvider: fileContentProvider
         });
-        currentFileWatcher = fs.watch(currentFile.fsPath, (eventType, filename) => {
-            fileContentProvider.refresh();
-        });
-        fileContentProvider.refresh();
     }
+
+
+    //Status Bar
     updateSelectedLinesStatusBarItem();
 }
 
