@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs";
 import * as Path from "path";
-import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";

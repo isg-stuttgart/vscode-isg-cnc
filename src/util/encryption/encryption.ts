@@ -75,9 +75,6 @@ export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
 
 }
 
-
-
-
 /**
  * Decrypts the file at the specified inputUri. The outputName and key will be specified by InputBox-prompts.
  * The decrypted file will be at the same directory as the input file and will have the specified outputName.
@@ -108,7 +105,6 @@ export async function decryptThis(inputUri: vscode.Uri): Promise<void> {
     } else {
         vscode.window.showWarningMessage("Decryption canceled");
     }
-
 }
 
 
@@ -137,7 +133,6 @@ export async function encryptFileFromSystem(): Promise<void> {
 
     if (inputUri !== undefined && outputName !== undefined) {
         key = await askForKey();
-
     }
 
     if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
@@ -173,7 +168,6 @@ export async function decryptFileFromSystem(): Promise<void> {
     }
     if (inputUri !== undefined && outputName !== undefined) {
         key = await askForKey();
-
     }
 
     if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
@@ -183,7 +177,6 @@ export async function decryptFileFromSystem(): Promise<void> {
         vscode.window.showWarningMessage("Decryption canceled");
     }
 }
-
 
 /**
  * Asks the user via InputBox which name the result-file of an decryption-process should have. 
@@ -212,13 +205,11 @@ async function askForDecryptedFilename(inputPath: string): Promise<string | unde
         } else {
             endSelection = true;
         }
-
-
     } while (!endSelection);
-
 
     return finalOutputName;
 }
+
 /**
  * Asks the user via InputBox which name the result-file of an encryption-process should have. 
  * 
@@ -238,7 +229,6 @@ async function askForEncryptedFilename(inputPath: string): Promise<string | unde
             prompt: "Type the name of the encrypted file",
             value: path.basename(inputPath) + ".ecy",
             valueSelection: undefined
-
         });
         if (currentOutputName !== undefined) {
             currentOutputPath = path.join(path.dirname(inputPath), currentOutputName);
@@ -247,11 +237,7 @@ async function askForEncryptedFilename(inputPath: string): Promise<string | unde
         } else {
             endSelection = true;
         }
-
-
     } while (!endSelection);
-
-
     return finalOutputName;
 }
 

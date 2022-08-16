@@ -422,12 +422,9 @@ export function decryptFileToFile(inputPath: string, outputPath: string, key: Ui
 
   const encodedBuffer: Buffer = fs.readFileSync(inputPath);
   let encodedArray: Uint8Array = new Uint8Array(encodedBuffer);
-
   let decodedArray: Uint8Array = blowfish.decode(encodedArray);
 
-
   fs.writeFileSync(outputPath, decodedArray);
-
 }
 
 
