@@ -15,7 +15,7 @@ Types of changes
 ## [Unreleased]
 
 ### Added
-
+- Added feature to encrypt/decrypt any file (or especially the currently opened file) via command. [Issue #16](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/16)
 ### Fixed
 
 - Fix open ISG-Documentation per command [Issue #19 reported by georgulbrich-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/19) and [Issue #31 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/31)
