@@ -41,7 +41,7 @@
     "markdown": "github",
     "activationEvents": [
         "onLanguage:isg-cnc",
-        "onView:cnc-views-container"
+        "onView:cnc-show-filecontent"
     ],
     "main": "./out/extension.js",
     "contributes": {

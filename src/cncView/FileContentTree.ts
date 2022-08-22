@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as peggy from "peggy";
 import LineReader = require("n-readlines");
+import * as Path from "path";
+
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
 let maxLine: number = 0;
@@ -15,57 +17,65 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     fileItem: FileItem;
     matchCategories: MatchCategories;
     context: vscode.ExtensionContext;
-    currentFileWatcher: fs.FSWatcher;
-    file: vscode.Uri;
-    constructor(file: vscode.Uri, extContext: vscode.ExtensionContext) {
+    currentFileWatcher: fs.FSWatcher|undefined;
+    file: vscode.Uri|undefined;
+
+    constructor(file: vscode.Uri|undefined, extContext: vscode.ExtensionContext) {
         this.file = file;
         this.matchCategories = {
             toolCalls: new CategoryItem("Tool Calls"),
             prgCalls: new CategoryItem("Program Calls"),
         };
         this.context = extContext;
-        this.fileItem = new FileItem(file, this.matchCategories);
-        this.currentFileWatcher = fs.watch(file.fsPath, () => {
-            this.update();
-        });
-        this.changeFile(file);
+        this.fileItem = this.createFileItem();
+        this.createFileWatcherIfPossible();   
+        this.updateTreeView(this.file);  
+    }
+    
+    private createFileItem():FileItem{
+        let fileItem;
+        if(this.file === undefined){
+            fileItem = new FileItem("There is no currently opened file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+        }else if(!isNcFile(this.file.fsPath)){
+            fileItem = new FileItem("The currently opened file is no NC-file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+        }else{
+            fileItem = new FileItem(Path.basename(this.file.fsPath), this.matchCategories, vscode.TreeItemCollapsibleState.Expanded);
+        }
+        return fileItem;
+    }
+
+    private createFileWatcherIfPossible() {
+        if (this.file !== undefined) {
+            this.currentFileWatcher = fs.watch(this.file.fsPath, () => {
+                this.updateTreeView(this.file);
+            });
+        }
     }
 
     /**
-     * Binds the tree to the given file
+     * Updates the tree so it shows the information concerning the specified file
      * @param file 
      */
-    changeFile(file: vscode.Uri): void {
+    updateTreeView(file: vscode.Uri|undefined): void {
         this.file = file;
         this.disposeCommands();
-        this.fileItem = new FileItem(file, this.matchCategories);
-        this.currentFileWatcher = fs.watch(file.fsPath, () => {
-            this.update();
-        });
-        this.update();
-    }
-
-    /**
-     * Update the tree
-     */
-    update() {
-        updateMaxLine(this.file);
-        try {
-            const filepath = this.fileItem.resourceUri?.fsPath;
-            if (filepath !== undefined) {
-                const filecontent = fs.readFileSync(filepath, "utf8");
+        this.fileItem = this.createFileItem();
+        if(this.file !== undefined){
+            updateMaxLine(this.file);
+            const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
+            try {
                 const parseResult = parser.parse(filecontent);
                 this.updateMatchItems(parseResult);
-                this._onDidChangeTreeData.fire();
-            } else {
-                vscode.window.showWarningMessage("Loading file failed: " + filepath);
+            } catch (error:any) {
+                if(error instanceof parser.SyntaxError){
+                    this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+                }
             }
-        } catch (e: any) {
-            // vscode.window.showWarningMessage("NC file isn't structured correctly.\nFilecontent can not be updated");
-            vscode.window.showErrorMessage("Error:" + e);
+            this._onDidChangeTreeData.fire();
         }
-
+        this.createFileWatcherIfPossible();
     }
+
     /**
      * Update match tree-items
      * @param parseResult 
@@ -95,8 +105,6 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.matchCategories.toolCalls.disposeCommands();
         this.matchCategories.prgCalls.disposeCommands();
     }
-
-
 }
 
 /**
@@ -104,13 +112,14 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
  */
 class FileItem extends vscode.TreeItem implements MyItem {
     private _children: Array<MyItem>;
-    constructor(resourceUri: vscode.Uri, matchCategories: MatchCategories) {
-        super(resourceUri, vscode.TreeItemCollapsibleState.Expanded);
+    constructor(label: string, matchCategories: MatchCategories, collapsibleState:vscode.TreeItemCollapsibleState) {
+        super(label, collapsibleState);
         this._children = new Array<MyItem>();
         Object.entries(matchCategories).forEach(([key, category]) => {
             this.addChild(category);
         });
     }
+
     private addChild(category: CategoryItem): void {
         this._children.push(category);
     }
@@ -126,20 +135,20 @@ class FileItem extends vscode.TreeItem implements MyItem {
 class CategoryItem extends vscode.TreeItem implements MyItem {
     // one children section for the matches listed line by line, one sorted in matchSubcategory
     private children: {
-        matchList: Map<number, MatchItem>,
-        matchSubCategoryList: Map<string, SubCategoryTreeItem>
+        matchMap: Map<number, MatchItem>,
+        matchSubCategoryMap: Map<string, SubCategoryTreeItem>
     };
 
     constructor(label: string) {
         super(label, vscode.TreeItemCollapsibleState.Expanded);
         this.children = {
-            matchList: new Map<number, MatchItem>(),
-            matchSubCategoryList: new Map<string, SubCategoryTreeItem>()
+            matchMap: new Map<number, MatchItem>(),
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
         };
     }
     getChildren(): MyItem[] {
-        const matches: Array<MatchItem> = Array.from(this.children.matchList.values());
-        const matchSubCategories: Array<SubCategoryTreeItem> = Array.from(this.children.matchSubCategoryList.values());
+        const matches: Array<MatchItem> = Array.from(this.children.matchMap.values());
+        const matchSubCategories: Array<SubCategoryTreeItem> = Array.from(this.children.matchSubCategoryMap.values());
         return [...matches, ...matchSubCategories];
     }
 
@@ -149,9 +158,9 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      */
     public addChild(child: SubCategoryTreeItem | MatchItem): void {
         if (child instanceof MatchItem) {
-            this.children.matchList.set(child.match.location.start.line, child);
+            this.children.matchMap.set(child.match.location.start.line, child);
         } else if (child instanceof SubCategoryTreeItem) {
-            this.children.matchSubCategoryList.set(child.name, child);
+            this.children.matchSubCategoryMap.set(child.name, child);
         }
     }
 
@@ -160,8 +169,8 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      */
     private clearChildren(): void {
         this.children = {
-            matchList: new Map<number, MatchItem>(),
-            matchSubCategoryList: new Map<string, SubCategoryTreeItem>()
+            matchMap: new Map<number, MatchItem>(),
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
         };
     }
     /**
@@ -174,33 +183,34 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         this.clearChildren();
 
         newMatches.forEach((match: Match) => {
+            addMatchToMatchLine(this.children.matchMap, ItemPosition.category);
             // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryList.get(match.text);
-            // create item for the match-line if it doesn't already exist
-            let matchLine: MatchItem|undefined = this.children.matchList.get(match.location.start.line);
-            if (matchLine === undefined) {
-                this.children.matchList.set(match.location.start.line, new MatchItem(match, context, ItemPosition.category));
-            }
-            //and additionally highlight new match if line already exists
-            else{
-                matchLine.addHighlightingForLineMatch(match);
-            }
-
+            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
             //create subCategory when non-existing
             if (subCategory === undefined) {
-                this.children.matchSubCategoryList.set(match.text, new SubCategoryTreeItem(match.text));
+                this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
             }
 
-            subCategory = this.children.matchSubCategoryList.get(match.text);
-            //make sure subCategory exists now and add match to
+            subCategory = this.children.matchSubCategoryMap.get(match.text);
+            //make sure subCategory exists now and add match to it
             if (subCategory !== undefined) {
-                const matchItem = new MatchItem(match, context, ItemPosition.subCategory);
-                subCategory.addChild(matchItem);
+                addMatchToMatchLine(subCategory.children, ItemPosition.subCategory);
             } else {
                 throw new Error("subCategory " + match.text + " was not created successfully");
             }
 
+            function addMatchToMatchLine(map: Map<number, MatchItem>, itemPosition: ItemPosition) {
+                // create item for the match-line if it doesn't already exist
+                let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
+                if (matchLineItem === undefined) {
+                    map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+                }
+                //or additionally highlight new match if line already exists
+                else {
+                    matchLineItem.addHighlightingForLineMatch(match);
+                }
+            }
 
         });
 
@@ -210,12 +220,12 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Removes the match-specific vscode commands to prevent command-duplicates 
      */
     disposeCommands(): void {
-        this.children.matchSubCategoryList.forEach(subCategory => {
+        this.children.matchSubCategoryMap.forEach(subCategory => {
             subCategory.getChildren().forEach(match => {
                 match.commandHandler.dispose();
             });
         });
-        this.children.matchList.forEach(match => {
+        this.children.matchMap.forEach(match => {
             match.commandHandler.dispose();
         });
     }
@@ -225,7 +235,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
  */
 class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
     private _name: string;
-    private _children: Array<MatchItem>;//children array but typed as MatchItem
+    children: Map<number, MatchItem>; //one item for each line containing one or more matches
     public get name(): string {
         return this._name;
     }
@@ -236,18 +246,11 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
     constructor(label: string) {
         super(label, vscode.TreeItemCollapsibleState.Collapsed);
         this._name = label;
-        this._children = new Array<MatchItem>();
-    }
-    getChildren(): MatchItem[] {
-        return this._children;
+        this.children = new Map<number, MatchItem>();
     }
 
-    /**
-     * Add a child to this TreeItem
-     * @param child 
-     */
-    public addChild(child: MatchItem): void {
-        this._children.push(child);
+    getChildren(): MatchItem[] {
+        return Array.from(this.children.values());
     }
 }
 /**
@@ -263,7 +266,6 @@ class MatchItem extends vscode.TreeItem implements MyItem {
     public set match(value: Match) {
         this._match = value;
     }
-
 
     constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
         super(new MatchLineLabel(match).label);
@@ -291,13 +293,13 @@ class MatchItem extends vscode.TreeItem implements MyItem {
                         vscode.commands.executeCommand("cursorMove", {
                             to: "down",
                             by: "line",
-                            value: this._match.location.start.line-1
+                            value: this._match.location.start.line - 1
                         }).then(() => {
                             //move right
                             vscode.commands.executeCommand("cursorMove", {
                                 to: "right",
                                 by: "character",
-                                value: this._match.location.start.column-1
+                                value: this._match.location.start.column - 1
                             });
                         });
                     });
@@ -312,7 +314,7 @@ class MatchItem extends vscode.TreeItem implements MyItem {
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    addHighlightingForLineMatch(match:Match){
+    addHighlightingForLineMatch(match: Match) {
         this._label.addHighlightingForLineMatch(match);
         this.label = this._label.label;
     }
@@ -324,15 +326,12 @@ class MatchItem extends vscode.TreeItem implements MyItem {
     getChildren(): MyItem[] {
         return [];
     }
-
-
-
 }
 
 /**
  * Class for a match-line-label
  */
-class MatchLineLabel{
+class MatchLineLabel {
     private _file;
     private _label: { label: string; highlights: [number, number][]; };
     public get label(): { label: string; highlights: [number, number][]; } {
@@ -340,10 +339,10 @@ class MatchLineLabel{
     }
 
     private _textoffset: number;
-    constructor(match:Match){  
-        this._file = vscode.window.activeTextEditor?.document.uri.fsPath;  
-        let labelString:string;    
-        let textoffset:number;
+    constructor(match: Match) {
+        this._file = vscode.window.activeTextEditor?.document.uri.fsPath;
+        let labelString: string;
+        let textoffset: number;
 
         if (this._file !== undefined) {
             const paddingGoal = maxLine.toString().length;
@@ -353,7 +352,7 @@ class MatchLineLabel{
             let line: string = getLine(this._file, lineNumber);
             textoffset = paddingGoal + 2/* ': ' */ - 1 /*different counting between match and label*/;
 
-             //label shall contain a maximum of 15 characters left from the match
+            //label shall contain a maximum of 15 characters left from the match
             if (column > 15) {
                 line = "..." + line.substring(column - 15);
                 textoffset = textoffset + 3 - (column - 15);
@@ -364,10 +363,10 @@ class MatchLineLabel{
         } else {
             labelString = "!!! no file found !!!";
             textoffset = 0;
-        }     
+        }
 
         this._textoffset = textoffset;
-        this._label = { label: labelString, highlights: []};
+        this._label = { label: labelString, highlights: [] };
         this.addHighlightingForLineMatch(match);
     }
 
@@ -375,8 +374,8 @@ class MatchLineLabel{
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    public addHighlightingForLineMatch(match: Match){
-        this._label.highlights.push([match.location.start.column+this._textoffset, match.location.end.column+this._textoffset]);
+    public addHighlightingForLineMatch(match: Match) {
+        this._label.highlights.push([match.location.start.column + this._textoffset, match.location.end.column + this._textoffset]);
     }
 }
 
@@ -425,10 +424,6 @@ async function updateMaxLine(file: vscode.Uri) {
     }
 }
 
-
-
-
- 
 /**
  * Returns the the specified line of a file, empty String when not found
  */
@@ -447,3 +442,11 @@ function getLine(file: string, lineNumber: number): string {
     return result;
 }
 
+/**
+ * Checks if given uri refers to a .nc-file
+ * @param path 
+ * @returns true if given uri ends with.nc, false otherwise
+ */
+function isNcFile(path:string): boolean {
+    return Path.extname(path) === ".nc";
+}

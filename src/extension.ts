@@ -101,6 +101,11 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
+    //NC-file sidebar tree provider
+    const currentFile = vscode.window.activeTextEditor?.document.uri;
+    fileContentProvider = new FileContentProvider(currentFile, extContext);
+
+
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -266,28 +271,22 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
  * status bar lines.
  */
 function activeTextEditorChanged() {
-    
     //Tree view
-    const currentFile = vscode.window.activeTextEditor?.document.uri;
-    if (currentFile !== undefined && isNcFile(currentFile)) {
-        if (fileContentProvider === undefined) {
-            fileContentProvider = new FileContentProvider(currentFile, extContext);
-        }else{
-            fileContentProvider.changeFile(currentFile);
-        }
+    try {
+        const currentFile = vscode.window.activeTextEditor?.document.uri;
+        fileContentProvider.updateTreeView(currentFile);
         fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
             treeDataProvider: fileContentProvider
         });
+    } catch (e: any) {
+        vscode.window.showErrorMessage(e);
     }
-
 
     //Status Bar
     updateSelectedLinesStatusBarItem();
 }
 
-function isNcFile(file: vscode.Uri): boolean {
-    return Path.extname(file.fsPath) === ".nc";
-}
+
 /**
  * Update statusbar item for selected lines.
  * Hide item when no lines are selected.
