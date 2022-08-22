@@ -1,9 +1,6 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as path from 'path';
-import { match, notEqual, notStrictEqual } from 'assert';
 import * as peggy from "peggy";
-import * as extension from "../extension";
 import LineReader = require("n-readlines");
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
