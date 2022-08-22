@@ -6,8 +6,9 @@ const parser = require(('./ncParser'));
 // the maximum line of the current nc file
 let maxLine: number = 0;
 
-
-
+/**
+ * The Tree Data Provider for the NC-Match-Tree
+ */
 export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeItem>{
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -176,8 +177,13 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
             // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
             let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryList.get(match.text);
             // create item for the match-line if it doesn't already exist
-            if (this.children.matchList.get(match.location.start.line) === undefined) {
+            let matchLine: MatchItem|undefined = this.children.matchList.get(match.location.start.line);
+            if (matchLine === undefined) {
                 this.children.matchList.set(match.location.start.line, new MatchItem(match, context, ItemPosition.category));
+            }
+            //and additionally highlight new match if line already exists
+            else{
+                matchLine.addHighlightingForLineMatch(match);
             }
 
 
@@ -250,8 +256,7 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
 class MatchItem extends vscode.TreeItem implements MyItem {
     commandHandler: vscode.Disposable;
     private _match: Match;
-
-
+    private _label: MatchLineLabel;
     public getMatch(): Match {
         return this._match;
     }
@@ -261,8 +266,8 @@ class MatchItem extends vscode.TreeItem implements MyItem {
 
 
     constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
-        super(getLabel(match));
-
+        super(new MatchLineLabel(match).label);
+        this._label = new MatchLineLabel(match);
         this._match = match;
         const commandID: string = match.text + "_" + match.location.start.offset.toString() + "_" + itemPos;
         this.command = {
@@ -304,6 +309,15 @@ class MatchItem extends vscode.TreeItem implements MyItem {
     }
 
     /**
+     * Additionally highlight the specified match in the match-line-label
+     * @param match 
+     */
+    addHighlightingForLineMatch(match:Match){
+        this._label.addHighlightingForLineMatch(match);
+        this.label = this._label.label;
+    }
+
+    /**
      * Returns empty array because MatchItems don't have children
      * @returns 
      */
@@ -315,6 +329,56 @@ class MatchItem extends vscode.TreeItem implements MyItem {
 
 }
 
+/**
+ * Class for a match-line-label
+ */
+class MatchLineLabel{
+    private _file;
+    private _label: { label: string; highlights: [number, number][]; };
+    public get label(): { label: string; highlights: [number, number][]; } {
+        return this._label;
+    }
+
+    private _textoffset: number;
+    constructor(match:Match){  
+        this._file = vscode.window.activeTextEditor?.document.uri.fsPath;  
+        let labelString:string;    
+        let textoffset:number;
+
+        if (this._file !== undefined) {
+            const paddingGoal = maxLine.toString().length;
+            const lineNumber = match.location.start.line;
+            const column = match.location.start.column;
+            labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
+            let line: string = getLine(this._file, lineNumber);
+            textoffset = paddingGoal + 2/* ': ' */ - 1 /*different counting between match and label*/;
+
+             //label shall contain a maximum of 15 characters left from the match
+            if (column > 15) {
+                line = "..." + line.substring(column - 15);
+                textoffset = textoffset + 3 - (column - 15);
+            }
+
+            labelString = labelString + line;
+
+        } else {
+            labelString = "!!! no file found !!!";
+            textoffset = 0;
+        }     
+
+        this._textoffset = textoffset;
+        this._label = { label: labelString, highlights: []};
+        this.addHighlightingForLineMatch(match);
+    }
+
+    /**
+     * Additionally highlight the specified match in the match-line-label
+     * @param match 
+     */
+    public addHighlightingForLineMatch(match: Match){
+        this._label.highlights.push([match.location.start.column+this._textoffset, match.location.end.column+this._textoffset]);
+    }
+}
 
 /**
  * Type which is returned within the arrays of the parse result
@@ -361,36 +425,10 @@ async function updateMaxLine(file: vscode.Uri) {
     }
 }
 
-/**
-* Returns a String representing the Match and it's surroundings. This String will be shown as label of the Match Items
-*/
-function getLabel(match: Match): vscode.TreeItemLabel {
-    const file = vscode.window.activeTextEditor?.document.uri.fsPath;
-    let result;
-    let matchHighlighting: [number, number][];
-    if (file !== undefined) {
-        const paddingGoal = maxLine.toString().length;
-        const lineNumber = match.location.start.line;
-        const column = match.location.start.column;
-        result = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
-        let line: string = getLine(file, lineNumber);
-        let textoffset: number = paddingGoal + 2;
-         //label shall contain a maximum of 15 characters left from the match
-        if (column > 15) {
-            line = "..." + line.substring(column - 15);
-            textoffset = textoffset + 3 - (column - 15);
-        }
-        result = result + line;
-        matchHighlighting = [[match.location.start.column-1+textoffset, match.location.end.column-1+textoffset]];
-    } else {
-        result = "!!! no file found !!!";
-        matchHighlighting = [];
-    }
-   
-    const label = { label: result, highlights: matchHighlighting };
-    return label;
-}
 
+
+
+ 
 /**
  * Returns the the specified line of a file, empty String when not found
  */
