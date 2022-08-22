@@ -4,12 +4,10 @@ import * as path from 'path';
 import { match, notEqual, notStrictEqual } from 'assert';
 import * as peggy from "peggy";
 import * as extension from "../extension";
-import * as lineReader from "line-reader";
+import LineReader = require("n-readlines");
 const parser = require(('./ncParser'));
-
 // the maximum line of the current nc file
 let maxLine: number = 0;
-
 
 
 
@@ -27,38 +25,39 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             toolCalls: new CategoryItem("Tool Calls"),
             prgCalls: new CategoryItem("Program Calls"),
         };
-
         this.context = extContext;
         this.fileItem = new FileItem(file, this.matchCategories);
-
         this.currentFileWatcher = fs.watch(file.fsPath, () => {
-            this.refresh();
+            this.update();
         });
-
         this.changeFile(file);
     }
 
+    /**
+     * Binds the tree to the given file
+     * @param file 
+     */
     changeFile(file: vscode.Uri): void {
         this.file = file;
         this.disposeCommands();
-
         this.fileItem = new FileItem(file, this.matchCategories);
-
         this.currentFileWatcher = fs.watch(file.fsPath, () => {
-            this.refresh();
+            this.update();
         });
-        this.refresh();
-
+        this.update();
     }
 
-    refresh(): void {
+    /**
+     * Update the tree
+     */
+    update() {
         updateMaxLine(this.file);
         try {
             const filepath = this.fileItem.resourceUri?.fsPath;
             if (filepath !== undefined) {
                 const filecontent = fs.readFileSync(filepath, "utf8");
                 const parseResult = parser.parse(filecontent);
-                this.updateFileContent(parseResult);
+                this.updateMatchItems(parseResult);
                 this._onDidChangeTreeData.fire();
             } else {
                 vscode.window.showWarningMessage("Loading file failed: " + filepath);
@@ -69,7 +68,11 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
 
     }
-    updateFileContent(parseResult: any): void {
+    /**
+     * Update match tree-items
+     * @param parseResult 
+     */
+    updateMatchItems(parseResult: any): void {
         this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context);
         this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context);
     }
@@ -78,6 +81,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     getTreeItem(item: MyItem): MyItem {
         return item;
     }
+
     getChildren(item?: MyItem): Thenable<MyItem[]> {
         if (item) {
             return Promise.resolve(item.getChildren());
@@ -86,6 +90,9 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         }
     }
 
+    /**
+     * Clear/dispose the commands binded to Tree items
+     */
     public disposeCommands(): void {
         this.matchCategories.toolCalls.disposeCommands();
         this.matchCategories.prgCalls.disposeCommands();
@@ -202,17 +209,17 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
     disposeCommands(): void {
         this.children.matchSubCategoryList.forEach(subCategory => {
             subCategory.getChildren().forEach(match => {
-                console.log(match.command?.title);
                 match.commandHandler.dispose();
             });
         });
         this.children.matchList.forEach(match => {
-            console.log(match.command?.title);
             match.commandHandler.dispose();
         });
     }
 }
-
+/**
+ * The tree item of a subcategory (e.g. collection of all T31 of the same number)
+ */
 class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
     private _name: string;
     private _children: Array<MatchItem>;//children array but typed as MatchItem
@@ -240,6 +247,9 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
         this._children.push(child);
     }
 }
+/**
+ * The tree item of a concrete match like "T31"
+ */
 class MatchItem extends vscode.TreeItem implements MyItem {
     commandHandler: vscode.Disposable;
     private _match: Match;
@@ -254,7 +264,7 @@ class MatchItem extends vscode.TreeItem implements MyItem {
 
 
     constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
-        super(/* getMatchLine(match) */ "Line: " + match.location.start.line);
+        super(getLabel(match));
 
         this._match = match;
         const commandID: string = match.text + "_" + match.location.start.offset.toString() + "_" + itemPos;
@@ -262,9 +272,36 @@ class MatchItem extends vscode.TreeItem implements MyItem {
             title: commandID,
             command: commandID
         };
+
+        //if clicked the cursor should jump to match start
         this.commandHandler = vscode.commands.registerTextEditorCommand(this.command.command, () => {
-            /*  vscode.window.showWarningMessage("HellO " + match.text);
-             extension.setCursorPosition(this.match.location.start.offset); */
+            const file = vscode.window.activeTextEditor?.document.uri;
+            if (file !== undefined) {
+                //open the text document
+                vscode.workspace.openTextDocument(file).then(async (doc) => {
+                    let pos1 = new vscode.Position(0, 0);
+                    let pos2 = new vscode.Position(0, 0);
+                    let sel = new vscode.Selection(pos1, pos2);
+                    //set cursor at top left corner
+                    vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
+                        editor.selection = sel;
+                        //move down
+                        vscode.commands.executeCommand("cursorMove", {
+                            to: "down",
+                            by: "line",
+                            value: this._match.location.start.line-1
+                        }).then(() => {
+                            //move right
+                            vscode.commands.executeCommand("cursorMove", {
+                                to: "right",
+                                by: "character",
+                                value: this._match.location.start.column-1
+                            });
+                        });
+                    });
+                }
+                );
+            }
         });
         context.subscriptions.push(this.commandHandler);
     }
@@ -276,6 +313,9 @@ class MatchItem extends vscode.TreeItem implements MyItem {
     getChildren(): MyItem[] {
         return [];
     }
+
+
+
 }
 
 
@@ -314,54 +354,61 @@ interface MyItem extends vscode.TreeItem {
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
  */
-function updateMaxLine(file: vscode.Uri) {
-    let lineNumber: number = 1;
-    lineReader.eachLine(file.fsPath, (line, last) => {
-        if (last) {
-            maxLine = lineNumber;
-        }
-        lineNumber++;
-    });
+async function updateMaxLine(file: vscode.Uri) {
+    maxLine = 0;
+    const reader = new LineReader(file.fsPath);
+    let line = reader.next();
+    while (line) {
+        maxLine++;
+        line = reader.next();
+    }
 }
 
 /**
- * Returns a String represanting the Match and it's surroundings. This String will be shown as label of the Match Items
- */
-function getMatchLine(match: Match): string{
-    let matchLine;
-    const file:string|undefined = vscode.window.activeTextEditor?.document.uri.fsPath;
-    if(file === undefined){
-        throw new Error("No file to read os opened");
-    }
-    lineReader.open(file, (err, reader) => {
-        if (err) {
-            throw new Error("File reader could not be opened for file " + file + "\n Error message: " + err);
+* Returns a String representing the Match and it's surroundings. This String will be shown as label of the Match Items
+*/
+function getLabel(match: Match): vscode.TreeItemLabel {
+    const file = vscode.window.activeTextEditor?.document.uri.fsPath;
+    let result;
+    let matchHighlighting: [number, number][];
+    if (file !== undefined) {
+        const paddingGoal = maxLine.toString().length;
+        const lineNumber = match.location.start.line;
+        const column = match.location.start.column;
+        result = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
+        let line: string = getLine(file, lineNumber);
+        let textoffset: number = paddingGoal + 2;
+         //label shall contain a maximum of 15 characters left from the match
+        if (column > 15) {
+            line = "..." + line.substring(column - 15);
+            textoffset = textoffset + 3 - (column - 15);
         }
-        let lineNumber = 0;
-        while(reader.hasNextLine()){
-            lineNumber++;
-            reader.nextLine((err, line)=>{
-                if(err){
-                    throw new Error("An error occured while reading " + file + "\n Error message: " + err); 
-                }
-                if(line === undefined){
-                    throw new Error("Reading correctly failed for " + file); 
-                }
+        result = result + line;
+        matchHighlighting = [[match.location.start.column-1+textoffset, match.location.end.column-1+textoffset]];
+    } else {
+        result = "!!! no file found !!!";
+        matchHighlighting = [];
+    }
+   
+    const label = { label: result, highlights: matchHighlighting };
+    return label;
+}
 
-                if(lineNumber === match.location.start.line){
-                   matchLine = line;          
-                }
-                 
-            });
+/**
+ * Returns the the specified line of a file, empty String when not found
+ */
+function getLine(file: string, lineNumber: number): string {
+    let result: string = "";
+    let currentLine: number = 0;
+    const reader: LineReader = new LineReader(file);
+    let line: Buffer | false = reader.next();
+    while (line && currentLine <= lineNumber) {
+        currentLine++;
+        if (currentLine === lineNumber) {
+            result = line.toString('utf-8');
         }
-    });
-    if(matchLine === undefined){
-        throw new Error ("Match line not found for match '" + match.text + "' in '" + file + "'");
+        line = reader.next();
     }
-    
-   /*  if(matchLine > 50){
-        if(match.line)
-    } */
-    return matchLine;
+    return result;
 }
 
