@@ -6,7 +6,6 @@ import * as Path from "path";
 import { EOL as newline } from "node:os";
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
-let maxLine: number = 0;
 
 /**
  * The Tree Data Provider for the NC-Match-Tree
@@ -62,10 +61,10 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             this.disposeCommands();
             this.fileItem = this.createFileItem();
             if (this.file !== undefined) {
-                updateMaxLine(this.file);
                 const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
                 try {
-                    const parseResult = parser.parse(filecontent);
+                    let parseResult = parser.parse(filecontent);
+
                     this.updateMatchItems(parseResult);
                 } catch (error: any) {
                     if (error instanceof parser.SyntaxError) {
@@ -187,6 +186,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         this.clearChildren();
 
         newMatches.forEach((match: Match) => {
+
             addMatchToMatchLine(this.children.matchMap, ItemPosition.category);
             // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
             let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
@@ -349,7 +349,7 @@ class MatchLineLabel {
         let textoffset: number;
 
         if (this._file !== undefined) {
-            const paddingGoal = maxLine.toString().length;
+            const paddingGoal = getMaxLine(this._file).toString().length;
             const lineNumber = match.location.start.line;
             const column = match.location.start.column;
             labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
@@ -418,10 +418,10 @@ interface MyItem extends vscode.TreeItem {
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
  */
-function updateMaxLine(file: vscode.Uri) {
-    const filecontent: string = fs.readFileSync(file.fsPath, "utf8");
+function getMaxLine(file: string): number {
+    const filecontent: string = fs.readFileSync(file, "utf8");
     const lineArray = filecontent.split(newline);
-    maxLine = lineArray.length;
+    return lineArray.length;
 }
 
 /**
