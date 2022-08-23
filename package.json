@@ -320,7 +320,6 @@
     },
     "devDependencies": {
         "@types/glob": "^7.1.4",
-        "@types/line-reader": "^0.0.34",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
         "@types/open": "^6.2.1",
