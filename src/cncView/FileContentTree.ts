@@ -5,7 +5,6 @@ import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
 const parser = require(('./ncParser'));
-// the maximum line of the current nc file
 
 /**
  * The Tree Data Provider for the NC-Match-Tree
