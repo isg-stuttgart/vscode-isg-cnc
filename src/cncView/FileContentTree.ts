@@ -422,8 +422,6 @@ function updateMaxLine(file: vscode.Uri) {
     const filecontent: string = fs.readFileSync(file.fsPath, "utf8");
     const lineArray = filecontent.split(newline);
     maxLine = lineArray.length;
-    counter++;
-    console.log(counter);
 }
 
 /**
