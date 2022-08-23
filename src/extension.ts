@@ -2,10 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs";
 import * as Path from "path";
-import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { config } from "./util/config";
 import * as open from "open";
+import * as blowfish from "./util/encryption/encryption";
 
 let language: string;
 let docuPath: string;
@@ -53,6 +53,8 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
+
+//
 
 /**
  * This method is called when the extension is activated
@@ -134,7 +136,27 @@ export function activate(context: vscode.ExtensionContext): void {
             findNonAsciiCharacters()
         )
     );
-
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptAnyFile", () =>
+            blowfish.encryptFileFromSystem()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptAnyFile", () =>
+            blowfish.decryptFileFromSystem()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
+            blowfish.encryptThis(inputUri)
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
+            blowfish.decryptThis(inputUri)
+        )
+    );
+    
     // add status bar items
     addSelectedLinesStatusBarItem(context);
     addCurrentOffsetStatusBarItem(context);
@@ -973,3 +995,4 @@ function findAllToolCalls(): any {
     };
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
+
