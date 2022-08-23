@@ -55,12 +55,13 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
      * Updates the tree so it shows the information concerning the specified file
      * @param file 
      */
-    updateTreeView(file: vscode.Uri | undefined): void {
+    async updateTreeView(file: vscode.Uri | undefined) {
         try {
             this.file = file;
             this.disposeCommands();
             this.fileItem = this.createFileItem();
             if (this.file !== undefined) {
+                await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
                 const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
                 try {
                     let parseResult = parser.parse(filecontent);
