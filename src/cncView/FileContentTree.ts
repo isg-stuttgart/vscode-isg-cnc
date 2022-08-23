@@ -7,7 +7,7 @@ import { EOL as newline } from "node:os";
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
 let maxLine: number = 0;
-
+let counter = 0;
 /**
  * The Tree Data Provider for the NC-Match-Tree
  */
@@ -27,7 +27,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         };
         this.context = extContext;
         this.fileItem = this.createFileItem();
-        this.createFileWatcherIfPossible();
+        this.createFileWatcher();
         this.updateTreeView(this.file);
     }
 
@@ -43,9 +43,10 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         return fileItem;
     }
 
-    private createFileWatcherIfPossible() {
+    private createFileWatcher() {
         if (this.file !== undefined) {
             // preventing to many opened files by linereader
+            this.currentFileWatcher?.close();
             this.currentFileWatcher = fs.watch(this.file.fsPath, () => {
                 this.updateTreeView(this.file);
             });
@@ -72,9 +73,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
                         this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", this.matchCategories, vscode.TreeItemCollapsibleState.None);
                     }
                 }
-                this._onDidChangeTreeData.fire();
             }
-            this.createFileWatcherIfPossible();
+            this.createFileWatcher();
         } catch (error) {
             console.log(error);
         }
@@ -424,6 +424,8 @@ function updateMaxLine(file: vscode.Uri) {
         const lineArray = filecontent.split(newline);
         maxLine = lineArray.length;
     }
+    counter++;
+    console.log(counter);
 }
 
 /**
