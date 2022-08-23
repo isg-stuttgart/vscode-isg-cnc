@@ -41,7 +41,7 @@
     "markdown": "github",
     "activationEvents": [
         "onLanguage:isg-cnc",
-        "onView:cnc-show-filecontent"
+        "onView:cnc-show-filecontent",
         "onCommand:isg-cnc.EncryptThis",
         "onCommand:isg-cnc.DecryptThis",
         "onCommand:isg-cnc.EncryptAnyFile",
