@@ -75,8 +75,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
                 }
             }
             this.createFileWatcher();
-        } catch (error) {
-            console.log(error);
+        } catch (error:any) {
+           vscode.window.showErrorMessage(error);
         }
     }
 
@@ -419,11 +419,9 @@ interface MyItem extends vscode.TreeItem {
  * @param file 
  */
 function updateMaxLine(file: vscode.Uri) {
-    const filecontent: string | undefined = fs.readFileSync(file.fsPath, "utf8");
-    if (filecontent !== undefined) {
-        const lineArray = filecontent.split(newline);
-        maxLine = lineArray.length;
-    }
+    const filecontent: string = fs.readFileSync(file.fsPath, "utf8");
+    const lineArray = filecontent.split(newline);
+    maxLine = lineArray.length;
     counter++;
     console.log(counter);
 }
@@ -437,10 +435,8 @@ function updateMaxLine(file: vscode.Uri) {
 function getLine(file: string, lineNumber: number): string {
     let result = "";
     const filecontent: string | undefined = fs.readFileSync(file, "utf8");
-    if (filecontent !== undefined) {
-        const lineArray = filecontent.split(newline);
-       result = lineArray[lineNumber-1];
-    }
+    const lineArray = filecontent.split(newline);
+    result = lineArray[lineNumber - 1];
     return result;
 }
 
