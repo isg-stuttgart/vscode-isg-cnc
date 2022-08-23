@@ -47,7 +47,6 @@ let currentOffsetStatusBarItem: vscode.StatusBarItem;
 let fileContentProvider: FileContentProvider;
 let fileContentTreeView: vscode.TreeView<vscode.TreeItem> | undefined;
 
-
 // package.json information
 let packageFile;
 let extensionPackage;
@@ -106,7 +105,6 @@ export function activate(context: vscode.ExtensionContext): void {
     const currentFile = vscode.window.activeTextEditor?.document.uri;
     fileContentProvider = new FileContentProvider(currentFile, extContext);
 
-
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -148,8 +146,6 @@ export function activate(context: vscode.ExtensionContext): void {
         )
     );
 
-
-
     // add status bar items
     addSelectedLinesStatusBarItem(context);
     addCurrentOffsetStatusBarItem(context);
@@ -157,8 +153,6 @@ export function activate(context: vscode.ExtensionContext): void {
     // update status bar items once at start
     updateSelectedLinesStatusBarItem();
     updateCurrentOffsetStatusBarItem();
-
-
 
     /** Decorator
      */
@@ -267,7 +261,6 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     );
 }
 
-
 /**
  * Updates the config parameters saved in the module-scoped lets and settings.
  */
@@ -304,7 +297,6 @@ function activeTextEditorChanged() {
     //Status Bar
     updateSelectedLinesStatusBarItem();
 }
-
 
 /**
  * Update statusbar item for selected lines.
