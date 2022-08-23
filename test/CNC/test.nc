@@ -8,5 +8,5 @@ M30
 T99 T99 T3  
 ; erwartete T-Matches
 ; T99 in Zeile 3
-T99 
+T99
 ; T12 in Zeile 6 

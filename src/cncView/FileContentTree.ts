@@ -27,7 +27,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         };
         this.context = extContext;
         this.fileItem = this.createFileItem();
-        this.createFileWatcher();
+        this.updateFileWatcher();
         this.updateTreeView(this.file);
     }
 
@@ -43,9 +43,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         return fileItem;
     }
 
-    private createFileWatcher() {
+    private updateFileWatcher() {
         if (this.file !== undefined) {
-            // preventing to many opened files by linereader
             this.currentFileWatcher?.close();
             this.currentFileWatcher = fs.watch(this.file.fsPath, () => {
                 this.updateTreeView(this.file);
@@ -74,9 +73,10 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
                     }
                 }
             }
-            this.createFileWatcher();
-        } catch (error:any) {
-           vscode.window.showErrorMessage(error);
+            this.updateFileWatcher();
+            this._onDidChangeTreeData.fire();  //triggers updating the graphic
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error);
         }
     }
 
@@ -428,10 +428,7 @@ function updateMaxLine(file: vscode.Uri) {
  * Returns the the specified line of a file, empty String when not found
  * @param file 
  * @param lineNumber 1-based
- * @returns 
- * @param file 
- * @param lineNumber 1-based
- * @returns 
+ * @returns the line as a string
  */
 function getLine(file: string, lineNumber: number): string {
     let result = "";
@@ -446,6 +443,6 @@ function getLine(file: string, lineNumber: number): string {
  * @param path 
  * @returns true if given uri ends with.nc, false otherwise
  */
-function isNcFile(path:  string): boolean {
+function isNcFile(path: string): boolean {
     return Path.extname(path) === ".nc";
 }
