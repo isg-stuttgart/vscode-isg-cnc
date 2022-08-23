@@ -1,7 +1,4 @@
-out/*
-!out/cncView
-out/cncView/*
-!out/cncView/ncParser.js
+
 node_modules
 .vscode-test/
 *.vsix
