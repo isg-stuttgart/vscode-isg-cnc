@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as peggy from "peggy";
-import LineReader = require("n-readlines");
 import * as Path from "path";
-
+//New line marker, based on operating system
+import { EOL as newline } from "node:os";
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
 let maxLine: number = 0;
@@ -17,10 +17,9 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     fileItem: FileItem;
     matchCategories: MatchCategories;
     context: vscode.ExtensionContext;
-    currentFileWatcher: fs.FSWatcher|undefined;
-    file: vscode.Uri|undefined;
-
-    constructor(file: vscode.Uri|undefined, extContext: vscode.ExtensionContext) {
+    currentFileWatcher: fs.FSWatcher | undefined;
+    file: vscode.Uri | undefined;
+    constructor(file: vscode.Uri | undefined, extContext: vscode.ExtensionContext) {
         this.file = file;
         this.matchCategories = {
             toolCalls: new CategoryItem("Tool Calls"),
@@ -28,17 +27,17 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         };
         this.context = extContext;
         this.fileItem = this.createFileItem();
-        this.createFileWatcherIfPossible();   
-        this.updateTreeView(this.file);  
+        this.createFileWatcherIfPossible();
+        this.updateTreeView(this.file);
     }
-    
-    private createFileItem():FileItem{
+
+    private createFileItem(): FileItem {
         let fileItem;
-        if(this.file === undefined){
+        if (this.file === undefined) {
             fileItem = new FileItem("There is no currently opened file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
-        }else if(!isNcFile(this.file.fsPath)){
+        } else if (!isNcFile(this.file.fsPath)) {
             fileItem = new FileItem("The currently opened file is no NC-file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
-        }else{
+        } else {
             fileItem = new FileItem(Path.basename(this.file.fsPath), this.matchCategories, vscode.TreeItemCollapsibleState.Expanded);
         }
         return fileItem;
@@ -46,6 +45,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     private createFileWatcherIfPossible() {
         if (this.file !== undefined) {
+            // preventing to many opened files by linereader
             this.currentFileWatcher = fs.watch(this.file.fsPath, () => {
                 this.updateTreeView(this.file);
             });
@@ -56,24 +56,28 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
      * Updates the tree so it shows the information concerning the specified file
      * @param file 
      */
-    updateTreeView(file: vscode.Uri|undefined): void {
-        this.file = file;
-        this.disposeCommands();
-        this.fileItem = this.createFileItem();
-        if(this.file !== undefined){
-            updateMaxLine(this.file);
-            const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
-            try {
-                const parseResult = parser.parse(filecontent);
-                this.updateMatchItems(parseResult);
-            } catch (error:any) {
-                if(error instanceof parser.SyntaxError){
-                    this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+    updateTreeView(file: vscode.Uri | undefined): void {
+        try {
+            this.file = file;
+            this.disposeCommands();
+            this.fileItem = this.createFileItem();
+            if (this.file !== undefined) {
+                updateMaxLine(this.file);
+                const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
+                try {
+                    const parseResult = parser.parse(filecontent);
+                    this.updateMatchItems(parseResult);
+                } catch (error: any) {
+                    if (error instanceof parser.SyntaxError) {
+                        this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+                    }
                 }
+                this._onDidChangeTreeData.fire();
             }
-            this._onDidChangeTreeData.fire();
+            this.createFileWatcherIfPossible();
+        } catch (error) {
+            console.log(error);
         }
-        this.createFileWatcherIfPossible();
     }
 
     /**
@@ -112,7 +116,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
  */
 class FileItem extends vscode.TreeItem implements MyItem {
     private _children: Array<MyItem>;
-    constructor(label: string, matchCategories: MatchCategories, collapsibleState:vscode.TreeItemCollapsibleState) {
+    constructor(label: string, matchCategories: MatchCategories, collapsibleState: vscode.TreeItemCollapsibleState) {
         super(label, collapsibleState);
         this._children = new Array<MyItem>();
         Object.entries(matchCategories).forEach(([key, category]) => {
@@ -414,30 +418,26 @@ interface MyItem extends vscode.TreeItem {
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
  */
-async function updateMaxLine(file: vscode.Uri) {
-    maxLine = 0;
-    const reader = new LineReader(file.fsPath);
-    let line = reader.next();
-    while (line) {
-        maxLine++;
-        line = reader.next();
+function updateMaxLine(file: vscode.Uri) {
+    const filecontent: string | undefined = fs.readFileSync(file.fsPath, "utf8");
+    if (filecontent !== undefined) {
+        const lineArray = filecontent.split(newline);
+        maxLine = lineArray.length;
     }
 }
 
 /**
  * Returns the the specified line of a file, empty String when not found
+ * @param file 
+ * @param lineNumber 1-based
+ * @returns 
  */
 function getLine(file: string, lineNumber: number): string {
-    let result: string = "";
-    let currentLine: number = 0;
-    const reader: LineReader = new LineReader(file);
-    let line: Buffer | false = reader.next();
-    while (line && currentLine <= lineNumber) {
-        currentLine++;
-        if (currentLine === lineNumber) {
-            result = line.toString('utf-8');
-        }
-        line = reader.next();
+    let result = "";
+    const filecontent: string | undefined = fs.readFileSync(file, "utf8");
+    if (filecontent !== undefined) {
+        const lineArray = filecontent.split(newline);
+       result = lineArray[lineNumber-1];
     }
     return result;
 }
@@ -447,6 +447,6 @@ function getLine(file: string, lineNumber: number): string {
  * @param path 
  * @returns true if given uri ends with.nc, false otherwise
  */
-function isNcFile(path:string): boolean {
+function isNcFile(path: string): boolean {
     return Path.extname(path) === ".nc";
 }

@@ -329,7 +329,7 @@
         "@types/line-reader": "^0.0.34",
         "@types/mocha": "^9.0.0",
         "@types/n-readlines": "^1.0.3",
-        "@types/node": "14.x",
+        "@types/node": "^14.18.25",
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",
