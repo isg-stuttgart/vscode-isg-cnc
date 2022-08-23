@@ -16,6 +16,11 @@ Types of changes
 
 ### Added
 
+### Fixed
+## [V0.3.0]
+
+### Added
+
 - Sidebar feature to show important passages (at the moment: Tool calls and Program calls) of the currently opened NC-file. [Issue #27](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/17)
 - Added feature to encrypt/decrypt any file (or especially the currently opened file) via command. [Issue #16](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/16)
 
