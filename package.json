@@ -51,28 +51,19 @@
             }
         },
         "configuration": {
-            "title": "ISG CNC Configuration",
+            "title": "ISG CNC",
             "type": "object",
             "properties": {
                 "isg-cnc.locale": {
                     "type": "string",
                     "default": "de-DE",
-                    "description": "Choose the documentation language (en-GB, de-DE ...)"
-                },
-                "isg-cnc.browser-windows": {
-                    "type": "string",
-                    "default": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-                    "description": "Path to the browser to open the documentation on windows systems. (Standard browser: Firefox)"
-                },
-                "isg-cnc.browser-linux": {
-                    "type": "string",
-                    "default": "/usr/bin/firefox",
-                    "description": "Path to the browser to open the documentation on linux systems. (Standard browser: Firefox)"
+                    "enum": ["de-DE", "en-GB"],
+                    "description": "Choose the documentation language"
                 },
                 "isg-cnc.documentation": {
                     "type": "string",
-                    "default": "https://www.isg-stuttgart.de/kernel-html5/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example: https://www.isg-stuttgart.de/kernel-html5/)"
+                    "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)"
                 },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",
@@ -328,8 +319,7 @@
         "@types/glob": "^7.1.4",
         "@types/line-reader": "^0.0.34",
         "@types/mocha": "^9.0.0",
-        "@types/n-readlines": "^1.0.3",
-        "@types/node": "^14.18.25",
+        "@types/node": "14.x",
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",

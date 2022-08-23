@@ -6,10 +6,10 @@ import { URLSearchParams } from "url";
 import * as vscode from "vscode";
 import { FileContentProvider } from "./cncView/FileContentTree";
 import { config } from "./util/config";
+import * as open from "open";
 
-
-const language = config.getParam("locale");
-const docuPath = config.getParam("documentation");
+let language: string;
+let docuPath: string;
 
 /** Outputchannel for the extension
  */
@@ -73,12 +73,9 @@ export function activate(context: vscode.ExtensionContext): void {
     extensionPackage = Path.join(context.extensionPath, "package.json");
     packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
 
-    // enable/disable outputchannel
-    if (config.getParam("outputchannel")) {
-        outputChannel.show();
-    } else {
-        outputChannel.hide();
-    }
+    //get config params in module scope lets
+    updateConfig();
+
 
     // Output extension name and version number in console and output window ISG-CNC
     if (packageFile) {
@@ -99,6 +96,10 @@ export function activate(context: vscode.ExtensionContext): void {
             // }
             return [];
         }
+    });
+
+    vscode.workspace.onDidChangeConfiguration(() => {
+        updateConfig();
     });
 
     //NC-file sidebar tree provider
@@ -166,6 +167,7 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
+
 
     // vscode.window.onDidChangeActiveTextEditor((editor) => {
     //     activeEditor = editor;
@@ -263,6 +265,23 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
             updateSelectedLinesStatusBarItem
         )
     );
+}
+
+
+/**
+ * Updates the config parameters saved in the module-scoped lets and settings.
+ */
+function updateConfig() {
+    language = config.getParam("locale");
+    docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');
+
+
+    // enable/disable outputchannel
+    if (config.getParam("outputchannel")) {
+        outputChannel.show();
+    } else {
+        outputChannel.hide();
+    }
 }
 
 /**
@@ -694,53 +713,21 @@ function digitCount(nr: number): number {
 }
 
 /**
- * Generate an terminal and load the html documentation in webbrowser.
- * Webbrowser location reading from extension setting browser.
- *
+ *Load the ISG-CNC Kernel html documentation in default webbrowser.
  */
 function startDocu() {
     const docuAddress = getContextbasedSite();
     outputChannel.appendLine(docuAddress);
 
-    const terminal = vscode.window.createTerminal({
-        name: "ISG-CNC",
-        hideFromUser: false
-    });
-    let args;
-    let browserPath;
-
-    if (process.platform === "linux") {
-        browserPath = `${config.getParam("browser-linux")}`;
-    } else if (process.platform === "win32") {
-        browserPath = `${config.getParam("browser-windows")}`.replace("\"", "");
-    }
-
-    if (docuAddress !== "" && docuAddress.startsWith("http")) {
-        args = docuAddress;
-    } else {
-        args = `"file://${docuAddress}"`;
-    }
-
-    // example that works:
-    // "C:\Program Files\Mozilla Firefox\firefox.exe"
-    // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-
-    if (terminal.name !== "PowerShell") {
-        browserPath = `"${browserPath}"`;
-    } else {
-        browserPath = `& "${browserPath}"`;
-    }
-
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    outputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
 
-    terminal.sendText(browserPath + " " + args);
+    open(docuAddress);
 }
 
 /**
  * Function to build the Address to the documentation.
- * Standard web Address is: https://www.isg-stuttgart.de/kernel-html5/
+ * Standard web Address is: https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html
  * Additional read the language from extension settings and the documentation path (local or web)
  * Returns the combined Address string.
  *
@@ -748,33 +735,37 @@ function startDocu() {
  */
 function getContextbasedSite(): string {
     let searchContext: string;
-    let docuPath: string = "";
+    let localeDocuPath: string = docuPath;
     let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            if (docuPath !== undefined && docuPath !== "") {
-                docuPath = docuPath as string;
-                docuPath = docuPath.split('"').join("").split('\\').join('/');
-                if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${language}/`;
+            if (localeDocuPath !== undefined && localeDocuPath !== "") {
+                if (!localeDocuPath.endsWith('/')) {
+                    localeDocuPath += "/" + `${language}/`;
                 } else {
-                    docuPath += `${language}/`;
+                    localeDocuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${language}/`;
+                localeDocuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
-            if (activeTextEditor.selection.isEmpty !== true) {
-                searchContext = activeTextEditor.document.getText(
-                    activeTextEditor.selection
-                );
-                const query = new URLSearchParams();
-                query.append("q", searchContext);
-                docuAddress = docuPath + `search.html?${query.toString()}`;
-            } else {
-                docuAddress = docuPath + "index.html";
-            }
+            //IMPORTANT: THE FOLLOWING BLOCK IS FOR OPEN DOCU WITH SELECTED SEARCHING KEYWORD
+            //THE WEBSITE IS BROKEN AT THE MOMENT SO IT WILL JUST LOAD THE GENERAL DOCU WEBSITE
+            //UNCOMMENT IF THE WEBSITE WAS FIXES AND DELETE THE ASSIGNMENT UNDER THE COMMENT:
+            //  "docuAddress = localeDocuPath + "index.html";"
+            /*  if (!activeTextEditor.selection.isEmpty) {
+                 searchContext = activeTextEditor.document.getText(
+                     activeTextEditor.selection
+                 );
+                 const query = new URLSearchParams();
+                 query.append("q", searchContext);
+                 docuAddress = localeDocuPath + `search.html?${query.toString()}`;
+             } else {
+                  docuAddress = localeDocuPath + "index.html";
+             } */
+            docuAddress = localeDocuPath + "index.html";
+
         }
     }
     return docuAddress;
