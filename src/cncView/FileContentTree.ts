@@ -7,7 +7,7 @@ import { EOL as newline } from "node:os";
 const parser = require(('./ncParser'));
 // the maximum line of the current nc file
 let maxLine: number = 0;
-let counter = 0;
+
 /**
  * The Tree Data Provider for the NC-Match-Tree
  */
@@ -431,6 +431,9 @@ function updateMaxLine(file: vscode.Uri) {
  * @param file 
  * @param lineNumber 1-based
  * @returns 
+ * @param file 
+ * @param lineNumber 1-based
+ * @returns 
  */
 function getLine(file: string, lineNumber: number): string {
     let result = "";
@@ -445,6 +448,6 @@ function getLine(file: string, lineNumber: number): string {
  * @param path 
  * @returns true if given uri ends with.nc, false otherwise
  */
-function isNcFile(path: string): boolean {
+function isNcFile(path:  string): boolean {
     return Path.extname(path) === ".nc";
 }
