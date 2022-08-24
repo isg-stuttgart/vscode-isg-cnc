@@ -17,6 +17,14 @@ Types of changes
 ### Added
 
 ### Fixed
+
+
+## [V0.3.3]
+
+### Fixed
+
+- Building the extension won't contain required .js files because they don't land in the outDir. [Issue #54](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/54)
+
 ## [V0.3.0]
 
 ### Added
@@ -282,6 +290,8 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.3.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.0...V0.3.3
+[V0.3.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.8...V0.3.0
 [V0.2.8]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.7...V0.2.8
 [V0.2.7]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.6...V0.2.7
 [V0.2.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.5...V0.2.6
