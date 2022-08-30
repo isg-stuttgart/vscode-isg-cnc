@@ -32,11 +32,11 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     private createFileItem(): FileItem {
         let fileItem;
         if (this.file === undefined) {
-            fileItem = new FileItem("There is no currently opened file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+            fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
         } else if (!isNcFile(this.file.fsPath)) {
-            fileItem = new FileItem("The currently opened file is no NC-file", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+            fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            fileItem = new FileItem(Path.basename(this.file.fsPath), this.matchCategories, vscode.TreeItemCollapsibleState.Expanded);
+            fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
         return fileItem;
     }
@@ -59,16 +59,15 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             this.file = file;
             this.disposeCommands();
             this.fileItem = this.createFileItem();
-            if (this.file !== undefined && isNcFile(this.file)) {
+            if (this.file !== undefined && isNcFile(this.file.fsPath)) {
                 await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
                 const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
                 try {
                     let parseResult = parser.parse(filecontent);
-
                     this.updateMatchItems(parseResult);
                 } catch (error: any) {
                     if (error instanceof parser.SyntaxError) {
-                        this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", this.matchCategories, vscode.TreeItemCollapsibleState.None);
+                        this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", vscode.TreeItemCollapsibleState.None);
                     }
                 }
             }
@@ -115,12 +114,14 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
  */
 class FileItem extends vscode.TreeItem implements MyItem {
     private _children: Array<MyItem>;
-    constructor(label: string, matchCategories: MatchCategories, collapsibleState: vscode.TreeItemCollapsibleState) {
+    constructor(label: string, collapsibleState: vscode.TreeItemCollapsibleState, matchCategories?: MatchCategories) {
         super(label, collapsibleState);
         this._children = new Array<MyItem>();
-        Object.entries(matchCategories).forEach(([key, category]) => {
-            this.addChild(category);
-        });
+        if (matchCategories !== undefined) {
+            Object.entries(matchCategories).forEach(([key, category]) => {
+                this.addChild(category);
+            });
+        }
     }
 
     private addChild(category: CategoryItem): void {
