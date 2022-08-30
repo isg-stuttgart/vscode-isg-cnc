@@ -271,7 +271,7 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     context.subscriptions.push(selectedLinesStatusBarItem);
 
     // register some listener that make sure the status bar 
-    // item and the currently opened file always up-to-date
+    // item and the sidebar always up-to-date
 
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(activeTextEditorChanged)
