@@ -59,7 +59,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             this.file = file;
             this.disposeCommands();
             this.fileItem = this.createFileItem();
-            if (this.file !== undefined) {
+            if (this.file !== undefined && isNcFile(this.file)) {
                 await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
                 const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
                 try {
