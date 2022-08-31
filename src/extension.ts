@@ -3,7 +3,7 @@
 import * as fs from "fs";
 import * as Path from "path";
 import * as vscode from "vscode";
-import { FileContentProvider } from "./cncView/FileContentTree";
+import * as fileContentTree from "./cncView/FileContentTree";
 import { config } from "./util/config";
 //import * as open from "open";
 import * as blowfish from "./util/encryption/encryption";
@@ -45,7 +45,7 @@ let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
 //NC-file sidebar tree provider
-let fileContentProvider: FileContentProvider;
+let fileContentProvider: fileContentTree.FileContentProvider;
 let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
 
 // package.json information
@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     //NC-file sidebar tree provider
     const currentFile = vscode.window.activeTextEditor?.document.uri;
-    fileContentProvider = new FileContentProvider(extContext);
+    fileContentProvider = new fileContentTree.FileContentProvider(extContext);
     fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
         treeDataProvider: fileContentProvider
     });
@@ -169,6 +169,11 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         )
+    );
+
+    //command which is executed when sidebar-Matchitem is clicked
+    context.subscriptions.push(
+        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
     );
 
     // add status bar items

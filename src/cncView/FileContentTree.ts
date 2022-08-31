@@ -4,6 +4,8 @@ import * as peggy from "peggy";
 import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
+
+//peggy parser to parse nc files
 const parser = require(('./ncParser'));
 
 /**
@@ -67,8 +69,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     async update() {
         try {
             await new Promise(r => setTimeout(r, 10));
-            this.file =  vscode.window.activeTextEditor?.document.uri;;
-            this.disposeCommands();
+            this.file = vscode.window.activeTextEditor?.document.uri;;
             this.createFileItem();
             this.updateFileWatcher();
             this._onDidChangeTreeData.fire();  //triggers updating the graphic
@@ -97,14 +98,6 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else {
             return Promise.resolve([this.fileItem]);
         }
-    }
-
-    /**
-     * Clear/dispose the commands binded to Tree items
-     */
-    public disposeCommands(): void {
-        this.matchCategories.toolCalls.disposeCommands();
-        this.matchCategories.prgCalls.disposeCommands();
     }
 }
 
@@ -181,8 +174,6 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * @param newMatches 
      */
     resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
-        // unregister old match-commands used to jump to file-position
-        this.disposeCommands();
         this.clearChildren();
 
         newMatches.forEach((match: Match) => {
@@ -220,19 +211,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
 
     }
 
-    /**
-     * Removes the match-specific vscode commands to prevent command-duplicates 
-     */
-    disposeCommands(): void {
-        this.children.matchSubCategoryMap.forEach(subCategory => {
-            subCategory.getChildren().forEach(match => {
-                match.commandHandler.dispose();
-            });
-        });
-        this.children.matchMap.forEach(match => {
-            match.commandHandler.dispose();
-        });
-    }
+  
 }
 /**
  * The tree item of a subcategory (e.g. collection of all T31 of the same number)
@@ -260,8 +239,7 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
 /**
  * The tree item of a concrete match like "T31"
  */
-class MatchItem extends vscode.TreeItem implements MyItem {
-    commandHandler: vscode.Disposable;
+export class MatchItem extends vscode.TreeItem implements MyItem {
     private _match: Match;
     private _label: MatchLineLabel;
     public getMatch(): Match {
@@ -278,40 +256,9 @@ class MatchItem extends vscode.TreeItem implements MyItem {
         const commandID: string = match.text + "_" + match.location.start.offset.toString() + "_" + itemPos;
         this.command = {
             title: commandID,
-            command: commandID
+            command: "matchItem.selected",
+            arguments: [this]
         };
-
-        //if clicked the cursor should jump to match start
-        this.commandHandler = vscode.commands.registerTextEditorCommand(this.command.command, () => {
-            const file = vscode.window.activeTextEditor?.document.uri;
-            if (file !== undefined) {
-                //open the text document
-                vscode.workspace.openTextDocument(file).then(async (doc) => {
-                    let pos1 = new vscode.Position(0, 0);
-                    let pos2 = new vscode.Position(0, 0);
-                    let sel = new vscode.Selection(pos1, pos2);
-                    //set cursor at top left corner
-                    vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
-                        editor.selection = sel;
-                        //move down
-                        vscode.commands.executeCommand("cursorMove", {
-                            to: "down",
-                            by: "line",
-                            value: this._match.location.start.line - 1
-                        }).then(() => {
-                            //move right
-                            vscode.commands.executeCommand("cursorMove", {
-                                to: "right",
-                                by: "character",
-                                value: this._match.location.start.column - 1
-                            });
-                        });
-                    });
-                }
-                );
-            }
-        });
-        context.subscriptions.push(this.commandHandler);
     }
 
     /**
@@ -445,4 +392,34 @@ function getLine(file: string, lineNumber: number): string {
  */
 function isNcFile(path: string): boolean {
     return Path.extname(path) === ".nc";
+}
+
+export function jumpToMatch(item: MatchItem) {
+    const file = vscode.window.activeTextEditor?.document.uri;
+    if (file !== undefined) {
+        //open the text document
+        vscode.workspace.openTextDocument(file).then(async (doc) => {
+            let pos1 = new vscode.Position(0, 0);
+            let pos2 = new vscode.Position(0, 0);
+            let sel = new vscode.Selection(pos1, pos2);
+            //set cursor at top left corner
+            vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
+                editor.selection = sel;
+                //move down
+                vscode.commands.executeCommand("cursorMove", {
+                    to: "down",
+                    by: "line",
+                    value: item.getMatch().location.start.line - 1
+                }).then(() => {
+                    //move right
+                    vscode.commands.executeCommand("cursorMove", {
+                        to: "right",
+                        by: "character",
+                        value: item.getMatch().location.start.column - 1
+                    });
+                });
+            });
+        }
+        );
+    }
 }
