@@ -18,6 +18,8 @@ Types of changes
 
 ### Fixed
 
+- Add toLowerCase for nc file detection
+
 ## [V0.3.4]
 
 ### Fixed
