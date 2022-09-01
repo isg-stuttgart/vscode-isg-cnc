@@ -444,5 +444,5 @@ function getLine(file: string, lineNumber: number): string {
  * @returns true if given uri ends with.nc, false otherwise
  */
 function isNcFile(path: string): boolean {
-    return Path.extname(path) === ".nc";
+    return Path.extname(path.toLowerCase()) === ".nc";
 }
