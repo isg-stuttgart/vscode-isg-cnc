@@ -16,6 +16,8 @@ Types of changes
 
 ### Added
 
+- Increas indent at linebreak and decrease indent if linebreak finished
+
 ### Fixed
 
 ## [V0.3.4]
