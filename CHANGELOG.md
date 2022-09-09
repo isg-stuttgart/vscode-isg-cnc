@@ -16,6 +16,8 @@ Types of changes
 
 ### Added
 
+- Autogenerate github pages at push to main branch
+
 ### Fixed
 
 - Add toLowerCase for nc file detection
