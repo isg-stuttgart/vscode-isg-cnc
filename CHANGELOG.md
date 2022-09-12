@@ -16,9 +16,12 @@ Types of changes
 
 ### Added
 
-- Increas indent at linebreak and decrease indent if linebreak finished
+- Autogenerate github pages at push to main branch
+- Increase indent at linebreak and decrease indent if linebreak finished
 
 ### Fixed
+
+- Add toLowerCase for nc file detection
 
 ## [V0.3.4]
 
