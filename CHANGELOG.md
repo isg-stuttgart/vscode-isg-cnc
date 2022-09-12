@@ -17,6 +17,7 @@ Types of changes
 ### Added
 
 - Autogenerate github pages at push to main branch
+- Increase indent at linebreak and decrease indent if linebreak finished
 
 ### Fixed
 

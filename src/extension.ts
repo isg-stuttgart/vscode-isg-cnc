@@ -270,7 +270,7 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     selectedLinesStatusBarItem.command = myCommandId;
     context.subscriptions.push(selectedLinesStatusBarItem);
 
-    // register some listener that make sure the status bar 
+    // register some listener that make sure the status bar
     // item and the currently opened file always up-to-date
 
     context.subscriptions.push(
@@ -800,6 +800,8 @@ export function beautify(): void {
     let whiteSpaces: number = 2;
     let currentPos = 0;
     let isCommentBlock = false;
+    let isLinebreakMode = false;
+
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
 
@@ -825,7 +827,14 @@ export function beautify(): void {
                     isCommentBlock = false;
                     continue;
                 }
-                // skip program name, comment lines and empty lines
+                if (line.text.endsWith("\\") && !isCommentBlock && !isLinebreakMode) {
+                    isLinebreakMode = true;
+                    outputChannel.appendLine("Linebreak mode on");
+                }
+                if (isLinebreakMode && !line.text.endsWith("\\") && !isCommentBlock && !line.text.startsWith(";")) {
+                    isLinebreakMode = false;
+                    outputChannel.appendLine("Linebreak mode off");
+                }
                 if (
                     line.text.startsWith("%", 0) ||
                     line.text.startsWith(";") ||
@@ -887,6 +896,7 @@ export function beautify(): void {
                 }
 
                 if (
+                    isLinebreakMode ||
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
                     currentLine.indexOf("$FOR") === 0 ||
@@ -902,6 +912,7 @@ export function beautify(): void {
                     newLine = newLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces * 2;
                 } else if (
+                    !isLinebreakMode ||
                     currentLine.indexOf("$ENDDO") === 0 ||
                     currentLine.indexOf("$UNTIL") === 0 ||
                     currentLine.indexOf("$ENDFOR") === 0 ||
