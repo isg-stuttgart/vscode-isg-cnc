@@ -801,6 +801,8 @@ export function beautify(): void {
     let currentPos = 0;
     let isCommentBlock = false;
     let isLinebreakMode = false;
+    let isVariableDeclaration = false;
+    let longestVariableDeclarationLine = 0;
 
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
@@ -842,6 +844,22 @@ export function beautify(): void {
                     isCommentBlock
                 ) {
                     continue;
+                }
+                if (line.text.startsWith("#VAR")) {
+                    isVariableDeclaration = true;
+
+                    let linenumber = ln + 1;
+                    let varLine = document.lineAt(linenumber);
+                    while (!varLine.text.startsWith("#ENDVAR")) {
+                        if (varLine.text.trim().indexOf("=") > longestVariableDeclarationLine) {
+                            longestVariableDeclarationLine = varLine.text.trim().indexOf("=");
+                        }
+                        linenumber++;
+                        varLine = document.lineAt(linenumber);
+                    }
+                }
+                if (line.text.startsWith("#ENDVAR")) {
+                    isVariableDeclaration = false;
                 }
 
                 // Get blocknumber and line text
@@ -960,6 +978,13 @@ export function beautify(): void {
                     }
                 } else {
                     newLine = newLine.trimEnd();
+                }
+                if (isVariableDeclaration && !newLine.startsWith("#VAR"))
+                {
+                    let spaces = longestVariableDeclarationLine - newLine.indexOf("=");
+                    let left = newLine.substring(0, newLine.indexOf("="));
+                    let right = newLine.substring(newLine.indexOf("="));
+                    newLine = " ".repeat(whiteSpaces) + left + " ".repeat(spaces) + right;
                 }
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
