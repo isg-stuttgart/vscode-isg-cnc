@@ -827,14 +827,6 @@ export function beautify(): void {
                     isCommentBlock = false;
                     continue;
                 }
-                if (line.text.endsWith("\\") && !isCommentBlock && !isLinebreakMode) {
-                    isLinebreakMode = true;
-                    outputChannel.appendLine("Linebreak mode on");
-                }
-                if (isLinebreakMode && !line.text.endsWith("\\") && !isCommentBlock && !line.text.startsWith(";")) {
-                    isLinebreakMode = false;
-                    outputChannel.appendLine("Linebreak mode off");
-                }
                 if (
                     line.text.startsWith("%", 0) ||
                     line.text.startsWith(";") ||
@@ -896,7 +888,6 @@ export function beautify(): void {
                 }
 
                 if (
-                    isLinebreakMode ||
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
                     currentLine.indexOf("$FOR") === 0 ||
@@ -912,7 +903,6 @@ export function beautify(): void {
                     newLine = newLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces * 2;
                 } else if (
-                    !isLinebreakMode ||
                     currentLine.indexOf("$ENDDO") === 0 ||
                     currentLine.indexOf("$UNTIL") === 0 ||
                     currentLine.indexOf("$ENDFOR") === 0 ||
@@ -960,6 +950,14 @@ export function beautify(): void {
                     }
                 } else {
                     newLine = newLine.trimEnd();
+                }
+                if (document.lineAt(ln - 1).text.endsWith("\\") &&
+                    !document.lineAt(ln + 1).text.endsWith("\\") &&
+                    !isCommentBlock) {
+                    outputChannel.appendLine("Linebreak found");
+                    currentPos = currentPos + whiteSpaces;
+                    newLine = newLineForBeautifier(currentLine, currentPos);
+                    currentPos = currentPos - whiteSpaces;
                 }
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
