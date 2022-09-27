@@ -951,7 +951,7 @@ export function beautify(): void {
                 } else {
                     newLine = newLine.trimEnd();
                 }
-                if (document.lineAt(ln - 1).text.endsWith("\\") &&
+                if ((document.lineAt(ln - 1).text.endsWith("\\") && !document.lineAt(ln - 1).text.startsWith(";")) &&
                     !document.lineAt(ln + 1).text.endsWith("\\") &&
                     !isCommentBlock) {
                     outputChannel.appendLine("Linebreak found");
