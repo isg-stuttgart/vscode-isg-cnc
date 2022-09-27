@@ -16,9 +16,12 @@ Types of changes
 
 ### Added
 
+- Autogenerate github pages at push to main branch
+
 ### Fixed
 
 - Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
+- Add toLowerCase for nc file detection
 
 ## [V0.3.4]
 
@@ -45,14 +48,14 @@ Types of changes
 - Fix lack of usability in the Extension Configuration-Settings (default browser and language) [Issue #32 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/32) and [Issue #33 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/33)
 - Fix bug, where Error occured when calling ISG-commands while no .nc-file is opened [Issue #30 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/30)
 
-
 ## [V0.2.8]
 
 ### Added
 
 ### Fixed
 
-- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26) 
+- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26)
+
 ## [V0.2.7]
 
 ### Added

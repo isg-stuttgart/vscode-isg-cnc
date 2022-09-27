@@ -43,8 +43,9 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
 let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
+//NC-file sidebar tree provider
 let fileContentProvider: FileContentProvider;
-let fileContentTreeView: vscode.TreeView<vscode.TreeItem> | undefined;
+let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
 
 // package.json information
 let packageFile;
@@ -104,8 +105,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
     //NC-file sidebar tree provider
     const currentFile = vscode.window.activeTextEditor?.document.uri;
-    fileContentProvider = new FileContentProvider(currentFile, extContext);
-
+    fileContentProvider = new FileContentProvider(extContext);
+    fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
+        treeDataProvider: fileContentProvider
+    });
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -166,7 +169,7 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         )
     );
-    
+
     // add status bar items
     addSelectedLinesStatusBarItem(context);
     addCurrentOffsetStatusBarItem(context);
@@ -306,11 +309,7 @@ function updateConfig() {
 function activeTextEditorChanged() {
     //Tree view
     try {
-        const currentFile = vscode.window.activeTextEditor?.document.uri;
-        fileContentProvider.updateTreeView(currentFile);
-        fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
-            treeDataProvider: fileContentProvider
-        });
+        fileContentProvider.update();
     } catch (e: any) {
         vscode.window.showErrorMessage(e);
     }
