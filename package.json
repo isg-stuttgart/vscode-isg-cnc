@@ -52,6 +52,7 @@
         "onCommand:isg-cnc.FindNextTFS",
         "onCommand:isg-cnc.RemoveAllBlocknumbers",
         "onCommand:isg-cnc.AddBlocknumbers",
+        "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
         "onCommand:isg-cnc.FindNonAsciiCharacters"
     ],
@@ -153,6 +154,11 @@
             },
             {
                 "enablement": "resourceLangId == isg-cnc",
+                "command": "isg-cnc.StartDocu",
+                "title": "ISG-CNC: Start the Documentation"
+            },
+            {
+                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.Beautify",
                 "title": "ISG-CNC: Format code"
             },
@@ -215,6 +221,10 @@
                     "group": "isg-cnc@7"
                 },
                 {
+                    "command": "isg-cnc.StartDocu",
+                    "group": "isg-cnc@8"
+                },
+                {
                     "command": "isg-cnc.ShowCursorFileOffsetInfobox",
                     "group": "isg-cnc@9"
                 },
@@ -261,6 +271,11 @@
             {
                 "key": "ctrl+i ctrl+t",
                 "command": "isg-cnc.FindNextTFS",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+d",
+                "command": "isg-cnc.StartDocu",
                 "when": "editorTextFocus"
             },
             {
@@ -380,24 +395,6 @@
         "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
-        "@types/open": "^6.2.1",
-        "@types/vscode": "^1.59.0",
-        "@typescript-eslint/eslint-plugin": "^4.31.1",
-        "@typescript-eslint/parser": "^4.31.1",
-        "@vscode/test-electron": "^1.6.2",
-        "eslint": "^7.32.0",
-        "glob": "^7.1.7",
-        "mocha": "^9.1.1",
-        "node-gyp": "^9.1.0",
-        "peggy": "^2.0.1",
-        "typedoc": "^0.22.18",
-        "typescript": "^4.4.3"
-    },
-    "dependencies": {
-        "@types/glob": "^7.1.4",
-        "@types/mocha": "^9.0.0",
-        "@types/node": "14.x",
-        "@types/open": "^6.2.1",
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",

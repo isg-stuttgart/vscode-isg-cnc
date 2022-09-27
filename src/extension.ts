@@ -5,7 +5,6 @@ import * as Path from "path";
 import * as vscode from "vscode";
 import { FileContentProvider } from "./cncView/FileContentTree";
 import { config } from "./util/config";
-//import * as open from "open";
 import * as blowfish from "./util/encryption/encryption";
 
 let language: string;
@@ -735,7 +734,7 @@ function startDocu() {
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
 
-    //open(docuAddress);
+    vscode.env.openExternal(vscode.Uri.parse(docuAddress));
 }
 
 /**
