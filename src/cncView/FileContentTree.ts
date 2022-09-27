@@ -29,7 +29,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.updateFileWatcher();
     }
 
-    private async createFileItem(): Promise<void> {
+    private async updateFileTree(): Promise<void> {
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
         } else if (!isNcFile(this.file.fsPath)) {
@@ -66,25 +66,29 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     /**
      * Updates the tree so it shows the information concerning the specified file
      */
-    async update() {
-        try {
-            await new Promise(r => setTimeout(r, 10));
-            this.file = vscode.window.activeTextEditor?.document.uri;;
-            this.createFileItem();
-            this.updateFileWatcher();
-            this._onDidChangeTreeData.fire();  //triggers updating the graphic
-        } catch (error: any) {
-            vscode.window.showErrorMessage(error);
-        }
+    async update(): Promise<void> {
+        new Promise(() => {
+            try {
+                this.file = vscode.window.activeTextEditor?.document.uri;;
+                this.updateFileTree();
+                this.updateFileWatcher();
+                this._onDidChangeTreeData.fire();  //triggers updating the graphic
+            } catch (error: any) {
+                vscode.window.showErrorMessage(error);
+            }
+        });
+
     }
 
     /**
      * Update match tree-items
      * @param parseResult 
      */
-    updateMatchItems(parseResult: any): void {
-        this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context);
-        this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context);
+    async updateMatchItems(parseResult: any): Promise<void> {
+        await Promise.all([
+            new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context)),
+            new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context))
+        ]);
     }
 
 
@@ -173,45 +177,57 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
+    async resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
+
+        /**
+         * Inner function to add a match to its match-line or create a new one if non-existing
+         * @param match 
+         * @param map 
+         * @param itemPosition 
+         */
+        function addMatchToMatchLine(match: Match, map: Map<number, MatchItem>, itemPosition: ItemPosition) {
+            // create item for the match-line if it doesn't already exist
+            let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
+            if (matchLineItem === undefined) {
+                map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+            }
+            //or additionally highlight new match if line already exists
+            else {
+                matchLineItem.addHighlightingForLineMatch(match);
+            }
+        }
+
         this.clearChildren();
+        const promises: Array<Promise<void>> = new Array<Promise<void>>();
 
-        newMatches.forEach((match: Match) => {
+        /*  await Promise.all(newMatches.map(async match =>{
+ 
+         })); */
+        newMatches.forEach(match => {
+            promises.push(new Promise(() => {
+                addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
+                // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
+                let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
-            addMatchToMatchLine(this.children.matchMap, ItemPosition.category);
-            // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
-
-            //create subCategory when non-existing
-            if (subCategory === undefined) {
-                this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
-            }
-
-            subCategory = this.children.matchSubCategoryMap.get(match.text);
-            //make sure subCategory exists now and add match to it
-            if (subCategory !== undefined) {
-                addMatchToMatchLine(subCategory.children, ItemPosition.subCategory);
-            } else {
-                throw new Error("subCategory " + match.text + " was not created successfully");
-            }
-
-            function addMatchToMatchLine(map: Map<number, MatchItem>, itemPosition: ItemPosition) {
-                // create item for the match-line if it doesn't already exist
-                let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
-                if (matchLineItem === undefined) {
-                    map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+                //create subCategory when non-existing
+                if (subCategory === undefined) {
+                    this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
                 }
-                //or additionally highlight new match if line already exists
-                else {
-                    matchLineItem.addHighlightingForLineMatch(match);
-                }
-            }
 
+                subCategory = this.children.matchSubCategoryMap.get(match.text);
+                //make sure subCategory exists now and add match to it
+                if (subCategory !== undefined) {
+                    addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+                } else {
+                    throw new Error("subCategory " + match.text + " was not created successfully");
+                }
+            }));
         });
-
+        console.log("test")
+        await Promise.all(promises);
     }
 
-  
+
 }
 /**
  * The tree item of a subcategory (e.g. collection of all T31 of the same number)
