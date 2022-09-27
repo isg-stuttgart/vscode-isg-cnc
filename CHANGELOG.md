@@ -19,6 +19,7 @@ Types of changes
 ### Fixed
 
 - Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
+
 ## [V0.3.4]
 
 ### Fixed
