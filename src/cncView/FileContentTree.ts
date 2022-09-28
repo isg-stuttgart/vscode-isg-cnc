@@ -67,7 +67,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     async update() {
         try {
             await new Promise(r => setTimeout(r, 10));
-            this.file =  vscode.window.activeTextEditor?.document.uri;;
+            this.file = vscode.window.activeTextEditor?.document.uri;;
             this.disposeCommands();
             this.createFileItem();
             this.updateFileWatcher();
@@ -444,5 +444,5 @@ function getLine(file: string, lineNumber: number): string {
  * @returns true if given uri ends with.nc, false otherwise
  */
 function isNcFile(path: string): boolean {
-    return Path.extname(path.toLowerCase()) === ".nc";
+    return [".nc", ".cnc", ".cyc", ".ecy", ".sub", ".plc"].includes(Path.extname(path.toLowerCase()));
 }

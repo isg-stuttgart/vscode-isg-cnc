@@ -22,6 +22,7 @@ Types of changes
 
 ### Fixed
 
+- Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
 - Add toLowerCase for nc file detection
 
 ## [V0.3.4]
