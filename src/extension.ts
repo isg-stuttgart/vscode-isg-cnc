@@ -799,7 +799,6 @@ export function beautify(): void {
     let whiteSpaces: number = 2;
     let currentPos = 0;
     let isCommentBlock = false;
-    let isLinebreakMode = false;
     let isVariableDeclaration = false;
     let longestVariableDeclarationLine = 0;
 
@@ -827,14 +826,6 @@ export function beautify(): void {
                 if (line.text.startsWith("#COMMENT END")) {
                     isCommentBlock = false;
                     continue;
-                }
-                if (line.text.endsWith("\\") && !isCommentBlock && !isLinebreakMode) {
-                    isLinebreakMode = true;
-                    outputChannel.appendLine("Linebreak mode on");
-                }
-                if (isLinebreakMode && !line.text.endsWith("\\") && !isCommentBlock && !line.text.startsWith(";")) {
-                    isLinebreakMode = false;
-                    outputChannel.appendLine("Linebreak mode off");
                 }
                 if (
                     line.text.startsWith("%", 0) ||
@@ -913,7 +904,6 @@ export function beautify(): void {
                 }
 
                 if (
-                    isLinebreakMode ||
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
                     currentLine.indexOf("$FOR") === 0 ||
@@ -929,7 +919,6 @@ export function beautify(): void {
                     newLine = newLineForBeautifier(currentLine, currentPos);
                     currentPos = currentPos + whiteSpaces * 2;
                 } else if (
-                    !isLinebreakMode ||
                     currentLine.indexOf("$ENDDO") === 0 ||
                     currentLine.indexOf("$UNTIL") === 0 ||
                     currentLine.indexOf("$ENDFOR") === 0 ||
