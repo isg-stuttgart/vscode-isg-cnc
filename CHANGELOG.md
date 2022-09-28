@@ -18,7 +18,6 @@ Types of changes
 
 - Add feature to allign the values at variable declaration at equal character
 - Autogenerate github pages at push to main branch
-- Increase indent at linebreak and decrease indent if linebreak finished
 
 ### Fixed
 
