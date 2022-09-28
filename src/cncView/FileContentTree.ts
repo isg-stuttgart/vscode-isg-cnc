@@ -77,7 +77,6 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
                 vscode.window.showErrorMessage(error);
             }
         });
-
     }
 
     /**
@@ -399,7 +398,7 @@ function getLine(file: string, lineNumber: number): string {
  * @returns true if given uri ends with.nc, false otherwise
  */
 function isNcFile(path: string): boolean {
-    return Path.extname(path) === ".nc";
+    return [".nc", ".cnc", ".cyc", ".ecy", ".sub", ".plc"].includes(Path.extname(path.toLowerCase()));
 }
 
 export function jumpToMatch(item: MatchItem) {
