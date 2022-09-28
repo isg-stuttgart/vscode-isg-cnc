@@ -3,7 +3,7 @@
 import * as fs from "fs";
 import * as Path from "path";
 import * as vscode from "vscode";
-import { FileContentProvider } from "./cncView/FileContentTree";
+import * as fileContentTree from "./cncView/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 
@@ -44,7 +44,7 @@ let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
 //NC-file sidebar tree provider
-let fileContentProvider: FileContentProvider;
+let fileContentProvider: fileContentTree.FileContentProvider;
 let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
 
 // package.json information
@@ -105,7 +105,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     //NC-file sidebar tree provider
     const currentFile = vscode.window.activeTextEditor?.document.uri;
-    fileContentProvider = new FileContentProvider(extContext);
+    fileContentProvider = new fileContentTree.FileContentProvider(extContext);
     fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
         treeDataProvider: fileContentProvider
     });
@@ -168,6 +168,11 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         )
+    );
+
+    //command which is executed when sidebar-Matchitem is clicked
+    context.subscriptions.push(
+        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
     );
 
     // add status bar items
@@ -270,7 +275,7 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     context.subscriptions.push(selectedLinesStatusBarItem);
 
     // register some listener that make sure the status bar 
-    // item and the currently opened file always up-to-date
+    // item and the sidebar always up-to-date
 
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(activeTextEditorChanged)

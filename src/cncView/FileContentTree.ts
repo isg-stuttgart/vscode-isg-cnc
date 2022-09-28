@@ -4,6 +4,8 @@ import * as peggy from "peggy";
 import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
+
+//peggy parser to parse nc files
 const parser = require(('./ncParser'));
 
 /**
@@ -27,7 +29,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         this.updateFileWatcher();
     }
 
-    private async createFileItem(): Promise<void> {
+    private async updateFileTree(): Promise<void> {
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
         } else if (!isNcFile(this.file.fsPath)) {
@@ -64,26 +66,28 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     /**
      * Updates the tree so it shows the information concerning the specified file
      */
-    async update() {
-        try {
-            await new Promise(r => setTimeout(r, 10));
-            this.file = vscode.window.activeTextEditor?.document.uri;;
-            this.disposeCommands();
-            this.createFileItem();
-            this.updateFileWatcher();
-            this._onDidChangeTreeData.fire();  //triggers updating the graphic
-        } catch (error: any) {
-            vscode.window.showErrorMessage(error);
-        }
+    async update(): Promise<void> {
+        new Promise(() => {
+            try {
+                this.file = vscode.window.activeTextEditor?.document.uri;;
+                this.updateFileTree();
+                this.updateFileWatcher();
+                this._onDidChangeTreeData.fire();  //triggers updating the graphic
+            } catch (error: any) {
+                vscode.window.showErrorMessage(error);
+            }
+        });
     }
 
     /**
      * Update match tree-items
      * @param parseResult 
      */
-    updateMatchItems(parseResult: any): void {
-        this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context);
-        this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context);
+    async updateMatchItems(parseResult: any): Promise<void> {
+        await Promise.all([
+            new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context)),
+            new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context))
+        ]);
     }
 
 
@@ -97,14 +101,6 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else {
             return Promise.resolve([this.fileItem]);
         }
-    }
-
-    /**
-     * Clear/dispose the commands binded to Tree items
-     */
-    public disposeCommands(): void {
-        this.matchCategories.toolCalls.disposeCommands();
-        this.matchCategories.prgCalls.disposeCommands();
     }
 }
 
@@ -181,13 +177,29 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * @param newMatches 
      */
     resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
-        // unregister old match-commands used to jump to file-position
-        this.disposeCommands();
+
+        /**
+         * Inner function to add a match to its match-line or create a new one if non-existing
+         * @param match 
+         * @param map 
+         * @param itemPosition 
+         */
+        function addMatchToMatchLine(match: Match, map: Map<number, MatchItem>, itemPosition: ItemPosition) {
+            // create item for the match-line if it doesn't already exist
+            let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
+            if (matchLineItem === undefined) {
+                map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+            }
+            //or additionally highlight new match if line already exists
+            else {
+                matchLineItem.addHighlightingForLineMatch(match);
+            }
+        }
+
         this.clearChildren();
 
-        newMatches.forEach((match: Match) => {
-
-            addMatchToMatchLine(this.children.matchMap, ItemPosition.category);
+        newMatches.forEach(match => {
+            addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
             // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
             let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
@@ -199,40 +211,14 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
             subCategory = this.children.matchSubCategoryMap.get(match.text);
             //make sure subCategory exists now and add match to it
             if (subCategory !== undefined) {
-                addMatchToMatchLine(subCategory.children, ItemPosition.subCategory);
+                addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
             } else {
                 throw new Error("subCategory " + match.text + " was not created successfully");
             }
-
-            function addMatchToMatchLine(map: Map<number, MatchItem>, itemPosition: ItemPosition) {
-                // create item for the match-line if it doesn't already exist
-                let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
-                if (matchLineItem === undefined) {
-                    map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
-                }
-                //or additionally highlight new match if line already exists
-                else {
-                    matchLineItem.addHighlightingForLineMatch(match);
-                }
-            }
-
-        });
-
-    }
-
-    /**
-     * Removes the match-specific vscode commands to prevent command-duplicates 
-     */
-    disposeCommands(): void {
-        this.children.matchSubCategoryMap.forEach(subCategory => {
-            subCategory.getChildren().forEach(match => {
-                match.commandHandler.dispose();
-            });
-        });
-        this.children.matchMap.forEach(match => {
-            match.commandHandler.dispose();
         });
     }
+
+
 }
 /**
  * The tree item of a subcategory (e.g. collection of all T31 of the same number)
@@ -260,8 +246,7 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
 /**
  * The tree item of a concrete match like "T31"
  */
-class MatchItem extends vscode.TreeItem implements MyItem {
-    commandHandler: vscode.Disposable;
+export class MatchItem extends vscode.TreeItem implements MyItem {
     private _match: Match;
     private _label: MatchLineLabel;
     public getMatch(): Match {
@@ -278,40 +263,9 @@ class MatchItem extends vscode.TreeItem implements MyItem {
         const commandID: string = match.text + "_" + match.location.start.offset.toString() + "_" + itemPos;
         this.command = {
             title: commandID,
-            command: commandID
+            command: "matchItem.selected",
+            arguments: [this]
         };
-
-        //if clicked the cursor should jump to match start
-        this.commandHandler = vscode.commands.registerTextEditorCommand(this.command.command, () => {
-            const file = vscode.window.activeTextEditor?.document.uri;
-            if (file !== undefined) {
-                //open the text document
-                vscode.workspace.openTextDocument(file).then(async (doc) => {
-                    let pos1 = new vscode.Position(0, 0);
-                    let pos2 = new vscode.Position(0, 0);
-                    let sel = new vscode.Selection(pos1, pos2);
-                    //set cursor at top left corner
-                    vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
-                        editor.selection = sel;
-                        //move down
-                        vscode.commands.executeCommand("cursorMove", {
-                            to: "down",
-                            by: "line",
-                            value: this._match.location.start.line - 1
-                        }).then(() => {
-                            //move right
-                            vscode.commands.executeCommand("cursorMove", {
-                                to: "right",
-                                by: "character",
-                                value: this._match.location.start.column - 1
-                            });
-                        });
-                    });
-                }
-                );
-            }
-        });
-        context.subscriptions.push(this.commandHandler);
     }
 
     /**
@@ -445,4 +399,34 @@ function getLine(file: string, lineNumber: number): string {
  */
 function isNcFile(path: string): boolean {
     return [".nc", ".cnc", ".cyc", ".ecy", ".sub", ".plc"].includes(Path.extname(path.toLowerCase()));
+}
+
+export function jumpToMatch(item: MatchItem) {
+    const file = vscode.window.activeTextEditor?.document.uri;
+    if (file !== undefined) {
+        //open the text document
+        vscode.workspace.openTextDocument(file).then(async (doc) => {
+            let pos1 = new vscode.Position(0, 0);
+            let pos2 = new vscode.Position(0, 0);
+            let sel = new vscode.Selection(pos1, pos2);
+            //set cursor at top left corner
+            vscode.window.showTextDocument(doc, vscode.ViewColumn.One).then((editor) => {
+                editor.selection = sel;
+                //move down
+                vscode.commands.executeCommand("cursorMove", {
+                    to: "down",
+                    by: "line",
+                    value: item.getMatch().location.start.line - 1
+                }).then(() => {
+                    //move right
+                    vscode.commands.executeCommand("cursorMove", {
+                        to: "right",
+                        by: "character",
+                        value: item.getMatch().location.start.column - 1
+                    });
+                });
+            });
+        }
+        );
+    }
 }
