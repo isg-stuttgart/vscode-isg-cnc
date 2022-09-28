@@ -177,7 +177,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    async resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
+    resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
 
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
@@ -198,33 +198,25 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         }
 
         this.clearChildren();
-        const promises: Array<Promise<void>> = new Array<Promise<void>>();
 
-        /*  await Promise.all(newMatches.map(async match =>{
- 
-         })); */
         newMatches.forEach(match => {
-            promises.push(new Promise(() => {
-                addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
-                // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-                let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
+            addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
+            // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
+            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
-                //create subCategory when non-existing
-                if (subCategory === undefined) {
-                    this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
-                }
+            //create subCategory when non-existing
+            if (subCategory === undefined) {
+                this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
+            }
 
-                subCategory = this.children.matchSubCategoryMap.get(match.text);
-                //make sure subCategory exists now and add match to it
-                if (subCategory !== undefined) {
-                    addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
-                } else {
-                    throw new Error("subCategory " + match.text + " was not created successfully");
-                }
-            }));
+            subCategory = this.children.matchSubCategoryMap.get(match.text);
+            //make sure subCategory exists now and add match to it
+            if (subCategory !== undefined) {
+                addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+            } else {
+                throw new Error("subCategory " + match.text + " was not created successfully");
+            }
         });
-        console.log("test")
-        await Promise.all(promises);
     }
 
 
