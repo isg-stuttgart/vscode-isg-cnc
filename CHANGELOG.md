@@ -22,7 +22,8 @@ Types of changes
 
 - Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
 - Add toLowerCase for nc file detection
-
+- Improved performance of sidebar [Issue #52](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/52)
+- Sidebar activates works with other cnc-file-extensions than ".nc" [Pull #70](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/70)
 ## [V0.3.4]
 
 ### Fixed
