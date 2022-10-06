@@ -838,7 +838,6 @@ export function beautify(): void {
                 if (
                     line.text.startsWith("%", 0) ||
                     line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
                     isCommentBlock
                 ) {
                     continue;
