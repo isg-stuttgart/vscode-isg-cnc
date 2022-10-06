@@ -3,7 +3,7 @@
 import * as fs from "fs";
 import * as Path from "path";
 import * as vscode from "vscode";
-import * as fileContentTree from "./cncView/FileContentTree";
+import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 

@@ -30,12 +30,13 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private async updateFileTree(): Promise<void> {
+        this.fileItem = new FileItem("Loading...", vscode.TreeItemCollapsibleState.None);
+        await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
             const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
             let parsed: boolean = true;
             let parseResult;
@@ -199,22 +200,24 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         this.clearChildren();
 
         newMatches.forEach(match => {
-            addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
-            // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
-
-            //create subCategory when non-existing
-            if (subCategory === undefined) {
-                this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
-            }
-
-            subCategory = this.children.matchSubCategoryMap.get(match.text);
-            //make sure subCategory exists now and add match to it
-            if (subCategory !== undefined) {
-                addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
-            } else {
-                throw new Error("subCategory " + match.text + " was not created successfully");
-            }
+            if(match.location.start.line<=99){
+                addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
+                // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
+                let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
+    
+                //create subCategory when non-existing
+                if (subCategory === undefined) {
+                    this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
+                }
+    
+                subCategory = this.children.matchSubCategoryMap.get(match.text);
+                //make sure subCategory exists now and add match to it
+                if (subCategory !== undefined) {
+                    addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+                } else {
+                    throw new Error("subCategory " + match.text + " was not created successfully");
+                }
+            }           
         });
     }
 
