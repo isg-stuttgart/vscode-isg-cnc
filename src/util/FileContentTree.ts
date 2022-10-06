@@ -340,7 +340,7 @@ class MatchLineLabel {
 /**
  * Type which is returned within the arrays of the parse result
  */
-interface Match {
+export interface Match {
     text: string;
     location: peggy.LocationRange;
 }

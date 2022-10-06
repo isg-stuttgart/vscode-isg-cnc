@@ -302,8 +302,8 @@ function peg$parse(input, options) {
   var peg$e73 = peg$classExpectation(["\""], true, false);
 
   var peg$f0 = function() { return syntax; };
-  var peg$f1 = function(content) {                // ends when closed by $ENDIF which does not close inner block
-   syntax.controlBlocks.push(new Match(content, location())); 
+  var peg$f1 = function(content) {                          // ends when closed by $ENDIF which does not close inner block                                         
+     syntax.controlBlocks.push(new Match(content, location())); 
 };
   var peg$f2 = function(content) {
    syntax.controlBlocks.push(new Match(content, location())); 
@@ -1246,10 +1246,22 @@ function peg$parse(input, options) {
   }
 
   function peg$parsecontrol_block() {
-    var s0, s1;
+    var s0, s1, s2;
 
     peg$silentFails++;
-    s0 = peg$parseif_block();
+    s0 = peg$currPos;
+    s1 = peg$parseif_block();
+    if (s1 !== peg$FAILED) {
+      s2 = peg$parselinebreak();
+      if (s2 === peg$FAILED) {
+        s2 = null;
+      }
+      s1 = [s1, s2];
+      s0 = s1;
+    } else {
+      peg$currPos = s0;
+      s0 = peg$FAILED;
+    }
     peg$silentFails--;
     if (s0 === peg$FAILED) {
       s1 = peg$FAILED;
@@ -1334,10 +1346,6 @@ function peg$parse(input, options) {
         while (s8 !== peg$FAILED) {
           s7.push(s8);
           s8 = peg$parsegrayspace();
-        }
-        s8 = peg$parselinebreak();
-        if (s8 === peg$FAILED) {
-          s8 = null;
         }
         peg$savedPos = s0;
         s0 = peg$f1(s2);

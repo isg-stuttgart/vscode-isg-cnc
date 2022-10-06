@@ -808,13 +808,13 @@ export function beautify(): void {
     let isCommentBlock = false;
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
-   
+
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
             const filecontent = fs.readFileSync(document.uri.fsPath, "utf8");
-            const  parseResult = parser.parse(filecontent);
-                     
+            const parseResult = parser.parse(filecontent);
+
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -898,7 +898,6 @@ export function beautify(): void {
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
                     currentLine.indexOf("$FOR") === 0 ||
-                    (currentLine.indexOf("$IF") === 0 && currentLine.indexOf("$GOTO") === -1) ||
                     currentLine.indexOf("$WHILE") === 0 ||
                     currentLine.indexOf("#VAR") === 0
                 ) {
@@ -913,7 +912,6 @@ export function beautify(): void {
                     currentLine.indexOf("$ENDDO") === 0 ||
                     currentLine.indexOf("$UNTIL") === 0 ||
                     currentLine.indexOf("$ENDFOR") === 0 ||
-                    currentLine.indexOf("$ENDIF") === 0 ||
                     currentLine.indexOf("$ENDWHILE") === 0 ||
                     currentLine.indexOf("#ENDVAR") === 0
                 ) {
@@ -931,8 +929,6 @@ export function beautify(): void {
                     }
                     newLine = newLineForBeautifier(currentLine, currentPos);
                 } else if (
-                    currentLine.indexOf("$ELSEIF") === 0 ||
-                    currentLine.indexOf("$ELSE") === 0 ||
                     currentLine.indexOf("$CASE") === 0 ||
                     currentLine.indexOf("$DEFAULT") === 0
                 ) {
@@ -961,8 +957,17 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        }
 
+            parseResult.controlBlocks.forEach((controlBlock: fileContentTree.Match) => {
+                for(let lineNumber = controlBlock.location.start.line; lineNumber<controlBlock.location.end.line-1; lineNumber++){
+                    const line:vscode.TextLine = document.lineAt(lineNumber);
+                    newLine = " ".repeat(whiteSpaces) + line.text;
+                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+                }
+            });
+
+
+        }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
