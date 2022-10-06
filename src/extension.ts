@@ -3,9 +3,11 @@
 import * as fs from "fs";
 import * as Path from "path";
 import * as vscode from "vscode";
-import * as fileContentTree from "./cncView/FileContentTree";
+import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
+
+const parser = require(('./util/ncParser'));
 
 let language: string;
 let docuPath: string;
@@ -806,10 +808,13 @@ export function beautify(): void {
     let isCommentBlock = false;
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
-
+   
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const filecontent = fs.readFileSync(document.uri.fsPath, "utf8");
+            const  parseResult = parser.parse(filecontent);
+                     
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
