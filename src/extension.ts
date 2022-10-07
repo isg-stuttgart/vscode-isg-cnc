@@ -893,11 +893,11 @@ export function beautify(): void {
                     textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
                     continue;
                 }
-
                 if (
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
                     currentLine.indexOf("$FOR") === 0 ||
+                    (currentLine.indexOf("$IF") === 0 && currentLine.indexOf("$GOTO") === -1) ||
                     currentLine.indexOf("$WHILE") === 0 ||
                     currentLine.indexOf("#VAR") === 0
                 ) {
@@ -912,6 +912,7 @@ export function beautify(): void {
                     currentLine.indexOf("$ENDDO") === 0 ||
                     currentLine.indexOf("$UNTIL") === 0 ||
                     currentLine.indexOf("$ENDFOR") === 0 ||
+                    currentLine.indexOf("$ENDIF") === 0 ||
                     currentLine.indexOf("$ENDWHILE") === 0 ||
                     currentLine.indexOf("#ENDVAR") === 0
                 ) {
@@ -929,6 +930,8 @@ export function beautify(): void {
                     }
                     newLine = newLineForBeautifier(currentLine, currentPos);
                 } else if (
+                    currentLine.indexOf("$ELSEIF") === 0 ||
+                    currentLine.indexOf("$ELSE") === 0 ||
                     currentLine.indexOf("$CASE") === 0 ||
                     currentLine.indexOf("$DEFAULT") === 0
                 ) {
@@ -957,16 +960,16 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-
-            parseResult.controlBlocks.forEach((controlBlock: fileContentTree.Match) => {
-                for(let lineNumber = controlBlock.location.start.line; lineNumber<controlBlock.location.end.line-1; lineNumber++){
-                    const line:vscode.TextLine = document.lineAt(lineNumber);
+        
+            parseResult.multilines.forEach((multiline: fileContentTree.Match) => {
+               const start = multiline.location.start.line;
+               const end =  multiline.location.end.line;
+                for (let lineNumber = start; lineNumber < end - 1; lineNumber++) {
+                    const line: vscode.TextLine = document.lineAt(lineNumber);
                     newLine = " ".repeat(whiteSpaces) + line.text;
                     textEdits.push(vscode.TextEdit.replace(line.range, newLine));
                 }
             });
-
-
         }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
