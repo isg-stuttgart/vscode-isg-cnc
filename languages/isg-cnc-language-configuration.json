@@ -88,8 +88,8 @@
     },
     "folding": {
         "markers": {
-            "start": "^(N\\d*)? *(#VAR|#COMMENT BEGIN|\\$DO|\\$REPEAT|\\$FOR|\\$IF|\\$WHILE|\\$SWITCH|\\$CASE)",
-            "end": "^(N\\d*)? *(#ENDVAR|#COMMENT END|\\$ENDDO|\\$UNTIL|\\$ENDFOR|\\$ENDIF|\\$ENDWHILE|\\$ENDSWITCH|\\$BREAK)"
+            "start": "^(N\\d*)? *(#VAR|#COMMENT BEGIN|\\$DO|\\$REPEAT|\\$FOR|\\$IF|\\$WHILE|\\$SWITCH|\\$CASE|;#region)",
+            "end": "^(N\\d*)? *(#ENDVAR|#COMMENT END|\\$ENDDO|\\$UNTIL|\\$ENDFOR|\\$ENDIF|\\$ENDWHILE|\\$ENDSWITCH|\\$BREAK|;#endregion)"
         }
     }
 }
