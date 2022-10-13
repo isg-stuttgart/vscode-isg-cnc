@@ -105,5 +105,28 @@
         ],
         "desciption": "Variables",
         "prefix": "V."
+    },
+    "region-start": {
+        "body": [
+            ";#region"
+        ],
+        "description": "Folding region start",
+        "prefix": "#region"
+    },
+    "region-end": {
+        "body": [
+            ";#endregion"
+        ],
+        "description": "Folding region end",
+        "prefix": "#endregion"
+    },
+    "region-block": {
+        "body": [
+            ";#region",
+            "",
+            ";#endregion"
+        ],
+        "description": "Folding region",
+        "prefix": "#region"
     }
 }
