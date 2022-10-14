@@ -136,20 +136,22 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
     // one children section for the matches listed line by line, one sorted in matchSubcategory
     private children: {
         matchMap: Map<number, MatchItem>,
-        matchSubCategoryMap: Map<string, SubCategoryTreeItem>
+        matchSubCategoryMap: Map<string, SubCategoryTreeItem>,
+        messages: Array<MyItem>
     };
 
     constructor(label: string) {
         super(label, vscode.TreeItemCollapsibleState.Expanded);
         this.children = {
             matchMap: new Map<number, MatchItem>(),
-            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>(),
+            messages: new Array<MyItem>()
         };
     }
     getChildren(): MyItem[] {
         const matches: Array<MatchItem> = Array.from(this.children.matchMap.values());
         const matchSubCategories: Array<SubCategoryTreeItem> = Array.from(this.children.matchSubCategoryMap.values());
-        return [...matches, ...matchSubCategories];
+        return [...matches, ...matchSubCategories, ...this.children.messages];
     }
 
     /**
@@ -170,7 +172,8 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
     private clearChildren(): void {
         this.children = {
             matchMap: new Map<number, MatchItem>(),
-            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>(),
+            messages: new Array<MyItem>()
         };
     }
     /**
@@ -182,14 +185,14 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
          * @param match 
-         * @param map 
+         * @param matchMap 
          * @param itemPosition 
          */
-        function addMatchToMatchLine(match: Match, map: Map<number, MatchItem>, itemPosition: ItemPosition) {
+        function addMatchToMatchLine(match: Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
             // create item for the match-line if it doesn't already exist
-            let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
+            let matchLineItem: MatchItem | undefined = matchMap.get(match.location.start.line);
             if (matchLineItem === undefined) {
-                map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+                matchMap.set(match.location.start.line, new MatchItem(match, context, itemPosition));
             }
             //or additionally highlight new match if line already exists
             else {
@@ -198,9 +201,14 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         }
 
         this.clearChildren();
-
-        newMatches.forEach(match => {
-            if(match.location.start.line<=99){
+        let matchCounter = 0;
+        try {
+            newMatches.forEach(match => {
+                matchCounter++;
+                if(matchCounter>500){
+                    const tooManyMatchesException = {};
+                    throw tooManyMatchesException;
+                }
                 addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
                 // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
                 let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
@@ -217,8 +225,12 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                 } else {
                     throw new Error("subCategory " + match.text + " was not created successfully");
                 }
-            }           
-        });
+            }); 
+        } catch (error) {
+            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length-500) + " more matches, which aren't shown due to performance");
+            this.children.messages.push(messageItem);
+        }
+      
     }
 
 
@@ -371,6 +383,17 @@ interface MyItem extends vscode.TreeItem {
     getChildren(): MyItem[];
 }
 
+/**
+ * An item to show some text to the user
+ */
+class MessageItem extends vscode.TreeItem implements MyItem{
+    constructor(label: string){
+        super(label, vscode.TreeItemCollapsibleState.None);
+    }
+    getChildren(): MyItem[] {
+        return [];
+    }
+}
 /**
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
