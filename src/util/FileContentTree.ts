@@ -4,6 +4,7 @@ import * as peggy from "peggy";
 import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
+import { stringify } from 'querystring';
 
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
@@ -205,19 +206,20 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         try {
             newMatches.forEach(match => {
                 matchCounter++;
-                if(matchCounter>500){
+                if (matchCounter > 500) {
                     const tooManyMatchesException = {};
                     throw tooManyMatchesException;
                 }
+                match.text = match.text.replaceAll(/[\r\n]+[\t ]*/g, "");
                 addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
                 // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
                 let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
-    
+
                 //create subCategory when non-existing
                 if (subCategory === undefined) {
                     this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
                 }
-    
+
                 subCategory = this.children.matchSubCategoryMap.get(match.text);
                 //make sure subCategory exists now and add match to it
                 if (subCategory !== undefined) {
@@ -225,12 +227,12 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                 } else {
                     throw new Error("subCategory " + match.text + " was not created successfully");
                 }
-            }); 
+            });
         } catch (error) {
-            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length-500) + " more matches, which aren't shown due to performance");
+            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
             this.children.messages.push(messageItem);
         }
-      
+
     }
 
 
@@ -322,16 +324,16 @@ class MatchLineLabel {
             const lineNumber = match.location.start.line;
             const column = match.location.start.column;
             labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
-            let line: string = getLine(this._file, lineNumber);
+            let text: string = match.text;
             textoffset = paddingGoal + 2/* ': ' */ - 1 /*different counting between match and label*/;
 
             //label shall contain a maximum of 15 characters left from the match
             if (column > 15) {
-                line = "..." + line.substring(column - 15);
+                text = "..." + text.substring(column - 15);
                 textoffset = textoffset + 3 - (column - 15);
             }
 
-            labelString = labelString + line;
+            labelString = labelString + text;
 
         } else {
             labelString = "!!! no file found !!!";
@@ -386,8 +388,8 @@ interface MyItem extends vscode.TreeItem {
 /**
  * An item to show some text to the user
  */
-class MessageItem extends vscode.TreeItem implements MyItem{
-    constructor(label: string){
+class MessageItem extends vscode.TreeItem implements MyItem {
+    constructor(label: string) {
         super(label, vscode.TreeItemCollapsibleState.None);
     }
     getChildren(): MyItem[] {
