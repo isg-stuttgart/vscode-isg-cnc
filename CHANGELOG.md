@@ -15,7 +15,7 @@ Types of changes
 ## [Unreleased]
 
 ### Added
-
+- "Format Code" command now indents multilines
 - Autogenerate github pages at push to main branch
 
 ### Fixed

@@ -7,6 +7,8 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 
+const parser = require(('./util/ncParser'));
+
 let language: string;
 let docuPath: string;
 
@@ -810,6 +812,9 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const filecontent = fs.readFileSync(document.uri.fsPath, "utf8");
+            const parseResult = parser.parse(filecontent);
+
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -833,7 +838,6 @@ export function beautify(): void {
                 if (
                     line.text.startsWith("%", 0) ||
                     line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
                     isCommentBlock
                 ) {
                     continue;
@@ -889,7 +893,6 @@ export function beautify(): void {
                     textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
                     continue;
                 }
-
                 if (
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
@@ -957,8 +960,17 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
+        
+            parseResult.multilines.forEach((multiline: fileContentTree.Match) => {
+               const start = multiline.location.start.line;
+               const end =  multiline.location.end.line;
+                for (let lineNumber = start; lineNumber < end - 1; lineNumber++) {
+                    const line: vscode.TextLine = document.lineAt(lineNumber);
+                    newLine = " ".repeat(whiteSpaces) + line.text;
+                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+                }
+            });
         }
-
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
