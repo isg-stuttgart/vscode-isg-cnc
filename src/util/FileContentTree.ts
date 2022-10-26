@@ -4,7 +4,6 @@ import * as peggy from "peggy";
 import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
-import { stringify } from 'querystring';
 
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
@@ -312,8 +311,8 @@ class MatchLineLabel {
             const lineNumber = match.location.start.line;
             const column = match.location.start.column;
             labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
-            let text: string = match.text;
-            textoffset = paddingGoal + 2/* ': ' */ - 1 /*different counting between match and label*/;
+            let text: string = getLine(this._file, match.location.start.line);
+            textoffset = paddingGoal + 2/* skip ': ' */ - 1 /*different counting between match and label*/;
 
             //label shall contain a maximum of 15 characters left from the match
             if (column > 15) {
@@ -338,7 +337,12 @@ class MatchLineLabel {
      * @param match 
      */
     public addHighlightingForLineMatch(match: Match) {
-        this._label.highlights.push([match.location.start.column + this._textoffset, match.location.end.column + this._textoffset]);
+        const highlightStart = match.location.start.column + this._textoffset;
+        let highlightEnd = highlightStart + (match.location.end.offset-match.location.start.offset);
+        if(highlightEnd>this._label.label.length){
+            highlightEnd = this._label.label.length;
+        }
+        this._label.highlights.push([highlightStart, highlightEnd]);
     }
 }
 //#region Helper Classes
