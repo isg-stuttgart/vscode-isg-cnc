@@ -812,8 +812,7 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const filecontent = fs.readFileSync(document.uri.fsPath, "utf8");
-            const parseResult = parser.parse(filecontent);
+            const parseResult = parser.parse(document.getText());
 
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
