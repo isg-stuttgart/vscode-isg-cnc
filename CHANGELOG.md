@@ -19,7 +19,7 @@ Types of changes
 - Autogenerate github pages at push to main branch
 
 ### Fixed
-
+- Sidebar cuts off all matches over 500 to prevent performance issues [Pull #74](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/74)
 - Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
 - Add toLowerCase for nc file detection
 - Improved performance of sidebar [Issue #52](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/52)
