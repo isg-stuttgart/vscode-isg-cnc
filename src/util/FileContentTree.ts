@@ -38,21 +38,9 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
-            let parsed: boolean = true;
-            let parseResult;
-            try {
-                parseResult = parser.parse(filecontent);
-            } catch (error: any) {
-                if (error instanceof parser.SyntaxError) {
-                    this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", vscode.TreeItemCollapsibleState.None);
-                    parsed = false;
-                }
-            }
-            if (parsed) {
-                this.updateMatchItems(parseResult);
-                this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
-            }
+            const parseResult = getParseResults(this.file.fsPath);
+            this.updateMatchItems(parseResult);
+            this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
     }
 
@@ -353,15 +341,23 @@ class MatchLineLabel {
         this._label.highlights.push([match.location.start.column + this._textoffset, match.location.end.column + this._textoffset]);
     }
 }
-
+//#region Helper Classes
 /**
  * Type which is returned within the arrays of the parse result
  */
 interface Match {
+    type: string;
     text: string;
     location: peggy.LocationRange;
 }
 
+interface SyntaxArray {
+    toolCalls: Array<Match>;
+    prgCalls: Array<Match>;
+    trash: Array<Match>;
+    controlBlocks: Array<Match>;
+    multilines: Array<Match>;
+}
 /**
  * Type which forces to contain all match-categories
  */
@@ -396,6 +392,9 @@ class MessageItem extends vscode.TreeItem implements MyItem {
         return [];
     }
 }
+//#endregion
+
+//#region Helper functions
 /**
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
@@ -458,3 +457,69 @@ export function jumpToMatch(item: MatchItem) {
         );
     }
 }
+
+/**
+ * Collects the important matches of the nc-file-content into an array of the following structure:
+ * [toolCalls,prgCalls,trash,controlBlocks,multilines]
+ * @param path the path of the nc file
+ */
+export function getParseResults(path: fs.PathLike): SyntaxArray {
+    const filecontent = fs.readFileSync(path, "utf8");
+    const syntaxTree = parser.parse(filecontent);
+
+    const toolCalls = new Array<Match>();
+    const prgCalls = new Array<Match>();
+    const trash = new Array<Match>();
+    const controlBlocks = new Array<Match>();
+    const multilines = new Array<Match>();
+
+    const matchTypes = {
+        toolCall: "toolCall",
+        prgCall: "prgCall",
+        trash: "trash",
+        controlBlock: "controlBlock",
+        multiline: "multiline"
+    };
+
+    traverseRecursive(syntaxTree);
+
+    function traverseRecursive(element: any) {
+        if (Array.isArray(element)) {
+            element.forEach(child => {
+                if (child !== null && child !== undefined) {
+                    traverseRecursive(child);
+                }
+            });
+        }
+
+        if (element.type !== null && element.type !== undefined) {
+            switch (element.type) {
+                case matchTypes.toolCall:
+                    toolCalls.push(element);
+                    break;
+                case matchTypes.prgCall:
+                    prgCalls.push(element);
+                    break;
+                case matchTypes.trash:
+                    trash.push(element);
+                    break;
+                case matchTypes.controlBlock:
+                    controlBlocks.push(element);
+                    break;
+                case matchTypes.multiline:
+                    multilines.push(element);
+                    break;
+            }
+        }
+    }
+    const syntaxArray: SyntaxArray = {
+        toolCalls: toolCalls,
+        prgCalls: prgCalls,
+        trash: trash,
+        controlBlocks: controlBlocks,
+        multilines: multilines
+    };
+    return syntaxArray;
+}
+
+//#endregion
