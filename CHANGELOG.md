@@ -15,6 +15,7 @@ Types of changes
 ## [Unreleased]
 
 ### Added
+- Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
 - "Format Code" command now indents multilines
 - Autogenerate github pages at push to main branch
 
