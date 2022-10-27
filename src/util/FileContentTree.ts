@@ -30,27 +30,16 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     }
 
     private async updateFileTree(): Promise<void> {
+        this.fileItem = new FileItem("Loading...", vscode.TreeItemCollapsibleState.None);
+        await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
-            const filecontent = fs.readFileSync(this.file.fsPath, "utf8");
-            let parsed: boolean = true;
-            let parseResult;
-            try {
-                parseResult = parser.parse(filecontent);
-            } catch (error: any) {
-                if (error instanceof parser.SyntaxError) {
-                    this.fileItem = new FileItem("The currently opened NC-file has wrong syntax", vscode.TreeItemCollapsibleState.None);
-                    parsed = false;
-                }
-            }
-            if (parsed) {
-                this.updateMatchItems(parseResult);
-                this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
-            }
+            const parseResult = getParseResults(this.file.fsPath);
+            this.updateMatchItems(parseResult);
+            this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
     }
 
@@ -135,20 +124,22 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
     // one children section for the matches listed line by line, one sorted in matchSubcategory
     private children: {
         matchMap: Map<number, MatchItem>,
-        matchSubCategoryMap: Map<string, SubCategoryTreeItem>
+        matchSubCategoryMap: Map<string, SubCategoryTreeItem>,
+        messages: Array<MyItem>
     };
 
     constructor(label: string) {
         super(label, vscode.TreeItemCollapsibleState.Expanded);
         this.children = {
             matchMap: new Map<number, MatchItem>(),
-            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>(),
+            messages: new Array<MyItem>()
         };
     }
     getChildren(): MyItem[] {
         const matches: Array<MatchItem> = Array.from(this.children.matchMap.values());
         const matchSubCategories: Array<SubCategoryTreeItem> = Array.from(this.children.matchSubCategoryMap.values());
-        return [...matches, ...matchSubCategories];
+        return [...matches, ...matchSubCategories, ...this.children.messages];
     }
 
     /**
@@ -169,7 +160,8 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
     private clearChildren(): void {
         this.children = {
             matchMap: new Map<number, MatchItem>(),
-            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>()
+            matchSubCategoryMap: new Map<string, SubCategoryTreeItem>(),
+            messages: new Array<MyItem>()
         };
     }
     /**
@@ -181,14 +173,14 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
          * @param match 
-         * @param map 
+         * @param matchMap 
          * @param itemPosition 
          */
-        function addMatchToMatchLine(match: Match, map: Map<number, MatchItem>, itemPosition: ItemPosition) {
+        function addMatchToMatchLine(match: Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
             // create item for the match-line if it doesn't already exist
-            let matchLineItem: MatchItem | undefined = map.get(match.location.start.line);
+            let matchLineItem: MatchItem | undefined = matchMap.get(match.location.start.line);
             if (matchLineItem === undefined) {
-                map.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+                matchMap.set(match.location.start.line, new MatchItem(match, context, itemPosition));
             }
             //or additionally highlight new match if line already exists
             else {
@@ -197,25 +189,37 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         }
 
         this.clearChildren();
+        let matchCounter = 0;
+        try {
+            newMatches.forEach(match => {
+                matchCounter++;
+                if (matchCounter > 500) {
+                    const tooManyMatchesException = {};
+                    throw tooManyMatchesException;
+                }
+                match.text = match.text.replaceAll(/[\r\n]+[\t ]*/g, "");
+                addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
+                // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
+                let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
-        newMatches.forEach(match => {
-            addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
-            // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-            let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
+                //create subCategory when non-existing
+                if (subCategory === undefined) {
+                    this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
+                }
 
-            //create subCategory when non-existing
-            if (subCategory === undefined) {
-                this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
-            }
+                subCategory = this.children.matchSubCategoryMap.get(match.text);
+                //make sure subCategory exists now and add match to it
+                if (subCategory !== undefined) {
+                    addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+                } else {
+                    throw new Error("subCategory " + match.text + " was not created successfully");
+                }
+            });
+        } catch (error) {
+            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
+            this.children.messages.push(messageItem);
+        }
 
-            subCategory = this.children.matchSubCategoryMap.get(match.text);
-            //make sure subCategory exists now and add match to it
-            if (subCategory !== undefined) {
-                addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
-            } else {
-                throw new Error("subCategory " + match.text + " was not created successfully");
-            }
-        });
     }
 
 
@@ -307,16 +311,16 @@ class MatchLineLabel {
             const lineNumber = match.location.start.line;
             const column = match.location.start.column;
             labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
-            let line: string = getLine(this._file, lineNumber);
-            textoffset = paddingGoal + 2/* ': ' */ - 1 /*different counting between match and label*/;
+            let text: string = getLine(this._file, match.location.start.line);
+            textoffset = paddingGoal + 2/* skip ': ' */ - 1 /*different counting between match and label*/;
 
             //label shall contain a maximum of 15 characters left from the match
             if (column > 15) {
-                line = "..." + line.substring(column - 15);
+                text = "..." + text.substring(column - 15);
                 textoffset = textoffset + 3 - (column - 15);
             }
 
-            labelString = labelString + line;
+            labelString = labelString + text;
 
         } else {
             labelString = "!!! no file found !!!";
@@ -333,18 +337,31 @@ class MatchLineLabel {
      * @param match 
      */
     public addHighlightingForLineMatch(match: Match) {
-        this._label.highlights.push([match.location.start.column + this._textoffset, match.location.end.column + this._textoffset]);
+        const highlightStart = match.location.start.column + this._textoffset;
+        let highlightEnd = highlightStart + (match.location.end.offset-match.location.start.offset);
+        if(highlightEnd>this._label.label.length){
+            highlightEnd = this._label.label.length;
+        }
+        this._label.highlights.push([highlightStart, highlightEnd]);
     }
 }
-
+//#region Helper Classes
 /**
  * Type which is returned within the arrays of the parse result
  */
-export interface Match {
+interface Match {
+    type: string;
     text: string;
     location: peggy.LocationRange;
 }
 
+interface SyntaxArray {
+    toolCalls: Array<Match>;
+    prgCalls: Array<Match>;
+    trash: Array<Match>;
+    controlBlocks: Array<Match>;
+    multilines: Array<Match>;
+}
 /**
  * Type which forces to contain all match-categories
  */
@@ -368,6 +385,20 @@ interface MyItem extends vscode.TreeItem {
     getChildren(): MyItem[];
 }
 
+/**
+ * An item to show some text to the user
+ */
+class MessageItem extends vscode.TreeItem implements MyItem {
+    constructor(label: string) {
+        super(label, vscode.TreeItemCollapsibleState.None);
+    }
+    getChildren(): MyItem[] {
+        return [];
+    }
+}
+//#endregion
+
+//#region Helper functions
 /**
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
@@ -430,3 +461,69 @@ export function jumpToMatch(item: MatchItem) {
         );
     }
 }
+
+/**
+ * Collects the important matches of the nc-file-content into an array of the following structure:
+ * [toolCalls,prgCalls,trash,controlBlocks,multilines]
+ * @param path the path of the nc file
+ */
+export function getParseResults(path: fs.PathLike): SyntaxArray {
+    const filecontent = fs.readFileSync(path, "utf8");
+    const syntaxTree = parser.parse(filecontent);
+
+    const toolCalls = new Array<Match>();
+    const prgCalls = new Array<Match>();
+    const trash = new Array<Match>();
+    const controlBlocks = new Array<Match>();
+    const multilines = new Array<Match>();
+
+    const matchTypes = {
+        toolCall: "toolCall",
+        prgCall: "prgCall",
+        trash: "trash",
+        controlBlock: "controlBlock",
+        multiline: "multiline"
+    };
+
+    traverseRecursive(syntaxTree);
+
+    function traverseRecursive(element: any) {
+        if (Array.isArray(element)) {
+            element.forEach(child => {
+                if (child !== null && child !== undefined) {
+                    traverseRecursive(child);
+                }
+            });
+        }
+
+        if (element.type !== null && element.type !== undefined) {
+            switch (element.type) {
+                case matchTypes.toolCall:
+                    toolCalls.push(element);
+                    break;
+                case matchTypes.prgCall:
+                    prgCalls.push(element);
+                    break;
+                case matchTypes.trash:
+                    trash.push(element);
+                    break;
+                case matchTypes.controlBlock:
+                    controlBlocks.push(element);
+                    break;
+                case matchTypes.multiline:
+                    multilines.push(element);
+                    break;
+            }
+        }
+    }
+    const syntaxArray: SyntaxArray = {
+        toolCalls: toolCalls,
+        prgCalls: prgCalls,
+        trash: trash,
+        controlBlocks: controlBlocks,
+        multilines: multilines
+    };
+    return syntaxArray;
+}
+
+//#endregion

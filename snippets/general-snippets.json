@@ -61,49 +61,72 @@
         "body": [
             "V.A.${1|MENT.,PROG.,ABS.,ACT_POS.,ACS.ABS.,+SWE.,+SWE.,-SWE_MDS.,+SWE_MDS,REF.|}"
         ],
-        "desciption": "Axis specific Variables",
+        "description": "Axis specific Variables",
         "prefix": "V.A."
     },
     "V.G.variables": {
         "body": [
             "V.G.${1|T_AKT,D_AKT,NP,NP_AKT,NP_DEFAULT,BLOCK_NR,CNC_CHANNEL,MASS_MM,MASS_360,I,J,K,R,FEEDRATE,FEEDRATE_SCALE,MERR,IPO_COUNT,CS_ACTIVE,CS_COUNT,ACS_ACTIVE,ACS_COUNT,TOOL_COMP,AKT_PLATZ,AX_LINK.NR,AX_LINK.ACTIVE,AX_LINK_GROUP,ROT_ACTIVE,ROT_ANGLE,ROT_CENTER1,ROT_CENTER2,TIMER,PROG_ABS,CNC_RELEASE,CNC_VERSION.MAJOR,CNC_VERSION.MINOR,CNC_VERSION.BUILD,CNC_VERSION.PATCH,WCS_POSLIMIT_1,WCS_POSLIMIT_2,WCS_POSLIMIT_3,RANDOM,MAIN_FILE_NAME,MAIN_PROG_NAME,MAIN_PROG_NR,FILE_NAME,PROG_NAME,PROG_NR,PROG_LEVEL,FILE_OFFSET|}"
         ],
-        "desciption": "Global Variables",
+        "description": "Global Variables",
         "prefix": "V.G."
     },
     "V.G.WZ_AKT.variables": {
         "body": [
             "V.G.WZ_AKT.${1|R,L,P,V,ME,OK,SPDL_AX_NR,KIN_PARAM,KIN_ID,TYPE,TOOL_FIXED,SRK_ID,S_MIN_SPEED,S_MAX_SPEED,S_MAX_ACC,SISTER_VALID,SISTER,VARIANT_VALID,VARIANT,WEAR_RADIUS,WEAR_RADIUS_CONT,WEAR,WEAR_CONST,GOBJECT,LINKPOINT|}"
         ],
-        "desciption": "Global Current Tool Variables",
+        "description": "Global Current Tool Variables",
         "prefix": "V.G.WZ_AKT."
     },
     "V.G.WZ.variables": {
         "body": [
             "V.G.WZ.${1|R,L,P,V,ME,OK,SPDL_AX_NR,KIN_PARAM,KIN_ID,TYPE,SRK_ID,S_MIN_SPEED,S_MAX_SPEED,S_MAX_ACC,SISTER_VALID,SISTER,VARIANT_VALID,VARIANT,GOBJECT,LINKPOINT|}"
         ],
-        "desciption": "Global Tool Variables",
+        "description": "Global Tool Variables",
         "prefix": "V.G.WZ."
     },
     "V.SPDL_PROG.variables": {
         "body": [
             "V.SPDL_PROG.${1|SPEED.S,MOVE_CMD.S,POSITION.S,MAX_SPEED.S,CONST_CUT_SPEED.S,DWELL_ROT_COUNT.S,GEAR_DATA_STEP.S|}"
         ],
-        "desciption": "Spindle specific Variables",
+        "description": "Spindle specific Variables",
         "prefix": "V.SPDL_PROG."
     },
     "V.SPDL.variables": {
         "body": [
             "V.SPDL.${1|LOG_AX_NR.S,PLC_CONTROL.S,NBR_IN_CHANNEL.,M_FCT_FREE.|}"
         ],
-        "desciption": "Spindle specific Variables",
+        "description": "Spindle specific Variables",
         "prefix": "V.SPDL."
     },
     "variables": {
         "body": [
             "V.${1|L.,P.,S.,E.,G.,CYC.,A.,SPDL.,SPDL_PROG.|}"
         ],
-        "desciption": "Variables",
+        "description": "Variables",
         "prefix": "V."
+    },
+    "region-start": {
+        "body": [
+            ";#region"
+        ],
+        "description": "Folding region start",
+        "prefix": "#region"
+    },
+    "region-end": {
+        "body": [
+            ";#endregion"
+        ],
+        "description": "Folding region end",
+        "prefix": "#endregion"
+    },
+    "region-block": {
+        "body": [
+            ";#region",
+            "",
+            ";#endregion"
+        ],
+        "description": "Folding region",
+        "prefix": "#region"
     }
 }
