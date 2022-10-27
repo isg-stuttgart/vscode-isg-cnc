@@ -496,6 +496,14 @@ export function getParseResults(path: fs.PathLike): SyntaxArray {
             });
         }
 
+        if (element.content!==null && element.content!==undefined && Array.isArray(element.content)){
+            element.content.forEach((child:any) => {
+                if (child !== null && child !== undefined) {
+                    traverseRecursive(child);
+                }
+            });
+        }
+        
         if (element.type !== null && element.type !== undefined) {
             switch (element.type) {
                 case matchTypes.toolCall:
