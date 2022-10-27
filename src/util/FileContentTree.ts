@@ -221,8 +221,6 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         }
 
     }
-
-
 }
 /**
  * The tree item of a subcategory (e.g. collection of all T31 of the same number)
@@ -490,6 +488,14 @@ export function getParseResults(path: fs.PathLike): SyntaxArray {
     function traverseRecursive(element: any) {
         if (Array.isArray(element)) {
             element.forEach(child => {
+                if (child !== null && child !== undefined) {
+                    traverseRecursive(child);
+                }
+            });
+        }
+
+        if (element.content!==null && element.content!==undefined && Array.isArray(element.content)){
+            element.content.forEach((child:any) => {
                 if (child !== null && child !== undefined) {
                     traverseRecursive(child);
                 }
