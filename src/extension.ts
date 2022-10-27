@@ -812,8 +812,6 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const parseResult = parser.parse(document.getText());
-
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -959,16 +957,6 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        
-            parseResult.multilines.forEach((multiline: fileContentTree.Match) => {
-               const start = multiline.location.start.line;
-               const end =  multiline.location.end.line;
-                for (let lineNumber = start; lineNumber < end - 1; lineNumber++) {
-                    const line: vscode.TextLine = document.lineAt(lineNumber);
-                    newLine = " ".repeat(whiteSpaces) + line.text;
-                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
-                }
-            });
         }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
