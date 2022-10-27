@@ -349,13 +349,13 @@ class MatchLineLabel {
 /**
  * Type which is returned within the arrays of the parse result
  */
-interface Match {
+export interface Match {
     type: string;
     text: string;
     location: peggy.LocationRange;
 }
 
-interface SyntaxArray {
+export interface SyntaxArray {
     toolCalls: Array<Match>;
     prgCalls: Array<Match>;
     trash: Array<Match>;
