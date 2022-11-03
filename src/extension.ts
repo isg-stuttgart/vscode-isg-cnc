@@ -812,7 +812,7 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const syntaxArray: fileContentTree.SyntaxArray = fileContentTree.getParseResults(document.uri.fsPath);
+            const syntaxArray: fileContentTree.SyntaxArray = fileContentTree.getParseResults(document.getText());
 
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
@@ -963,7 +963,7 @@ export function beautify(): void {
             syntaxArray.multilines.forEach((multiline: fileContentTree.Match) => {
                const start = multiline.location.start.line;
                const end =  multiline.location.end.line;
-                for (let lineNumber = start; lineNumber < end - 1; lineNumber++) {
+                for (let lineNumber = start; lineNumber < end; lineNumber++) {
                     const line: vscode.TextLine = document.lineAt(lineNumber);
                     newLine = " ".repeat(whiteSpaces) + line.text;
                     textEdits.push(vscode.TextEdit.replace(line.range, newLine));

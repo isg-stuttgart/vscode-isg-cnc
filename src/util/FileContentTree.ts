@@ -37,7 +37,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            const parseResult = getParseResults(this.file.fsPath);
+            const parseResult = getParseResults(fs.readFileSync(this.file.fsPath, "utf8"));
             this.updateMatchItems(parseResult);
             this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
@@ -467,8 +467,7 @@ export function jumpToMatch(item: MatchItem) {
  * [toolCalls,prgCalls,trash,controlBlocks,multilines]
  * @param path the path of the nc file
  */
-export function getParseResults(path: fs.PathLike): SyntaxArray {
-    const filecontent = fs.readFileSync(path, "utf8");
+export function getParseResults(filecontent: string): SyntaxArray {
     const syntaxTree = parser.parse(filecontent);
 
     const toolCalls = new Array<Match>();
