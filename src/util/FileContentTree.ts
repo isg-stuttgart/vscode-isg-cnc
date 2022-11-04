@@ -221,8 +221,6 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
         }
 
     }
-
-
 }
 /**
  * The tree item of a subcategory (e.g. collection of all T31 of the same number)
@@ -502,7 +500,7 @@ export function getParseResults(filecontent: string): SyntaxArray {
                 }
             });
         }
-        
+
         if (element.type !== null && element.type !== undefined) {
             switch (element.type) {
                 case matchTypes.toolCall:
