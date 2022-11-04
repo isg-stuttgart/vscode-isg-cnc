@@ -836,7 +836,6 @@ export function beautify(): void {
                 // skip program name, comment lines and empty lines
                 if (
                     line.text.startsWith("%", 0) ||
-                    line.text.startsWith(";") ||
                     isCommentBlock
                 ) {
                     continue;
