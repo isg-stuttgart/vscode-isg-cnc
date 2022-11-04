@@ -533,4 +533,3 @@ export function getParseResults(filecontent: string): SyntaxArray {
     return syntaxArray;
 }
 
-//#endregion
