@@ -8,7 +8,7 @@
         "color": "#0BA1E2",
         "theme": "dark"
     },
-    "icon": "ISGCncEditor.png",
+    "icon": "resources/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.59.0"
@@ -93,7 +93,7 @@
                 {
                     "id": "cnc-views-container",
                     "title": "CNC",
-                    "icon": "ISGCncEditor.png"
+                    "icon": "resources/ISGCncEditor.png"
                 }
             ]
         },
@@ -166,9 +166,25 @@
                 "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNonAsciiCharacters",
                 "title": "ISG-CNC: Find not ASCII characters"
+            },
+            {
+                "enablement": "resourceLangId == isg-cnc",
+                "command": "isg-cnc.sidebarFilter",
+                "title": "Change between line-by-line and grouped sorting",
+                "icon":{
+                    "light": "resources/light/filter.svg",
+                    "dark": "resources/dark/filter.svg"
+                }
             }
         ],
         "menus": {
+            "view/title": [
+                {
+                    "command": "isg-cnc.sidebarFilter",
+                    "when": "view == cnc-show-filecontent",
+                    "group": "navigation"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "isg-cnc.EncryptThis",
