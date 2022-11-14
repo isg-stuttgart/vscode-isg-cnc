@@ -531,3 +531,7 @@ export function getParseResults(filecontent: string): SyntaxArray {
     return syntaxArray;
 }
 
+export function filterOrder(): any {
+    throw new Error("Function not implemented.");
+}
+

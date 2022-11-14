@@ -171,7 +171,12 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         )
     );
-
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sidebarFilter", () =>
+            fileContentTree.filterOrder()
+        )
+    );   
+   
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
         vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))

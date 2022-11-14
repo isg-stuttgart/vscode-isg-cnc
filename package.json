@@ -54,7 +54,8 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
-        "onCommand:isg-cnc.FindNonAsciiCharacters"
+        "onCommand:isg-cnc.FindNonAsciiCharacters",
+        "onCommand:cnc-show-filecontent"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -168,13 +169,9 @@
                 "title": "ISG-CNC: Find not ASCII characters"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.sidebarFilter",
                 "title": "Change between line-by-line and grouped sorting",
-                "icon":{
-                    "light": "resources/light/filter.svg",
-                    "dark": "resources/dark/filter.svg"
-                }
+                "icon":"$(extensions-filter)"
             }
         ],
         "menus": {
