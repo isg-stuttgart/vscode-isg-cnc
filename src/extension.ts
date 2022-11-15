@@ -110,7 +110,6 @@ export function activate(context: vscode.ExtensionContext): void {
     fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
         treeDataProvider: fileContentProvider
     });
-    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
 
     // commands
     context.subscriptions.push(
@@ -172,19 +171,24 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         )
     );
-    context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.sortLineByLine", () =>
-            fileContentTree.setSorting(fileContentTree.Sorting.lineByLine)
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.sortGrouped", () =>
-            fileContentTree.setSorting(fileContentTree.Sorting.grouped)
-        )
-    );
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
         vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
+    );
+
+    //sorting of sidebar content
+    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+            fileContentProvider.update();
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
+            fileContentProvider.update();
+        })
     );
 
     // add status bar items

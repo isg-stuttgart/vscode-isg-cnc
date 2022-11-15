@@ -169,30 +169,55 @@
                 "title": "ISG-CNC: Find not ASCII characters"
             },
             {
-                "command": "isg-cnc.sortLineByLine",
-                "title": "Change to line-by-line sorting",
-                "icon":"$(list-tree)"
+                "command": "isg-cnc.sortLineByLineOn",
+                "title": "Line by line"
             },
             {
-                "command": "isg-cnc.sortGrouped",
-                "title": "Change to grouped sorting",
-                "icon":"$(list-ordered)"
+                "command": "isg-cnc.sortLineByLineSelected",
+                "title": "Line by line (active)",
+                "enablement": "false"
+            },
+            {
+                "command":"isg-cnc.sortGroupedOn",
+                "title": "Grouped"
+            },
+           
+            {
+                "command": "isg-cnc.sortGroupedSelected",
+                "title": "Grouped (active)",
+                "enablement": "false"
             }
         ],
         "menus": {
             "view/title": [
+               {
+                "submenu": "isg-cnc.SidebarSorting",
+                "when": "view == cnc-show-filecontent",
+                "group": "navigation"
+               }
+            ],
+            "isg-cnc.SidebarSorting":[
                 {
-                    "command": "isg-cnc.sortLineByLine",
-                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting=='grouped'",
-                    "group": "navigation"
+                    "command": "isg-cnc.sortLineByLineOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@1"
                 },
                 {
-                    "command": "isg-cnc.sortGrouped",
-                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting=='lineByLine'",
-                    "group": "navigation"
+                    "command": "isg-cnc.sortLineByLineSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@1"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@2"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@2"
                 }
             ],
-            
             "commandPalette": [
                 {
                     "command": "isg-cnc.EncryptThis",
@@ -274,6 +299,11 @@
             {
                 "id": "isg-commands",
                 "label": "ISG Commands"
+            },
+            {
+                "id": "isg-cnc.SidebarSorting",
+                "label": "Switch between different sortings",
+                "icon":"$(extensions-filter)"
             }
         ],
         "keybindings": [

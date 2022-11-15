@@ -8,10 +8,6 @@ import { EOL as newline } from "node:os";
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
 
-export enum Sorting{
-    lineByLine,
-    grouped
-}
 /**
  * The Tree Data Provider for the NC-Match-Tree
  */
@@ -80,7 +76,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         await Promise.all([
             new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context)),
             new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context))
-        ]);
+        ])
     }
 
 
@@ -533,13 +529,5 @@ export function getParseResults(filecontent: string): SyntaxArray {
         multilines: multilines
     };
     return syntaxArray;
-}
-
-export function setSorting(sorting: Sorting): void {
-    if(sorting===Sorting.lineByLine){
-        vscode.commands.executeCommand('setContext',"vscode-isg-cnc.sidebarSorting", "lineByLine");
-    }else if(sorting===Sorting.grouped){
-        vscode.commands.executeCommand('setContext',"vscode-isg-cnc.sidebarSorting", "grouped");
-    }
 }
 
