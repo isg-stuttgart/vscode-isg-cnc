@@ -169,19 +169,30 @@
                 "title": "ISG-CNC: Find not ASCII characters"
             },
             {
-                "command": "isg-cnc.sidebarFilter",
-                "title": "Change between line-by-line and grouped sorting",
-                "icon":"$(extensions-filter)"
+                "command": "isg-cnc.sortLineByLine",
+                "title": "Change to line-by-line sorting",
+                "icon":"$(list-tree)"
+            },
+            {
+                "command": "isg-cnc.sortGrouped",
+                "title": "Change to grouped sorting",
+                "icon":"$(list-ordered)"
             }
         ],
         "menus": {
             "view/title": [
                 {
-                    "command": "isg-cnc.sidebarFilter",
-                    "when": "view == cnc-show-filecontent",
+                    "command": "isg-cnc.sortLineByLine",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting=='grouped'",
+                    "group": "navigation"
+                },
+                {
+                    "command": "isg-cnc.sortGrouped",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting=='lineByLine'",
                     "group": "navigation"
                 }
             ],
+            
             "commandPalette": [
                 {
                     "command": "isg-cnc.EncryptThis",

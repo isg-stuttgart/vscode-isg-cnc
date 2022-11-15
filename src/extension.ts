@@ -60,7 +60,6 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
-
 //
 
 /**
@@ -111,6 +110,8 @@ export function activate(context: vscode.ExtensionContext): void {
     fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
         treeDataProvider: fileContentProvider
     });
+    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -172,11 +173,15 @@ export function activate(context: vscode.ExtensionContext): void {
         )
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.sidebarFilter", () =>
-            fileContentTree.filterOrder()
+        vscode.commands.registerCommand("isg-cnc.sortLineByLine", () =>
+            fileContentTree.setSorting(fileContentTree.Sorting.lineByLine)
         )
-    );   
-   
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortGrouped", () =>
+            fileContentTree.setSorting(fileContentTree.Sorting.grouped)
+        )
+    );
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
         vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
@@ -963,10 +968,10 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        
+
             syntaxArray.multilines.forEach((multiline: fileContentTree.Match) => {
-               const start = multiline.location.start.line;
-               const end =  multiline.location.end.line;
+                const start = multiline.location.start.line;
+                const end = multiline.location.end.line;
                 for (let lineNumber = start; lineNumber < end; lineNumber++) {
                     const line: vscode.TextLine = document.lineAt(lineNumber);
                     newLine = " ".repeat(whiteSpaces) + line.text;
