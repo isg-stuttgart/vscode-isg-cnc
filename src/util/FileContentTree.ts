@@ -7,6 +7,10 @@ import { EOL as newline } from "node:os";
 
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
+export enum Sorting {
+    LineByLine,
+    Grouped
+}
 
 /**
  * The Tree Data Provider for the NC-Match-Tree
@@ -19,6 +23,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     context: vscode.ExtensionContext;
     currentFileWatcher: fs.FSWatcher | undefined;
     file: vscode.Uri | undefined;
+
+    sorting: Sorting = Sorting.LineByLine;
     constructor(extContext: vscode.ExtensionContext) {
         this.matchCategories = {
             toolCalls: new CategoryItem("Tool Calls"),
@@ -31,6 +37,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     private async updateFileTree(): Promise<void> {
         this.fileItem = new FileItem("Loading...", vscode.TreeItemCollapsibleState.None);
+        this._onDidChangeTreeData.fire();  //triggers updating the graphic
         await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
@@ -56,16 +63,14 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
      * Updates the tree so it shows the information concerning the specified file
      */
     async update(): Promise<void> {
-        new Promise(() => {
-            try {
-                this.file = vscode.window.activeTextEditor?.document.uri;;
-                this.updateFileTree();
-                this.updateFileWatcher();
-                this._onDidChangeTreeData.fire();  //triggers updating the graphic
-            } catch (error: any) {
-                vscode.window.showErrorMessage(error);
-            }
-        });
+        try {
+            this.file = vscode.window.activeTextEditor?.document.uri;;
+            this.updateFileTree();
+            this.updateFileWatcher();
+        } catch (error: any) {
+            vscode.window.showErrorMessage(error);
+        }
+        this._onDidChangeTreeData.fire();  //triggers updating the graphic
     }
 
     /**
@@ -74,9 +79,9 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
      */
     async updateMatchItems(parseResult: any): Promise<void> {
         await Promise.all([
-            new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context)),
-            new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context))
-        ])
+            new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context, this.sorting)),
+            new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context, this.sorting))
+        ]);
     }
 
 
@@ -168,7 +173,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    resetMatches(newMatches: Match[], context: vscode.ExtensionContext) {
+    resetMatches(newMatches: Match[], context: vscode.ExtensionContext, sorting: Sorting) {
 
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
@@ -198,28 +203,31 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     throw tooManyMatchesException;
                 }
                 match.text = match.text.replaceAll(/[\r\n]+[\t ]*/g, "");
-                addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
-                // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-                let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
+                if (sorting === Sorting.LineByLine) {
+                    addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
 
-                //create subCategory when non-existing
-                if (subCategory === undefined) {
-                    this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
-                }
+                } else if (sorting === Sorting.Grouped) {
+                    // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
+                    let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
 
-                subCategory = this.children.matchSubCategoryMap.get(match.text);
-                //make sure subCategory exists now and add match to it
-                if (subCategory !== undefined) {
-                    addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
-                } else {
-                    throw new Error("subCategory " + match.text + " was not created successfully");
+                    //create subCategory when non-existing
+                    if (subCategory === undefined) {
+                        this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
+                    }
+
+                    subCategory = this.children.matchSubCategoryMap.get(match.text);
+                    //make sure subCategory exists now and add match to it
+                    if (subCategory !== undefined) {
+                        addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+                    } else {
+                        throw new Error("subCategory " + match.text + " was not created successfully");
+                    }
                 }
             });
         } catch (error) {
             let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
             this.children.messages.push(messageItem);
         }
-
     }
 }
 /**
@@ -336,8 +344,8 @@ class MatchLineLabel {
      */
     public addHighlightingForLineMatch(match: Match) {
         const highlightStart = match.location.start.column + this._textoffset;
-        let highlightEnd = highlightStart + (match.location.end.offset-match.location.start.offset);
-        if(highlightEnd>this._label.label.length){
+        let highlightEnd = highlightStart + (match.location.end.offset - match.location.start.offset);
+        if (highlightEnd > this._label.label.length) {
             highlightEnd = this._label.label.length;
         }
         this._label.highlights.push([highlightStart, highlightEnd]);
@@ -493,8 +501,8 @@ export function getParseResults(filecontent: string): SyntaxArray {
             });
         }
 
-        if (element.content!==null && element.content!==undefined && Array.isArray(element.content)){
-            element.content.forEach((child:any) => {
+        if (element.content !== null && element.content !== undefined && Array.isArray(element.content)) {
+            element.content.forEach((child: any) => {
                 if (child !== null && child !== undefined) {
                     traverseRecursive(child);
                 }

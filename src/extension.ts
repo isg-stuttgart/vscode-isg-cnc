@@ -181,12 +181,14 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
             vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+            fileContentProvider.sorting = fileContentTree.Sorting.LineByLine;
             fileContentProvider.update();
         })
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
             vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
+            fileContentProvider.sorting = fileContentTree.Sorting.Grouped;
             fileContentProvider.update();
         })
     );
@@ -206,20 +208,6 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
-
-
-    // vscode.window.onDidChangeActiveTextEditor((editor) => {
-    //     activeEditor = editor;
-    //     if (editor) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
-
-    // vscode.workspace.onDidChangeTextDocument((event) => {
-    //     if (activeEditor && event.document === activeEditor.document) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
 }
 
 /**
