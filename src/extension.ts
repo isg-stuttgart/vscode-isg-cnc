@@ -60,7 +60,6 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
-
 //
 
 /**
@@ -111,6 +110,7 @@ export function activate(context: vscode.ExtensionContext): void {
     fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
         treeDataProvider: fileContentProvider
     });
+
     // commands
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindAllToolCalls", () =>
@@ -171,10 +171,26 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         )
     );
-
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
         vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
+    );
+
+    //sorting of sidebar content
+    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+            fileContentProvider.sorting = fileContentTree.Sorting.lineByLine;
+            fileContentProvider.update();
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
+            fileContentProvider.sorting = fileContentTree.Sorting.grouped;
+            fileContentProvider.update();
+        })
     );
 
     // add status bar items
@@ -192,20 +208,6 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
-
-
-    // vscode.window.onDidChangeActiveTextEditor((editor) => {
-    //     activeEditor = editor;
-    //     if (editor) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
-
-    // vscode.workspace.onDidChangeTextDocument((event) => {
-    //     if (activeEditor && event.document === activeEditor.document) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
 }
 
 /**
@@ -958,10 +960,10 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        
+
             syntaxArray.multilines.forEach((multiline: fileContentTree.Match) => {
-               const start = multiline.location.start.line;
-               const end =  multiline.location.end.line;
+                const start = multiline.location.start.line;
+                const end = multiline.location.end.line;
                 for (let lineNumber = start; lineNumber < end; lineNumber++) {
                     const line: vscode.TextLine = document.lineAt(lineNumber);
                     newLine = " ".repeat(whiteSpaces) + line.text;

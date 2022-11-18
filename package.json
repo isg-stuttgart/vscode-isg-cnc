@@ -8,7 +8,7 @@
         "color": "#0BA1E2",
         "theme": "dark"
     },
-    "icon": "ISGCncEditor.png",
+    "icon": "resources/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.59.0"
@@ -54,7 +54,8 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
-        "onCommand:isg-cnc.FindNonAsciiCharacters"
+        "onCommand:isg-cnc.FindNonAsciiCharacters",
+        "onCommand:cnc-show-filecontent"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -93,7 +94,7 @@
                 {
                     "id": "cnc-views-container",
                     "title": "CNC",
-                    "icon": "ISGCncEditor.png"
+                    "icon": "resources/ISGCncEditor.png"
                 }
             ]
         },
@@ -166,9 +167,57 @@
                 "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNonAsciiCharacters",
                 "title": "ISG-CNC: Find not ASCII characters"
+            },
+            {
+                "command": "isg-cnc.sortLineByLineOn",
+                "title": "Line by line"
+            },
+            {
+                "command": "isg-cnc.sortLineByLineSelected",
+                "title": "Line by line (active)",
+                "enablement": "false"
+            },
+            {
+                "command":"isg-cnc.sortGroupedOn",
+                "title": "Grouped"
+            },
+           
+            {
+                "command": "isg-cnc.sortGroupedSelected",
+                "title": "Grouped (active)",
+                "enablement": "false"
             }
         ],
         "menus": {
+            "view/title": [
+               {
+                "submenu": "isg-cnc.SidebarSorting",
+                "when": "view == cnc-show-filecontent",
+                "group": "navigation"
+               }
+            ],
+            "isg-cnc.SidebarSorting":[
+                {
+                    "command": "isg-cnc.sortLineByLineOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@1"
+                },
+                {
+                    "command": "isg-cnc.sortLineByLineSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@1"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@2"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@2"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "isg-cnc.EncryptThis",
@@ -250,6 +299,11 @@
             {
                 "id": "isg-commands",
                 "label": "ISG Commands"
+            },
+            {
+                "id": "isg-cnc.SidebarSorting",
+                "label": "Switch between different sortings",
+                "icon":"$(extensions-filter)"
             }
         ],
         "keybindings": [
