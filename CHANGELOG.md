@@ -18,6 +18,7 @@ Types of changes
 - Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
 - "Format Code" command now indents multilines
 - Autogenerate github pages at push to main branch
+- Filter option to either show grouped or line-by-line sorting of matches in sidebar [Pull #79](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/79)
 
 ### Fixed
 - Sidebar cuts off all matches over 500 to prevent performance issues [Pull #74](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/74)
