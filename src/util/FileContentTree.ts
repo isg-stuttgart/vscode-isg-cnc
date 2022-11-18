@@ -4,6 +4,7 @@ import * as peggy from "peggy";
 import * as Path from "path";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
+import { types } from 'util';
 
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
@@ -203,24 +204,29 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     const tooManyMatchesException = {};
                     throw tooManyMatchesException;
                 }
+                let matchToHiglight: Match;
+                if (match.type === matchTypes.prgCall && match.name !== null) {
+                    matchToHiglight = match.name; // only highlight name of prgCall if existing
+                } else {
+                    matchToHiglight = match;
+                }
                 if (sorting === Sorting.lineByLine) {
-                    addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
-
+                    addMatchToMatchLine(matchToHiglight, this.children.matchMap, ItemPosition.category);
                 } else if (sorting === Sorting.grouped) {
                     // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-                    let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.name);
+                    let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(matchToHiglight.text);
 
                     //create subCategory when non-existing
                     if (subCategory === undefined) {
-                        this.children.matchSubCategoryMap.set(match.name, new SubCategoryTreeItem(match.name));
+                        this.children.matchSubCategoryMap.set(matchToHiglight.text, new SubCategoryTreeItem(matchToHiglight.text));
                     }
 
-                    subCategory = this.children.matchSubCategoryMap.get(match.name);
+                    subCategory = this.children.matchSubCategoryMap.get(matchToHiglight.text);
                     //make sure subCategory exists now and add match to it
                     if (subCategory !== undefined) {
-                        addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
+                        addMatchToMatchLine(matchToHiglight, subCategory.children, ItemPosition.subCategory);
                     } else {
-                        throw new Error("subCategory " + match.name + " was not created successfully");
+                        throw new Error("subCategory " + matchToHiglight.text + " was not created successfully");
                     }
                 }
             });
@@ -356,11 +362,13 @@ class MatchLineLabel {
  * Type which is returned within the arrays of the parse result
  */
 export interface Match {
-    name: string;
+    name: Match | null;
     type: string;
     text: string;
     location: peggy.LocationRange;
+    content: any[];
 }
+
 
 export interface SyntaxArray {
     toolCalls: Array<Match>;
@@ -483,13 +491,6 @@ export function getParseResults(filecontent: string): SyntaxArray {
     const controlBlocks = new Array<Match>();
     const multilines = new Array<Match>();
 
-    const matchTypes = {
-        toolCall: "toolCall",
-        prgCall: "prgCall",
-        trash: "trash",
-        controlBlock: "controlBlock",
-        multiline: "multiline"
-    };
 
     traverseRecursive(syntaxTree);
 
@@ -540,3 +541,11 @@ export function getParseResults(filecontent: string): SyntaxArray {
     return syntaxArray;
 }
 
+const matchTypes = {
+    toolCall: "toolCall",
+    prgCall: "prgCall",
+    trash: "trash",
+    controlBlock: "controlBlock",
+    multiline: "multiline",
+    name: "name"
+}
