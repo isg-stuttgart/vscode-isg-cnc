@@ -239,7 +239,7 @@ function peg$parse(input, options) {
   var peg$r6 = /^[^\n\r]/;
   var peg$r7 = /^[_a-zA-Z0-9.]/;
   var peg$r8 = /^[0-9]/;
-  var peg$r9 = /^[^\t ();"[\],#$\n]/;
+  var peg$r9 = /^[^\t ();"[\],#$\n\r]/;
   var peg$r10 = /^[^"]/;
 
   var peg$e0 = peg$otherExpectation("file");
@@ -317,7 +317,7 @@ function peg$parse(input, options) {
   var peg$e72 = peg$otherExpectation("digit");
   var peg$e73 = peg$classExpectation([["0", "9"]], false, false);
   var peg$e74 = peg$otherExpectation("non_delimiter");
-  var peg$e75 = peg$classExpectation(["\t", " ", "(", ")", ";", "\"", "[", "]", ",", "#", "$", "\n"], true, false);
+  var peg$e75 = peg$classExpectation(["\t", " ", "(", ")", ";", "\"", "[", "]", ",", "#", "$", "\n", "\r"], true, false);
   var peg$e76 = peg$otherExpectation("string");
   var peg$e77 = peg$literalExpectation("\"", false);
   var peg$e78 = peg$classExpectation(["\""], true, false);
