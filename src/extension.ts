@@ -812,6 +812,8 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const syntaxArray: fileContentTree.SyntaxArray = fileContentTree.getParseResults(document.getText());
+
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -834,7 +836,6 @@ export function beautify(): void {
                 // skip program name, comment lines and empty lines
                 if (
                     line.text.startsWith("%", 0) ||
-                    line.text.startsWith(";") ||
                     isCommentBlock
                 ) {
                     continue;
@@ -957,6 +958,16 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
+        
+            syntaxArray.multilines.forEach((multiline: fileContentTree.Match) => {
+               const start = multiline.location.start.line;
+               const end =  multiline.location.end.line;
+                for (let lineNumber = start; lineNumber < end; lineNumber++) {
+                    const line: vscode.TextLine = document.lineAt(lineNumber);
+                    newLine = " ".repeat(whiteSpaces) + line.text;
+                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+                }
+            });
         }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
