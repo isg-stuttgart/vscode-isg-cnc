@@ -8,8 +8,8 @@ import { EOL as newline } from "node:os";
 //peggy parser to parse nc files
 const parser = require(('./ncParser'));
 export enum Sorting {
-    LineByLine,
-    Grouped
+    lineByLine,
+    grouped
 }
 
 /**
@@ -24,7 +24,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     currentFileWatcher: fs.FSWatcher | undefined;
     file: vscode.Uri | undefined;
 
-    sorting: Sorting = Sorting.LineByLine;
+    sorting: Sorting = Sorting.lineByLine;
     constructor(extContext: vscode.ExtensionContext) {
         this.matchCategories = {
             toolCalls: new CategoryItem("Tool Calls"),
@@ -141,6 +141,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
             messages: new Array<MyItem>()
         };
     }
+
     getChildren(): MyItem[] {
         const matches: Array<MatchItem> = Array.from(this.children.matchMap.values());
         const matchSubCategories: Array<SubCategoryTreeItem> = Array.from(this.children.matchSubCategoryMap.values());
@@ -202,25 +203,24 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     const tooManyMatchesException = {};
                     throw tooManyMatchesException;
                 }
-                match.text = match.text.replaceAll(/[\r\n]+[\t ]*/g, "");
-                if (sorting === Sorting.LineByLine) {
+                if (sorting === Sorting.lineByLine) {
                     addMatchToMatchLine(match, this.children.matchMap, ItemPosition.category);
 
-                } else if (sorting === Sorting.Grouped) {
+                } else if (sorting === Sorting.grouped) {
                     // e.g. toolCalls will be seperated in subCategories T1, T2 etc.
-                    let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.text);
+                    let subCategory: SubCategoryTreeItem | undefined = this.children.matchSubCategoryMap.get(match.name);
 
                     //create subCategory when non-existing
                     if (subCategory === undefined) {
-                        this.children.matchSubCategoryMap.set(match.text, new SubCategoryTreeItem(match.text));
+                        this.children.matchSubCategoryMap.set(match.name, new SubCategoryTreeItem(match.name));
                     }
 
-                    subCategory = this.children.matchSubCategoryMap.get(match.text);
+                    subCategory = this.children.matchSubCategoryMap.get(match.name);
                     //make sure subCategory exists now and add match to it
                     if (subCategory !== undefined) {
                         addMatchToMatchLine(match, subCategory.children, ItemPosition.subCategory);
                     } else {
-                        throw new Error("subCategory " + match.text + " was not created successfully");
+                        throw new Error("subCategory " + match.name + " was not created successfully");
                     }
                 }
             });
@@ -270,7 +270,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
         super(new MatchLineLabel(match).label);
         this._label = new MatchLineLabel(match);
         this._match = match;
-        const commandID: string = match.text + "_" + match.location.start.offset.toString() + "_" + itemPos;
+        const commandID: string = match.name + "_" + match.location.start.offset.toString() + "_" + itemPos;
         this.command = {
             title: commandID,
             command: "matchItem.selected",
@@ -356,6 +356,7 @@ class MatchLineLabel {
  * Type which is returned within the arrays of the parse result
  */
 export interface Match {
+    name: string;
     type: string;
     text: string;
     location: peggy.LocationRange;

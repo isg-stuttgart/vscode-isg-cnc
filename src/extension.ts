@@ -181,14 +181,14 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
             vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
-            fileContentProvider.sorting = fileContentTree.Sorting.LineByLine;
+            fileContentProvider.sorting = fileContentTree.Sorting.lineByLine;
             fileContentProvider.update();
         })
     );
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
             vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
-            fileContentProvider.sorting = fileContentTree.Sorting.Grouped;
+            fileContentProvider.sorting = fileContentTree.Sorting.grouped;
             fileContentProvider.update();
         })
     );
