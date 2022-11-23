@@ -483,7 +483,7 @@ export function jumpToMatch(item: MatchItem) {
  * @param path the path of the nc file
  */
 export function getParseResults(filecontent: string): SyntaxArray {
-    const syntaxTree = parser.parse(filecontent);
+    const syntaxTree = parser.parse(filecontent).fileTree; //parse returns {fileTree:Array<any>,numberableLines:Set<number>}
 
     const toolCalls = new Array<Match>();
     const prgCalls = new Array<Match>();

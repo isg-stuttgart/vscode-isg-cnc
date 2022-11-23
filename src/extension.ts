@@ -586,6 +586,8 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToNumber:Set<number> = parser.parse(document.getText()).numberableLines; //parse returns {fileTree:Array<any>,numberableLines:Set<number>}
+
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -634,13 +636,16 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
+
             // add new blocknumbers
-            const maximalLeadingZeros = digitCount(start + document.lineCount * step);
+            const maximalLeadingZeros = digitCount(start + linesToNumber.size * step);
 
             // edit document line by line
             let isCommentBlock = false;
-            for (let ln = 0; ln < document.lineCount; ln++) {
-                const line = document.lineAt(ln);
+            //for (let ln = 0; ln < document.lineCount; ln++) {
+            for (let ln of linesToNumber) {
+
+                const line = document.lineAt(ln-1);
 
                 if (line.text.startsWith("#COMMENT BEGIN")) {
                     isCommentBlock = true;
