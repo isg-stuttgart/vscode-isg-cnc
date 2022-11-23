@@ -540,7 +540,7 @@ export function getParseResults(filecontent: string): SyntaxArray {
     };
     return syntaxArray;
 }
-
+//#endregion
 const matchTypes = {
     toolCall: "toolCall",
     prgCall: "prgCall",
@@ -548,4 +548,4 @@ const matchTypes = {
     controlBlock: "controlBlock",
     multiline: "multiline",
     name: "name"
-}
+};
