@@ -7,7 +7,7 @@ import { EOL as newline } from "node:os";
 import { types } from 'util';
 
 //peggy parser to parse nc files
-const parser = require(('./ncParser'));
+import * as parser from'./ncParser';
 export enum Sorting {
     lineByLine,
     grouped
@@ -483,7 +483,7 @@ export function jumpToMatch(item: MatchItem) {
  * @param path the path of the nc file
  */
 export function getParseResults(filecontent: string): SyntaxArray {
-    const syntaxTree = parser.parse(filecontent).fileTree; //parse returns {fileTree:Array<any>,numberableLines:Set<number>}
+    const syntaxTree = parser.parse(filecontent).fileTree;
 
     const toolCalls = new Array<Match>();
     const prgCalls = new Array<Match>();
