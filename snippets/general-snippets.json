@@ -108,7 +108,7 @@
     },
     "region-start": {
         "body": [
-            ";#region"
+            ";#region $0"
         ],
         "description": "Folding region start",
         "prefix": "#region"
@@ -122,8 +122,7 @@
     },
     "region-block": {
         "body": [
-            ";#region",
-            "$0",
+            ";#region $0",
             ";#endregion"
         ],
         "description": "Folding region",
