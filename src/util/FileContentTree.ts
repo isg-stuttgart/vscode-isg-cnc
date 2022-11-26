@@ -1,13 +1,10 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as peggy from "peggy";
 import * as Path from "path";
+import * as parser from "./ncParsing/parser";
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
-import { types } from 'util';
 
-//peggy parser to parse nc files
-const parser = require(('./ncParser'));
 export enum Sorting {
     lineByLine,
     grouped
@@ -45,8 +42,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            const parseResult = getParseResults(fs.readFileSync(this.file.fsPath, "utf8"));
-            this.updateMatchItems(parseResult);
+            const syntaxArray:parser.SyntaxArray = parser.getSyntaxArray(this.file.fsPath);
+            this.updateMatchItems(syntaxArray);
             this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
     }
@@ -76,12 +73,12 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
 
     /**
      * Update match tree-items
-     * @param parseResult 
+     * @param syntaxArray 
      */
-    async updateMatchItems(parseResult: any): Promise<void> {
+    async updateMatchItems(syntaxArray: parser.SyntaxArray): Promise<void> {
         await Promise.all([
-            new Promise(() => this.matchCategories.toolCalls.resetMatches(parseResult.toolCalls, this.context, this.sorting)),
-            new Promise(() => this.matchCategories.prgCalls.resetMatches(parseResult.prgCalls, this.context, this.sorting))
+            new Promise(() => this.matchCategories.toolCalls.resetMatches(syntaxArray.toolCalls, this.context, this.sorting)),
+            new Promise(() => this.matchCategories.prgCalls.resetMatches(syntaxArray.prgCalls, this.context, this.sorting))
         ]);
     }
 
@@ -175,7 +172,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    resetMatches(newMatches: Match[], context: vscode.ExtensionContext, sorting: Sorting) {
+    resetMatches(newMatches: parser.Match[], context: vscode.ExtensionContext, sorting: Sorting) {
 
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
@@ -183,7 +180,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
          * @param matchMap 
          * @param itemPosition 
          */
-        function addMatchToMatchLine(match: Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
+        function addMatchToMatchLine(match: parser.Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
             // create item for the match-line if it doesn't already exist
             let matchLineItem: MatchItem | undefined = matchMap.get(match.location.start.line);
             if (matchLineItem === undefined) {
@@ -204,8 +201,8 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     const tooManyMatchesException = {};
                     throw tooManyMatchesException;
                 }
-                let matchToHiglight: Match;
-                if (match.type === matchTypes.prgCall && match.name !== null) {
+                let matchToHiglight: parser.Match;
+                if (match.type === parser.matchTypes.prgCall && match.name !== null) {
                     matchToHiglight = match.name; // only highlight name of prgCall if existing
                 } else {
                     matchToHiglight = match;
@@ -263,16 +260,16 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
  * The tree item of a concrete match like "T31"
  */
 export class MatchItem extends vscode.TreeItem implements MyItem {
-    private _match: Match;
+    private _match: parser.Match;
     private _label: MatchLineLabel;
-    public getMatch(): Match {
+    public getMatch(): parser.Match {
         return this._match;
     }
-    public set match(value: Match) {
+    public set match(value: parser.Match) {
         this._match = value;
     }
 
-    constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
+    constructor(match: parser.Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
         super(new MatchLineLabel(match).label);
         this._label = new MatchLineLabel(match);
         this._match = match;
@@ -288,7 +285,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    addHighlightingForLineMatch(match: Match) {
+    addHighlightingForLineMatch(match: parser.Match) {
         this._label.addHighlightingForLineMatch(match);
         this.label = this._label.label;
     }
@@ -313,7 +310,7 @@ class MatchLineLabel {
     }
 
     private _textoffset: number;
-    constructor(match: Match) {
+    constructor(match: parser.Match) {
         this._file = vscode.window.activeTextEditor?.document.uri.fsPath;
         let labelString: string;
         let textoffset: number;
@@ -348,7 +345,7 @@ class MatchLineLabel {
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    public addHighlightingForLineMatch(match: Match) {
+    public addHighlightingForLineMatch(match: parser.Match) {
         const highlightStart = match.location.start.column + this._textoffset;
         let highlightEnd = highlightStart + (match.location.end.offset - match.location.start.offset);
         if (highlightEnd > this._label.label.length) {
@@ -358,25 +355,7 @@ class MatchLineLabel {
     }
 }
 //#region Helper Classes
-/**
- * Type which is returned within the arrays of the parse result
- */
-export interface Match {
-    name: Match | null;
-    type: string;
-    text: string;
-    location: peggy.LocationRange;
-    content: any[];
-}
 
-
-export interface SyntaxArray {
-    toolCalls: Array<Match>;
-    prgCalls: Array<Match>;
-    trash: Array<Match>;
-    controlBlocks: Array<Match>;
-    multilines: Array<Match>;
-}
 /**
  * Type which forces to contain all match-categories
  */
@@ -476,76 +455,5 @@ export function jumpToMatch(item: MatchItem) {
         );
     }
 }
-
-/**
- * Collects the important matches of the nc-file-content into an array of the following structure:
- * [toolCalls,prgCalls,trash,controlBlocks,multilines]
- * @param path the path of the nc file
- */
-export function getParseResults(filecontent: string): SyntaxArray {
-    const syntaxTree = parser.parse(filecontent).fileTree; //parse returns {fileTree:Array<any>,numberableLines:Set<number>}
-
-    const toolCalls = new Array<Match>();
-    const prgCalls = new Array<Match>();
-    const trash = new Array<Match>();
-    const controlBlocks = new Array<Match>();
-    const multilines = new Array<Match>();
-
-
-    traverseRecursive(syntaxTree);
-
-    function traverseRecursive(element: any) {
-        if (Array.isArray(element)) {
-            element.forEach(child => {
-                if (child !== null && child !== undefined) {
-                    traverseRecursive(child);
-                }
-            });
-        }
-
-        if (element.content !== null && element.content !== undefined && Array.isArray(element.content)) {
-            element.content.forEach((child: any) => {
-                if (child !== null && child !== undefined) {
-                    traverseRecursive(child);
-                }
-            });
-        }
-
-        if (element.type !== null && element.type !== undefined) {
-            switch (element.type) {
-                case matchTypes.toolCall:
-                    toolCalls.push(element);
-                    break;
-                case matchTypes.prgCall:
-                    prgCalls.push(element);
-                    break;
-                case matchTypes.trash:
-                    trash.push(element);
-                    break;
-                case matchTypes.controlBlock:
-                    controlBlocks.push(element);
-                    break;
-                case matchTypes.multiline:
-                    multilines.push(element);
-                    break;
-            }
-        }
-    }
-    const syntaxArray: SyntaxArray = {
-        toolCalls: toolCalls,
-        prgCalls: prgCalls,
-        trash: trash,
-        controlBlocks: controlBlocks,
-        multilines: multilines
-    };
-    return syntaxArray;
-}
 //#endregion
-const matchTypes = {
-    toolCall: "toolCall",
-    prgCall: "prgCall",
-    trash: "trash",
-    controlBlock: "controlBlock",
-    multiline: "multiline",
-    name: "name"
-};
+
