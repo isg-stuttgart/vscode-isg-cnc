@@ -26,10 +26,13 @@ export const matchTypes = {
     multiline: "multiline"
 };
 
-export function getNumberableLines(file: fs.PathLike): Set<number> {
+export function getNumberableLines(file: fs.PathLike): Array<number> {
     const filecontent: string = fs.readFileSync(file, "utf-8");
-    const parseResults: { fileTree: Array<any>, numberableLines: Set<number> } = ncParser.parse(filecontent) as unknown as { fileTree: Array<any>, numberableLines: Set<number> };
-    return parseResults.numberableLines;
+    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(filecontent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+    const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values());
+    //sort set because of wrong order due to recursive adding
+    numberableLines.sort((a: number, b: number) => a - b);
+    return numberableLines;
 }
 
 /**
@@ -39,7 +42,7 @@ export function getNumberableLines(file: fs.PathLike): Set<number> {
  */
 export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
     const filecontent: string = fs.readFileSync(file, "utf-8");
-    const parseResults: { fileTree: Array<any>, numberableLines: Set<number> } = ncParser.parse(filecontent) as unknown as { fileTree: Array<any>, numberableLines: Set<number> };
+    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(filecontent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
 
     const toolCalls = new Array<Match>();
     const prgCalls = new Array<Match>();
