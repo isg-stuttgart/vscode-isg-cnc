@@ -54,8 +54,7 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
-        "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:cnc-show-filecontent"
+        "onCommand:isg-cnc.FindNonAsciiCharacters"
     ],
     "main": "./out/extension.js",
     "contributes": {

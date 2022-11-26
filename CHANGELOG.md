@@ -14,6 +14,7 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.3.5]
 ### Added
 - Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
 - "Format Code" command now indents multilines
@@ -303,6 +304,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.3.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.4...V0.3.5
 [V0.3.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.3...V0.3.4
 [V0.3.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.0...V0.3.3
 [V0.3.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.8...V0.3.0

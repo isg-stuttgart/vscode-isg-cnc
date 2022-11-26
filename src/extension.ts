@@ -60,7 +60,6 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
-//
 
 /**
  * This method is called when the extension is activated
