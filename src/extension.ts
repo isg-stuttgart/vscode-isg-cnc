@@ -584,7 +584,7 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const linesToNumber:Set<number> = parser.getNumberableLines(document.uri.fsPath);
+            const linesToNumber:Array<number> = parser.getNumberableLines(document.uri.fsPath);
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -635,7 +635,7 @@ async function addBlocknumbers() {
 
 
             // add new blocknumbers
-            const maximalLeadingZeros = digitCount(start + linesToNumber.size * step);
+            const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
             // edit document line by line
             let isCommentBlock = false;

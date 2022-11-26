@@ -238,7 +238,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$startRuleFunctions: {[id: string]: any} = { start: peg$parsestart };
   let peg$startRuleFunction: () => any = peg$parsestart;
 
-  const peg$c0 = function(fileTree: any): any {return {fileTree:fileTree, numberableLines:numberableLines}};
+  const peg$c0 = function(fileTree: any): any {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted}};
   const peg$c1 = peg$otherExpectation("file");
   const peg$c2 = peg$anyExpectation();
   const peg$c3 = peg$otherExpectation("program");
@@ -275,7 +275,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c34 = peg$literalExpectation("END", false);
   const peg$c35 = peg$otherExpectation("block");
   const peg$c36 = function(content: any): any {                                          // default block, i.e., G01 X12 Y23
-  	numberableLines.add(location().start.line);
+  	numberableLinesUnsorted.add(location().start.line);
   	return content;
   };
   const peg$c37 = peg$otherExpectation("control_block");
@@ -305,13 +305,13 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c57 = "#ENDVAR";
   const peg$c58 = peg$literalExpectation("#ENDVAR", false);
   const peg$c59 = function(): any {
-    numberableLines.add(location().start.line);
-    numberableLines.add(location().end.line);
+    numberableLinesUnsorted.add(location().start.line);
+    numberableLinesUnsorted.add(location().end.line);
     return text();
   };
   const peg$c60 = peg$otherExpectation("var_block_line");
   const peg$c61 = function(): any {
-  	numberableLines.add(location().start.line);
+  	numberableLinesUnsorted.add(location().start.line);
       return text();
   };
   const peg$c62 = peg$otherExpectation("default_block");
@@ -3860,7 +3860,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   }
 
 
-  	const numberableLines = new Set();
+  	const numberableLinesUnsorted = new Set();
 
 
   peg$result = peg$startRuleFunction();
