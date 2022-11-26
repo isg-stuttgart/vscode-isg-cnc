@@ -6,8 +6,7 @@ import * as vscode from "vscode";
 import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
-
-const parser = require(('./util/ncParser'));
+import * as parser from "./util/ncParsing/parser";
 
 let language: string;
 let docuPath: string;
@@ -585,8 +584,7 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const linesToNumber:Set<number> = parser.parse(document.getText()).numberableLines; //parse returns {fileTree:Array<any>,numberableLines:Set<number>}
-
+            const linesToNumber:Set<number> = parser.getNumberableLines(document.uri.fsPath);
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -818,7 +816,7 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const syntaxArray: fileContentTree.SyntaxArray = fileContentTree.getParseResults(document.getText());
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
 
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
@@ -965,7 +963,7 @@ export function beautify(): void {
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
 
-            syntaxArray.multilines.forEach((multiline: fileContentTree.Match) => {
+            syntaxArray.multilines.forEach((multiline: parser.Match) => {
                 const start = multiline.location.start.line;
                 const end = multiline.location.end.line;
                 for (let lineNumber = start; lineNumber < end; lineNumber++) {
