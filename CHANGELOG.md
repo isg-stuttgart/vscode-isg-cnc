@@ -14,7 +14,8 @@ Types of changes
 
 ## [Unreleased]
 
-## [V0.3.5]
+## [V0.4.0]
+
 ### Added
 - Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
 - "Format Code" command now indents multilines
@@ -27,6 +28,7 @@ Types of changes
 - Add toLowerCase for nc file detection
 - Improved performance of sidebar [Issue #52](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/52)
 - Sidebar activates works with other cnc-file-extensions than ".nc" [Pull #70](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/70)
+
 ## [V0.3.4]
 
 ### Fixed
