@@ -1,7 +1,8 @@
 # ISG CNC (vscode-isg-cnc README)
 
 This extension for [Visual Studio Code](https://code.visualstudio.com/) should help you write nc code for the ISG CNC kernel.
-We support syntax highlighting, snippets and many more features.\
+We support syntax highlighting, snippets and many more features. The features can be used by pressing F1 in VS-Code and choose the `ISG-CNC:`-command you want to use or select the command in the `ISG commands` list of the right-click menu. \
+The extension provide a sidebar which contains all cycle and tool calls in the actual file. \
 The keyboard bindings can be changed at the keyboard preferences.\
 For keyboard preferences press `CTRL+SHIFT+P` and type keyboard. Select Preferences: Open Keyboard Shortcuts.
 Now you can search for isg-cnc to find or change shortcuts.\

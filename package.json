@@ -2,13 +2,13 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.3.4",
+    "version": "0.4.0",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
         "theme": "dark"
     },
-    "icon": "ISGCncEditor.png",
+    "icon": "resources/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
         "vscode": "^1.59.0"
@@ -52,6 +52,7 @@
         "onCommand:isg-cnc.FindNextTFS",
         "onCommand:isg-cnc.RemoveAllBlocknumbers",
         "onCommand:isg-cnc.AddBlocknumbers",
+        "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
         "onCommand:isg-cnc.FindNonAsciiCharacters"
     ],
@@ -92,7 +93,7 @@
                 {
                     "id": "cnc-views-container",
                     "title": "CNC",
-                    "icon": "ISGCncEditor.png"
+                    "icon": "resources/ISGCncEditor.png"
                 }
             ]
         },
@@ -153,6 +154,11 @@
             },
             {
                 "enablement": "resourceLangId == isg-cnc",
+                "command": "isg-cnc.StartDocu",
+                "title": "ISG-CNC: Start the Documentation"
+            },
+            {
+                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.Beautify",
                 "title": "ISG-CNC: Format code"
             },
@@ -160,9 +166,57 @@
                 "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNonAsciiCharacters",
                 "title": "ISG-CNC: Find not ASCII characters"
+            },
+            {
+                "command": "isg-cnc.sortLineByLineOn",
+                "title": "Line by line"
+            },
+            {
+                "command": "isg-cnc.sortLineByLineSelected",
+                "title": "Line by line (active)",
+                "enablement": "false"
+            },
+            {
+                "command":"isg-cnc.sortGroupedOn",
+                "title": "Grouped"
+            },
+           
+            {
+                "command": "isg-cnc.sortGroupedSelected",
+                "title": "Grouped (active)",
+                "enablement": "false"
             }
         ],
         "menus": {
+            "view/title": [
+               {
+                "submenu": "isg-cnc.SidebarSorting",
+                "when": "view == cnc-show-filecontent",
+                "group": "navigation"
+               }
+            ],
+            "isg-cnc.SidebarSorting":[
+                {
+                    "command": "isg-cnc.sortLineByLineOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@1"
+                },
+                {
+                    "command": "isg-cnc.sortLineByLineSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@1"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedOn",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'lineByLine'",
+                    "group": "sort@2"
+                },
+                {
+                    "command": "isg-cnc.sortGroupedSelected",
+                    "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
+                    "group": "sort@2"
+                }
+            ],
             "commandPalette": [
                 {
                     "command": "isg-cnc.EncryptThis",
@@ -215,6 +269,10 @@
                     "group": "isg-cnc@7"
                 },
                 {
+                    "command": "isg-cnc.StartDocu",
+                    "group": "isg-cnc@8"
+                },
+                {
                     "command": "isg-cnc.ShowCursorFileOffsetInfobox",
                     "group": "isg-cnc@9"
                 },
@@ -240,6 +298,11 @@
             {
                 "id": "isg-commands",
                 "label": "ISG Commands"
+            },
+            {
+                "id": "isg-cnc.SidebarSorting",
+                "label": "Switch between different sortings",
+                "icon":"$(extensions-filter)"
             }
         ],
         "keybindings": [
@@ -261,6 +324,11 @@
             {
                 "key": "ctrl+i ctrl+t",
                 "command": "isg-cnc.FindNextTFS",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+d",
+                "command": "isg-cnc.StartDocu",
                 "when": "editorTextFocus"
             },
             {
@@ -380,24 +448,6 @@
         "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
-        "@types/open": "^6.2.1",
-        "@types/vscode": "^1.59.0",
-        "@typescript-eslint/eslint-plugin": "^4.31.1",
-        "@typescript-eslint/parser": "^4.31.1",
-        "@vscode/test-electron": "^1.6.2",
-        "eslint": "^7.32.0",
-        "glob": "^7.1.7",
-        "mocha": "^9.1.1",
-        "node-gyp": "^9.1.0",
-        "peggy": "^2.0.1",
-        "typedoc": "^0.22.18",
-        "typescript": "^4.4.3"
-    },
-    "dependencies": {
-        "@types/glob": "^7.1.4",
-        "@types/mocha": "^9.0.0",
-        "@types/node": "14.x",
-        "@types/open": "^6.2.1",
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",

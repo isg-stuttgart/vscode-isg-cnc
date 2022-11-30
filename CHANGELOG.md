@@ -14,9 +14,20 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.4.0]
+
 ### Added
+- Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
+- "Format Code" command now indents multilines
+- Autogenerate github pages at push to main branch
+- Filter option to either show grouped or line-by-line sorting of matches in sidebar [Pull #79](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/79)
 
 ### Fixed
+- Sidebar cuts off all matches over 500 to prevent performance issues [Pull #74](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/74)
+- Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
+- Add toLowerCase for nc file detection
+- Improved performance of sidebar [Issue #52](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/52)
+- Sidebar activates works with other cnc-file-extensions than ".nc" [Pull #70](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/70)
 
 ## [V0.3.4]
 
@@ -43,14 +54,14 @@ Types of changes
 - Fix lack of usability in the Extension Configuration-Settings (default browser and language) [Issue #32 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/32) and [Issue #33 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/33)
 - Fix bug, where Error occured when calling ISG-commands while no .nc-file is opened [Issue #30 reported by jurekseverin-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/30)
 
-
 ## [V0.2.8]
 
 ### Added
 
 ### Fixed
 
-- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26) 
+- Fix syntax highlighting for .lis files after change to standard scopes in themes. [Issue #26 reported by lukashettler-isg](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/26)
+
 ## [V0.2.7]
 
 ### Added
@@ -295,6 +306,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.3.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.4...V0.3.5
 [V0.3.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.3...V0.3.4
 [V0.3.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.0...V0.3.3
 [V0.3.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.2.8...V0.3.0

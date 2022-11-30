@@ -3,10 +3,10 @@
 import * as fs from "fs";
 import * as Path from "path";
 import * as vscode from "vscode";
-import { FileContentProvider } from "./cncView/FileContentTree";
+import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
-//import * as open from "open";
 import * as blowfish from "./util/encryption/encryption";
+import * as parser from "./util/ncParsing/parser";
 
 let language: string;
 let docuPath: string;
@@ -44,8 +44,9 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
 let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
-let fileContentProvider: FileContentProvider;
-let fileContentTreeView: vscode.TreeView<vscode.TreeItem> | undefined;
+//NC-file sidebar tree provider
+let fileContentProvider: fileContentTree.FileContentProvider;
+let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
 
 // package.json information
 let packageFile;
@@ -58,8 +59,6 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
-
-//
 
 /**
  * This method is called when the extension is activated
@@ -105,7 +104,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
     //NC-file sidebar tree provider
     const currentFile = vscode.window.activeTextEditor?.document.uri;
-    fileContentProvider = new FileContentProvider(currentFile, extContext);
+    fileContentProvider = new fileContentTree.FileContentProvider(extContext);
+    fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
+        treeDataProvider: fileContentProvider
+    });
 
     // commands
     context.subscriptions.push(
@@ -167,7 +169,28 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         )
     );
-    
+    //command which is executed when sidebar-Matchitem is clicked
+    context.subscriptions.push(
+        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
+    );
+
+    //sorting of sidebar content
+    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+            fileContentProvider.sorting = fileContentTree.Sorting.lineByLine;
+            fileContentProvider.update();
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
+            fileContentProvider.sorting = fileContentTree.Sorting.grouped;
+            fileContentProvider.update();
+        })
+    );
+
     // add status bar items
     addSelectedLinesStatusBarItem(context);
     addCurrentOffsetStatusBarItem(context);
@@ -183,20 +206,6 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
-
-
-    // vscode.window.onDidChangeActiveTextEditor((editor) => {
-    //     activeEditor = editor;
-    //     if (editor) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
-
-    // vscode.workspace.onDidChangeTextDocument((event) => {
-    //     if (activeEditor && event.document === activeEditor.document) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
 }
 
 /**
@@ -268,7 +277,7 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     context.subscriptions.push(selectedLinesStatusBarItem);
 
     // register some listener that make sure the status bar 
-    // item and the currently opened file always up-to-date
+    // item and the sidebar always up-to-date
 
     context.subscriptions.push(
         vscode.window.onDidChangeActiveTextEditor(activeTextEditorChanged)
@@ -307,11 +316,7 @@ function updateConfig() {
 function activeTextEditorChanged() {
     //Tree view
     try {
-        const currentFile = vscode.window.activeTextEditor?.document.uri;
-        fileContentProvider.updateTreeView(currentFile);
-        fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
-            treeDataProvider: fileContentProvider
-        });
+        fileContentProvider.update();
     } catch (e: any) {
         vscode.window.showErrorMessage(e);
     }
@@ -579,6 +584,7 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToNumber:Array<number> = parser.getNumberableLines(document.uri.fsPath);
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -627,13 +633,16 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
+
             // add new blocknumbers
-            const maximalLeadingZeros = digitCount(start + document.lineCount * step);
+            const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
             // edit document line by line
             let isCommentBlock = false;
-            for (let ln = 0; ln < document.lineCount; ln++) {
-                const line = document.lineAt(ln);
+            //for (let ln = 0; ln < document.lineCount; ln++) {
+            for (let ln of linesToNumber) {
+
+                const line = document.lineAt(ln-1);
 
                 if (line.text.startsWith("#COMMENT BEGIN")) {
                     isCommentBlock = true;
@@ -736,7 +745,7 @@ function startDocu() {
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
 
-    //open(docuAddress);
+    vscode.env.openExternal(vscode.Uri.parse(docuAddress));
 }
 
 /**
@@ -807,6 +816,8 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
+
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -829,8 +840,6 @@ export function beautify(): void {
                 // skip program name, comment lines and empty lines
                 if (
                     line.text.startsWith("%", 0) ||
-                    line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
                     isCommentBlock
                 ) {
                     continue;
@@ -886,7 +895,6 @@ export function beautify(): void {
                     textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
                     continue;
                 }
-
                 if (
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
@@ -954,8 +962,17 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        }
 
+            syntaxArray.multilines.forEach((multiline: parser.Match) => {
+                const start = multiline.location.start.line;
+                const end = multiline.location.end.line;
+                for (let lineNumber = start; lineNumber < end; lineNumber++) {
+                    const line: vscode.TextLine = document.lineAt(lineNumber);
+                    newLine = " ".repeat(whiteSpaces) + line.text;
+                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+                }
+            });
+        }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
