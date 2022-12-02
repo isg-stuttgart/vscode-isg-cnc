@@ -28,10 +28,15 @@ export const matchTypes = {
     skipBlock: "skipBlock"
 };
 
+/**
+ * Returns all linenumbers of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
+ * @param file 
+ * @returns Array with linenumbers
+ */
 export function getNumberableLines(file: fs.PathLike): Array<number> {
     const filecontent: string = fs.readFileSync(file, "utf-8");
     const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(filecontent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
-    const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values());
+    const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
     //sort set because of wrong order due to recursive adding
     numberableLines.sort((a: number, b: number) => a - b);
     return numberableLines;

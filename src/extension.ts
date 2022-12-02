@@ -634,16 +634,16 @@ async function addBlocknumbers() {
             }
 
             const linesToNumber: Array<number> = parser.getNumberableLines(document.uri.fsPath);
-            
+
             const skipLineBeginIndexes: Map<number, number> = new Map();
-            parser.getSyntaxArray(document.uri.fsPath).skipBlocks.forEach((match) =>{
+            parser.getSyntaxArray(document.uri.fsPath).skipBlocks.forEach((match) => {
                 skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
             });
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
-            
+
             for (let ln of linesToNumber) {
-                const line = document.lineAt(ln - 1);
+                const line = document.lineAt(ln);
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
@@ -668,21 +668,21 @@ async function addBlocknumbers() {
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
                         && (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim()))) {
                         // if blocknumber and label the same insert a new blocknumber
-                       insert = true;
+                        insert = true;
                     } else {
                         // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
-                   insert = true;
+                    insert = true;
                 }
-                if(insert){
+                if (insert) {
                     let insertIndex: number;
-                   const skipLineBegin:number|undefined =skipLineBeginIndexes.get(line.lineNumber+1); 
-                    if(skipLineBegin!==undefined){ //parser is 1 based instead 0 based
+                    const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);
+                    if (skipLineBegin !== undefined) { //parser is 1 based
                         insertIndex = skipLineBegin;
-                    }else{
-                       insertIndex = line.range.start.character;
+                    } else {
+                        insertIndex = line.range.start.character;
                     }
                     textEdits.push(
                         vscode.TextEdit.insert(
