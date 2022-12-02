@@ -632,13 +632,13 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
-            const linesToNumber:Array<number> = parser.getNumberableLines(document.uri.fsPath);
+            const linesToNumber: Array<number> = parser.getNumberableLines(document.uri.fsPath);
+            const skipLines: Array<number> = parser.getSyntaxArray(document.uri.fsPath).skipBlocks.map(skipBlock => skipBlock.location.start.line);
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
-           
             for (let ln of linesToNumber) {
-                const line = document.lineAt(ln-1);
+                const line = document.lineAt(ln - 1);
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
@@ -659,25 +659,19 @@ async function addBlocknumbers() {
                         document.positionAt(endPos)
                     );
                     blocknumbertext = document.getText(range);
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                // if blocknumber and label the same insert a new blocknumber
-                                textEdits.push(
-                                    vscode.TextEdit.insert(
-                                        new vscode.Position(line.lineNumber, line.range.start.character),
-                                        block
-                                    )
-                                );
-                            } else {
-                                textEdits.push(vscode.TextEdit.replace(range, block));
-                            }
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, block));
-                        }
+                    if (matchLabel !== null && matchBlocknumber.index !== undefined
+                        && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
+                        // label found
+                        && (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim()))) {
+                        // if blocknumber and label the same insert a new blocknumber
+                        textEdits.push(
+                            vscode.TextEdit.insert(
+                                new vscode.Position(line.lineNumber, line.range.start.character),
+                                block
+                            )
+                        );
                     } else {
+                        // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
