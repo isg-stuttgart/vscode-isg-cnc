@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import * as peggy from "peggy";
 import * as ncParser from "./peggyParser";
-
 export interface Match {
     name: Match | null;
     type: string;
@@ -16,14 +15,17 @@ export interface SyntaxArray {
     trash: Array<Match>;
     controlBlocks: Array<Match>;
     multilines: Array<Match>;
+    skipBlocks: Array<Match>;
 }
 
 export const matchTypes = {
     toolCall: "toolCall",
     prgCall: "prgCall",
-    trash: "trash",
     controlBlock: "controlBlock",
-    multiline: "multiline"
+    multiline: "multiline",
+    trash: "trash",
+    name: "name",
+    skipBlock: "skipBlock"
 };
 
 export function getNumberableLines(file: fs.PathLike): Array<number> {
@@ -49,6 +51,7 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
     const trash = new Array<Match>();
     const controlBlocks = new Array<Match>();
     const multilines = new Array<Match>();
+    const skipBlocks = new Array<Match>();
 
     traverseRecursive(parseResults.fileTree);
     function traverseRecursive(element: any) {
@@ -86,6 +89,8 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
                 case matchTypes.multiline:
                     multilines.push(element);
                     break;
+                case matchTypes.skipBlock:
+                    skipBlocks.push(element);
             }
         }
 
@@ -96,7 +101,8 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
         prgCalls: prgCalls,
         trash: trash,
         controlBlocks: controlBlocks,
-        multilines: multilines
+        multilines: multilines,
+        skipBlocks: skipBlocks
     };
 
     return syntaxArray;
