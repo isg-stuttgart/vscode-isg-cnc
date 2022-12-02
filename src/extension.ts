@@ -7,6 +7,7 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
+import { match } from "assert";
 
 let language: string;
 let docuPath: string;
@@ -633,7 +634,11 @@ async function addBlocknumbers() {
             }
 
             const linesToNumber: Array<number> = parser.getNumberableLines(document.uri.fsPath);
-            const skipLines: Array<number> = parser.getSyntaxArray(document.uri.fsPath).skipBlocks.map(skipBlock => skipBlock.location.start.line);
+            
+            const skipLineBeginIndexes: Map<number, number> = new Map();
+            parser.getSyntaxArray(document.uri.fsPath).skipBlocks.forEach((match) =>{
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column)
+            })
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
@@ -642,7 +647,7 @@ async function addBlocknumbers() {
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-
+                let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
                 const matchBlocknumber = regExpBlocknumbers.exec(line.text);
@@ -663,20 +668,25 @@ async function addBlocknumbers() {
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
                         && (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim()))) {
                         // if blocknumber and label the same insert a new blocknumber
-                        textEdits.push(
-                            vscode.TextEdit.insert(
-                                new vscode.Position(line.lineNumber, line.range.start.character),
-                                block
-                            )
-                        );
+                       insert = true;
                     } else {
                         // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
+                   insert = true;
+                }
+                if(insert){
+                    let insertIndex: number;
+                   const skipLineBegin:number|undefined =skipLineBeginIndexes.get(line.lineNumber+1); 
+                    if(skipLineBegin!==undefined){ //parser is 1 based instead 0 based
+                        insertIndex = skipLineBegin;
+                    }else{
+                       insertIndex = line.range.start.character;
+                    }
                     textEdits.push(
                         vscode.TextEdit.insert(
-                            new vscode.Position(line.lineNumber, line.range.start.character),
+                            new vscode.Position(line.lineNumber, insertIndex),
                             block
                         )
                     );
