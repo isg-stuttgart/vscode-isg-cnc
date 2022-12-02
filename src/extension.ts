@@ -637,11 +637,11 @@ async function addBlocknumbers() {
             
             const skipLineBeginIndexes: Map<number, number> = new Map();
             parser.getSyntaxArray(document.uri.fsPath).skipBlocks.forEach((match) =>{
-                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column)
-            })
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
+            });
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
-
+            
             for (let ln of linesToNumber) {
                 const line = document.lineAt(ln - 1);
                 // generate blocknumber
