@@ -659,9 +659,8 @@ async function addBlocknumbers() {
                         document.positionAt(endPos)
                     );
                     blocknumbertext = document.getText(range);
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined
+                    if (matchLabel !== null
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
-                        // label found
                         && (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim()))) {
                         // if blocknumber and label the same insert a new blocknumber
                         textEdits.push(
