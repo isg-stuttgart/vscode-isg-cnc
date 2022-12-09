@@ -1,3 +1,4 @@
+import { match } from "assert";
 import * as fs from "fs";
 import * as peggy from "peggy";
 import * as ncParser from "./peggyParser";
@@ -16,6 +17,7 @@ export interface SyntaxArray {
     controlBlocks: Array<Match>;
     multilines: Array<Match>;
     skipBlocks: Array<Match>;
+    blockNumbers: Array<Match>;
 }
 
 export const matchTypes = {
@@ -25,9 +27,20 @@ export const matchTypes = {
     multiline: "multiline",
     trash: "trash",
     name: "name",
-    skipBlock: "skipBlock"
+    skipBlock: "skipBlock",
+    blockNumber: "blockNumber"
 };
 
+export function getBlockNumberMap(file: fs.PathLike): Map<number, Match> {
+    const map: Map<number, Match> = new Map();
+    getSyntaxArray(file).blockNumbers.forEach((match) => {
+        if (map.get(match.location.start.line) === undefined) {
+            map.set(match.location.start.line, match);
+        }
+    });
+
+    return map;
+}
 /**
  * Returns all linenumbers of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
  * @param file 
@@ -43,8 +56,7 @@ export function getNumberableLines(file: fs.PathLike): Array<number> {
 }
 
 /**
- * Collects the important matches of the nc-file-content into an array of the following structure:
- * [toolCalls,prgCalls,trash,controlBlocks,multilines]
+ * Collects the important matches of the nc-file-content into an array
  * @param path the path of the nc file
  */
 export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
@@ -57,6 +69,7 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
     const controlBlocks = new Array<Match>();
     const multilines = new Array<Match>();
     const skipBlocks = new Array<Match>();
+    const blockNumbers = new Array<Match>();
 
     traverseRecursive(parseResults.fileTree);
     function traverseRecursive(element: any) {
@@ -96,6 +109,10 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
                     break;
                 case matchTypes.skipBlock:
                     skipBlocks.push(element);
+                    break;
+                case matchTypes.blockNumber:
+                    blockNumbers.push(element);
+                    break;
             }
         }
 
@@ -107,7 +124,8 @@ export function getSyntaxArray(file: fs.PathLike): SyntaxArray {
         trash: trash,
         controlBlocks: controlBlocks,
         multilines: multilines,
-        skipBlocks: skipBlocks
+        skipBlocks: skipBlocks,
+        blockNumbers: blockNumbers
     };
 
     return syntaxArray;

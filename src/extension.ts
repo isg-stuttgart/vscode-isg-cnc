@@ -647,17 +647,18 @@ async function addBlocknumbers() {
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
+                let map = parser.getBlockNumberMap(document.uri.path);
+                let oldBlockNumber: undefined|parser.Match = map.get(line.lineNumber);
                 let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(oldBlockNumber.location.start.line, oldBlockNumber.location.start.column)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(oldBlockNumber.location.end.line, oldBlockNumber.location.end.column)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
@@ -666,7 +667,7 @@ async function addBlocknumbers() {
                     blocknumbertext = document.getText(range);
                     if (matchLabel !== null
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
-                        && (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim()))) {
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column))) {
                         // if blocknumber and label the same insert a new blocknumber
                         insert = true;
                     } else {
