@@ -633,12 +633,13 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
-            const linesToNumber: Array<number> = parser.getNumberableLines(document.uri.fsPath);
+            const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
 
             const skipLineBeginIndexes: Map<number, number> = new Map();
-            parser.getSyntaxArray(document.uri.fsPath).skipBlocks.forEach((match) => {
+            parser.getSyntaxArray(document.getText()).skipBlocks.forEach((match) => {
                 skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
             });
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
@@ -647,18 +648,17 @@ async function addBlocknumbers() {
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-                let map = parser.getBlockNumberMap(document.uri.path);
-                let oldBlockNumber: undefined|parser.Match = map.get(line.lineNumber);
+                let oldBlockNumber: undefined|parser.Match = linesToBlocknumberMap.get(line.lineNumber);
                 let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
                 if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(oldBlockNumber.location.start.line, oldBlockNumber.location.start.column)
+                        new vscode.Position(oldBlockNumber.location.start.line-1, oldBlockNumber.location.start.column-1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(oldBlockNumber.location.end.line, oldBlockNumber.location.end.column)
+                        new vscode.Position(oldBlockNumber.location.end.line-1, oldBlockNumber.location.end.column-1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
@@ -667,7 +667,7 @@ async function addBlocknumbers() {
                     blocknumbertext = document.getText(range);
                     if (matchLabel !== null
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
-                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column))) {
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column-1))) {
                         // if blocknumber and label the same insert a new blocknumber
                         insert = true;
                     } else {
@@ -797,7 +797,7 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
 
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
