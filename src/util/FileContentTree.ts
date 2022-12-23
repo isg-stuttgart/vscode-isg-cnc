@@ -39,11 +39,11 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         await new Promise(r => setTimeout(r, 50)); //to prevent reading in between "file cleared" and "new content saved"
         if (this.file === undefined) {
             this.fileItem = new FileItem("There is no currently opened file", vscode.TreeItemCollapsibleState.None);
-        } else if (!isNcFile(this.file.fsPath)) {
+        } else if (!ncFileOpened()) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
             const fileContent = fs.readFileSync(this.file.fsPath, "utf-8");
-            const syntaxArray:parser.SyntaxArray = parser.getSyntaxArray(fileContent);
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(fileContent);
             this.updateMatchItems(syntaxArray);
             this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
@@ -423,8 +423,18 @@ function getLine(file: string, lineNumber: number): string {
  * @param path 
  * @returns true if given uri ends with.nc, false otherwise
  */
-function isNcFile(path: string): boolean {
-    return [".nc", ".cnc", ".cyc", ".ecy", ".sub", ".plc"].includes(Path.extname(path.toLowerCase()));
+function ncFileOpened(): boolean {
+    const editor = vscode.window.activeTextEditor;
+    let isIsgCnc: boolean = false;
+    if (editor) {
+       if(editor.document){
+        const isIsgCncNumber = vscode.languages.match("isg-cnc", editor.document);
+        if (isIsgCncNumber > 0) {
+            isIsgCnc = true;
+        }
+       }       
+    }
+    return isIsgCnc;
 }
 
 export function jumpToMatch(item: MatchItem) {
