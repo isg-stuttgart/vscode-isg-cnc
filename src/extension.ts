@@ -527,46 +527,40 @@ function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                const blockNumber: parser.Match | undefined = linesToBlocknumberMap.get(ln);
+                if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(ln, blockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                continue;
-                            }
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        }
-                    } else {
-                        textEdits.push(vscode.TextEdit.replace(range, ""));
+                    // if label found and blocknumber are the same -> skip deleting
+                    if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
+                        continue;
                     }
+
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
                 }
             }
-            const workEdits = new vscode.WorkspaceEdit();
-            workEdits.set(document.uri, textEdits); // give the edits
-            vscode.workspace.applyEdit(workEdits); // apply the edits
         }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-    return;
 }
+
 
 /**
  * Add new block numbers. You can input start block number and the stepsize in a input box.
@@ -648,17 +642,17 @@ async function addBlocknumbers() {
                 // generate blocknumber
                 const block =
                     "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-                let oldBlockNumber: undefined|parser.Match = linesToBlocknumberMap.get(line.lineNumber);
+                let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
                 let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
                 if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(oldBlockNumber.location.start.line-1, oldBlockNumber.location.start.column-1)
+                        new vscode.Position(oldBlockNumber.location.start.line - 1, oldBlockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(oldBlockNumber.location.end.line-1, oldBlockNumber.location.end.column-1)
+                        new vscode.Position(oldBlockNumber.location.end.line - 1, oldBlockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
@@ -667,7 +661,7 @@ async function addBlocknumbers() {
                     blocknumbertext = document.getText(range);
                     if (matchLabel !== null
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
-                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column-1))) {
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
                         // if blocknumber and label the same insert a new blocknumber
                         insert = true;
                     } else {
