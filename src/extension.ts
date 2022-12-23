@@ -641,7 +641,7 @@ async function addBlocknumbers() {
                 const line = document.lineAt(ln);
                 // generate blocknumber
                 const block =
-                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
+                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0");
                 let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
                 let insert: boolean = false;
                 // add or replace blocknumber
@@ -682,7 +682,7 @@ async function addBlocknumbers() {
                     textEdits.push(
                         vscode.TextEdit.insert(
                             new vscode.Position(line.lineNumber, insertIndex),
-                            block
+                            block + " "
                         )
                     );
                 }
