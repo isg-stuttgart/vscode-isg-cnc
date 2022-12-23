@@ -7,7 +7,6 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
-import { match } from "assert";
 
 let language: string;
 let docuPath: string;
