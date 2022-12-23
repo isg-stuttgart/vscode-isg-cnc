@@ -42,7 +42,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
         } else if (!isNcFile(this.file.fsPath)) {
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
-            const syntaxArray:parser.SyntaxArray = parser.getSyntaxArray(this.file.fsPath);
+            const fileContent = fs.readFileSync(this.file.fsPath, "utf-8");
+            const syntaxArray:parser.SyntaxArray = parser.getSyntaxArray(fileContent);
             this.updateMatchItems(syntaxArray);
             this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
