@@ -2,24 +2,14 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as fs from "fs";
 import * as Path from "path";
-import { URLSearchParams } from "url";
 import * as vscode from "vscode";
+import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
+import * as blowfish from "./util/encryption/encryption";
+import * as parser from "./util/ncParsing/parser";
 
-/**
- * Get vscode config data and extension config
- * Terminals must be configured in vscode (example: "terminal.integrated.shell.linux": "/usr/bin/bash" in user settings)
- */
-// let terminal: unknown;
-// if (process.platform === "linux") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.linux");
-// } else if (process.platform === "win32") {
-//     terminal = config.getVscodeParam("terminal.integrated.defaultProfile.windows");
-// }
-
-
-const language = config.getParam("locale");
-const docuPath = config.getParam("documentation");
+let language: string;
+let docuPath: string;
 
 /** Outputchannel for the extension
  */
@@ -54,10 +44,15 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
 let selectedLinesStatusBarItem: vscode.StatusBarItem;
 let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
+//NC-file sidebar tree provider
+let fileContentProvider: fileContentTree.FileContentProvider;
+let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
+
 // package.json information
 let packageFile;
 let extensionPackage;
 
+let extContext: vscode.ExtensionContext;
 // Regular expression variables
 // Technology regex for too, feed, spindle rpm
 const regExTechnology = new RegExp("([TFS])([0-9]+)");
@@ -72,16 +67,15 @@ const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
  * @param {vscode.ExtensionContext} context
  */
 export function activate(context: vscode.ExtensionContext): void {
+    //save the context for dynamical command registeration
+    extContext = context;
     // Get package.json informations
     extensionPackage = Path.join(context.extensionPath, "package.json");
     packageFile = JSON.parse(fs.readFileSync(extensionPackage, "utf8"));
 
-    // enable/disable outputchannel
-    if (config.getParam("outputchannel")) {
-        outputChannel.show();
-    } else {
-        outputChannel.hide();
-    }
+    //get config params in module scope lets
+    updateConfig();
+
 
     // Output extension name and version number in console and output window ISG-CNC
     if (packageFile) {
@@ -102,6 +96,17 @@ export function activate(context: vscode.ExtensionContext): void {
             // }
             return [];
         }
+    });
+
+    vscode.workspace.onDidChangeConfiguration(() => {
+        updateConfig();
+    });
+
+    //NC-file sidebar tree provider
+    const currentFile = vscode.window.activeTextEditor?.document.uri;
+    fileContentProvider = new fileContentTree.FileContentProvider(extContext);
+    fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
+        treeDataProvider: fileContentProvider
     });
 
     // commands
@@ -144,6 +149,47 @@ export function activate(context: vscode.ExtensionContext): void {
             findNonAsciiCharacters()
         )
     );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptAnyFile", () =>
+            blowfish.encryptFileFromSystem()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptAnyFile", () =>
+            blowfish.decryptFileFromSystem()
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
+            blowfish.encryptThis(inputUri)
+        )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
+            blowfish.decryptThis(inputUri)
+        )
+    );
+    //command which is executed when sidebar-Matchitem is clicked
+    context.subscriptions.push(
+        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
+    );
+
+    //sorting of sidebar content
+    vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortLineByLineOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
+            fileContentProvider.sorting = fileContentTree.Sorting.lineByLine;
+            fileContentProvider.update();
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.sortGroupedOn", () => {
+            vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "grouped");
+            fileContentProvider.sorting = fileContentTree.Sorting.grouped;
+            fileContentProvider.update();
+        })
+    );
 
     // add status bar items
     addSelectedLinesStatusBarItem(context);
@@ -160,19 +206,6 @@ export function activate(context: vscode.ExtensionContext): void {
     if (activeEditor) {
         triggerUpdateDecorations();
     }
-
-    // vscode.window.onDidChangeActiveTextEditor((editor) => {
-    //     activeEditor = editor;
-    //     if (editor) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
-
-    // vscode.workspace.onDidChangeTextDocument((event) => {
-    //     if (activeEditor && event.document === activeEditor.document) {
-    //         triggerUpdateDecorations();
-    //     }
-    // }, null);
 }
 
 /**
@@ -243,16 +276,53 @@ function addSelectedLinesStatusBarItem(context: vscode.ExtensionContext) {
     selectedLinesStatusBarItem.command = myCommandId;
     context.subscriptions.push(selectedLinesStatusBarItem);
 
-    // register some listener that make sure the status bar
-    // item always up-to-date
+    // register some listener that make sure the status bar 
+    // item and the sidebar always up-to-date
+
     context.subscriptions.push(
-        vscode.window.onDidChangeActiveTextEditor(updateSelectedLinesStatusBarItem)
+        vscode.window.onDidChangeActiveTextEditor(activeTextEditorChanged)
     );
+    // refresh status bar and current open file once at start
+    activeTextEditorChanged();
+
     context.subscriptions.push(
         vscode.window.onDidChangeTextEditorSelection(
             updateSelectedLinesStatusBarItem
         )
     );
+}
+
+/**
+ * Updates the config parameters saved in the module-scoped lets and settings.
+ */
+function updateConfig() {
+    language = config.getParam("locale");
+    docuPath = config.getParam("documentation").split('"').join("").split('\\').join('/');
+
+
+    // enable/disable outputchannel
+    if (config.getParam("outputchannel")) {
+        outputChannel.show();
+    } else {
+        outputChannel.hide();
+    }
+}
+
+/**
+ * Will be called by onDidChangeActiveTextEditor-Listener.
+ * Updates the file-content-treeview and the selected
+ * status bar lines.
+ */
+function activeTextEditorChanged() {
+    //Tree view
+    try {
+        fileContentProvider.update();
+    } catch (e: any) {
+        vscode.window.showErrorMessage(e);
+    }
+
+    //Status Bar
+    updateSelectedLinesStatusBarItem();
 }
 
 /**
@@ -388,7 +458,7 @@ async function goToPosition(): Promise<void> {
  *
  * @param {number} pos
  */
-function setCursorPosition(pos: number) {
+export function setCursorPosition(pos: number) {
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
@@ -456,46 +526,40 @@ function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                const blockNumber: parser.Match | undefined = linesToBlocknumberMap.get(ln);
+                if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(ln, blockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                continue;
-                            }
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        }
-                    } else {
-                        textEdits.push(vscode.TextEdit.replace(range, ""));
+                    // if label found and blocknumber are the same -> skip deleting
+                    if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
+                        continue;
                     }
+
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
                 }
             }
-            const workEdits = new vscode.WorkspaceEdit();
-            workEdits.set(document.uri, textEdits); // give the edits
-            vscode.workspace.applyEdit(workEdits); // apply the edits
         }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-    return;
 }
+
 
 /**
  * Add new block numbers. You can input start block number and the stepsize in a input box.
@@ -562,78 +626,62 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
+            const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
+
+            const skipLineBeginIndexes: Map<number, number> = new Map();
+            parser.getSyntaxArray(document.getText()).skipBlocks.forEach((match) => {
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
+            });
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
             // add new blocknumbers
-            const maximalLeadingZeros = digitCount(start + document.lineCount * step);
+            const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
-            // edit document line by line
-            let isCommentBlock = false;
-            for (let ln = 0; ln < document.lineCount; ln++) {
+            for (let ln of linesToNumber) {
                 const line = document.lineAt(ln);
-
-                if (line.text.startsWith("#COMMENT BEGIN")) {
-                    isCommentBlock = true;
-                }
-                if (line.text.startsWith("#COMMENT END")) {
-                    isCommentBlock = false;
-                    continue;
-                }
-                // skip program name, comment lines and empty lines
-                if (
-                    line.text.startsWith("%", 0) ||
-                    line.isEmptyOrWhitespace ||
-                    line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
-                    isCommentBlock
-                ) {
-                    continue;
-                }
-
                 // generate blocknumber
                 const block =
-                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-
+                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0");
+                let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
+                let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(oldBlockNumber.location.start.line - 1, oldBlockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(oldBlockNumber.location.end.line - 1, oldBlockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
                     blocknumbertext = document.getText(range);
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                // if blocknumber and label the same insert a new blocknumber
-                                textEdits.push(
-                                    vscode.TextEdit.insert(
-                                        new vscode.Position(line.lineNumber, line.range.start.character),
-                                        block
-                                    )
-                                );
-                            } else {
-                                textEdits.push(vscode.TextEdit.replace(range, block));
-                            }
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, block));
-                        }
+                    if (matchLabel !== null
+                        && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
+                        // if blocknumber and label the same insert a new blocknumber
+                        insert = true;
                     } else {
+                        // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
+                    insert = true;
+                }
+                if (insert) {
+                    let insertIndex: number;
+                    const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);
+                    if (skipLineBegin !== undefined) { //parser is 1 based
+                        insertIndex = skipLineBegin;
+                    } else {
+                        insertIndex = line.range.start.character;
+                    }
                     textEdits.push(
                         vscode.TextEdit.insert(
-                            new vscode.Position(line.lineNumber, line.range.start.character),
-                            block
+                            new vscode.Position(line.lineNumber, insertIndex),
+                            block + " "
                         )
                     );
                 }
@@ -662,53 +710,21 @@ function digitCount(nr: number): number {
 }
 
 /**
- * Generate an terminal and load the html documentation in webbrowser.
- * Webbrowser location reading from extension setting browser.
- *
+ *Load the ISG-CNC Kernel html documentation in default webbrowser.
  */
 function startDocu() {
     const docuAddress = getContextbasedSite();
     outputChannel.appendLine(docuAddress);
 
-    const terminal = vscode.window.createTerminal({
-        name: "ISG-CNC",
-        hideFromUser: false
-    });
-    let args;
-    let browserPath;
-
-    if (process.platform === "linux") {
-        browserPath = `${config.getParam("browser-linux")}`;
-    } else if (process.platform === "win32") {
-        browserPath = `${config.getParam("browser-windows")}`.replace("\"", "");
-    }
-
-    if (docuAddress !== "" && docuAddress.startsWith("http")) {
-        args = docuAddress;
-    } else {
-        args = `"file://${docuAddress}"`;
-    }
-
-    // example that works:
-    // "C:\Program Files\Mozilla Firefox\firefox.exe"
-    // "file://c:/Users/Andre/Documents/%21%21%21ISG/ISG-Doku/de-DE/search.html?q=G54"
-
-    if (terminal.name !== "PowerShell") {
-        browserPath = `"${browserPath}"`;
-    } else {
-        browserPath = `& "${browserPath}"`;
-    }
-
     outputChannel.appendLine(`Path to the documentation: ${docuPath}`);
     outputChannel.appendLine(`Address to the website: ${docuAddress}`);
-    outputChannel.appendLine(`Commandpart: ${browserPath} and Argumentpart: ${args}`);
 
-    terminal.sendText(browserPath + " " + args);
+    vscode.env.openExternal(vscode.Uri.parse(docuAddress));
 }
 
 /**
  * Function to build the Address to the documentation.
- * Standard web Address is: https://www.isg-stuttgart.de/kernel-html5/
+ * Standard web Address is: https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html
  * Additional read the language from extension settings and the documentation path (local or web)
  * Returns the combined Address string.
  *
@@ -716,33 +732,37 @@ function startDocu() {
  */
 function getContextbasedSite(): string {
     let searchContext: string;
-    let docuPath: string = "";
+    let localeDocuPath: string = docuPath;
     let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            if (docuPath !== undefined && docuPath !== "") {
-                docuPath = docuPath as string;
-                docuPath = docuPath.split('"').join("").split('\\').join('/');
-                if (!docuPath.endsWith('/')) {
-                    docuPath += "/" + `${language}/`;
+            if (localeDocuPath !== undefined && localeDocuPath !== "") {
+                if (!localeDocuPath.endsWith('/')) {
+                    localeDocuPath += "/" + `${language}/`;
                 } else {
-                    docuPath += `${language}/`;
+                    localeDocuPath += `${language}/`;
                 }
             } else {
-                docuPath = `https://www.isg-stuttgart.de/kernel-html5/${language}/`;
+                localeDocuPath = `https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/${language}/`;
             }
-            if (activeTextEditor.selection.isEmpty !== true) {
-                searchContext = activeTextEditor.document.getText(
-                    activeTextEditor.selection
-                );
-                const query = new URLSearchParams();
-                query.append("q", searchContext);
-                docuAddress = docuPath + `search.html?${query.toString()}`;
-            } else {
-                docuAddress = docuPath + "index.html";
-            }
+            //IMPORTANT: THE FOLLOWING BLOCK IS FOR OPEN DOCU WITH SELECTED SEARCHING KEYWORD
+            //THE WEBSITE IS BROKEN AT THE MOMENT SO IT WILL JUST LOAD THE GENERAL DOCU WEBSITE
+            //UNCOMMENT IF THE WEBSITE WAS FIXES AND DELETE THE ASSIGNMENT UNDER THE COMMENT:
+            //  "docuAddress = localeDocuPath + "index.html";"
+            /*  if (!activeTextEditor.selection.isEmpty) {
+                 searchContext = activeTextEditor.document.getText(
+                     activeTextEditor.selection
+                 );
+                 const query = new URLSearchParams();
+                 query.append("q", searchContext);
+                 docuAddress = localeDocuPath + `search.html?${query.toString()}`;
+             } else {
+                  docuAddress = localeDocuPath + "index.html";
+             } */
+            docuAddress = localeDocuPath + "index.html";
+
         }
     }
     return docuAddress;
@@ -770,6 +790,8 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
+
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
                 whiteSpaces = activeTextEditor.options.tabSize;
@@ -792,8 +814,6 @@ export function beautify(): void {
                 // skip program name, comment lines and empty lines
                 if (
                     line.text.startsWith("%", 0) ||
-                    line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
                     isCommentBlock
                 ) {
                     continue;
@@ -849,7 +869,6 @@ export function beautify(): void {
                     textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
                     continue;
                 }
-
                 if (
                     currentLine.indexOf("$DO") === 0 ||
                     currentLine.indexOf("$REPEAT") === 0 ||
@@ -917,8 +936,17 @@ export function beautify(): void {
                 outputChannel.appendLine(newLine);
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
-        }
 
+            syntaxArray.multilines.forEach((multiline: parser.Match) => {
+                const start = multiline.location.start.line;
+                const end = multiline.location.end.line;
+                for (let lineNumber = start; lineNumber < end; lineNumber++) {
+                    const line: vscode.TextLine = document.lineAt(lineNumber);
+                    newLine = " ".repeat(whiteSpaces) + line.text;
+                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
+                }
+            });
+        }
         // write back edits
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
@@ -993,3 +1021,4 @@ function findAllToolCalls(): any {
     };
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
+
