@@ -1044,12 +1044,8 @@ function alignEqualSign(): void {
             // align equal signs
             const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
             const textEdits: vscode.TextEdit[] = [];
-            try {
-                lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
-            } catch (error) {
-                console.log(error)
-            }
-
+            lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
+           
             // write back edits
             const workEdits = new vscode.WorkspaceEdit();
             workEdits.set(editor.document.uri, textEdits); // give the edits
