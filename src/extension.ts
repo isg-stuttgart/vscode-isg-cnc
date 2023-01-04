@@ -1026,6 +1026,9 @@ function findAllToolCalls(): any {
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
 
+/**
+ * Aligns the first equal signs in the current editor selection below each other.
+ */
 function alignEqualSign(): void {
     const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
     if (editor && editor.document) {
@@ -1054,6 +1057,9 @@ function alignEqualSign(): void {
     }
 }
 
+/**
+ * Helper class to save the information about the equal sign lines.
+ */
 class EqSignLine {
     beforeEq: string;
     afterEq: string;
