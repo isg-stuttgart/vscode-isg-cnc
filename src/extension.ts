@@ -7,6 +7,7 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
+import { start } from "repl";
 
 let language: string;
 let docuPath: string;
@@ -168,6 +169,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () => alignEqualSign())
     );
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
@@ -1022,3 +1026,52 @@ function findAllToolCalls(): any {
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
 
+function alignEqualSign(): void {
+    const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    if (editor && editor.document) {
+        const selection: vscode.Selection = editor.selection;
+        if (!selection.isEmpty) {
+            const lines: Array<EqSignLine> = new Array();
+            // collect all selected lignes with "="
+            for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
+                //get intersection of selection and current line to only handle selected part when in first or last line
+                const range = selection.intersection(editor.document.lineAt(ln).range);
+                if (range && editor.document.getText(range).includes("=")) {
+                    lines.push(new EqSignLine(editor.document.getText(range), range));
+                }
+            }
+
+            // align equal signs
+            const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
+            const textEdits: vscode.TextEdit[] = [];
+            try {
+                lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
+            } catch (error) {
+                console.log(error)
+            }
+
+            // write back edits
+            const workEdits = new vscode.WorkspaceEdit();
+            workEdits.set(editor.document.uri, textEdits); // give the edits
+            vscode.workspace.applyEdit(workEdits); // apply the edits
+        }
+    }
+}
+
+class EqSignLine {
+    beforeEq: string;
+    afterEq: string;
+    range: vscode.Range;
+    constructor(line: string, range: vscode.Range) {
+        const eqIndex = line.indexOf("=");
+        this.beforeEq = line.substring(0, eqIndex).trimEnd();
+        this.afterEq = line.substring(eqIndex + 1).trimStart();
+        this.range = range;
+    }
+
+    getAligned(maxBeforeEqLength: number): string {
+        const lengthBefore = this.beforeEq.length + this.range.start.character;
+        const paddingLength = maxBeforeEqLength - lengthBefore;
+        return this.beforeEq + ' '.repeat(paddingLength) + " = " + this.afterEq;
+    }
+}
