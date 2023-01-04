@@ -36,9 +36,10 @@ Visual Studio Code V1.59.0 or higher
 - Show and jump to fileoffset
 - Open documentation in browser
 - Light and dark color theme for ISG CNC language
-- Encrypt/decrypt files by key
 - Sidebar to show important code fragments (at the moment: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
 - Region folding (snippets triggered when typing "#region")
+- Align equal signs in selected range via command
+- Encrypt/decrypt files by key
 
 ## License
 
