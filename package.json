@@ -188,7 +188,7 @@
             },
             {
                 "command": "isg-cnc.AlignEqualSigns",
-                "title": "Align equal signs in selected range"
+                "title": "ISG-CNC: Align equal signs in selected range"
             }
             
         ],
