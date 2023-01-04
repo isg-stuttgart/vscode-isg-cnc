@@ -6,7 +6,8 @@ The extension provide a sidebar which contains all cycle and tool calls in the a
 The keyboard bindings can be changed at the keyboard preferences.\
 For keyboard preferences press `CTRL+SHIFT+P` and type keyboard. Select Preferences: Open Keyboard Shortcuts.
 Now you can search for isg-cnc to find or change shortcuts.\
-After pressing `CTRL+SHIFT+P` you can also type ISG-CNC to find all exported commands for this extension.
+After pressing `CTRL+SHIFT+P` you can also type ISG-CNC to find all exported commands for this extension. \
+There is also an ISG-Command-Submenue when right-clicking, where you can trigger commands via mouse click. \
 You can choose special color themes ISG-CNC Light and Dark by pressing F1 and type theme, select Preferences: Color Theme.
 The documentation for ISG-CNC start with or without selection.
 
@@ -35,6 +36,10 @@ Visual Studio Code V1.59.0 or higher
 - Show and jump to fileoffset
 - Open documentation in browser
 - Light and dark color theme for ISG CNC language
+- Sidebar to show important code fragments (at the moment: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
+- Region folding (snippets triggered when typing "#region")
+- Align equal signs in selected range via command
+- Encrypt/decrypt files by key
 
 ## License
 

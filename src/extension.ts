@@ -7,6 +7,7 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
+import { start } from "repl";
 
 let language: string;
 let docuPath: string;
@@ -168,6 +169,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () => alignEqualSign())
     );
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
@@ -526,46 +530,40 @@ function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                const blockNumber: parser.Match | undefined = linesToBlocknumberMap.get(ln);
+                if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(ln, blockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                continue;
-                            }
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        }
-                    } else {
-                        textEdits.push(vscode.TextEdit.replace(range, ""));
+                    // if label found and blocknumber are the same -> skip deleting
+                    if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
+                        continue;
                     }
+
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
                 }
             }
-            const workEdits = new vscode.WorkspaceEdit();
-            workEdits.set(document.uri, textEdits); // give the edits
-            vscode.workspace.applyEdit(workEdits); // apply the edits
         }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-    return;
 }
+
 
 /**
  * Add new block numbers. You can input start block number and the stepsize in a input box.
@@ -584,7 +582,6 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const linesToNumber:Array<number> = parser.getNumberableLines(document.uri.fsPath);
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -633,81 +630,62 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
+            const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
 
+            const skipLineBeginIndexes: Map<number, number> = new Map();
+            parser.getSyntaxArray(document.getText()).skipBlocks.forEach((match) => {
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
+            });
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
-            // edit document line by line
-            let isCommentBlock = false;
-            //for (let ln = 0; ln < document.lineCount; ln++) {
             for (let ln of linesToNumber) {
-
-                const line = document.lineAt(ln-1);
-
-                if (line.text.startsWith("#COMMENT BEGIN")) {
-                    isCommentBlock = true;
-                }
-                if (line.text.startsWith("#COMMENT END")) {
-                    isCommentBlock = false;
-                    continue;
-                }
-                // skip program name, comment lines and empty lines
-                if (
-                    line.text.startsWith("%", 0) ||
-                    line.isEmptyOrWhitespace ||
-                    line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
-                    isCommentBlock
-                ) {
-                    continue;
-                }
-
+                const line = document.lineAt(ln);
                 // generate blocknumber
                 const block =
-                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-
+                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0");
+                let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
+                let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(oldBlockNumber.location.start.line - 1, oldBlockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(oldBlockNumber.location.end.line - 1, oldBlockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
                     blocknumbertext = document.getText(range);
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                // if blocknumber and label the same insert a new blocknumber
-                                textEdits.push(
-                                    vscode.TextEdit.insert(
-                                        new vscode.Position(line.lineNumber, line.range.start.character),
-                                        block
-                                    )
-                                );
-                            } else {
-                                textEdits.push(vscode.TextEdit.replace(range, block));
-                            }
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, block));
-                        }
+                    if (matchLabel !== null
+                        && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
+                        // if blocknumber and label the same insert a new blocknumber
+                        insert = true;
                     } else {
+                        // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
+                    insert = true;
+                }
+                if (insert) {
+                    let insertIndex: number;
+                    const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);
+                    if (skipLineBegin !== undefined) { //parser is 1 based
+                        insertIndex = skipLineBegin;
+                    } else {
+                        insertIndex = line.range.start.character;
+                    }
                     textEdits.push(
                         vscode.TextEdit.insert(
-                            new vscode.Position(line.lineNumber, line.range.start.character),
-                            block
+                            new vscode.Position(line.lineNumber, insertIndex),
+                            block + " "
                         )
                     );
                 }
@@ -816,7 +794,7 @@ export function beautify(): void {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
+            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
 
             // edit document line by line
             if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
@@ -1048,3 +1026,54 @@ function findAllToolCalls(): any {
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
 
+/**
+ * Aligns the first equal signs in the current editor selection below each other.
+ */
+function alignEqualSign(): void {
+    const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    if (editor && editor.document) {
+        const selection: vscode.Selection = editor.selection;
+        if (!selection.isEmpty) {
+            const lines: Array<EqSignLine> = new Array();
+            // collect all selected lignes with "="
+            for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
+                //get intersection of selection and current line to only handle selected part when in first or last line
+                const range = selection.intersection(editor.document.lineAt(ln).range);
+                if (range && editor.document.getText(range).includes("=")) {
+                    lines.push(new EqSignLine(editor.document.getText(range), range));
+                }
+            }
+
+            // align equal signs
+            const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
+            const textEdits: vscode.TextEdit[] = [];
+            lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
+           
+            // write back edits
+            const workEdits = new vscode.WorkspaceEdit();
+            workEdits.set(editor.document.uri, textEdits); // give the edits
+            vscode.workspace.applyEdit(workEdits); // apply the edits
+        }
+    }
+}
+
+/**
+ * Helper class to save the information about the equal sign lines.
+ */
+class EqSignLine {
+    beforeEq: string;
+    afterEq: string;
+    range: vscode.Range;
+    constructor(line: string, range: vscode.Range) {
+        const eqIndex = line.indexOf("=");
+        this.beforeEq = line.substring(0, eqIndex).trimEnd();
+        this.afterEq = line.substring(eqIndex + 1).trimStart();
+        this.range = range;
+    }
+
+    getAligned(maxBeforeEqLength: number): string {
+        const lengthBefore = this.beforeEq.length + this.range.start.character;
+        const paddingLength = maxBeforeEqLength - lengthBefore;
+        return this.beforeEq + ' '.repeat(paddingLength) + " = " + this.afterEq;
+    }
+}

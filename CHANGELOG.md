@@ -14,6 +14,12 @@ Types of changes
 
 ## [Unreleased]
 
+### Added
+- Align equal signs in selected range via command [Issue #29](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/29)
+
+### Fixed
+- Fix/Improve "Add Blocknumbers" especially for skip lines [Issue #76](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/76)
+- Sidebar works for all files which vscode associates with CNC language, not only typical endings [Issue #92](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/92) 
 ## [V0.4.0]
 
 ### Added

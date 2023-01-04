@@ -54,7 +54,8 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.Beautify",
-        "onCommand:isg-cnc.FindNonAsciiCharacters"
+        "onCommand:isg-cnc.FindNonAsciiCharacters",
+        "onCommand:isg-cnc.AlignEqualSigns"
     ],
     "main": "./out/extension.js",
     "contributes": {
@@ -179,13 +180,17 @@
             {
                 "command":"isg-cnc.sortGroupedOn",
                 "title": "Grouped"
-            },
-           
+            },        
             {
                 "command": "isg-cnc.sortGroupedSelected",
                 "title": "Grouped (active)",
                 "enablement": "false"
+            },
+            {
+                "command": "isg-cnc.AlignEqualSigns",
+                "title": "ISG-CNC: Align equal signs in selected range"
             }
+            
         ],
         "menus": {
             "view/title": [
@@ -269,28 +274,32 @@
                     "group": "isg-cnc@7"
                 },
                 {
-                    "command": "isg-cnc.StartDocu",
+                    "command": "isg-cnc.AlignEqualSigns",
                     "group": "isg-cnc@8"
                 },
                 {
-                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "command": "isg-cnc.StartDocu",
                     "group": "isg-cnc@9"
                 },
                 {
-                    "command": "isg-cnc.EncryptAnyFile",
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
                     "group": "isg-cnc@10"
                 },
                 {
-                    "command": "isg-cnc.DecryptAnyFile",
+                    "command": "isg-cnc.EncryptAnyFile",
                     "group": "isg-cnc@11"
                 },
                 {
-                    "command": "isg-cnc.EncryptThis",
+                    "command": "isg-cnc.DecryptAnyFile",
                     "group": "isg-cnc@12"
                 },
                 {
-                    "command": "isg-cnc.DecryptThis",
+                    "command": "isg-cnc.EncryptThis",
                     "group": "isg-cnc@13"
+                },
+                {
+                    "command": "isg-cnc.DecryptThis",
+                    "group": "isg-cnc@14"
                 }
             ]
         },
@@ -344,6 +353,11 @@
             {
                 "key": "ctrl+i ctrl+c",
                 "command": "isg-cnc.FindNonAsciiCharacters",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+e",
+                "command": "isg-cnc.AlignEqualSigns",
                 "when": "editorTextFocus"
             }
         ],
