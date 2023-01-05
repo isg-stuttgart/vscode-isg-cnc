@@ -16,7 +16,8 @@
     "categories": [
         "Other",
         "Programming Languages",
-        "Language Packs"
+        "Language Packs",
+        "Formatters"
     ],
     "keywords": [
         "nc",
@@ -86,6 +87,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enable/Disable Outputchannel"
+                },
+                "isg-cnc.enableFormatter": {
+                    "type": "boolean",
+                    "description": "Enable/Disable the CNC formatter.",
+                    "default": true
                 }
             }
         },
