@@ -14,9 +14,7 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
         let currentPos = 0;
         let isCommentBlock = false;
         const textEdits: vscode.TextEdit[] = [];
-
-
-        const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
+        const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
 
         for (let ln = 0; ln < document.lineCount; ln++) {
             const line = document.lineAt(ln);
@@ -164,6 +162,7 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
                 textEdits.push(vscode.TextEdit.replace(line.range, newLine));
             }
         });
+
         return textEdits;
     }
 }
