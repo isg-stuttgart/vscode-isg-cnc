@@ -7,8 +7,7 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
-import { start } from "repl";
-
+import * as Formatter from "./util/Formatter";
 let language: string;
 let docuPath: string;
 
@@ -89,15 +88,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
     // 👍 formatter implemented using API
-    vscode.languages.registerDocumentFormattingEditProvider('isg-cnc', {
-        provideDocumentFormattingEdits(): vscode.TextEdit[] { //document: vscode.TextDocument
-            // const firstLine = document.lineAt(0);
-            // if (firstLine.text !== '42') {
-            //     return [vscode.TextEdit.insert(firstLine.range.start, '42\n')];
-            // }
-            return [];
-        }
-    });
+    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new Formatter.DocumentRangeFormattingEditProvider());
 
     vscode.workspace.onDidChangeConfiguration(() => {
         updateConfig();
@@ -1048,7 +1039,7 @@ function alignEqualSign(): void {
             const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
             const textEdits: vscode.TextEdit[] = [];
             lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
-           
+
             // write back edits
             const workEdits = new vscode.WorkspaceEdit();
             workEdits.set(editor.document.uri, textEdits); // give the edits
