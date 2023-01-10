@@ -16,7 +16,8 @@
     "categories": [
         "Other",
         "Programming Languages",
-        "Language Packs"
+        "Language Packs",
+        "Formatters"
     ],
     "keywords": [
         "nc",
@@ -53,7 +54,6 @@
         "onCommand:isg-cnc.RemoveAllBlocknumbers",
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
-        "onCommand:isg-cnc.Beautify",
         "onCommand:isg-cnc.FindNonAsciiCharacters",
         "onCommand:isg-cnc.AlignEqualSigns"
     ],
@@ -86,6 +86,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Enable/Disable Outputchannel"
+                },
+                "isg-cnc.enableFormatter": {
+                    "type": "boolean",
+                    "description": "Enable/Disable the CNC formatter.",
+                    "default": true
                 }
             }
         },
@@ -157,11 +162,6 @@
                 "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.StartDocu",
                 "title": "ISG-CNC: Start the Documentation"
-            },
-            {
-                "enablement": "resourceLangId == isg-cnc",
-                "command": "isg-cnc.Beautify",
-                "title": "ISG-CNC: Format code"
             },
             {
                 "enablement": "resourceLangId == isg-cnc",
@@ -245,10 +245,6 @@
                 }
             ],
             "isg-commands": [
-                {
-                    "command": "isg-cnc.Beautify",
-                    "group": "isg-cnc@1"
-                },
                 {
                     "command": "isg-cnc.FindNonAsciiCharacters",
                     "group": "isg-cnc@2"
@@ -343,11 +339,6 @@
             {
                 "key": "ctrl+i ctrl+f",
                 "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                "when": "editorTextFocus"
-            },
-            {
-                "key": "ctrl+i ctrl+b",
-                "command": "isg-cnc.Beautify",
                 "when": "editorTextFocus"
             },
             {

@@ -16,6 +16,7 @@ Types of changes
 
 ### Added
 - Align equal signs in selected range via command [Issue #29](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/29)
+- Formatting by default VSCode standard, old command for beautifying was removed [Issue #99](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/99)
 
 ### Fixed
 - Fix/Improve "Add Blocknumbers" especially for skip lines [Issue #76](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/76)

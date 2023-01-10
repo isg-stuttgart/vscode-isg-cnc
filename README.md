@@ -31,6 +31,7 @@ Visual Studio Code V1.59.0 or higher
 
 - Syntax highlighting
 - Code completion
+- Code formatting
 - Add and remove blocknumbers
 - Find technology like T, F, S commands
 - Show and jump to fileoffset
