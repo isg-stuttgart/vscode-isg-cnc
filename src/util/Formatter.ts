@@ -22,7 +22,7 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
         const textEdits: vscode.TextEdit[] = [];
         const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
 
-        for (let ln = range.start.line; ln < range.end.line; ln++) {
+        for (let ln = 0; ln < document.lineCount; ln++) {
             const line = document.lineAt(ln);
             saveBlockNumber = "";
             newLine = "";
@@ -171,7 +171,8 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
             }
         });
 
-        return textEdits;
+        //filter textEdits to only format selected range
+        return textEdits.filter(edit=>edit.range.intersection(range)?.isEmpty === false);
     }
 }
 
