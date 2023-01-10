@@ -54,7 +54,6 @@
         "onCommand:isg-cnc.RemoveAllBlocknumbers",
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
-        "onCommand:isg-cnc.Beautify",
         "onCommand:isg-cnc.FindNonAsciiCharacters",
         "onCommand:isg-cnc.AlignEqualSigns"
     ],
@@ -166,11 +165,6 @@
             },
             {
                 "enablement": "resourceLangId == isg-cnc",
-                "command": "isg-cnc.Beautify",
-                "title": "ISG-CNC: Format code"
-            },
-            {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNonAsciiCharacters",
                 "title": "ISG-CNC: Find not ASCII characters"
             },
@@ -251,10 +245,6 @@
                 }
             ],
             "isg-commands": [
-                {
-                    "command": "isg-cnc.Beautify",
-                    "group": "isg-cnc@1"
-                },
                 {
                     "command": "isg-cnc.FindNonAsciiCharacters",
                     "group": "isg-cnc@2"
@@ -349,11 +339,6 @@
             {
                 "key": "ctrl+i ctrl+f",
                 "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                "when": "editorTextFocus"
-            },
-            {
-                "key": "ctrl+i ctrl+b",
-                "command": "isg-cnc.Beautify",
                 "when": "editorTextFocus"
             },
             {
