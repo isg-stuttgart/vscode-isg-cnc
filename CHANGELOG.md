@@ -15,7 +15,7 @@ Types of changes
 ## [Unreleased]
 
 
-## [V0.4.1]
+## [V0.4.2]
 
 ### Added
 - Align equal signs in selected range via command [Issue #29](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/29)
@@ -318,7 +318,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
-[V0.4.1]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.1...V0.4.1
+[V0.4.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.0
 [V0.4.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.0...V0.3.5
 [V0.3.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.4...V0.3.5
 [V0.3.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.3...V0.3.4
