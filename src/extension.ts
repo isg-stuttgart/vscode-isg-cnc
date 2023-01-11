@@ -7,7 +7,7 @@ import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
-
+import * as Formatter from "./util/Formatter";
 let language: string;
 let docuPath: string;
 
@@ -88,15 +88,7 @@ export function activate(context: vscode.ExtensionContext): void {
     }
 
     // 👍 formatter implemented using API
-    vscode.languages.registerDocumentFormattingEditProvider('isg-cnc', {
-        provideDocumentFormattingEdits(): vscode.TextEdit[] { //document: vscode.TextDocument
-            // const firstLine = document.lineAt(0);
-            // if (firstLine.text !== '42') {
-            //     return [vscode.TextEdit.insert(firstLine.range.start, '42\n')];
-            // }
-            return [];
-        }
-    });
+    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new Formatter.DocumentRangeFormattingEditProvider());
 
     vscode.workspace.onDidChangeConfiguration(() => {
         updateConfig();
@@ -142,9 +134,6 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.StartDocu", () => startDocu())
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand("isg-cnc.Beautify", () => beautify())
-    );
-    context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
             findNonAsciiCharacters()
         )
@@ -168,6 +157,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         )
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () => alignEqualSign())
     );
     //command which is executed when sidebar-Matchitem is clicked
     context.subscriptions.push(
@@ -526,46 +518,40 @@ function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                const blockNumber: parser.Match | undefined = linesToBlocknumberMap.get(ln);
+                if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(ln, blockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                continue;
-                            }
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, ""));
-                        }
-                    } else {
-                        textEdits.push(vscode.TextEdit.replace(range, ""));
+                    // if label found and blocknumber are the same -> skip deleting
+                    if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
+                        continue;
                     }
+
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
                 }
             }
-            const workEdits = new vscode.WorkspaceEdit();
-            workEdits.set(document.uri, textEdits); // give the edits
-            vscode.workspace.applyEdit(workEdits); // apply the edits
         }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
     }
-    return;
 }
+
 
 /**
  * Add new block numbers. You can input start block number and the stepsize in a input box.
@@ -584,7 +570,6 @@ async function addBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const linesToNumber:Array<number> = parser.getNumberableLines(document.uri.fsPath);
             // get start number
             let inputOptions: vscode.InputBoxOptions = {
                 prompt: `Type an start number.`,
@@ -633,81 +618,62 @@ async function addBlocknumbers() {
                 return undefined;
             }
 
+            const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
 
+            const skipLineBeginIndexes: Map<number, number> = new Map();
+            parser.getSyntaxArray(document.getText()).skipBlocks.forEach((match) => {
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
+            });
+            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
-            // edit document line by line
-            let isCommentBlock = false;
-            //for (let ln = 0; ln < document.lineCount; ln++) {
             for (let ln of linesToNumber) {
-
-                const line = document.lineAt(ln-1);
-
-                if (line.text.startsWith("#COMMENT BEGIN")) {
-                    isCommentBlock = true;
-                }
-                if (line.text.startsWith("#COMMENT END")) {
-                    isCommentBlock = false;
-                    continue;
-                }
-                // skip program name, comment lines and empty lines
-                if (
-                    line.text.startsWith("%", 0) ||
-                    line.isEmptyOrWhitespace ||
-                    line.text.startsWith(";") ||
-                    line.text.startsWith("(") ||
-                    isCommentBlock
-                ) {
-                    continue;
-                }
-
+                const line = document.lineAt(ln);
                 // generate blocknumber
                 const block =
-                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0") + " ";
-
+                    "N" + blocknumber.toString().padStart(maximalLeadingZeros, "0");
+                let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
+                let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
+                if (oldBlockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
+                        new vscode.Position(oldBlockNumber.location.start.line - 1, oldBlockNumber.location.start.column - 1)
                     );
                     const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
+                        new vscode.Position(oldBlockNumber.location.end.line - 1, oldBlockNumber.location.end.column - 1)
                     );
                     const range = new vscode.Range(
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
                     blocknumbertext = document.getText(range);
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                // if blocknumber and label the same insert a new blocknumber
-                                textEdits.push(
-                                    vscode.TextEdit.insert(
-                                        new vscode.Position(line.lineNumber, line.range.start.character),
-                                        block
-                                    )
-                                );
-                            } else {
-                                textEdits.push(vscode.TextEdit.replace(range, block));
-                            }
-                        } else {
-                            // jump to label found
-                            textEdits.push(vscode.TextEdit.replace(range, block));
-                        }
+                    if (matchLabel !== null
+                        && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
+                        // if blocknumber and label the same insert a new blocknumber
+                        insert = true;
                     } else {
+                        // jump to label found
                         textEdits.push(vscode.TextEdit.replace(range, block));
                     }
                 } else {
+                    insert = true;
+                }
+                if (insert) {
+                    let insertIndex: number;
+                    const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);
+                    if (skipLineBegin !== undefined) { //parser is 1 based
+                        insertIndex = skipLineBegin;
+                    } else {
+                        insertIndex = line.range.start.character;
+                    }
                     textEdits.push(
                         vscode.TextEdit.insert(
-                            new vscode.Position(line.lineNumber, line.range.start.character),
-                            block
+                            new vscode.Position(line.lineNumber, insertIndex),
+                            block + " "
                         )
                     );
                 }
@@ -803,195 +769,6 @@ export function deactivate(): void {
     outputChannel.dispose();
 }
 
-export function beautify(): void {
-    let currentLine: string = "";
-    let newLine: string = "";
-    let saveBlockNumber: string = "";
-    let whiteSpaces: number = 2;
-    let currentPos = 0;
-    let isCommentBlock = false;
-    const textEdits: vscode.TextEdit[] = [];
-    const { activeTextEditor } = vscode.window;
-
-    if (activeTextEditor) {
-        const { document } = activeTextEditor;
-        if (document) {
-            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.uri.fsPath);
-
-            // edit document line by line
-            if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize === 'number') {
-                whiteSpaces = activeTextEditor.options.tabSize;
-            }
-            if (activeTextEditor.options.tabSize !== undefined && typeof activeTextEditor.options.tabSize !== 'number') {
-                whiteSpaces = parseInt(activeTextEditor.options.tabSize);
-            }
-            for (let ln = 0; ln < document.lineCount; ln++) {
-                const line = document.lineAt(ln);
-                saveBlockNumber = "";
-                newLine = "";
-                if (line.text.startsWith("#COMMENT BEGIN")) {
-                    isCommentBlock = true;
-                    continue;
-                }
-                if (line.text.startsWith("#COMMENT END")) {
-                    isCommentBlock = false;
-                    continue;
-                }
-                // skip program name, comment lines and empty lines
-                if (
-                    line.text.startsWith("%", 0) ||
-                    isCommentBlock
-                ) {
-                    continue;
-                }
-
-                // Get blocknumber and line text
-                const matchLabel = regExpLabels.exec(line.text);
-                const matchBlocknumber = regExpBlocknumbers.exec(line.text);
-                const gotoPos = line.text.indexOf("$GOTO");
-
-                if (matchBlocknumber !== null && matchBlocknumber.index !== undefined) {
-                    const startPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]))
-                    );
-                    const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, line.text.indexOf(matchBlocknumber[0]) + matchBlocknumber[0].length)
-                    );
-                    const range = new vscode.Range(
-                        document.positionAt(startPos),
-                        document.positionAt(endPos)
-                    );
-                    if (matchLabel !== null && matchBlocknumber.index !== undefined) {
-                        if ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) {
-                            // label found
-                            if (line.text.indexOf(matchLabel[0].trim()) === line.text.indexOf(matchBlocknumber[0].trim())) {
-                                // if blocknumber and label the same
-                                currentLine = line.text.trim();
-                            } else {
-                                saveBlockNumber = activeTextEditor.document.getText(range).trim();
-                                currentLine = activeTextEditor.document.getText(
-                                    new vscode.Range(document.positionAt(endPos), line.range.end)
-                                ).trim();
-                            }
-                        } else {
-                            // jump to label found
-                            saveBlockNumber = activeTextEditor.document.getText(range).trim();
-                            currentLine = activeTextEditor.document.getText(
-                                new vscode.Range(document.positionAt(endPos), line.range.end)
-                            ).trim();
-                        }
-                    } else {
-                        saveBlockNumber = activeTextEditor.document.getText(range).trim();
-                        currentLine = activeTextEditor.document.getText(
-                            new vscode.Range(document.positionAt(endPos), line.range.end)
-                        ).trim();
-                    }
-                } else {
-                    currentLine = activeTextEditor.document.getText(line.range).trim();
-                }
-
-                // empty line trim whitespaces and write to edits buffer
-                if (currentLine.length === 0 && saveBlockNumber.length === 0) {
-                    textEdits.push(vscode.TextEdit.replace(line.range, currentLine));
-                    continue;
-                }
-                if (
-                    currentLine.indexOf("$DO") === 0 ||
-                    currentLine.indexOf("$REPEAT") === 0 ||
-                    currentLine.indexOf("$FOR") === 0 ||
-                    (currentLine.indexOf("$IF") === 0 && currentLine.indexOf("$GOTO") === -1) ||
-                    currentLine.indexOf("$WHILE") === 0 ||
-                    currentLine.indexOf("#VAR") === 0
-                ) {
-                    // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                    currentPos = currentPos + whiteSpaces;
-                } else if (currentLine.indexOf("$SWITCH") === 0) {
-                    // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                    currentPos = currentPos + whiteSpaces * 2;
-                } else if (
-                    currentLine.indexOf("$ENDDO") === 0 ||
-                    currentLine.indexOf("$UNTIL") === 0 ||
-                    currentLine.indexOf("$ENDFOR") === 0 ||
-                    currentLine.indexOf("$ENDIF") === 0 ||
-                    currentLine.indexOf("$ENDWHILE") === 0 ||
-                    currentLine.indexOf("#ENDVAR") === 0
-                ) {
-                    // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
-                    currentPos = currentPos - whiteSpaces;
-                    if (currentPos < 0) {
-                        currentPos = 0;
-                    }
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                } else if (currentLine.indexOf("$ENDSWITCH") === 0) {
-                    // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
-                    currentPos = currentPos - whiteSpaces * 2;
-                    if (currentPos < 0) {
-                        currentPos = 0;
-                    }
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                } else if (
-                    currentLine.indexOf("$ELSEIF") === 0 ||
-                    currentLine.indexOf("$ELSE") === 0 ||
-                    currentLine.indexOf("$CASE") === 0 ||
-                    currentLine.indexOf("$DEFAULT") === 0
-                ) {
-                    // insert line at actual position - TabSize inserted
-                    currentPos = currentPos - whiteSpaces;
-                    if (currentPos < 0) {
-                        currentPos = 0;
-                    }
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                    currentPos = currentPos + whiteSpaces;
-                } else {
-                    // insert line at actual position
-                    newLine = newLineForBeautifier(currentLine, currentPos);
-                }
-                if (saveBlockNumber.length !== 0) {
-                    newLine = " " + newLine;
-                    if (saveBlockNumber.endsWith(":")) {
-                        newLine = saveBlockNumber + newLine.trimEnd().substring(1);
-                    }
-                    else {
-                        newLine = saveBlockNumber + newLine.trimEnd();
-                    }
-                } else {
-                    newLine = newLine.trimEnd();
-                }
-                outputChannel.appendLine(newLine);
-                textEdits.push(vscode.TextEdit.replace(line.range, newLine));
-            }
-
-            syntaxArray.multilines.forEach((multiline: parser.Match) => {
-                const start = multiline.location.start.line;
-                const end = multiline.location.end.line;
-                for (let lineNumber = start; lineNumber < end; lineNumber++) {
-                    const line: vscode.TextLine = document.lineAt(lineNumber);
-                    newLine = " ".repeat(whiteSpaces) + line.text;
-                    textEdits.push(vscode.TextEdit.replace(line.range, newLine));
-                }
-            });
-        }
-        // write back edits
-        const workEdits = new vscode.WorkspaceEdit();
-        workEdits.set(document.uri, textEdits); // give the edits
-        vscode.workspace.applyEdit(workEdits); // apply the edits
-        return;
-    }
-}
-
-function newLineForBeautifier(line: string, whiteSpaces: number) {
-    let newLine = "";
-    let count: number = 0;
-    while (count !== whiteSpaces) {
-        count++;
-        newLine = newLine + " ";
-    }
-    newLine = newLine + line;
-    return newLine;
-}
-
 export function findNonAsciiCharacters(): void {
     updateDecorations();
 }
@@ -1048,3 +825,54 @@ function findAllToolCalls(): any {
     vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
 
+/**
+ * Aligns the first equal signs in the current editor selection below each other.
+ */
+function alignEqualSign(): void {
+    const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    if (editor && editor.document) {
+        const selection: vscode.Selection = editor.selection;
+        if (!selection.isEmpty) {
+            const lines: Array<EqSignLine> = new Array();
+            // collect all selected lignes with "="
+            for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
+                //get intersection of selection and current line to only handle selected part when in first or last line
+                const range = selection.intersection(editor.document.lineAt(ln).range);
+                if (range && editor.document.getText(range).includes("=")) {
+                    lines.push(new EqSignLine(editor.document.getText(range), range));
+                }
+            }
+
+            // align equal signs
+            const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
+            const textEdits: vscode.TextEdit[] = [];
+            lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
+
+            // write back edits
+            const workEdits = new vscode.WorkspaceEdit();
+            workEdits.set(editor.document.uri, textEdits); // give the edits
+            vscode.workspace.applyEdit(workEdits); // apply the edits
+        }
+    }
+}
+
+/**
+ * Helper class to save the information about the equal sign lines.
+ */
+class EqSignLine {
+    beforeEq: string;
+    afterEq: string;
+    range: vscode.Range;
+    constructor(line: string, range: vscode.Range) {
+        const eqIndex = line.indexOf("=");
+        this.beforeEq = line.substring(0, eqIndex).trimEnd();
+        this.afterEq = line.substring(eqIndex + 1).trimStart();
+        this.range = range;
+    }
+
+    getAligned(maxBeforeEqLength: number): string {
+        const lengthBefore = this.beforeEq.length + this.range.start.character;
+        const paddingLength = maxBeforeEqLength - lengthBefore;
+        return this.beforeEq + ' '.repeat(paddingLength) + " = " + this.afterEq;
+    }
+}
