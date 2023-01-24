@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // defining lsp options
     let serverModule = context.asAbsolutePath(
-        Path.join('out', 'server', 'src', 'server.js')
+        Path.join('server', 'out', 'server.js')
     );
 
     let serverOptions: ServerOptions = {

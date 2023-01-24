@@ -57,7 +57,7 @@
         "onCommand:isg-cnc.FindNonAsciiCharacters",
         "onCommand:isg-cnc.AlignEqualSigns"
     ],
-    "main": "./out/src/extension.js",
+    "main": "./out/extension.js",
     "contributes": {
         "configurationDefaults": {
             "[isg-cnc]": {
@@ -442,8 +442,8 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "compile": "tsc -p ./ && tsc -p ./server",
+        "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "node ./out/test/runTest.js"
