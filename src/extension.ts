@@ -8,6 +8,12 @@ import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
 import * as parser from "./util/ncParsing/parser";
 import * as Formatter from "./util/Formatter";
+import {
+    LanguageClient,
+    LanguageClientOptions,
+    ServerOptions,
+    TransportKind
+} from 'vscode-languageclient/node';
 let language: string;
 let docuPath: string;
 
@@ -60,6 +66,7 @@ const regExTechnology = new RegExp("([TFS])([0-9]+)");
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 
+let client: LanguageClient;
 /**
  * This method is called when the extension is activated
  *
@@ -76,16 +83,21 @@ export function activate(context: vscode.ExtensionContext): void {
     //get config params in module scope lets
     updateConfig();
 
+    // defining lsp options
+    let serverModule = context.asAbsolutePath(
+        Path.join('out', 'server', 'src', 'server.js')
+    );
 
-    // Output extension name and version number in console and output window ISG-CNC
-    if (packageFile) {
-        vscode.window.showInformationMessage(
-            "Started: " + packageFile.displayName + " V" + packageFile.version
-        );
-        outputChannel.appendLine(
-            "Started: " + packageFile.displayName + " V" + packageFile.version
-        );
-    }
+    let serverOptions: ServerOptions = {
+        module: serverModule, transport: TransportKind.ipc
+    };
+    const clientOptions: LanguageClientOptions = {
+        documentSelector: [{ language: 'isg-cnc' }]
+    };
+
+    // start the cnc language server
+    client = new LanguageClient("cnc-client", serverOptions, clientOptions);
+    client.start();
 
     // 👍 formatter implemented using API
     vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new Formatter.DocumentRangeFormattingEditProvider());
@@ -197,6 +209,16 @@ export function activate(context: vscode.ExtensionContext): void {
 
     if (activeEditor) {
         triggerUpdateDecorations();
+    }
+
+    // Output extension name and version number in console and output window ISG-CNC
+    if (packageFile) {
+        vscode.window.showInformationMessage(
+            "Started: " + packageFile.displayName + " V" + packageFile.version
+        );
+        outputChannel.appendLine(
+            "Started: " + packageFile.displayName + " V" + packageFile.version
+        );
     }
 }
 
@@ -767,6 +789,10 @@ function getContextbasedSite(): string {
 export function deactivate(): void {
     outputChannel.appendLine("Close vscode-isg-cnc");
     outputChannel.dispose();
+
+    if (client) {
+        client.stop();
+    }
 }
 
 export function findNonAsciiCharacters(): void {
