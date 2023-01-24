@@ -1,7 +1,3 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
 import {
 	createConnection,
 	TextDocuments,
@@ -20,7 +16,7 @@ import {
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-
+import * as parser from './parserGlue';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -72,52 +68,6 @@ connection.onInitialized(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
-	connection.window.showInformationMessage('Hello World! form server side');
-});
-
-// The example settings
-interface ExampleSettings {
-	maxNumberOfProblems: number;
-}
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
-
-// Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
-
-connection.onDidChangeConfiguration(change => {
-	if (hasConfigurationCapability) {
-		// Reset all cached document settings
-		documentSettings.clear();
-	} else {
-		globalSettings = <ExampleSettings>(
-			(change.settings.languageServerExample || defaultSettings)
-		);
-	}
-});
-
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: 'languageServerExample'
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
-
-// Only keep settings for open documents
-documents.onDidClose(e => {
-	documentSettings.delete(e.document.uri);
 });
 
 // This handler provides the initial list of the completion items.
@@ -155,6 +105,31 @@ connection.onCompletionResolve(
 		return item;
 	}
 );
+
+connection.onDefinition((params) => {
+    const document = documents.get(params.textDocument.uri);
+    const position = params.position;
+
+	if(!document || !position){
+		return;
+	}
+
+    // Use parser to get the identifier at the given position
+    const identifier = parser.getIdentifierAtPosition(document, position);
+    if (!identifier) {
+        return null;
+    }
+
+    // Use your syntax tree to find the definition of the identifier
+    const definition = parser.findDefinition(identifier);
+    /* if (!definition) {
+        return null;
+    } */
+
+    // Return the definition
+    return;
+});
+
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
