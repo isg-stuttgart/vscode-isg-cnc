@@ -17,6 +17,7 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
+import * as vscode from "vscode";
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -108,26 +109,23 @@ connection.onCompletionResolve(
 
 connection.onDefinition((params) => {
     const document = documents.get(params.textDocument.uri);
-    const position = params.position;
-
-	if(!document || !position){
+	let definition = null;
+	if(!document){
 		return;
 	}
 
-    // Use parser to get the identifier at the given position
-    const identifier = parser.getIdentifierAtPosition(document, position);
-    if (!identifier) {
-        return null;
-    }
-
-    // Use your syntax tree to find the definition of the identifier
-    const definition = parser.findDefinition(identifier);
-    /* if (!definition) {
-        return null;
-    } */
-
+    const line = params.position.line;
+    const column = params.position.character;
+	const match = parser.getMatchAtPosition(document.getText(), new vscode.Position(line,column));
+	if(!match){
+		return;
+	}
+	switch(match.type){
+		case parser.matchTypes.prgCall:
+			parser.getDefinition(document.getText(), match);
+	}
     // Return the definition
-    return;
+    return null; // TODO
 });
 
 
