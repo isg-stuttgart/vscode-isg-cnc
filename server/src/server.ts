@@ -16,8 +16,8 @@ import {
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-//import * as parser from './parserGlue';
-import * as vscode from "vscode";
+import * as parser from './parserGlue';
+import { Position } from './util';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -53,7 +53,8 @@ connection.onInitialize((params: InitializeParams) => {
 			// Tell the client that this server supports code completion.
 			completionProvider: {
 				resolveProvider: true
-			}
+			},
+			definitionProvider: true
 		}
 	};
 
@@ -73,52 +74,6 @@ connection.onInitialized(() => {
 	}
 
 	connection.window.showInformationMessage('Hello World! form server side');
-});
-
-
-// The example settings
-interface ExampleSettings {
-	maxNumberOfProblems: number;
-}
-
-// The global settings, used when the `workspace/configuration` request is not supported by the client.
-// Please note that this is not the case when using this server with the client provided in this example
-// but could happen with other clients.
-const defaultSettings: ExampleSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: ExampleSettings = defaultSettings;
-
-// Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<ExampleSettings>> = new Map();
-
-connection.onDidChangeConfiguration(change => {
-	if (hasConfigurationCapability) {
-		// Reset all cached document settings
-		documentSettings.clear();
-	} else {
-		globalSettings = <ExampleSettings>(
-			(change.settings.languageServerExample || defaultSettings)
-		);
-	}
-});
-
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: 'languageServerExample'
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
-
-// Only keep settings for open documents
-documents.onDidClose(e => {
-	documentSettings.delete(e.document.uri);
 });
 
 
@@ -158,7 +113,15 @@ connection.onCompletionResolve(
 	}
 );
 
-//connection.onDefinition(docPos => parser.getDefinition(docPos));
+connection.onDefinition((docPos) => {
+	const textDocument = documents.get(docPos.textDocument.uri);
+	if(!textDocument){
+		return null;
+	}
+    const text = textDocument.getText(); 
+    const position: Position = docPos.position;
+	return parser.getDefinition(text, position, docPos.textDocument.uri);
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
