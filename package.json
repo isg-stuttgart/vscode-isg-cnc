@@ -461,6 +461,7 @@
         "mocha": "^9.1.1",
         "node-gyp": "^9.1.0",
         "peggy": "^2.0.1",
+        "ts-pegjs": "^2.1.0",
         "typedoc": "^0.22.18",
         "typescript": "^4.4.3"
     },

@@ -16,7 +16,25 @@
 			"group": {
 				"kind": "build",
 				"isDefault": true
-			}
-		}
+			},
+			"dependsOn":["generateParser"]
+		},
+		{
+            "type": "shell",
+            "label": "generateParser",
+            "command": "peggy",
+            "args": [
+                "--plugin",
+                "./node_modules/ts-pegjs/src/tspegjs",
+
+                "--extra-options-file",
+                "pegconfig.json",
+                
+                "-o",
+                "server/src/ncParser.ts",
+                
+                "server/src/ncGrammar.pegjs"
+            ],
+        },
 	]
 }

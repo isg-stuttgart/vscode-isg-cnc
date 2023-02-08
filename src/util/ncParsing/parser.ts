@@ -1,7 +1,6 @@
-import { match } from "assert";
-import * as fs from "fs";
+
 import * as peggy from "peggy";
-import * as ncParser from "./peggyParser";
+import * as ncParser from "../../../server/src/ncParser";
 export interface Match {
     name: Match | null;
     type: string;

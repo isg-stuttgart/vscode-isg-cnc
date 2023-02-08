@@ -18,6 +18,14 @@
 			"preLaunchTask": "${defaultBuildTask}"
 		},
 		{
+			"type": "node",
+			"request": "attach",
+			"name": "Attach to Server",
+			"port": 6009,
+			"restart": true,
+			"outFiles": ["${workspaceRoot}/server/out/**/*.js"]
+		},
+		{
 			"name": "Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",
@@ -31,6 +39,12 @@
 			"preLaunchTask": "${defaultBuildTask}",
 			"autoAttachChildProcesses": true,
 			"internalConsoleOptions": "openOnSessionStart",
+		}
+	],
+	"compounds": [
+		{
+			"name": "Client + Server",
+			"configurations": ["Run Extension", "Attach to Server"]
 		}
 	]
 }
