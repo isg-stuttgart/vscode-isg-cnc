@@ -22,10 +22,10 @@
     
   class Match {                                             // holds information about a relevant match
       type;                                                 // the type of the match e.g. prgCall
-      content;                                              // the syntax tree of this match
-      location;                                             // the location of the match
-      text;
       name;
+      location;                                             // the location of the match
+      content;                                              // the syntax tree of this match
+      text;
       constructor(type, content, location, text,name) {
         this.type = type;
         this.content = content;
@@ -63,7 +63,7 @@ program "program"
 / mainprogram                                               // a program
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= comment? "%L" whitespace+ title:$name content:body{      // each subprogram requires a title and a body
+= comment? "%L" whitespace+ title:$name content:body{       // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), title);
 }
 
@@ -74,8 +74,9 @@ mainprg_title "mainprg_title"                               // the title of the 
 = "%" whitespaces title:name
 
 body "body"                                                 // the body of a (sub-) program
-= ($(whitespaces linebreak)									                // consume empty lines / rest of lines
-/ ( whitespaces (comment / block) whitespaces linebreak?))+ // the body is a list of comments and blocks
+= (!(("%L" whitespace+ title:$name)/mainprg_title)           // end body when new program part reached
+($(whitespaces linebreak)									// consume empty lines / rest of lines
+/ ( whitespaces (comment / block) whitespaces linebreak?)))+ // the body is a list of comments and blocks
 
 comment "comment"                                           // comments are either:
 = line_comment                                              // line comments, i.e.,  ";" or "()" or
