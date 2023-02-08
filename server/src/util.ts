@@ -1,7 +1,7 @@
 import * as peggy from "peggy";
 
 export class Match {                                             // holds information about a relevant match
-    type:string;                                                 // the type of the match e.g. prgCall
+    type:string;                                                 // the type of the match
     content:any;                                              // the syntax tree of this match
     location:peggy.LocationRange;                                             // the location of the match
     text:string|null;
@@ -25,7 +25,11 @@ export class Position{
 }
 export const matchTypes = {
     toolCall: "toolCall",
-    prgCall: "prgCall",
+    localSubPrg: "localSubPrg",
+    localPrgCall: "localPrgCall",
+    globalPrgCall: "globalPrgCall",
+    localCycleCall: "localCycleCall",
+    globalCycleCall: "globalCycleCall",
     controlBlock: "controlBlock",
     multiline: "multiline",
     trash: "trash",

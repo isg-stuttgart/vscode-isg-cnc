@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from "path";
 import * as parser from "./ncParsing/parser";
+import { matchTypes } from "../../server/src/util";
+
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
 
@@ -203,7 +205,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     throw tooManyMatchesException;
                 }
                 let matchToHiglight: parser.Match;
-                if (match.type === parser.matchTypes.prgCall && match.name !== null) {
+                if ([matchTypes.localPrgCall, matchTypes.globalPrgCall, matchTypes.localCycleCall, matchTypes.globalCycleCall].includes(match.type) && match.name !== null) {
                     matchToHiglight = match.name; // only highlight name of prgCall if existing
                 } else {
                     matchToHiglight = match;
@@ -427,12 +429,12 @@ function ncFileOpened(): boolean {
     const editor = vscode.window.activeTextEditor;
     let isIsgCnc: boolean = false;
     if (editor) {
-       if(editor.document){
-        const isIsgCncNumber = vscode.languages.match("isg-cnc", editor.document);
-        if (isIsgCncNumber > 0) {
-            isIsgCnc = true;
+        if (editor.document) {
+            const isIsgCncNumber = vscode.languages.match("isg-cnc", editor.document);
+            if (isIsgCncNumber > 0) {
+                isIsgCnc = true;
+            }
         }
-       }       
     }
     return isIsgCnc;
 }

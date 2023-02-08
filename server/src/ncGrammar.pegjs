@@ -21,7 +21,7 @@
     }
     
   class Match {                                             // holds information about a relevant match
-      type;                                                 // the type of the match e.g. prgCall
+      type;                                                 // the type of the match
       name;
       location;                                             // the location of the match
       content;                                              // the syntax tree of this match

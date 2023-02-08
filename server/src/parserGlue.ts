@@ -21,10 +21,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     if (!match) {
         return null;
     }
-
+    let local: boolean = true;
     let defType: string;
     switch (match.type) {
-        case matchTypes.prgCall:
+        case matchTypes.localPrgCall:
             defType = matchTypes.trash; // TODO
             /* {
                 uri: uri,
@@ -42,8 +42,7 @@ function findDefinition(tree: any, toSearch: Match, currentDef: Match | null): M
     let defType: string;
     let res: Match | null = null;
     switch (toSearch.type) {
-        case matchTypes.prgCall:
-            defType = ""; // TODO prg def
+        
     }
     if (Array.isArray(tree)) {
         tree.forEach(e => {
