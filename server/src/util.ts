@@ -1,5 +1,13 @@
 import * as peggy from "peggy";
 
+export class Document{
+    uri: string;
+    text: string;
+    constructor(uri: string, text: string){
+        this.uri = uri;
+        this.text = text;
+    }
+}
 export class Match {                                             // holds information about a relevant match
     type:string;                                                 // the type of the match
     content:any;                                              // the syntax tree of this match

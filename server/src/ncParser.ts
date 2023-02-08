@@ -8,7 +8,7 @@
 "use strict";
 
 
-	const types = {
+	 const types = {
       toolCall: "toolCall",
       localSubPrg: "localSubPrg",
       localPrgCall: "localPrgCall",
@@ -24,7 +24,7 @@
     }
     
   class Match {                                             // holds information about a relevant match
-      type;                                                 // the type of the match
+      type;                                                 // the type of the match e.g. prgCall
       name;
       location;                                             // the location of the match
       content;                                              // the syntax tree of this match
@@ -350,14 +350,14 @@ function peg$parse(input: string, options?: IParseOptions) {
   };
   const peg$c83 = peg$otherExpectation("prg_call");
   const peg$c84 = peg$otherExpectation("local_subprg_call");
-  const peg$c85 = "L";
-  const peg$c86 = peg$literalExpectation("L", false);
+  const peg$c85 = "LL";
+  const peg$c86 = peg$literalExpectation("LL", false);
   const peg$c87 = function(name: any): any {
   	return new Match(types.localPrgCall, null, location(), text(), name);
   };
   const peg$c88 = peg$otherExpectation("global_subprg_call");
-  const peg$c89 = "LL";
-  const peg$c90 = peg$literalExpectation("LL", false);
+  const peg$c89 = "L";
+  const peg$c90 = peg$literalExpectation("L", false);
   const peg$c91 = function(name: any): any {
   	return new Match(types.globalPrgCall, null, location(), text(), name);
   };
@@ -2946,9 +2946,9 @@ function peg$parse(input: string, options?: IParseOptions) {
 
     peg$silentFails++;
     s0 = peg$currPos;
-    if (input.charCodeAt(peg$currPos) === 76) {
+    if (input.substr(peg$currPos, 2) === peg$c85) {
       s1 = peg$c85;
-      peg$currPos++;
+      peg$currPos += 2;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) { peg$fail(peg$c86); }
@@ -2987,9 +2987,9 @@ function peg$parse(input: string, options?: IParseOptions) {
 
     peg$silentFails++;
     s0 = peg$currPos;
-    if (input.substr(peg$currPos, 2) === peg$c89) {
+    if (input.charCodeAt(peg$currPos) === 76) {
       s1 = peg$c89;
-      peg$currPos += 2;
+      peg$currPos++;
     } else {
       s1 = peg$FAILED;
       if (peg$silentFails === 0) { peg$fail(peg$c90); }
@@ -3052,20 +3052,20 @@ function peg$parse(input: string, options?: IParseOptions) {
     peg$silentFails++;
     s0 = peg$currPos;
     s1 = peg$currPos;
-    if (input.substr(peg$currPos, 2) === peg$c89) {
-      s2 = peg$c89;
+    if (input.substr(peg$currPos, 2) === peg$c85) {
+      s2 = peg$c85;
       peg$currPos += 2;
     } else {
       s2 = peg$FAILED;
-      if (peg$silentFails === 0) { peg$fail(peg$c90); }
+      if (peg$silentFails === 0) { peg$fail(peg$c86); }
     }
     if (s2 as any === peg$FAILED) {
       if (input.charCodeAt(peg$currPos) === 76) {
-        s2 = peg$c85;
+        s2 = peg$c89;
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c86); }
+        if (peg$silentFails === 0) { peg$fail(peg$c90); }
       }
     }
     if (s2 as any !== peg$FAILED) {

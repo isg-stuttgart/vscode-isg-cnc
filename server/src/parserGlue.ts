@@ -2,8 +2,8 @@ import { match } from "assert";
 import * as fs from "fs";
 
 import * as ncParser from "./ncParser";
-import { Match, Position, compareLocation, matchTypes } from "./util";
-
+import { Document, Match, Position, compareLocation, matchTypes } from "./util";
+import { TextDocument } from "vscode";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -11,60 +11,95 @@ import { Match, Position, compareLocation, matchTypes } from "./util";
  * @param uri The file uri
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string) {
-    let definition = null;
-
+export function getDefinition(fileContent: string, position: Position, uri: string, allDocs: Array<Document>) {
+    let defMatch: Match | null = null;
+    let defUri = uri;
     // parse the file content and search for the selected position
     const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
     const match = findMatch(parseResults.fileTree, position);
-    
-    if (!match) {
+
+    if (!match || !match.name) {
         return null;
     }
     let local: boolean = true;
     let defType: string;
+
+    //determine the defType e.g. localSubPrg
     switch (match.type) {
         case matchTypes.localPrgCall:
-            defType = matchTypes.trash; // TODO
-            /* {
-                uri: uri,
-                range: {
-                    start: { line: match.location.start.line - 1, character: 0 },
-                    end: { line: match.location.end.line - 1, character: 0}                
-                }
-            }; */
+            defType = matchTypes.localSubPrg;
+            break;
+
+        default: return null;
     }
 
-    return definition;
+    if (local) {
+        defMatch = findDefinition(parseResults.fileTree, defType, match.name);
+    } else {
+
+        allDocs.forEach(doc => {
+            if (defMatch === null && match.name) {
+                const fileContent = doc.text;
+                const parsedDoc: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+                defMatch = findDefinition(parsedDoc, defType, match.name);
+                if (defMatch !== null) {
+                    defUri = doc.uri;
+                }
+            };
+        });
+    }
+    if (!defMatch) {
+        return null;
+    }
+    return {
+        uri: uri,
+        range: {
+            start: { line: defMatch.location.start.line - 1, character: defMatch.location.start.column - 1 },
+            end: { line: defMatch.location.end.line - 1, character: defMatch.location.end.column - 1 }
+        }
+    };
 }
 
-function findDefinition(tree: any, toSearch: Match, currentDef: Match | null): Match | null {
-    let defType: string;
+/**
+ * Recursively find the definition of the given type and name within the tree
+ * @param tree the current subtree to search 
+ * @param defType the definition type e.g. localPrgCall
+ * @param name the name/identifier of the definition
+ * @returns the definition match if existing, otherwise null
+ */
+function findDefinition(tree: any, defType: string, name: string): Match | null {
     let res: Match | null = null;
-    switch (toSearch.type) {
-        
-    }
+
+    // if no match found yet, search in other subtree
     if (Array.isArray(tree)) {
         tree.forEach(e => {
-            // when element is a Match (Subtree) try to search more precise, if not possible we found our match
-            if (e.type) {
-                const match = e as Match;
-                // correct
-                if (match.type === defType && match.name === toSearch.name && currentDef) {
-                    res = currentDef;
-                } else {
-                    res = findDefinition(match, toSearch, null);
-                }
-            }
-            // when element is also array then search in this
-            else if (Array.isArray(e)) {
-                res = findDefinition(match, toSearch, null);
+            if (!res) {
+                res = findDefinition(e, defType, name);
             }
         });
     }
 
+
+    // when element is a Match (Subtree) , otherwise 
+    if (tree && tree.type) {
+        const match = tree as Match;
+        // if correct defType and name we found the definition
+        if (match.type === defType && match.name === name){
+            res = match;
+        // else search within the match-subtree
+        }else{
+            res = findDefinition(match.content, defType, name);
+        }
+    }
     return res;
 }
+
+/**
+ * Recursively find the most precise match at the given Position
+ * @param tree the current subtree to search in
+ * @param position the position where the match should be found
+ * @returns the most precise match if existing, otherwise null
+ */
 function findMatch(tree: any, position: Position): Match | null {
 
     let res: Match | null = null;
@@ -92,10 +127,6 @@ function findMatch(tree: any, position: Position): Match | null {
                 res = match;
             }
         }
-    }
-
-    if (tree && typeof tree !== "string") {
-        console.log("Current tree: " + JSON.stringify(tree) + "\nCurrent result: " + JSON.stringify(res) + "\n");
     }
     return res;
 }

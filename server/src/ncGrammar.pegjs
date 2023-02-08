@@ -5,7 +5,7 @@
 //----------------------------------------------------------
 
 {{
-	const types = {
+	 const types = {
       toolCall: "toolCall",
       localSubPrg: "localSubPrg",
       localPrgCall: "localPrgCall",
@@ -21,7 +21,7 @@
     }
     
   class Match {                                             // holds information about a relevant match
-      type;                                                 // the type of the match
+      type;                                                 // the type of the match e.g. prgCall
       name;
       location;                                             // the location of the match
       content;                                              // the syntax tree of this match
@@ -213,12 +213,12 @@ prg_call "prg_call"                                         // a subprogram/cycl
 = cycle_call/local_subprg_call/global_subprg_call
 
 local_subprg_call "local_subprg_call"
-= "L" gap name:prg_name{
+= "LL" gap name:prg_name{
 	return new Match(types.localPrgCall, null, location(), text(), name);
 }
 
 global_subprg_call "global_subprg_call"
-= "LL" gap name:prg_name{
+= "L" gap name:prg_name{
 	return new Match(types.globalPrgCall, null, location(), text(), name);
 }
 

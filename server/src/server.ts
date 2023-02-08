@@ -10,14 +10,15 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	WorkspaceFolder
 } from 'vscode-languageserver/node';
 
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
-import { Position } from './util';
+import { Document, Position } from './util';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -29,7 +30,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
-
+let rootPath;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
@@ -121,7 +122,12 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri);
+
+		// collect all documents in workspace of cnc language
+		const allDocs = new Array<Document>();
+		// TODO
+		
+		return parser.getDefinition(text, position, docPos.textDocument.uri, allDocs);
 	} catch (error) {
 		console.error(error);
 	}
