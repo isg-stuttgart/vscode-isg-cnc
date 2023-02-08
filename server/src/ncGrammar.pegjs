@@ -7,7 +7,11 @@
 {{
 	const types = {
       toolCall: "toolCall",
-      prgCall: "prgCall",
+      localSubPrg: "localSubPrg",
+      localPrgCall: "localPrgCall",
+      globalPrgCall: "globalPrgCall",
+      localCycleCall: "localCycleCall",
+      globalCycleCall: "globalCycleCall",
       controlBlock: "controlBlock",
       multiline: "multiline",
       trash: "trash",
@@ -59,10 +63,9 @@ program "program"
 / mainprogram                                               // a program
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= comment? subprg_title body                                // each subprogram requires a title and a body
-
-subprg_title "subprg_title"                                 // title of a subprogram
-= "%L" whitespace+ title:name
+= comment? "%L" whitespace+ title:$name content:body{      // each subprogram requires a title and a body
+ return new Match(types.localSubPrg, content, location(), text(), title);
+}
 
 mainprogram "mainprogram"                                   // the main program
 = $(comment? mainprg_title?) body                           // for a main program, the title is optional
@@ -206,16 +209,22 @@ t_command "t_command"                                       // a command calling
 }
 
 prg_call "prg_call"                                         // a subprogram/cycle call
-= cycle_call/subprg_call
+= cycle_call/local_subprg_call/global_subprg_call
 
-subprg_call "sub_prg_call"
-= content:(("LL"/"L") gap prg_name){
-	return new Match(types.prgCall, content, location(), text(), content[2]);
+local_subprg_call "local_subprg_call"
+= "L" gap name:prg_name{
+	return new Match(types.localPrgCall, null, location(), text(), name);
+}
+
+global_subprg_call "global_subprg_call"
+= "LL" gap name:prg_name{
+	return new Match(types.globalPrgCall, null, location(), text(), name);
 }
 
 prg_name
 = non_delimiter+
 {return text()}
+
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
    "[" grayspaces ("NAME" grayspaces "=" grayspaces prg_name)?
@@ -224,7 +233,7 @@ cycle_call "cycle_call"
     if(content[6] !== null){
        name = content[6][4]
     }
-    return new Match(types.prgCall, content, location(), text(), name);
+    return new Match(types.localCycleCall, content, location(), text(), name);
   }
 
 squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"
