@@ -14,6 +14,7 @@ import {
     ServerOptions,
     TransportKind
 } from 'vscode-languageclient/node';
+import { debug } from "console";
 let language: string;
 let docuPath: string;
 
@@ -83,13 +84,21 @@ export function activate(context: vscode.ExtensionContext): void {
     //get config params in module scope lets
     updateConfig();
 
-    // defining lsp options
+    // The debug options for the server
+    // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
+    let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
     let serverModule = context.asAbsolutePath(
         Path.join('server', 'out', 'server.js')
     );
 
+    // defining lsp options
     let serverOptions: ServerOptions = {
-        module: serverModule, transport: TransportKind.ipc
+        run: { module: serverModule, transport: TransportKind.ipc },
+        debug: {
+            module: serverModule,
+            transport: TransportKind.ipc,
+            options: debugOptions
+        }
     };
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ language: 'isg-cnc' }]

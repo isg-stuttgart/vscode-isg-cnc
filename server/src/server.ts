@@ -114,13 +114,17 @@ connection.onCompletionResolve(
 );
 
 connection.onDefinition((docPos) => {
-	const textDocument = documents.get(docPos.textDocument.uri);
-	if(!textDocument){
-		return null;
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const text = textDocument.getText();
+		const position: Position = docPos.position;
+		return parser.getDefinition(text, position, docPos.textDocument.uri);
+	} catch (error) {
+		console.error(error);
 	}
-    const text = textDocument.getText(); 
-    const position: Position = docPos.position;
-	return parser.getDefinition(text, position, docPos.textDocument.uri);
 });
 
 // Make the text document manager listen on the connection
