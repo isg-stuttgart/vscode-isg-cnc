@@ -40,23 +40,6 @@
     },
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
-    "activationEvents": [
-        "onLanguage:isg-cnc",
-        "onView:cnc-show-filecontent",
-        "onCommand:isg-cnc.EncryptThis",
-        "onCommand:isg-cnc.DecryptThis",
-        "onCommand:isg-cnc.EncryptAnyFile",
-        "onCommand:isg-cnc.DecryptAnyFile",
-        "onCommand:isg-cnc.FindAllToolCalls",
-        "onCommand:isg-cnc.GoToPosition",
-        "onCommand:isg-cnc.ShowCursorFileOffsetInfobox",
-        "onCommand:isg-cnc.FindNextTFS",
-        "onCommand:isg-cnc.RemoveAllBlocknumbers",
-        "onCommand:isg-cnc.AddBlocknumbers",
-        "onCommand:isg-cnc.StartDocu",
-        "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:isg-cnc.AlignEqualSigns"
-    ],
     "main": "./out/extension.js",
     "contributes": {
         "configurationDefaults": {
