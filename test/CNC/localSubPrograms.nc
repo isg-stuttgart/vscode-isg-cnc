@@ -19,8 +19,9 @@ N19 M29          (M29 kann auch entfallen)
 N100 .....
 
 N105 .....
-
-N200 LL UP1      (Aufruf des 1. LUPs)
+$IF [Options]
+  N200 LL UP1      (Aufruf des 1. LUPs)
+$ENDIF
 
 .
 

@@ -1,9 +1,5 @@
-import { match } from "assert";
-import * as fs from "fs";
-
 import * as ncParser from "./ncParser";
 import { Document, Match, Position, compareLocation, matchTypes } from "./util";
-import { TextDocument } from "vscode";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
