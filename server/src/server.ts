@@ -10,8 +10,7 @@ import {
 	CompletionItemKind,
 	TextDocumentPositionParams,
 	TextDocumentSyncKind,
-	InitializeResult,
-	WorkspaceFolder
+	InitializeResult
 } from 'vscode-languageserver/node';
 
 import {
@@ -30,10 +29,10 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
-let rootPath;
+let rootPath: string | null;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
-
+	rootPath = params.rootUri;
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	hasConfigurationCapability = !!(
@@ -123,11 +122,7 @@ connection.onDefinition((docPos) => {
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
 
-		// collect all documents in workspace of cnc language
-		const allDocs = new Array<Document>();
-		// TODO
-		
-		return parser.getDefinition(text, position, docPos.textDocument.uri, allDocs);
+		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPath);
 	} catch (error) {
 		console.error(error);
 	}

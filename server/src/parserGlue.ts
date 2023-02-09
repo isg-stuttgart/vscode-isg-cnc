@@ -1,5 +1,5 @@
 import * as ncParser from "./ncParser";
-import { Document, Match, Position, compareLocation, matchTypes } from "./util";
+import { Document, Match, Position, compareLocation, matchTypes, getAllDocsRecursively } from "./util";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -7,7 +7,7 @@ import { Document, Match, Position, compareLocation, matchTypes } from "./util";
  * @param uri The file uri
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, allDocs: Array<Document>) {
+export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null) {
     let defMatch: Match | null = null;
     let defUri = uri;
     // parse the file content and search for the selected position
@@ -25,15 +25,16 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         case matchTypes.localPrgCall:
             defType = matchTypes.localSubPrg;
             break;
-
+        case matchTypes.globalPrgCall:
+            defType = matchTypes.globalPrgCall;
+            break;
         default: return null;
     }
 
     if (local) {
         defMatch = findDefinition(parseResults.fileTree, defType, match.name);
-    } else {
-
-        allDocs.forEach(doc => {
+    } else if (rootPath && defType === matchTypes.globalPrgCall) {
+        /* getAllDocsRecursively(rootPath).forEach(doc => {
             if (defMatch === null && match.name) {
                 const fileContent = doc.text;
                 const parsedDoc: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
@@ -42,7 +43,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
                     defUri = doc.uri;
                 }
             };
-        });
+        }); */
     }
     if (!defMatch) {
         return null;
@@ -80,10 +81,10 @@ function findDefinition(tree: any, defType: string, name: string): Match | null 
     if (tree && tree.type) {
         const match = tree as Match;
         // if correct defType and name we found the definition
-        if (match.type === defType && match.name === name){
+        if (match.type === defType && match.name === name) {
             res = match;
-        // else search within the match-subtree
-        }else{
+            // else search within the match-subtree
+        } else {
             res = findDefinition(match.content, defType, name);
         }
     }
