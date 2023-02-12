@@ -16,6 +16,7 @@ N19 M29          (M29 kann auch entfallen)
 
 %MAIN            (Hauptprogramm)
 
+L subPrograms.nc
 N100 .....
 
 N105 .....

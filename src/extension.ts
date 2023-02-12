@@ -100,6 +100,7 @@ export function activate(context: vscode.ExtensionContext): void {
             options: debugOptions
         }
     };
+
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ language: 'isg-cnc' }]
     };

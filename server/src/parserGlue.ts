@@ -13,7 +13,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     // parse the file content and search for the selected position
     const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
     const match = findMatch(parseResults.fileTree, position);
-
+    let definition=null;
     if (!match || !match.name) {
         return null;
     }
@@ -33,7 +33,21 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 
     if (local) {
         defMatch = findDefinition(parseResults.fileTree, defType, match.name);
+        if (!defMatch) {
+            return null;
+        }
+        definition = {
+            uri: uri,
+            range: {
+                start: { line: defMatch.location.start.line - 1, character: defMatch.location.start.column - 1 },
+                end: { line: defMatch.location.end.line - 1, character: defMatch.location.end.column - 1 }
+            }
+        };
     } else if (rootPath && defType === matchTypes.globalPrgCall) {
+        definition = {uri: match.name, range: {
+            start: { line: 0, character: 0 },
+            end: { line: 0, character: 0 }
+        }};
         /* getAllDocsRecursively(rootPath).forEach(doc => {
             if (defMatch === null && match.name) {
                 const fileContent = doc.text;
@@ -45,16 +59,8 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             };
         }); */
     }
-    if (!defMatch) {
-        return null;
-    }
-    return {
-        uri: uri,
-        range: {
-            start: { line: defMatch.location.start.line - 1, character: defMatch.location.start.column - 1 },
-            end: { line: defMatch.location.end.line - 1, character: defMatch.location.end.column - 1 }
-        }
-    };
+    
+    return definition;
 }
 
 /**
