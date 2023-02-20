@@ -12,7 +12,7 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult
 } from 'vscode-languageserver/node';
-
+import { fileURLToPath } from 'node:url';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
@@ -32,7 +32,12 @@ let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
+
+	// save rootPath and convert it to normal fs-path
 	rootPath = params.rootUri;
+	if (rootPath) {
+		rootPath = fileURLToPath(rootPath);
+	}
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	hasConfigurationCapability = !!(

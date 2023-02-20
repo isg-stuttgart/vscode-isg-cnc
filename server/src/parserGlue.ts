@@ -1,5 +1,6 @@
+import { pathToFileURL } from "node:url";
 import * as ncParser from "./ncParser";
-import { Match, Position, compareLocation, matchTypes } from "./util";
+import { Match, Position, compareLocation, findFileInRootDir, matchTypes } from "./util";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -24,14 +25,18 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         case matchTypes.localPrgCall:
             defType = matchTypes.localSubPrg;
             break;
+        case matchTypes.localCycleCall:
+            defType = matchTypes.localSubPrg;
+            break;
         case matchTypes.globalPrgCall:
             defType = matchTypes.globalPrgCall;
+            local = false;
             break;
         default: return null;
     }
 
     if (local) {
-        defMatch = findDefinition(parseResults.fileTree, defType, match.name);
+        defMatch = findDefinitionWithinPrg(parseResults.fileTree, defType, match.name);
         if (!defMatch) {
             return null;
         }
@@ -43,22 +48,18 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             }
         };
     } else if (rootPath && defType === matchTypes.globalPrgCall) {
+        console.log(rootPath);
+        const defPath = findFileInRootDir(rootPath, match.name);
+        if (!defPath) {
+            return null;
+        }
+        const defUri:string = pathToFileURL(defPath).toString();
         definition = {
-            uri: match.name, range: {
+            uri: defUri, range: {
                 start: { line: 0, character: 0 },
                 end: { line: 0, character: 0 }
             }
         };
-        /* getAllDocsRecursively(rootPath).forEach(doc => {
-            if (defMatch === null && match.name) {
-                const fileContent = doc.text;
-                const parsedDoc: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
-                defMatch = findDefinition(parsedDoc, defType, match.name);
-                if (defMatch !== null) {
-                    defUri = doc.uri;
-                }
-            };
-        }); */
     }
 
     return definition;
@@ -71,14 +72,14 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param name the name/identifier of the definition
  * @returns the definition match if existing, otherwise null
  */
-function findDefinition(tree: any, defType: string, name: string): Match | null {
+function findDefinitionWithinPrg(tree: any, defType: string, name: string): Match | null {
     let res: Match | null = null;
 
     // if no match found yet, search in other subtree
     if (Array.isArray(tree)) {
         tree.forEach(e => {
             if (!res) {
-                res = findDefinition(e, defType, name);
+                res = findDefinitionWithinPrg(e, defType, name);
             }
         });
     }
@@ -92,7 +93,7 @@ function findDefinition(tree: any, defType: string, name: string): Match | null 
             res = match;
             // else search within the match-subtree
         } else {
-            res = findDefinition(match.content, defType, name);
+            res = findDefinitionWithinPrg(match.content, defType, name);
         }
     }
     return res;

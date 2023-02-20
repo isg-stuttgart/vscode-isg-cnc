@@ -82,4 +82,24 @@ export function getAllDocsRecursively(rootPath: string, allDocs: Document[] = []
     return allDocs;
 }
 
+/**
+ * Finds a file in a root directory and all subdirectories. Returns the path to the file or null if not found.
+ * @param rootPath 
+ * @param fileName 
+ * @returns 
+ */
+export function findFileInRootDir(rootPath: string, fileName: string): string | null {
+    let res: string | null = null;
+    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
+    for (const entry of dirEntries) {
+        const entryPath = path.join(rootPath, entry.name);
+        if (entry.isDirectory()) { //search in subdirectory
+            res = findFileInRootDir(entryPath, fileName);
+        } else if (entry.isFile() && entry.name === fileName) { //file found
+            res = entryPath;
+            break;
+        }
+    }
+    return res;
+}
 
