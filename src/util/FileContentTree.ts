@@ -205,11 +205,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     throw tooManyMatchesException;
                 }
                 let matchToHiglight: parser.Match;
-                if ([matchTypes.localPrgCall, matchTypes.globalPrgCall, matchTypes.localCycleCall, matchTypes.globalCycleCall].includes(match.type) && match.name !== null) {
-                    matchToHiglight = match.name; // only highlight name of prgCall if existing
-                } else {
-                    matchToHiglight = match;
-                }
+                matchToHiglight = match;
                 if (sorting === Sorting.lineByLine) {
                     addMatchToMatchLine(matchToHiglight, this.children.matchMap, ItemPosition.category);
                 } else if (sorting === Sorting.grouped) {
@@ -231,8 +227,12 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                 }
             });
         } catch (error) {
-            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
-            this.children.messages.push(messageItem);
+            if (matchCounter > 500) {
+                let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
+                this.children.messages.push(messageItem);
+            } else {
+                console.error(error);
+            }
         }
     }
 }
