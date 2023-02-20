@@ -1,7 +1,7 @@
 
 import * as peggy from "peggy";
-import * as ncParser from "../../../server/src/ncParser";
-import { matchTypes } from "../../../server/src/util";
+import { matchTypes } from "../../server/src/util";
+import * as ncParser from "../../server/src/ncParser";
 export interface Match {
     name: Match | null;
     type: string;

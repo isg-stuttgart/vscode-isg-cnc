@@ -5,6 +5,21 @@
 	"tasks": [
 		{
 			"type": "npm",
+			"script": "watch",
+			"problemMatcher": "$tsc-watch",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never"
+			},
+			"group": {
+				"kind": "build",
+			},
+			"dependsOn": [
+				"generateParser"
+			]
+		},
+		{
+			"type": "npm",
 			"script": "compile",
 			"problemMatcher": {
 				"base": "$tsc",
@@ -17,24 +32,18 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"dependsOn":["generateParser"]
+			"dependsOn": [
+				"generateParser"
+			]
 		},
 		{
-            "type": "shell",
-            "label": "generateParser",
-            "command": "peggy",
-            "args": [
-                "--plugin",
-                "./node_modules/ts-pegjs/src/tspegjs",
-
-                "--extra-options-file",
-                "pegconfig.json",
-                
-                "-o",
-                "server/src/ncParser.ts",
-                
-                "server/src/ncGrammar.pegjs"
-            ],
-        },
+			"label": "generateParser",
+			"type": "shell",
+			"command": "node ./server/parserGenerating/generateParser.js",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build"
+			}
+		}
 	]
 }

@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
 		"module": "commonjs",
 		"target": "ES2021",
 		"outDir": "out",
@@ -18,13 +19,15 @@
 		".vscode-test"
 	],
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"server/src/**/*",
 	],
 	"typedocOptions": {
 		"entryPoints": [
+			"server/src/server.ts",
 			"src/util/blowfish/blowfishIntegration.ts",
 			"src/extension.ts"
 		],
 		"out": "docs"
-	}
+	},
 }

@@ -1,5 +1,5 @@
 import * as ncParser from "./ncParser";
-import { Document, Match, Position, compareLocation, matchTypes, getAllDocsRecursively } from "./util";
+import { Match, Position, compareLocation, matchTypes } from "./util";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -9,11 +9,10 @@ import { Document, Match, Position, compareLocation, matchTypes, getAllDocsRecur
  */
 export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null) {
     let defMatch: Match | null = null;
-    let defUri = uri;
     // parse the file content and search for the selected position
     const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
     const match = findMatch(parseResults.fileTree, position);
-    let definition=null;
+    let definition = null;
     if (!match || !match.name) {
         return null;
     }
@@ -44,10 +43,12 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             }
         };
     } else if (rootPath && defType === matchTypes.globalPrgCall) {
-        definition = {uri: match.name, range: {
-            start: { line: 0, character: 0 },
-            end: { line: 0, character: 0 }
-        }};
+        definition = {
+            uri: match.name, range: {
+                start: { line: 0, character: 0 },
+                end: { line: 0, character: 0 }
+            }
+        };
         /* getAllDocsRecursively(rootPath).forEach(doc => {
             if (defMatch === null && match.name) {
                 const fileContent = doc.text;
@@ -59,7 +60,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             };
         }); */
     }
-    
+
     return definition;
 }
 
