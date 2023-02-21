@@ -41,11 +41,14 @@ export const matchTypes = {
     localCycleCall: "localCycleCall",
     globalCycleCall: "globalCycleCall",
     controlBlock: "controlBlock",
+    gotoBlocknumber: "gotoBlocknumber",
+    gotoLabel: "gotoLabel",
+    label: "label",
     multiline: "multiline",
     trash: "trash",
-    name: "name",
     skipBlock: "skipBlock",
-    blockNumber: "blockNumber"
+    blockNumber: "blockNumber",
+    blockNumberLabel: "blockNumberLabel"
 };
 
 

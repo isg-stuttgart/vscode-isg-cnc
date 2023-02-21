@@ -13,12 +13,15 @@
       localCycleCall: "localCycleCall",
       globalCycleCall: "globalCycleCall",
       controlBlock: "controlBlock",
+      gotoBlocknumber: "gotoBlocknumber",
+      gotoLabel: "gotoLabel",
+      label: "label",
       multiline: "multiline",
       trash: "trash",
-      name: "name",
       skipBlock: "skipBlock",
-      blockNumber: "blockNumber"
-    }
+      blockNumber: "blockNumber",
+      blockNumberLabel: "blockNumberLabel"
+  }
     
   class Match {                                             // holds information about a relevant match
       type;                                                 // the type of the match e.g. prgCall
@@ -74,9 +77,9 @@ mainprg_title "mainprg_title"                               // the title of the 
 = "%" whitespaces title:name
 
 body "body"                                                 // the body of a (sub-) program
-= (!(("%L" whitespace+ title:$name)/mainprg_title)           // end body when new program part reached
+= (!(("%L" whitespace+ title:$name)/mainprg_title)          // end body when new program part reached
 ($(whitespaces linebreak)									// consume empty lines / rest of lines
-/ ( whitespaces (comment / block) whitespaces linebreak?)))+ // the body is a list of comments and blocks
+/ ( whitespaces (comment / block) whitespaces linebreak?)))+// the body is a list of comments and blocks
 
 comment "comment"                                           // comments are either:
 = line_comment                                              // line comments, i.e.,  ";" or "()" or
@@ -120,8 +123,8 @@ block_body "block_body"
 }
 
 control_block "control_block"                               // a control block, i.e., $IF, $ELSE, $SWITCH etc.
-= if_block 
-/ grayspaces "$" non_linebreak*
+= if_block/gotoBlock 
+/ grayspaces "$" trash_line
     
 if_block "if_block"                                         // an if block
 = if_block_for_indentation                                  // this will be saved in controlBlocks
@@ -151,6 +154,22 @@ if_block_content
 = (!(grayspaces ("$ELSEIF"/"$ELSE"/"$ENDIF")                // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
   grayspaces linebreak?)block)*
   
+gotoBlock "gotoBlock"
+= gotoNCommand/gotoLabel
+
+gotoNCommand
+="$GOTO" gap "N" id:$non_neg_integer
+{
+    return new Match(types.gotoBlocknumber, null, location(), text(), id)
+}
+
+gotoLabel
+="$GOTO" gap "[" name:$([^\]]*) "]"{
+  const id = name.toLowerCase()
+  return new Match(types.gotoLabel, null, location(), text(), id)
+}
+
+
 plaintext_block "plaintext_block"                           // a block containing #-commands, plaintext command
 = grayspaces 
 ( var_block
@@ -185,23 +204,26 @@ default_line+){                                             // consume the last 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
 = (($grayspace+                                               
 /  prg_call                                                 
-/  command)+)
+/  command
+/ label)+)
 / trash_line
 linebreak?
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
-= ((!stop_trashing .)/whitespace)+                                       // last line, without linebreak
-{return text()}
+= (!stop_trashing .)+                          
+(non_delimiter)*                                            // dont stop within one token  
+{return "trash: " + text()}
 
 stop_trashing
-= linebreak/"\\"/grayspace/prg_call/command/control_block
+= linebreak/"\\"/grayspace/prg_call/command/control_block/label
 
 command "command"                                           // a tool call or other normal command
 = (t_command/($([A-Z] number)))                             // a tool call
  
 n_command "n_command"                                       // a command defining the blocknumber, i.e., N010
-= "N" non_neg_integer {
-  return new Match(types.blockNumber, null, location(), text(), null)
+= "N" id:$non_neg_integer colon:":"?{
+  const type = colon?types.blockNumberLabel:types.blockNumber
+  return new Match(type, null, location(), text(), id)
 }
 
 t_command "t_command"                                       // a command calling a specified tool, i.e., T1
@@ -228,13 +250,14 @@ prg_name
 
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
-   "[" grayspaces ("NAME" grayspaces "=" grayspaces prg_name)?
-   (bracket_multiline/[^\]\r\n]*) "]"){                     // brackets can contain a multline or a singleline
+   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)?
+   $(bracket_multiline/[^\]\r\n]*) "]"){                     // brackets can contain a multline or a singleline
+    const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
 	let name = null;
     if(content[6] !== null){
-       name = content[6][4]
+       name = content[6][1]
     }
-    return new Match(types.localCycleCall, content, location(), text(), name);
+    return new Match(type, content, location(), text(), name);
   }
 
 squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"
@@ -246,6 +269,14 @@ bracket_multiline
 / whitespaces line_comment?  linebreak)*                    // or whitelines or comment lines
 [^\]\r\n\\]* (linebreak whitespaces)?{                      // last line before "]"
 	return new Match(types.multiline, null, location(), null, null);
+}
+
+
+
+label                                                       // a label to which you can jump by goto statement
+= "[" name:$([^\]]*) "]"{
+  const id = name.toLowerCase()                             // labels are not case sensitive
+  return new Match(types.label, null, location(), text(), id) 
 }
 
 gap                                                         // a gap

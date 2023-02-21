@@ -28,9 +28,19 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         case matchTypes.localCycleCall:
             defType = matchTypes.localSubPrg;
             break;
+        case matchTypes.globalCycleCall:
+            defType = matchTypes.globalCycleCall;
+            local = false;
+            break;
         case matchTypes.globalPrgCall:
             defType = matchTypes.globalPrgCall;
             local = false;
+            break;
+        case matchTypes.gotoLabel:
+            defType = matchTypes.label;
+            break;
+        case matchTypes.gotoBlocknumber:
+            defType = matchTypes.blockNumberLabel;
             break;
         default: return null;
     }
@@ -47,13 +57,14 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
                 end: { line: defMatch.location.end.line - 1, character: defMatch.location.end.column - 1 }
             }
         };
-    } else if (rootPath && defType === matchTypes.globalPrgCall) {
-        console.log(rootPath);
+
+    } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
+        // jump at the beginning of the global program
         const defPath = findFileInRootDir(rootPath, match.name);
         if (!defPath) {
             return null;
         }
-        const defUri:string = pathToFileURL(defPath).toString();
+        const defUri: string = pathToFileURL(defPath).toString();
         definition = {
             uri: defUri, range: {
                 start: { line: 0, character: 0 },
