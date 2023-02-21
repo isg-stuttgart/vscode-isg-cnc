@@ -324,7 +324,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c61 = "N";
   const peg$c62 = peg$literalExpectation("N", false);
   const peg$c63 = function(id: any): any {
-      return new Match(types.gotoNCommand, null, location(), text(), id)
+      return new Match(types.gotoBlocknumber, null, location(), text(), id)
   };
   const peg$c64 = "[";
   const peg$c65 = peg$literalExpectation("[", false);

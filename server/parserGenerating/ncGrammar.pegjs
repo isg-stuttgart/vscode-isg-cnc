@@ -162,7 +162,7 @@ gotoBlock "gotoBlock"
 gotoNCommand                                                // goto statement to jump to blocknumber
 ="$GOTO" gap "N" id:$non_neg_integer
 {
-    return new Match(types.gotoNCommand, null, location(), text(), id)
+    return new Match(types.gotoBlocknumber, null, location(), text(), id)
 }
 
 gotoLabel                                                   // goto statement to jump to label
