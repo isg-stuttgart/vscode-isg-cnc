@@ -20,7 +20,9 @@
       trash: "trash",
       skipBlock: "skipBlock",
       blockNumber: "blockNumber",
-      blockNumberLabel: "blockNumberLabel"
+      blockNumberLabel: "blockNumberLabel",
+      varDeclaration: "varDeclaration",
+      variable:"variable"
   }
     
   class Match {                                             // holds information about a relevant match
@@ -157,13 +159,13 @@ if_block_content
 gotoBlock "gotoBlock"
 = gotoNCommand/gotoLabel
 
-gotoNCommand
+gotoNCommand                                                // goto statement to jump to blocknumber
 ="$GOTO" gap "N" id:$non_neg_integer
 {
-    return new Match(types.gotoBlocknumber, null, location(), text(), id)
+    return new Match(types.gotoNCommand, null, location(), text(), id)
 }
 
-gotoLabel
+gotoLabel                                                   // goto statement to jump to label
 ="$GOTO" gap "[" name:$([^\]]*) "]"{
   const id = name.toLowerCase()
   return new Match(types.gotoLabel, null, location(), text(), id)
@@ -176,16 +178,31 @@ plaintext_block "plaintext_block"                           // a block containin
 / $("#" non_linebreak*))
 
 var_block "var_block"                                       // a block of variable declarations
-= "#VAR" 
-  (grayline/(!endvar_line default_line))*
-  grayspaces "#ENDVAR"{
+= content:("#VAR" 
+  (grayline/(!endvar_line (var_dec/non_linebreak)))*
+  grayspaces "#ENDVAR"){
   numberableLinesUnsorted.add(location().start.line);
   numberableLinesUnsorted.add(location().end.line);
-  return text();
+  return content;
 }
 
+var_dec                                                     // var declaration
+= id:var_name $allocation?{
+return new Match(types.varDeclaration, null, location(), text(), id)
+}
+
+var_name
+= $("V." ("P"/"S"/"L") "." name vardec_index?)
+
+vardec_index
+= ("." name)/(("[" integer "]")*)
+
+allocation
+= gap "=" gap 
+  (("["[^\]]* "]")/number/string)
+
 endvar_line
-= (!"#ENDVAR" .)* "#ENDVAR"
+= (!"#ENDVAR" non_linebreak)* "#ENDVAR"
 
 default_block "default_block"                               // a default block containing "normal" NC-commands
 = multiline_default_block 
@@ -203,7 +220,8 @@ default_line+){                                             // consume the last 
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
 = (($grayspace+                                               
-/  prg_call                                                 
+/  prg_call
+/  var
 /  command
 / label)+)
 / trash_line
@@ -214,8 +232,12 @@ trash_line                                                  // lines which canno
 (non_delimiter)*                                            // dont stop within one token  
 {return "trash: " + text()}
 
+var
+=var_name{
+  return new Match(types.variable, null, location(), text(), text());
+}
 stop_trashing
-= linebreak/"\\"/grayspace/prg_call/command/control_block/label
+= linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
 
 command "command"                                           // a tool call or other normal command
 = (t_command/($([A-Z] number)))                             // a tool call

@@ -48,7 +48,9 @@ export const matchTypes = {
     trash: "trash",
     skipBlock: "skipBlock",
     blockNumber: "blockNumber",
-    blockNumberLabel: "blockNumberLabel"
+    blockNumberLabel: "blockNumberLabel",
+    varDeclaration: "varDeclaration",
+    variable:"variable"
 };
 
 

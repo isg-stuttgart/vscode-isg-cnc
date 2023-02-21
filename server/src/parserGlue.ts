@@ -42,6 +42,9 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         case matchTypes.gotoBlocknumber:
             defType = matchTypes.blockNumberLabel;
             break;
+        case matchTypes.variable:
+            defType = matchTypes.varDeclaration;
+            break;
         default: return null;
     }
 
