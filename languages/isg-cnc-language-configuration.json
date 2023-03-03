@@ -6,6 +6,7 @@
             "#COMMENT END"
         ]
     },
+    "wordPattern": "[\\S]+",
     "brackets": [
         [
             "{",
