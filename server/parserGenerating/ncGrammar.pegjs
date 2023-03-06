@@ -7,13 +7,19 @@
 {{
 	 const types = {
       toolCall: "toolCall",
+      
       localSubPrg: "localSubPrg",
       localPrgCall: "localPrgCall",
+      localPrgCallName: "localPrgCallName",
       globalPrgCall: "globalPrgCall",
+      globalPrgCallName: "globalPrgCallName",
       localCycleCall: "localCycleCall",
+      localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
+      globalCycleCallName: "globalCycleCallName",
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
+      goto: "goto",
       gotoLabel: "gotoLabel",
       label: "label",
       multiline: "multiline",
@@ -258,7 +264,8 @@ prg_call "prg_call"                                         // a subprogram/cycl
 
 local_subprg_call "local_subprg_call"
 = "LL" gap name:prg_name{
-	return new Match(types.localPrgCall, null, location(), text(), name);
+	const nameMatch = new Match(types.localPrgCallName, null, name.start, name.text, name.text)
+	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name);
 }
 
 global_subprg_call "global_subprg_call"
@@ -267,13 +274,12 @@ global_subprg_call "global_subprg_call"
 }
 
 prg_name
-= non_delimiter+
-{return text()}
+= $(non_delimiter+)
 
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
    "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)?
-   $(bracket_multiline/[^\]\r\n]*) "]"){                     // brackets can contain a multline or a singleline
+   $(bracket_multiline/[^\]\r\n]*) "]"){                    // brackets can contain a multline or a singleline
     const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
 	let name = null;
     if(content[6] !== null){
