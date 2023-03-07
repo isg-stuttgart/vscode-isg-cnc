@@ -41,6 +41,7 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "main": "./out/src/extension.js",
+    "activationEvents": [],
     "contributes": {
         "configurationDefaults": {
             "[isg-cnc]": {
