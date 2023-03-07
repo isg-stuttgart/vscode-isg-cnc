@@ -77,8 +77,6 @@ connection.onInitialized(() => {
 			connection.console.log('Workspace folder change event received.');
 		});
 	}
-
-	connection.window.showInformationMessage('Hello World! form server side');
 });
 
 
