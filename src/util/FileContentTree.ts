@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from "path";
-import * as parser from "./ncParsing/parser";
+import * as parser from "./parser";
+import { matchTypes } from "../../server/src/util";
+
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
 
@@ -203,11 +205,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     throw tooManyMatchesException;
                 }
                 let matchToHiglight: parser.Match;
-                if (match.type === parser.matchTypes.prgCall && match.name !== null) {
-                    matchToHiglight = match.name; // only highlight name of prgCall if existing
-                } else {
-                    matchToHiglight = match;
-                }
+                matchToHiglight = match;
                 if (sorting === Sorting.lineByLine) {
                     addMatchToMatchLine(matchToHiglight, this.children.matchMap, ItemPosition.category);
                 } else if (sorting === Sorting.grouped) {
@@ -229,8 +227,12 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                 }
             });
         } catch (error) {
-            let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
-            this.children.messages.push(messageItem);
+            if (matchCounter > 500) {
+                let messageItem: MessageItem = new MessageItem("There are " + (newMatches.length - 500) + " more matches, which aren't shown due to performance");
+                this.children.messages.push(messageItem);
+            } else {
+                console.error(error);
+            }
         }
     }
 }
@@ -427,12 +429,12 @@ function ncFileOpened(): boolean {
     const editor = vscode.window.activeTextEditor;
     let isIsgCnc: boolean = false;
     if (editor) {
-       if(editor.document){
-        const isIsgCncNumber = vscode.languages.match("isg-cnc", editor.document);
-        if (isIsgCncNumber > 0) {
-            isIsgCnc = true;
+        if (editor.document) {
+            const isIsgCncNumber = vscode.languages.match("isg-cnc", editor.document);
+            if (isIsgCncNumber > 0) {
+                isIsgCnc = true;
+            }
         }
-       }       
     }
     return isIsgCnc;
 }

@@ -1,7 +1,7 @@
-import { match } from "assert";
-import * as fs from "fs";
+
 import * as peggy from "peggy";
-import * as ncParser from "./peggyParser";
+import { matchTypes } from "../../server/src/util";
+import * as ncParser from "../../server/src/ncParser";
 export interface Match {
     name: Match | null;
     type: string;
@@ -20,17 +20,6 @@ export interface SyntaxArray {
     blockNumbers: Array<Match>;
 }
 
-export const matchTypes = {
-    toolCall: "toolCall",
-    prgCall: "prgCall",
-    controlBlock: "controlBlock",
-    multiline: "multiline",
-    trash: "trash",
-    name: "name",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber"
-};
-
 /**
  * Returns a map with linenumbers as keys, and the first blocknumber-match of the line as values.
  * This is 0 based, in contrast to the original location objects of the parser.
@@ -40,8 +29,8 @@ export const matchTypes = {
 export function getLineToBlockNumberMap(text: string): Map<number, Match> {
     const map: Map<number, Match> = new Map();
     getSyntaxArray(text).blockNumbers.forEach((match) => {
-        if (map.get(match.location.start.line-1) === undefined) {
-            map.set(match.location.start.line-1, match);
+        if (map.get(match.location.start.line - 1) === undefined) {
+            map.set(match.location.start.line - 1, match);
         }
     });
 
@@ -99,7 +88,10 @@ export function getSyntaxArray(text: string): SyntaxArray {
                 case matchTypes.toolCall:
                     toolCalls.push(element);
                     break;
-                case matchTypes.prgCall:
+                case matchTypes.localPrgCall:
+                case matchTypes.globalPrgCall:
+                case matchTypes.localCycleCall:
+                case matchTypes.globalCycleCall:
                     prgCalls.push(element);
                     break;
                 case matchTypes.trash:

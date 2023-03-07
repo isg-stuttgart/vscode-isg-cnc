@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"module": "commonjs",
 		"target": "ES2021",
 		"outDir": "out",
@@ -8,6 +7,7 @@
 			"ES2021"
 		],
 		"sourceMap": true,
+		"rootDir": "src",
 		"strict": true /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
@@ -19,15 +19,6 @@
 		".vscode-test"
 	],
 	"include": [
-		"src/**/*",
-		"server/src/**/*",
-	],
-	"typedocOptions": {
-		"entryPoints": [
-			"server/src/server.ts",
-			"src/util/blowfish/blowfishIntegration.ts",
-			"src/extension.ts"
-		],
-		"out": "docs"
-	},
+		"src/**/*"
+	]
 }

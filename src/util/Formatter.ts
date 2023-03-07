@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as parser from "./ncParsing/parser";
+import * as parser from "./parser";
 import { config } from "./config";
 
 // Blocknumber regex
