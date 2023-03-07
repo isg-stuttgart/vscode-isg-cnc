@@ -28,7 +28,7 @@ Visual Studio Code V1.59.0 or higher
   - Direct link to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 
 ## Features
-
+- "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it by "strg+hover+leftclick" or "F12"
 - Syntax highlighting
 - Code completion
 - Code formatting
