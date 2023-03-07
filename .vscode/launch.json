@@ -40,11 +40,5 @@
 			"autoAttachChildProcesses": true,
 			"internalConsoleOptions": "openOnSessionStart",
 		}
-	],
-	"compounds": [
-		{
-			"name": "Client + Server",
-			"configurations": ["Run Extension", "Attach to Server"]
-		}
 	]
 }
