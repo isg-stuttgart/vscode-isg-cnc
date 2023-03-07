@@ -10,19 +10,25 @@ export class Document {
         this.text = text;
     }
 }
-export class Match {                                             // holds information about a relevant match
-    type: string;                                                 // the type of the match
-    content: any;                                              // the syntax tree of this match
-    location: peggy.LocationRange;                                             // the location of the match
+export class Match {                                             
+    type: string;                                                 
+    content: any;                                             
+    location: peggy.LocationRange|null;                    
     text: string | null;
     name: string | null;
-    constructor(type: string, content: any, location: peggy.LocationRange, text: string | null, name: string | null) {
+    constructor(type: string, content: any, location: peggy.LocationRange|null, text: string | null, name: string | null) {
         this.type = type;
         this.content = content;
         this.location = location;
         this.text = text;
         this.name = name;
     }
+}
+
+/** Returns if a given object is a Match and so can be converted to such*/ 
+export function isMatch(obj: any): boolean {
+    const exampleMatch:Match = new Match("", null, null, null, null);
+    return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
 }
 
 export class Position {
@@ -34,12 +40,16 @@ export class Position {
     }
 }
 export const matchTypes = {
-    toolCall: "toolCall",
+    toolCall: "toolCall",  
     localSubPrg: "localSubPrg",
     localPrgCall: "localPrgCall",
+    localPrgCallName: "localPrgCallName",
     globalPrgCall: "globalPrgCall",
+    globalPrgCallName: "globalPrgCallName",
     localCycleCall: "localCycleCall",
+    localCycleCallName: "localCycleCallName",
     globalCycleCall: "globalCycleCall",
+    globalCycleCallName: "globalCycleCallName",
     controlBlock: "controlBlock",
     gotoBlocknumber: "gotoBlocknumber",
     gotoLabel: "gotoLabel",
@@ -52,7 +62,6 @@ export const matchTypes = {
     varDeclaration: "varDeclaration",
     variable:"variable"
 };
-
 
 /**
  * Returns whether pos1 is before,after or equal to pos2

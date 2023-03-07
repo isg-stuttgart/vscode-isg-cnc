@@ -7,7 +7,6 @@
 {{
 	 const types = {
       toolCall: "toolCall",
-      
       localSubPrg: "localSubPrg",
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
@@ -19,7 +18,6 @@
       globalCycleCallName: "globalCycleCallName",
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
-      goto: "goto",
       gotoLabel: "gotoLabel",
       label: "label",
       multiline: "multiline",
@@ -30,13 +28,21 @@
       varDeclaration: "varDeclaration",
       variable:"variable"
   }
-    
+ class LightMatch {
+    location;
+    text;
+    constructor(location, text) {
+        this.location = location;
+        this.text = text;
+    }
+}
   class Match {                                             // holds information about a relevant match
       type;                                                 // the type of the match e.g. prgCall
       name;
       location;                                             // the location of the match
       content;                                              // the syntax tree of this match
       text;
+      isMatch = true;
       constructor(type, content, location, text,name) {
         this.type = type;
         this.content = content;
@@ -66,6 +72,7 @@
 start                                                       // start rule
 = fileTree:file                                             // return the syntax information
 {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted}}
+
 file "file"
 = (program/.)*                                              // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 
@@ -99,8 +106,8 @@ line_comment "line_comment"                                 // a line comment is
 {return text()}
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
-= "(" [^)\r\n]* ")" 
-/ "(" [^\r\n]*                                              // if only opened, then same behaviour as ;-comment
+= $("(" [^)\r\n]* ")" 
+/ "(" [^\r\n]*)                                              // if only opened, then same behaviour as ;-comment
 
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
@@ -163,16 +170,16 @@ if_block_content
   grayspaces linebreak?)block)*
   
 gotoBlock "gotoBlock"
-= gotoNCommand/gotoLabel
+= "$GOTO" gap (gotoNCommand/gotoLabel)
 
 gotoNCommand                                                // goto statement to jump to blocknumber
-="$GOTO" gap "N" id:$non_neg_integer
+= "N" id:$non_neg_integer
 {
     return new Match(types.gotoBlocknumber, null, location(), text(), id)
 }
 
 gotoLabel                                                   // goto statement to jump to label
-="$GOTO" gap "[" name:$([^\]]*) "]"{
+= "[" name:$([^\]]*) "]"{
   const id = name.toLowerCase()
   return new Match(types.gotoLabel, null, location(), text(), id)
 }
@@ -264,28 +271,34 @@ prg_call "prg_call"                                         // a subprogram/cycl
 
 local_subprg_call "local_subprg_call"
 = "LL" gap name:prg_name{
-	const nameMatch = new Match(types.localPrgCallName, null, name.start, name.text, name.text)
+	const nameMatch = new Match(types.localPrgCallName, null, name.location, name.text, name.text)
 	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name);
 }
 
 global_subprg_call "global_subprg_call"
 = "L" gap name:prg_name{
-	return new Match(types.globalPrgCall, null, location(), text(), name);
+    const nameMatch = new Match(types.globalPrgCallName, null, name.location, name.text, name.text)
+	return new Match(types.globalPrgCall, [nameMatch], location(), text(), name.text);
 }
 
 prg_name
 = $(non_delimiter+)
+{return new LightMatch(location(), text())}
 
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
    "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)?
    $(bracket_multiline/[^\]\r\n]*) "]"){                    // brackets can contain a multline or a singleline
     const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
-	let name = null;
+    const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
+    let name = null
     if(content[6] !== null){
        name = content[6][1]
-    }
-    return new Match(type, content, location(), text(), name);
+       const nameMatch = new Match(nameType, null, name.location, name.text, name.text)
+       content[6][1] = nameMatch                            // replace name String with nameMatch
+    }   
+    
+    return new Match(type, content, location(), text(), name.text);
   }
 
 squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"

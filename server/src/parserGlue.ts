@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import * as ncParser from "./ncParser";
-import { Match, Position, compareLocation, findFileInRootDir, matchTypes } from "./util";
+import { Match, Position, compareLocation, findFileInRootDir, matchTypes, isMatch } from "./util";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -22,17 +22,17 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 
     //determine the defType e.g. localSubPrg
     switch (match.type) {
-        case matchTypes.localPrgCall:
+        case matchTypes.localPrgCallName:
             defType = matchTypes.localSubPrg;
             break;
-        case matchTypes.localCycleCall:
+        case matchTypes.localCycleCallName:
             defType = matchTypes.localSubPrg;
             break;
-        case matchTypes.globalCycleCall:
+        case matchTypes.globalCycleCallName:
             defType = matchTypes.globalCycleCall;
             local = false;
             break;
-        case matchTypes.globalPrgCall:
+        case matchTypes.globalPrgCallName:
             defType = matchTypes.globalPrgCall;
             local = false;
             break;
@@ -50,7 +50,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 
     if (local) {
         defMatch = findDefinitionWithinPrg(parseResults.fileTree, defType, match.name);
-        if (!defMatch) {
+        if (!defMatch || !defMatch.location) {
             return null;
         }
         definition = {
@@ -100,7 +100,7 @@ function findDefinitionWithinPrg(tree: any, defType: string, name: string): Matc
 
 
     // when element is a Match (Subtree) , otherwise 
-    if (tree && tree.type) {
+    if (tree && isMatch(tree)) {
         const match = tree as Match;
         // if correct defType and name we found the definition
         if (match.type === defType && match.name === name) {
@@ -134,8 +134,11 @@ function findMatch(tree: any, position: Position): Match | null {
 
 
     // when element is a Match (Subtree) try to search more precise, if not possible we found our match
-    if (tree && tree.type) {
+    if (tree && isMatch(tree)) {
         const match = tree as Match;
+        if (!match.location) {
+            return null;
+        }
         const start = new Position(match.location.start.line - 1, match.location.start.column - 1);
         const end = new Position(match.location.end.line - 1, match.location.end.column - 1);
         if (compareLocation(position, start) >= 0 && compareLocation(position, end) <= 0) {
