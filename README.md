@@ -18,7 +18,7 @@ You can find and download the extension in the following marketplaces:
 
 ## Requirements
 
-Visual Studio Code V1.59.0 or higher
+Visual Studio Code V1.73.1 or higher
 
 ## Manuals
 
