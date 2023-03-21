@@ -1,67 +1,17 @@
-import * as peggy from "peggy";
 import * as fs from "fs";
 import path = require("path");
+import * as ncParser from "./ncParser";
+import { ParseResults, Match, Document, Position } from "./parserClasses";
 
-export class Document {
-    uri: string;
-    text: string;
-    constructor(uri: string, text: string) {
-        this.uri = uri;
-        this.text = text;
-    }
-}
-export class Match {                                             
-    type: string;                                                 
-    content: any;                                             
-    location: peggy.LocationRange|null;                    
-    text: string | null;
-    name: string | null;
-    constructor(type: string, content: any, location: peggy.LocationRange|null, text: string | null, name: string | null) {
-        this.type = type;
-        this.content = content;
-        this.location = location;
-        this.text = text;
-        this.name = name;
-    }
+export function getParseResults(fileContent: string): ParseResults {
+    return ncParser.parse(fileContent) as unknown as ParseResults;
 }
 
-/** Returns if a given object is a Match and so can be converted to such*/ 
+/** Returns if a given object is a Match and so can be converted to such*/
 export function isMatch(obj: any): boolean {
-    const exampleMatch:Match = new Match("", null, null, null, null);
+    const exampleMatch: Match = new Match("", null, null, null, null);
     return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
 }
-
-export class Position {
-    line: number;
-    character: number;
-    constructor(line: number, character: number) {
-        this.line = line;
-        this.character = character;
-    }
-}
-export const matchTypes = {
-    toolCall: "toolCall",  
-    localSubPrg: "localSubPrg",
-    localPrgCall: "localPrgCall",
-    localPrgCallName: "localPrgCallName",
-    globalPrgCall: "globalPrgCall",
-    globalPrgCallName: "globalPrgCallName",
-    localCycleCall: "localCycleCall",
-    localCycleCallName: "localCycleCallName",
-    globalCycleCall: "globalCycleCall",
-    globalCycleCallName: "globalCycleCallName",
-    controlBlock: "controlBlock",
-    gotoBlocknumber: "gotoBlocknumber",
-    gotoLabel: "gotoLabel",
-    label: "label",
-    multiline: "multiline",
-    trash: "trash",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber",
-    blockNumberLabel: "blockNumberLabel",
-    varDeclaration: "varDeclaration",
-    variable:"variable"
-};
 
 /**
  * Returns whether pos1 is before,after or equal to pos2
@@ -79,7 +29,6 @@ export function compareLocation(pos1: Position, pos2: Position): number {
     };
     return result;
 }
-
 
 export function getAllDocsRecursively(rootPath: string, allDocs: Document[] = []): Document[] {
     const files = fs.readdirSync(rootPath);

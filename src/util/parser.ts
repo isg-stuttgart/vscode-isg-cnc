@@ -1,7 +1,6 @@
-
 import * as peggy from "peggy";
-import { matchTypes } from "../../server/src/util";
-import * as ncParser from "../../server/src/ncParser";
+import { matchTypes, ParseResults } from "../../server/src/parserClasses";
+import { getParseResults } from "../../server/src/parserUtil";
 export interface Match {
     name: Match | null;
     type: string;
@@ -42,7 +41,7 @@ export function getLineToBlockNumberMap(text: string): Map<number, Match> {
  * @returns Array with linenumbers
  */
 export function getNumberableLines(text: string): Array<number> {
-    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(text) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+    const parseResults: ParseResults = getParseResults(text);
     const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
     //sort set because of wrong order due to recursive adding
     numberableLines.sort((a: number, b: number) => a - b);
@@ -54,7 +53,7 @@ export function getNumberableLines(text: string): Array<number> {
  * @param text the text to parse
  */
 export function getSyntaxArray(text: string): SyntaxArray {
-    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(text) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+    const parseResults: ParseResults = getParseResults(text);
 
     const toolCalls = new Array<Match>();
     const prgCalls = new Array<Match>();

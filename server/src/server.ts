@@ -17,7 +17,7 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
-import { Document, Position } from './util';
+import { Position } from './parserClasses';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -94,6 +94,7 @@ connection.onCompletionResolve(
 	}
 );
 
+/** Provides the "Go to Definition" fucntionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
 connection.onDefinition((docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
@@ -102,12 +103,13 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-
 		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPath);
 	} catch (error) {
 		console.error(error);
 	}
 });
+
+
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

@@ -1,6 +1,7 @@
 import { pathToFileURL } from "node:url";
 import * as ncParser from "./ncParser";
-import { Match, Position, compareLocation, findFileInRootDir, matchTypes, isMatch } from "./util";
+import { Match, Position, FileRange, matchTypes } from "./parserClasses";
+import { compareLocation, findFileInRootDir, isMatch, getParseResults } from "./parserUtil";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -8,12 +9,13 @@ import { Match, Position, compareLocation, findFileInRootDir, matchTypes, isMatc
  * @param uri The file uri
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null) {
+export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange | null {
     let defMatch: Match | null = null;
+
     // parse the file content and search for the selected position
-    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(fileContent) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
-    const match = findMatch(parseResults.fileTree, position);
-    let definition = null;
+    const ast: any[] = getParseResults(fileContent).fileTree;
+    const match = findMatch(ast, position);
+    let definition: FileRange | null = null;
     if (!match || !match.name) {
         return null;
     }
@@ -49,18 +51,13 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     }
 
     if (local) {
-        defMatch = findDefinitionWithinPrg(parseResults.fileTree, defType, match.name);
+        defMatch = findDefinitionWithinPrg(ast, defType, match.name);
         if (!defMatch || !defMatch.location) {
             return null;
         }
-        definition = {
-            uri: uri,
-            range: {
-                start: { line: defMatch.location.start.line - 1, character: defMatch.location.start.column - 1 },
-                end: { line: defMatch.location.end.line - 1, character: defMatch.location.end.column - 1 }
-            }
-        };
-
+        const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
+        const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
+        definition = new FileRange(uri, start, end);
     } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
         // jump at the beginning of the global program
         const defPath = findFileInRootDir(rootPath, match.name);
@@ -78,6 +75,8 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 
     return definition;
 }
+
+
 
 /**
  * Recursively find the definition of the given type and name within the tree
