@@ -1,5 +1,8 @@
 import * as peggy from "peggy";
 
+/**
+ * A position in a text document expressed as zero-based line and character offset.
+ */
 export class Position {
     line: number;
     character: number;
@@ -9,6 +12,9 @@ export class Position {
     }
 }
 
+/**
+ * A range in a text document expressed as the file uri and the ranges' (zero-based) start and end positions.
+ */
 export class FileRange {
     uri: string;
     range: {
@@ -24,12 +30,17 @@ export class FileRange {
     }
 }
 
+/**
+ * The peggy parser for ISG-CNC files returns an object containing the fileTree and a set of line numbers that are numberable.
+ */
 export interface ParseResults {
     fileTree: Array<any>;
     numberableLinesUnsorted: Set<number>;
 }
 
-
+/**
+ * A text document expressed as the file uri and the text content.
+ */
 export class Document {
     uri: string;
     text: string;
@@ -38,6 +49,10 @@ export class Document {
         this.text = text;
     }
 }
+
+/**
+ * A match object returned by the peggy parser for ISG-CNC files.
+ */
 export class Match {
     type: string;
     content: any;
@@ -53,6 +68,9 @@ export class Match {
     }
 }
 
+/**
+ * The different types a match returned by the peggy parser for ISG-CNC files can have.
+ */
 export const matchTypes = {
     toolCall: "toolCall",
     localSubPrg: "localSubPrg",
