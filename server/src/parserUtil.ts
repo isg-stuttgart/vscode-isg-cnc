@@ -3,6 +3,7 @@ import path = require("path");
 import * as ncParser from "./ncParser";
 import { ParseResults, Match, Document, Position } from "./parserClasses";
 
+/** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
 }
@@ -30,21 +31,6 @@ export function compareLocation(pos1: Position, pos2: Position): number {
     return result;
 }
 
-export function getAllDocsRecursively(rootPath: string, allDocs: Document[] = []): Document[] {
-    const files = fs.readdirSync(rootPath);
-    for (const file of files) {
-        const filePath = path.join(rootPath, file);
-        const stats = fs.statSync(filePath);
-        if (stats.isDirectory()) {
-            getAllDocsRecursively(filePath, allDocs);
-        } else if (stats.isFile()) {
-            const textContent = fs.readFileSync(filePath, "utf-8");
-            allDocs.push(new Document(filePath, textContent));
-        }
-    }
-    return allDocs;
-}
-
 /**
  * Finds a file in a root directory and all subdirectories. Returns the path to the file or null if not found.
  * @param rootPath 
@@ -65,4 +51,3 @@ export function findFileInRootDir(rootPath: string, fileName: string): string | 
     }
     return res;
 }
-
