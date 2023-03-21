@@ -1,5 +1,4 @@
 import { pathToFileURL } from "node:url";
-import * as ncParser from "./ncParser";
 import { Match, Position, FileRange, matchTypes } from "./parserClasses";
 import { compareLocation, findFileInRootDir, isMatch, getParseResults } from "./parserUtil";
 /**
@@ -51,7 +50,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     }
 
     if (local) {
-        defMatch = findDefinitionWithinPrg(ast, defType, match.name);
+        defMatch = findFirstMatchWithinPrg(ast, defType, match.name);
         if (!defMatch || !defMatch.location) {
             return null;
         }
@@ -76,8 +75,31 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     return definition;
 }
 
+function findAllMatchesWithinPrg(tree: any, defTypes: string[], name: string): Match[] {
+    let res: Match[] = [];
 
+    // search in each subtree and add its references to the result array
+    if (Array.isArray(tree)) {
+        tree.forEach(e => {
+            const subRes = findAllMatchesWithinPrg(e, defTypes, name);
+            res = res.concat(subRes);
+        });
+    }
 
+    // if element is a Match
+    if (tree && isMatch(tree)) {
+        const match = tree as Match;
+        // if correct defType and name add to found references
+        if (defTypes.includes(match.type) && match.name === name) {
+            res.push(match);
+            // else search within the match-subtree (if existing)
+        } else if (match.content) {
+            const subRes = findAllMatchesWithinPrg(match.content, defTypes, name);
+            res = res.concat(subRes);
+        }
+    }
+    return res;
+}
 /**
  * Recursively find the definition of the given type and name within the tree
  * @param tree the current subtree to search 
@@ -85,14 +107,14 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param name the name/identifier of the definition
  * @returns the definition match if existing, otherwise null
  */
-function findDefinitionWithinPrg(tree: any, defType: string, name: string): Match | null {
+function findFirstMatchWithinPrg(tree: any, defType: string, name: string): Match | null {
     let res: Match | null = null;
 
     // if no match found yet, search in other subtree
     if (Array.isArray(tree)) {
         tree.forEach(e => {
             if (!res) {
-                res = findDefinitionWithinPrg(e, defType, name);
+                res = findFirstMatchWithinPrg(e, defType, name);
             }
         });
     }
@@ -106,7 +128,7 @@ function findDefinitionWithinPrg(tree: any, defType: string, name: string): Matc
             res = match;
             // else search within the match-subtree
         } else {
-            res = findDefinitionWithinPrg(match.content, defType, name);
+            res = findFirstMatchWithinPrg(match.content, defType, name);
         }
     }
     return res;
@@ -150,6 +172,58 @@ function findMatch(tree: any, position: Position): Match | null {
         }
     }
     return res;
+}
+
+
+/**
+ * Recursively find all references fitting to the declaration at the given position in the given file.
+ * @param fileContent 
+ * @param position 
+ * @param uri 
+ * @param rootPath 
+ */
+export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
+    let references: Match[] | null = null;
+
+    // parse the file content and search for the selected position
+    const ast: any[] = getParseResults(fileContent).fileTree;
+    const defMatch = findMatch(ast, position);
+    if (!defMatch || !defMatch.name) {
+        return [];
+    }
+    let refTypes: string[];
+
+    //determine the defType e.g. localSubPrg
+    switch (defMatch.type) {
+        case matchTypes.localSubPrg:
+            refTypes = [matchTypes.localPrgCallName, matchTypes.localCycleCallName];
+            break;
+        case matchTypes.label:
+            refTypes = [matchTypes.gotoLabel];
+            break;
+        case matchTypes.blockNumberLabel:
+            refTypes = [matchTypes.gotoBlocknumber];
+            break;
+        case matchTypes.varDeclaration:
+            refTypes = [matchTypes.variable];
+            break;
+        default: return [];
+    }
+
+    // Find all references in the same file and add their ranges to the result array
+    references = findAllMatchesWithinPrg(ast, refTypes, defMatch.name);
+    const referenceRanges: FileRange[] = [];
+    for (const ref of references) {
+        if (!ref.location) {
+            continue;
+        }
+        const start: Position = new Position(ref.location.start.line - 1, ref.location.start.column - 1);
+        const end: Position = new Position(ref.location.end.line - 1, ref.location.end.column - 1);
+        referenceRanges.push(new FileRange(uri, start, end));
+    }
+
+
+    return referenceRanges;
 }
 
 

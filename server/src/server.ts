@@ -59,7 +59,8 @@ connection.onInitialize((params: InitializeParams) => {
 			completionProvider: {
 				resolveProvider: true
 			},
-			definitionProvider: true
+			definitionProvider: true,
+			referencesProvider: true
 		}
 	};
 
@@ -94,7 +95,7 @@ connection.onCompletionResolve(
 	}
 );
 
-/** Provides the "Go to Definition" fucntionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
+/** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
 connection.onDefinition((docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
@@ -109,7 +110,21 @@ connection.onDefinition((docPos) => {
 	}
 });
 
+/** Provides the "Go to References" functionality. Returns the locations of the references fitting to the specified position, null when no reference found. */
+connection.onReferences((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const text = textDocument.getText();
+		const position: Position = docPos.position;
 
+		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath);
+	} catch (error) {
+		console.error(error);
+	}
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
