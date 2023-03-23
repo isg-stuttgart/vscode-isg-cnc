@@ -195,15 +195,20 @@ export function getReferences(fileContent: string, position: Position, uri: stri
 
     //determine the defType e.g. localSubPrg
     switch (defMatch.type) {
+        case matchTypes.localPrgCallName:
+        case matchTypes.localCycleCallName:
         case matchTypes.localSubPrg:
             refTypes = [matchTypes.localPrgCallName, matchTypes.localCycleCallName];
             break;
+        case matchTypes.gotoLabel:
         case matchTypes.label:
             refTypes = [matchTypes.gotoLabel];
             break;
+        case matchTypes.gotoBlocknumber:
         case matchTypes.blockNumberLabel:
             refTypes = [matchTypes.gotoBlocknumber];
             break;
+        case matchTypes.variable:
         case matchTypes.varDeclaration:
             refTypes = [matchTypes.variable];
             break;
