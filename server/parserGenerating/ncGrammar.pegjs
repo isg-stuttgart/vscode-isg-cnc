@@ -282,23 +282,23 @@ global_subprg_call "global_subprg_call"
 }
 
 prg_name
-= $(non_delimiter+)
-{return new LightMatch(location(), text())}
+= name:(prg_name_string/$(non_delimiter+))
+{return new LightMatch(location(), name)}
 
+prg_name_string
+= "\"" name:$(non_delimiter+) "\""
+ {return name}
+ 
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
-   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)?
+   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
    $(bracket_multiline/[^\]\r\n]*) "]"){                    // brackets can contain a multline or a singleline
     const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
     const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let name = null
-    if(content[6] !== null){
-       name = content[6][1]
-       const nameMatch = new Match(nameType, null, name.location, name.text, name.text)
-       content[6][1] = nameMatch                            // replace name String with nameMatch
-    }   
-    
-    return new Match(type, content, location(), text(), name.text);
+    let nameLM = content[6][1]                              // LightMatch of the cycle name
+    const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
+    content[6][1] = nameMatch                               // replace nameLightMatch with nameMatch  
+    return new Match(type, content, location(), text(), nameLM.text);
   }
 
 squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"
@@ -366,6 +366,7 @@ name "name"                                                 // a name/identifier
 
 digit "digit" = [0-9]                                       // a digit
 {return text()}
+
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]
 
