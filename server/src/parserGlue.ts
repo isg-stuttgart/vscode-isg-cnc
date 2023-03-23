@@ -1,6 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, matchTypes } from "./parserClasses";
-import { compareLocation, findFileInRootDir, isMatch, getParseResults, getDefType, findMatch, findFirstMatchWithinPrg, getRefTypes } from "./parserUtil";
+import { findFileInRootDir, getParseResults, getDefType, findMatch, findFirstMatchWithinPrg, getRefTypes, findMatchRangesWithinPrgTree, findMatchRangesWithinPath } from "./parserUtil";
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -50,34 +50,6 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     return definition;
 }
 
-function findAllMatchesWithinPrg(tree: any, defTypes: string[], name: string): Match[] {
-    let res: Match[] = [];
-
-    // search in each subtree and add its references to the result array
-    if (Array.isArray(tree)) {
-        tree.forEach(e => {
-            const subRes = findAllMatchesWithinPrg(e, defTypes, name);
-            res = res.concat(subRes);
-        });
-    }
-
-    // if element is a Match
-    if (tree && isMatch(tree)) {
-        const match = tree as Match;
-        // if correct defType and name add to found references
-        if (defTypes.includes(match.type) && match.name === name) {
-            res.push(match);
-            // else search within the match-subtree (if existing)
-        } else if (match.content) {
-            const subRes = findAllMatchesWithinPrg(match.content, defTypes, name);
-            res = res.concat(subRes);
-        }
-    }
-    return res;
-}
-
-
-
 /**
  * Recursively find all references fitting to the declaration at the given position in the given file.
  * @param fileContent 
@@ -86,7 +58,7 @@ function findAllMatchesWithinPrg(tree: any, defTypes: string[], name: string): M
  * @param rootPath 
  */
 export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
-    let references: Match[] | null = null;
+    let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
     const ast: any[] = getParseResults(fileContent).fileTree;
@@ -97,19 +69,15 @@ export function getReferences(fileContent: string, position: Position, uri: stri
 
     // get the reference types fitting to the type of the found match
     const { refTypes, local } = getRefTypes(match);
-    
-    // Find all references in the same file and add their ranges to the result array
-    references = findAllMatchesWithinPrg(ast, refTypes, match.name);
-    const referenceRanges: FileRange[] = [];
-    for (const ref of references) {
-        if (!ref.location) {
-            continue;
-        }
-        const start: Position = new Position(ref.location.start.line - 1, ref.location.start.column - 1);
-        const end: Position = new Position(ref.location.end.line - 1, ref.location.end.column - 1);
-        referenceRanges.push(new FileRange(uri, start, end));
-    }
 
+    // if local find all references in the same file and add their ranges to the result array
+    if (local) {
+        referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, match.name, uri);
+    }
+    // if global find all references in all files of workspace and add their ranges to the result array
+    else if (rootPath) {
+        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, match.name);
+    }
 
     return referenceRanges;
 }

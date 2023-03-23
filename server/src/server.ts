@@ -1,14 +1,10 @@
 import {
 	createConnection,
 	TextDocuments,
-	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
-	CompletionItemKind,
-	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult
 } from 'vscode-languageserver/node';
@@ -66,7 +62,6 @@ connection.onInitialize((params: InitializeParams) => {
 
 	return result;
 });
-
 
 connection.onInitialized(() => {
 	if (hasConfigurationCapability) {

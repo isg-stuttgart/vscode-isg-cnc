@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import path = require("path");
 import * as ncParser from "./ncParser";
-import { ParseResults, Match, Document, Position, matchTypes } from "./parserClasses";
+import { ParseResults, Match, Position, matchTypes, FileRange } from "./parserClasses";
+import { pathToFileURL } from 'node:url';
 
 /** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
@@ -130,8 +131,15 @@ export function getDefType(match: Match): { defType: string | null, local: boole
  */
 export function getRefTypes(match: Match): { refTypes: string[], local: boolean } {
     let refTypes: string[];
+    let local = true;
 
     switch (match.type) {
+        // global program calls
+        case matchTypes.globalCycleCallName:
+        case matchTypes.globalPrgCallName:
+            local = false;
+            refTypes = [matchTypes.globalCycleCallName, matchTypes.globalPrgCallName];
+            break;
         // local program calls
         case matchTypes.localPrgCallName:
         case matchTypes.localCycleCallName:
@@ -155,7 +163,7 @@ export function getRefTypes(match: Match): { refTypes: string[], local: boolean 
             break;
         default: refTypes = [];
     }
-    return { refTypes, local: true };
+    return { refTypes, local };
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
@@ -192,16 +200,108 @@ export function findFileInRootDir(rootPath: string, fileName: string): string | 
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
         const entryPath = path.join(rootPath, entry.name);
-        if (entry.isDirectory()) { //search in subdirectory
+        if (entry.isDirectory()) { 
+            //search in subdirectory
             res = findFileInRootDir(entryPath, fileName);
             //if file found, stop searching
             if (res) {
                 break;
             }
-        } else if (entry.isFile() && entry.name === fileName) { //file found
+        } else if (entry.isFile() && entry.name === fileName) { 
+            //file found
             res = entryPath;
             break;
         }
     }
     return res;
 }
+
+/**
+ * Finds all matches of a given name and types within a given program-tree
+ * @param tree 
+ * @param types 
+ * @param name 
+ * @returns the found matches
+ */
+export function findMatchesWithinPrgTree(tree: any, types: string[], name: string): Match[] {
+    let res: Match[] = [];
+
+    // search in each subtree and add its references to the result array
+    if (Array.isArray(tree)) {
+        tree.forEach(e => {
+            const subRes = findMatchesWithinPrgTree(e, types, name);
+            res = res.concat(subRes);
+        });
+    }
+
+    // if element is a Match
+    if (tree && isMatch(tree)) {
+        const match = tree as Match;
+        // if correct defType and name add to found references
+        if (types.includes(match.type) && match.name === name) {
+            res.push(match);
+            // else search within the match-subtree (if existing)
+        } else if (match.content) {
+            const subRes = findMatchesWithinPrgTree(match.content, types, name);
+            res = res.concat(subRes);
+        }
+    }
+    return res;
+}
+
+/**
+ * Finds all matches of a given name and types within a given program-tree and returns the according ranges
+ * @param tree 
+ * @param types 
+ * @param name 
+ * @param path 
+ * @returns the found ranges
+ */
+export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: string, path: string): FileRange[] {
+    let ranges: FileRange[] = [];
+    const references: Match[] = findMatchesWithinPrgTree(tree, types, name);
+    for (const ref of references) {
+        if (!ref.location) {
+            continue;
+        }
+        const start: Position = new Position(ref.location.start.line - 1, ref.location.start.column - 1);
+        const end: Position = new Position(ref.location.end.line - 1, ref.location.end.column - 1);
+        // convert path to vscode uri 
+        const uri = pathToFileURL(path).toString();
+        ranges.push(new FileRange(uri, start, end));
+    }
+    return ranges;
+}
+
+/**
+ * Finds all match-ranges of a given name and types within a given root directory and all subdirectories
+ * @param rootPath 
+ * @param types 
+ * @param name 
+ * @returns the found ranges
+ */
+export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string): FileRange[] {
+    let ranges: FileRange[] = [];
+    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
+    for (const entry of dirEntries) {
+        const entryPath = path.join(rootPath, entry.name);
+        if (entry.isDirectory()) {
+            // add all matches in subdirectories
+            const subMatches = findMatchRangesWithinPath(entryPath, types, name);
+            ranges = ranges.concat(subMatches);
+        } else if (entry.isFile()) {
+            // add all matches of the file
+            const fileContent = fs.readFileSync(entryPath, 'utf8');
+            // if file does not contain the searched match-name skip parsing it
+            if (!fileContent.includes(name)) {
+                continue;
+            }
+            console.log(entryPath);
+            const ast = getParseResults(fileContent).fileTree;
+            const fileRanges:FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, entryPath);
+            ranges = ranges.concat(fileRanges);
+        }
+    }
+    return ranges;
+}
+
