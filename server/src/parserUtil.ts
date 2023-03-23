@@ -44,6 +44,10 @@ export function findFileInRootDir(rootPath: string, fileName: string): string | 
         const entryPath = path.join(rootPath, entry.name);
         if (entry.isDirectory()) { //search in subdirectory
             res = findFileInRootDir(entryPath, fileName);
+            //if file found, stop searching
+            if (res) {
+                break;
+            }
         } else if (entry.isFile() && entry.name === fileName) { //file found
             res = entryPath;
             break;
