@@ -1,11 +1,161 @@
 import * as fs from "fs";
 import path = require("path");
 import * as ncParser from "./ncParser";
-import { ParseResults, Match, Document, Position } from "./parserClasses";
+import { ParseResults, Match, Document, Position, matchTypes } from "./parserClasses";
 
 /** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
+}
+
+/**
+* Recursively find the definition of the given type and name within the tree
+* @param tree the current subtree to search 
+* @param defType the definition type e.g. localPrgCall
+* @param name the name/identifier of the definition
+* @returns the definition match if existing, otherwise null
+*/
+export function findFirstMatchWithinPrg(tree: any, defType: string, name: string): Match | null {
+    let res: Match | null = null;
+
+    // if no match found yet, search in other subtree
+    if (Array.isArray(tree)) {
+        tree.forEach(e => {
+            if (!res) {
+                res = findFirstMatchWithinPrg(e, defType, name);
+            }
+        });
+    }
+
+
+    // when element is a Match (Subtree) , otherwise 
+    if (tree && isMatch(tree)) {
+        const match = tree as Match;
+        // if correct defType and name we found the definition
+        if (match.type === defType && match.name === name) {
+            res = match;
+            // else search within the match-subtree
+        } else {
+            res = findFirstMatchWithinPrg(match.content, defType, name);
+        }
+    }
+    return res;
+}
+
+/**
+* Recursively find the most precise match at the given Position
+* @param tree the current subtree to search in
+* @param position the position where the match should be found
+* @returns the most precise match if existing, otherwise null
+*/
+export function findMatch(tree: any, position: Position): Match | null {
+
+    let res: Match | null = null;
+
+    // if no match found yet, search in other subtree
+    if (Array.isArray(tree)) {
+        tree.forEach(e => {
+            if (!res) {
+                res = findMatch(e, position);
+            }
+        });
+    }
+
+
+    // when element is a Match (Subtree) try to search more precise, if not possible we found our match
+    if (tree && isMatch(tree)) {
+        const match = tree as Match;
+        if (!match.location) {
+            return null;
+        }
+        const start = new Position(match.location.start.line - 1, match.location.start.column - 1);
+        const end = new Position(match.location.end.line - 1, match.location.end.column - 1);
+        if (compareLocation(position, start) >= 0 && compareLocation(position, end) <= 0) {
+            res = findMatch(match.content, position);
+
+            //if subtree did not give better result then take this match
+            if (!res) {
+                res = match;
+            }
+        }
+    }
+    return res;
+}
+
+/**
+ * Returns the according definition-type to a given match and if the definition hast * to be searched locally or globally
+ * @param match 
+ * @returns \{ defType: string | null, local: boolean } an object containing the definition type and a boolean indicating if the definition has to be searched locally or globally
+ */
+export function getDefType(match: Match): { defType: string | null, local: boolean } {
+    let defType: string | null;
+    let local = true;
+    //determine the defType e.g. localSubPrg
+    switch (match.type) {
+        // program calls
+        case matchTypes.localPrgCallName:
+            defType = matchTypes.localSubPrg;
+            break;
+        case matchTypes.localCycleCallName:
+            defType = matchTypes.localSubPrg;
+            break;
+        case matchTypes.globalCycleCallName:
+            defType = matchTypes.globalCycleCall;
+            local = false;
+            break;
+        case matchTypes.globalPrgCallName:
+            defType = matchTypes.globalPrgCall;
+            local = false;
+            break;
+        // goto statements
+        case matchTypes.gotoLabel:
+            defType = matchTypes.label;
+            break;
+        case matchTypes.gotoBlocknumber:
+            defType = matchTypes.blockNumberLabel;
+            break;
+        //variables
+        case matchTypes.variable:
+            defType = matchTypes.varDeclaration;
+            break;
+        default: defType = null;
+    }
+    return { defType, local };
+}
+
+/**
+ * Returns the according reference-types to a given match and if the references have to be searched locally or globally
+ * @param match 
+ * @returns \{ refTypes: string | null, local: boolean } an object containing the reference types and a boolean indicating if the references have to be searched locally or globally
+ */
+export function getRefTypes(match: Match): { refTypes: string[], local: boolean } {
+    let refTypes: string[];
+
+    switch (match.type) {
+        // local program calls
+        case matchTypes.localPrgCallName:
+        case matchTypes.localCycleCallName:
+        case matchTypes.localSubPrg:
+            refTypes = [matchTypes.localPrgCallName, matchTypes.localCycleCallName];
+            break;
+        // goto label
+        case matchTypes.gotoLabel:
+        case matchTypes.label:
+            refTypes = [matchTypes.gotoLabel];
+            break;
+        // goto blocknumber
+        case matchTypes.gotoBlocknumber:
+        case matchTypes.blockNumberLabel:
+            refTypes = [matchTypes.gotoBlocknumber];
+            break;
+        // variables
+        case matchTypes.variable:
+        case matchTypes.varDeclaration:
+            refTypes = [matchTypes.variable];
+            break;
+        default: refTypes = [];
+    }
+    return { refTypes, local: true };
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
