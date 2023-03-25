@@ -1,14 +1,10 @@
 import {
 	createConnection,
 	TextDocuments,
-	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
-	CompletionItemKind,
-	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult
 } from 'vscode-languageserver/node';
@@ -17,7 +13,7 @@ import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
-import { Document, Position } from './util';
+import { Position } from './parserClasses';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -55,17 +51,13 @@ connection.onInitialize((params: InitializeParams) => {
 	const result: InitializeResult = {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
-			// Tell the client that this server supports code completion.
-			completionProvider: {
-				resolveProvider: true
-			},
-			definitionProvider: true
+			definitionProvider: true,
+			referencesProvider: true
 		}
 	};
 
 	return result;
 });
-
 
 connection.onInitialized(() => {
 	if (hasConfigurationCapability) {
@@ -79,43 +71,7 @@ connection.onInitialized(() => {
 	}
 });
 
-
-// This handler provides the initial list of the completion items.
-connection.onCompletion(
-	(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-		// The pass parameter contains the position of the text document in
-		// which code complete got requested. For the example we ignore this
-		// info and always provide the same completion items.
-		return [
-			{
-				label: 'TypeScript',
-				kind: CompletionItemKind.Text,
-				data: 1
-			},
-			{
-				label: 'JavaScript',
-				kind: CompletionItemKind.Text,
-				data: 2
-			}
-		];
-	}
-);
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve(
-	(item: CompletionItem): CompletionItem => {
-		if (item.data === 1) {
-			item.detail = 'TypeScript details';
-			item.documentation = 'TypeScript documentation';
-		} else if (item.data === 2) {
-			item.detail = 'JavaScript details';
-			item.documentation = 'JavaScript documentation';
-		}
-		return item;
-	}
-);
-
+/** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
 connection.onDefinition((docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
@@ -124,8 +80,27 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-
 		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPath);
+	} catch (error) {
+		console.error(error);
+	}
+});
+
+/** Provides the "Go to References" functionality. Returns the locations of the references fitting to the specified position, null when no reference found. */
+connection.onReferences((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const text = textDocument.getText();
+		const position: Position = docPos.position;
+		const openFiles = new Map<string, string>();
+		const allDocs = documents.all();
+		for (const doc of allDocs) {
+			openFiles.set(doc.uri, doc.getText());
+		}
+		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath, openFiles);
 	} catch (error) {
 		console.error(error);
 	}
