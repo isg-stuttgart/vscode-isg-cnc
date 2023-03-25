@@ -2,7 +2,7 @@ import * as fs from "fs";
 import path = require("path");
 import * as ncParser from "./ncParser";
 import { ParseResults, Match, Position, matchTypes, FileRange } from "./parserClasses";
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 /** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
@@ -200,14 +200,14 @@ export function findFileInRootDir(rootPath: string, fileName: string): string | 
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
         const entryPath = path.join(rootPath, entry.name);
-        if (entry.isDirectory()) { 
+        if (entry.isDirectory()) {
             //search in subdirectory
             res = findFileInRootDir(entryPath, fileName);
             //if file found, stop searching
             if (res) {
                 break;
             }
-        } else if (entry.isFile() && entry.name === fileName) { 
+        } else if (entry.isFile() && entry.name === fileName) {
             //file found
             res = entryPath;
             break;
@@ -257,7 +257,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
  * @param path 
  * @returns the found ranges
  */
-export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: string, path: string): FileRange[] {
+export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: string, uri: string): FileRange[] {
     let ranges: FileRange[] = [];
     const references: Match[] = findMatchesWithinPrgTree(tree, types, name);
     for (const ref of references) {
@@ -267,7 +267,6 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
         const start: Position = new Position(ref.location.start.line - 1, ref.location.start.column - 1);
         const end: Position = new Position(ref.location.end.line - 1, ref.location.end.column - 1);
         // convert path to vscode uri 
-        const uri = pathToFileURL(path).toString();
         ranges.push(new FileRange(uri, start, end));
     }
     return ranges;
@@ -275,30 +274,47 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
 
 /**
  * Finds all match-ranges of a given name and types within a given root directory and all subdirectories
- * @param rootPath 
- * @param types 
- * @param name 
+ * @param rootPath root directory to search in
+ * @param types possible types of matches to search for
+ * @param name name/identifier of the matches to search for
+ * @param uriToOpenFileContent mapping of file-uris to file-contents
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string): FileRange[] {
+export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>): FileRange[] {
     let ranges: FileRange[] = [];
+
+    // convert uri mapping of open files to normalized path mapping
+    const pathToOpenFileContent = new Map<string, string>();
+    uriToOpenFileContent.forEach((value, key) => {
+        const normalizedPath = path.normalize(fileURLToPath(key));
+        pathToOpenFileContent.set(normalizedPath, value);
+    });
+
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
-        const entryPath = path.join(rootPath, entry.name);
+        const entryPath = path.normalize(path.join(rootPath, entry.name));
         if (entry.isDirectory()) {
             // add all matches in subdirectories
-            const subMatches = findMatchRangesWithinPath(entryPath, types, name);
+            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent);
             ranges = ranges.concat(subMatches);
         } else if (entry.isFile()) {
             // add all matches of the file
-            const fileContent = fs.readFileSync(entryPath, 'utf8');
-            // if file does not contain the searched match-name skip parsing it
+            let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
+
+            if (!fileContent) {
+                fileContent = fs.readFileSync(entryPath, 'utf8');
+            } else {
+                // TODO: remove
+                console.log("file already open: " + entryPath);
+            }
+
+            // if file does not contain the searched match-name skip parsing/searching
             if (!fileContent.includes(name)) {
                 continue;
             }
-            console.log(entryPath);
             const ast = getParseResults(fileContent).fileTree;
-            const fileRanges:FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, entryPath);
+            const uri = pathToFileURL(entryPath).toString();
+            const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges = ranges.concat(fileRanges);
         }
     }

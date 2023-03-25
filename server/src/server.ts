@@ -51,10 +51,6 @@ connection.onInitialize((params: InitializeParams) => {
 	const result: InitializeResult = {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
-			// Tell the client that this server supports code completion.
-			completionProvider: {
-				resolveProvider: true
-			},
 			definitionProvider: true,
 			referencesProvider: true
 		}
@@ -114,8 +110,12 @@ connection.onReferences((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-
-		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath);
+		const openFiles = new Map<string, string>();
+		const allDocs = documents.all();
+		for (const doc of allDocs) {
+			openFiles.set(doc.uri, doc.getText());
+		}
+		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath, openFiles);
 	} catch (error) {
 		console.error(error);
 	}
@@ -127,3 +127,5 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+

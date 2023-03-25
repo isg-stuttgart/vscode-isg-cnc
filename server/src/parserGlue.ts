@@ -6,6 +6,7 @@ import { findFileInRootDir, getParseResults, getDefType, findMatch, findFirstMat
  * @param fileContent The file as String 
  * @param position The selected position
  * @param uri The file uri
+ * @param rootPath The root path of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
 export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange | null {
@@ -51,13 +52,14 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 }
 
 /**
- * Recursively find all references fitting to the declaration at the given position in the given file.
- * @param fileContent 
- * @param position 
- * @param uri 
- * @param rootPath 
+ * Find all references fitting to the declaration at the given position in the given file.
+ * @param fileContent the file content of the currently focused file
+ * @param position the position of the reference event
+ * @param uri the uri of the currently focused file
+ * @param rootPath the root path of the workspace
+ * @param openFiles a map of open files with their uri as key and the file content as value
  */
-export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
+export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null, openFiles: Map<string, string>): FileRange[] {
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
@@ -76,7 +78,7 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     }
     // if global find all references in all files of workspace and add their ranges to the result array
     else if (rootPath) {
-        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, match.name);
+        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, match.name, openFiles);
     }
 
     return referenceRanges;
