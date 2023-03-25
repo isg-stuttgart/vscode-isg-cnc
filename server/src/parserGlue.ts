@@ -1,6 +1,18 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, matchTypes } from "./parserClasses";
-import { findFileInRootDir, getParseResults, getDefType, findMatch, findFirstMatchWithinPrg, getRefTypes, findMatchRangesWithinPrgTree, findMatchRangesWithinPath } from "./parserUtil";
+import {
+    findFileInRootDir,
+    getParseResults,
+    getDefType,
+    findMatch,
+    findFirstMatchWithinPrg,
+    getRefTypes,
+    findMatchRangesWithinPrgTree,
+    findMatchRangesWithinPath
+} from "./parserUtil";
+import * as fs from "fs";
+import path = require("node:path");
+
 /**
  * Returns the definition location of the selected position
  * @param fileContent The file as String 
@@ -34,12 +46,18 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
         definition = new FileRange(uri, start, end);
     } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
-        // jump at the beginning of the global program
-        const defPath = findFileInRootDir(rootPath, match.name);
+        let defPath: string | null = null;
+        // if the call contains a valid absolute path, use it
+        if (fs.existsSync(match.name)) {
+            defPath = path.normalize(match.name);
+        } else {
+            defPath = findFileInRootDir(rootPath, match.name);
+        }
         if (!defPath) {
             return null;
         }
         const defUri: string = pathToFileURL(defPath).toString();
+        // jump at the beginning of the global program
         definition = {
             uri: defUri, range: {
                 start: { line: 0, character: 0 },
