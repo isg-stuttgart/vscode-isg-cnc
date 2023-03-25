@@ -299,13 +299,12 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             ranges = ranges.concat(subMatches);
         } else if (entry.isFile()) {
             // add all matches of the file
-            let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
 
+            // if file is open, get current file content of editor
+            let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
+            // if file is not open, read file content from disk
             if (!fileContent) {
                 fileContent = fs.readFileSync(entryPath, 'utf8');
-            } else {
-                // TODO: remove
-                console.log("file already open: " + entryPath);
             }
 
             // if file does not contain the searched match-name skip parsing/searching
