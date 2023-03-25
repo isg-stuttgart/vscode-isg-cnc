@@ -11,7 +11,7 @@ export interface Match {
 
 export interface SyntaxArray {
     toolCalls: Array<Match>;
-    prgCalls: Array<Match>;
+    prgCallNames: Array<Match>;
     trash: Array<Match>;
     controlBlocks: Array<Match>;
     multilines: Array<Match>;
@@ -56,7 +56,7 @@ export function getSyntaxArray(text: string): SyntaxArray {
     const parseResults: ParseResults = getParseResults(text);
 
     const toolCalls = new Array<Match>();
-    const prgCalls = new Array<Match>();
+    const prgCallNames = new Array<Match>();
     const trash = new Array<Match>();
     const controlBlocks = new Array<Match>();
     const multilines = new Array<Match>();
@@ -87,11 +87,11 @@ export function getSyntaxArray(text: string): SyntaxArray {
                 case matchTypes.toolCall:
                     toolCalls.push(element);
                     break;
-                case matchTypes.localPrgCall:
-                case matchTypes.globalPrgCall:
-                case matchTypes.localCycleCall:
-                case matchTypes.globalCycleCall:
-                    prgCalls.push(element);
+                case matchTypes.localPrgCallName:
+                case matchTypes.globalPrgCallName:
+                case matchTypes.localCycleCallName:
+                case matchTypes.globalCycleCallName:
+                    prgCallNames.push(element);
                     break;
                 case matchTypes.trash:
                     trash.push(element);
@@ -110,12 +110,11 @@ export function getSyntaxArray(text: string): SyntaxArray {
                     break;
             }
         }
-
     }
 
     const syntaxArray: SyntaxArray = {
         toolCalls: toolCalls,
-        prgCalls: prgCalls,
+        prgCallNames: prgCallNames,
         trash: trash,
         controlBlocks: controlBlocks,
         multilines: multilines,

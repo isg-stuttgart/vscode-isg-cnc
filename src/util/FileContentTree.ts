@@ -27,7 +27,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     constructor(extContext: vscode.ExtensionContext) {
         this.matchCategories = {
             toolCalls: new CategoryItem("Tool Calls"),
-            prgCalls: new CategoryItem("Program Calls"),
+            prgCallNames: new CategoryItem("Program Calls"),
         };
         this.context = extContext;
         this.update();
@@ -80,7 +80,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
     async updateMatchItems(syntaxArray: parser.SyntaxArray): Promise<void> {
         await Promise.all([
             new Promise(() => this.matchCategories.toolCalls.resetMatches(syntaxArray.toolCalls, this.context, this.sorting)),
-            new Promise(() => this.matchCategories.prgCalls.resetMatches(syntaxArray.prgCalls, this.context, this.sorting))
+            new Promise(() => this.matchCategories.prgCallNames.resetMatches(syntaxArray.prgCallNames, this.context, this.sorting))
         ]);
     }
 
@@ -363,7 +363,7 @@ class MatchLineLabel {
  */
 interface MatchCategories {
     toolCalls: CategoryItem,
-    prgCalls: CategoryItem,
+    prgCallNames: CategoryItem,
 };
 
 /**
