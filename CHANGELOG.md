@@ -16,9 +16,11 @@ Types of changes
 
 ### Added
 - Adding "Go To Definition" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #90](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/90)
+- Adding "Go To References" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #108](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/108)
 
 ### Fixed
 - Sidebar showed some wrong information because of grammar bugs [Issue #104](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/104)
+- Sidebar uses the name of the called programs instead of the whole calling-string for higlighting and grouping [Issue #114](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/114)
 
 ## [V0.4.2]
 
