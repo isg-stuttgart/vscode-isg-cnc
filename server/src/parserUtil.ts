@@ -213,23 +213,23 @@ export function findFileInRootDir(rootPath: string, fileName: string): string | 
             break;
         }
     }
-    return res;
+    return res ? normalizePath(res) : null;
 }
 
 /**
  * Finds all matches of a given name and types within a given program-tree
  * @param tree 
  * @param types 
- * @param name 
+ * @param names 
  * @returns the found matches
  */
-export function findMatchesWithinPrgTree(tree: any, types: string[], name: string): Match[] {
+export function findMatchesWithinPrgTree(tree: any, types: string[], names: string[]): Match[] {
     let res: Match[] = [];
 
     // search in each subtree and add its references to the result array
     if (Array.isArray(tree)) {
         tree.forEach(e => {
-            const subRes = findMatchesWithinPrgTree(e, types, name);
+            const subRes = findMatchesWithinPrgTree(e, types, names);
             res = res.concat(subRes);
         });
     }
@@ -238,11 +238,14 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     if (tree && isMatch(tree)) {
         const match = tree as Match;
         // if correct defType and name add to found references
-        if (types.includes(match.type) && match.name === name) {
+        if (types.includes(match.type) && match.name &&
+            // if we search for global prg/cycle call name, normalize the names(pathes) to compare, otherwise compare the names directly
+            (names.includes(match.name)
+                || ([matchTypes.globalCycleCallName, matchTypes.globalPrgCallName].includes(match.type) && names.includes(normalizePath(match.name))))) {
             res.push(match);
-            // else search within the match-subtree (if existing)
         } else if (match.content) {
-            const subRes = findMatchesWithinPrgTree(match.content, types, name);
+            // else search within the match-subtree (if existing)
+            const subRes = findMatchesWithinPrgTree(match.content, types, names);
             res = res.concat(subRes);
         }
     }
@@ -253,13 +256,13 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
  * Finds all matches of a given name and types within a given program-tree and returns the according ranges
  * @param tree 
  * @param types 
- * @param name 
- * @param path 
+ * @param names 
+ * @param uri 
  * @returns the found ranges
  */
-export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: string, uri: string): FileRange[] {
+export function findMatchRangesWithinPrgTree(tree: any, types: string[], names: string[], uri: string): FileRange[] {
     let ranges: FileRange[] = [];
-    const references: Match[] = findMatchesWithinPrgTree(tree, types, name);
+    const references: Match[] = findMatchesWithinPrgTree(tree, types, names);
     for (const ref of references) {
         if (!ref.location) {
             continue;
@@ -276,26 +279,26 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
  * Finds all match-ranges of a given name and types within a given root directory and all subdirectories
  * @param rootPath root directory to search in
  * @param types possible types of matches to search for
- * @param name name/identifier of the matches to search for
+ * @param names names/identifier of the matches to search for
  * @param uriToOpenFileContent mapping of file-uris to file-contents
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>): FileRange[] {
+export function findMatchRangesWithinPath(rootPath: string, types: string[], names: string[], uriToOpenFileContent: Map<string, string>): FileRange[] {
     let ranges: FileRange[] = [];
 
     // convert uri mapping of open files to normalized path mapping
     const pathToOpenFileContent = new Map<string, string>();
     uriToOpenFileContent.forEach((value, key) => {
-        const normalizedPath = path.normalize(fileURLToPath(key));
+        const normalizedPath = normalizePath(fileURLToPath(key));
         pathToOpenFileContent.set(normalizedPath, value);
     });
 
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
-        const entryPath = path.normalize(path.join(rootPath, entry.name));
+        const entryPath = normalizePath(path.join(rootPath, entry.name));
         if (entry.isDirectory()) {
             // add all matches in subdirectories
-            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent);
+            const subMatches = findMatchRangesWithinPath(entryPath, types, names, uriToOpenFileContent);
             ranges = ranges.concat(subMatches);
         } else if (entry.isFile()) {
             // add all matches of the file
@@ -307,16 +310,33 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
                 fileContent = fs.readFileSync(entryPath, 'utf8');
             }
 
-            // if file does not contain the searched match-name skip parsing/searching
-            if (!fileContent.includes(name)) {
+            // if file does not contain any of the searched match-name skip parsing/searching
+            const nameIncluded = names.some(name => fileContent && fileContent.includes(name));
+            if (!nameIncluded) {
                 continue;
             }
+
             const ast = getParseResults(fileContent).fileTree;
             const uri = pathToFileURL(entryPath).toString();
-            const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
+            const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, names, uri);
             ranges = ranges.concat(fileRanges);
         }
     }
     return ranges;
+}
+
+
+export function normalizePath(filePath: string): string {
+    const pathObj = path.parse(filePath);
+    // Make the drive letter lowercase
+    const lowercaseDrive = pathObj.root.toLowerCase();
+
+    // remove the root from the dir component
+    const dirWithoutRoot = pathObj.dir.substring(pathObj.root.length);
+
+    // Combine the lowercase drive with the rest of the path components
+    const combinedPath = path.join(lowercaseDrive, dirWithoutRoot, pathObj.base);
+    const normalizedPath = path.normalize(combinedPath);
+    return normalizedPath;
 }
 
