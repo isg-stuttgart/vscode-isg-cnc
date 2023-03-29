@@ -8,7 +8,8 @@ import {
     findFirstMatchWithinPrg,
     getRefTypes,
     findMatchRangesWithinPrgTree,
-    findMatchRangesWithinPath
+    findMatchRangesWithinPath,
+    normalizePath
 } from "./parserUtil";
 import * as fs from "fs";
 import path = require("node:path");
@@ -49,7 +50,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         let defPath: string | null = null;
         // if the call contains a valid absolute path, use it
         if (fs.existsSync(match.name)) {
-            defPath = path.normalize(match.name);
+            defPath = normalizePath(match.name);
         } else {
             defPath = findFileInRootDir(rootPath, match.name);
         }
@@ -87,16 +88,22 @@ export function getReferences(fileContent: string, position: Position, uri: stri
         return [];
     }
 
-    // get the reference types fitting to the type of the found match
+    // get the reference types fitting to the type of the found match, also if we are in a local or global context
     const { refTypes, local } = getRefTypes(match);
+    let name: string = match.name;
+
+    // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
+    if (rootPath && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
+            name = path.basename(match.name);
+    }
 
     // if local find all references in the same file and add their ranges to the result array
     if (local) {
-        referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, match.name, uri);
+        referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, name, uri);
     }
     // if global find all references in all files of workspace and add their ranges to the result array
     else if (rootPath) {
-        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, match.name, openFiles);
+        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, name, openFiles);
     }
 
     return referenceRanges;
