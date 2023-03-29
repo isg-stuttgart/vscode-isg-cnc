@@ -264,7 +264,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
  * Finds all matches of a given name and types within a given program-tree and returns the according ranges
  * @param tree 
  * @param types 
- * @param names 
+ * @param name 
  * @param uri 
  * @returns the found ranges
  */
@@ -322,6 +322,7 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             if (!fileContent.includes(name)) {
                 continue;
             }
+
             const ast = getParseResults(fileContent).fileTree;
             const uri = pathToFileURL(entryPath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
