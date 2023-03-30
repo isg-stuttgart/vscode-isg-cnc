@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, matchTypes } from "./parserClasses";
 import {
-    findFileInRootDir,
+    findFileInRootDir as findFilesInRootDir,
     getParseResults,
     getDefType,
     findMatch,
@@ -22,55 +22,53 @@ import path = require("node:path");
  * @param rootPath The root path of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange | null {
+export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
     let defMatch: Match | null = null;
-
+    let definitions: FileRange[] = [];
     // parse the file content and search for the selected position
     const ast: any[] = getParseResults(fileContent).fileTree;
     const match = findMatch(ast, position);
-    let definition: FileRange | null = null;
     if (!match || !match.name) {
-        return null;
+        return [];
     }
     const { defType, local } = getDefType(match);
 
     if (defType === null) {
-        return null;
+        return [];
     }
 
     if (local) {
         defMatch = findFirstMatchWithinPrg(ast, defType, match.name);
         if (!defMatch || !defMatch.location) {
-            return null;
+            return [];
         }
         const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
-        definition = new FileRange(uri, start, end);
+        definitions.push(new FileRange(uri, start, end));
     } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
-        let defPath: string | null = null;
+        let defPaths: string[] = [];
         // if the call contains a valid absolute path, use it
         if (path.isAbsolute(match.name)) {
             const normPath = normalizePath(match.name);
             if (fs.existsSync(normPath)) {
-                defPath = normalizePath(match.name);
+                defPaths.push(normalizePath(match.name));
             }
         } else {
-            defPath = findFileInRootDir(rootPath, match.name);
+            defPaths = findFilesInRootDir(rootPath, match.name);
         }
-        if (!defPath) {
-            return null;
-        }
-        const defUri: string = pathToFileURL(defPath).toString();
-        // jump at the beginning of the global program
-        definition = {
-            uri: defUri, range: {
-                start: { line: 0, character: 0 },
-                end: { line: 0, character: 0 }
-            }
-        };
+        const defUris = defPaths.map(defPath => pathToFileURL(defPath).toString());
+        // beginnings of the found files (global prgs)
+        definitions = defUris.map(defUri => {
+            return {
+                uri: defUri,
+                range: {
+                    start: { line: 0, character: 0 },
+                    end: { line: 0, character: 0 }
+                }
+            };
+        });
     }
-
-    return definition;
+    return definitions;
 }
 
 /**

@@ -195,25 +195,22 @@ export function compareLocation(pos1: Position, pos2: Position): number {
  * @param fileName 
  * @returns 
  */
-export function findFileInRootDir(rootPath: string, fileName: string): string | null {
-    let res: string | null = null;
+export function findFileInRootDir(rootPath: string, fileName: string): string[] {
+    let paths: string[] = [];
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
         const entryPath = path.join(rootPath, entry.name);
         if (entry.isDirectory()) {
             //search in subdirectory
-            res = findFileInRootDir(entryPath, fileName);
-            //if file found, stop searching
-            if (res) {
-                break;
-            }
+            paths = paths.concat(findFileInRootDir(entryPath, fileName));
         } else if (entry.isFile() && entry.name === fileName) {
             //file found
-            res = entryPath;
+            const normPath = normalizePath(entryPath);
+            paths.push(normPath);
             break;
         }
     }
-    return res ? normalizePath(res) : null;
+    return paths;
 }
 
 /**
