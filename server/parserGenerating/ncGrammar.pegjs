@@ -272,7 +272,7 @@ prg_call "prg_call"                                         // a subprogram/cycl
 local_subprg_call "local_subprg_call"
 = "LL" gap name:prg_name{
 	const nameMatch = new Match(types.localPrgCallName, null, name.location, name.text, name.text)
-	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name);
+	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name.text);
 }
 
 global_subprg_call "global_subprg_call"

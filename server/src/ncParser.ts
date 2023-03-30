@@ -409,7 +409,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c114 = peg$literalExpectation("LL", false);
   const peg$c115 = function(name: any): any {
   	const nameMatch = new Match(types.localPrgCallName, null, name.location, name.text, name.text)
-  	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name);
+  	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name.text);
   };
   const peg$c116 = peg$otherExpectation("global_subprg_call");
   const peg$c117 = function(name: any): any {

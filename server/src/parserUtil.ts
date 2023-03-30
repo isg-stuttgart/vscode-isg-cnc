@@ -240,7 +240,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
         if(!match.name){
             return res;
         }        
-        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalCycleCallName);       
+        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);       
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
         if (globalCall && path.isAbsolute(matchName)) {
