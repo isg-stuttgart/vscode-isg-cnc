@@ -18,7 +18,7 @@ You can find and download the extension in the following marketplaces:
 
 ## Requirements
 
-Visual Studio Code V1.59.0 or higher
+Visual Studio Code V1.73.1 or higher
 
 ## Manuals
 
@@ -28,7 +28,8 @@ Visual Studio Code V1.59.0 or higher
   - Direct link to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 
 ## Features
-
+- "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "strg+hover+leftclick" or "F12"
+- "Go to References" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "shift+F12"
 - Syntax highlighting
 - Code completion
 - Code formatting

@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
@@ -40,6 +40,7 @@
     },
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
+    "main": "./out/src/extension.js",
     "activationEvents": [
         "onLanguage:isg-cnc",
         "onView:cnc-show-filecontent",
@@ -57,7 +58,6 @@
         "onCommand:isg-cnc.FindNonAsciiCharacters",
         "onCommand:isg-cnc.AlignEqualSigns"
     ],
-    "main": "./out/extension.js",
     "contributes": {
         "configurationDefaults": {
             "[isg-cnc]": {
@@ -178,9 +178,9 @@
                 "enablement": "false"
             },
             {
-                "command":"isg-cnc.sortGroupedOn",
+                "command": "isg-cnc.sortGroupedOn",
                 "title": "Grouped"
-            },        
+            },
             {
                 "command": "isg-cnc.sortGroupedSelected",
                 "title": "Grouped (active)",
@@ -190,17 +190,16 @@
                 "command": "isg-cnc.AlignEqualSigns",
                 "title": "ISG-CNC: Align equal signs in selected range"
             }
-            
         ],
         "menus": {
             "view/title": [
-               {
-                "submenu": "isg-cnc.SidebarSorting",
-                "when": "view == cnc-show-filecontent",
-                "group": "navigation"
-               }
+                {
+                    "submenu": "isg-cnc.SidebarSorting",
+                    "when": "view == cnc-show-filecontent",
+                    "group": "navigation"
+                }
             ],
-            "isg-cnc.SidebarSorting":[
+            "isg-cnc.SidebarSorting": [
                 {
                     "command": "isg-cnc.sortLineByLineOn",
                     "when": "view == cnc-show-filecontent && vscode-isg-cnc.sidebarSorting == 'grouped'",
@@ -307,7 +306,7 @@
             {
                 "id": "isg-cnc.SidebarSorting",
                 "label": "Switch between different sortings",
-                "icon":"$(extensions-filter)"
+                "icon": "$(extensions-filter)"
             }
         ],
         "keybindings": [
@@ -443,11 +442,12 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "compile": "tsc -p ./ && tsc -p ./server",
+        "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/test/runTest.js",
+        "postinstall": "cd server && npm install"
     },
     "devDependencies": {
         "@types/glob": "^7.1.4",
@@ -462,7 +462,11 @@
         "mocha": "^9.1.1",
         "node-gyp": "^9.1.0",
         "peggy": "^2.0.1",
+        "ts-pegjs": "^2.2.1",
         "typedoc": "^0.22.18",
         "typescript": "^4.4.3"
+    },
+    "dependencies": {
+        "vscode-languageclient": "^8.0.2"
     }
 }

@@ -14,6 +14,14 @@ Types of changes
 
 ## [Unreleased]
 
+## [V0.4.3]
+### Added
+- Adding "Go To Definition" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #90](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/90)
+- Adding "Go To References" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #108](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/108)
+
+### Fixed
+- Sidebar showed some wrong information because of grammar bugs [Issue #104](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/104)
+- Sidebar uses the name of the called programs instead of the whole calling-string for higlighting and grouping [Issue #114](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/114)
 
 ## [V0.4.2]
 
@@ -318,6 +326,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.4.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.3
 [V0.4.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.0
 [V0.4.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.0...V0.3.5
 [V0.3.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.3.4...V0.3.5

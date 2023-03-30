@@ -1,7 +1,6 @@
-import { match } from "assert";
-import * as fs from "fs";
 import * as peggy from "peggy";
-import * as ncParser from "./peggyParser";
+import { matchTypes, ParseResults } from "../../server/src/parserClasses";
+import { getParseResults } from "../../server/src/parserUtil";
 export interface Match {
     name: Match | null;
     type: string;
@@ -12,24 +11,13 @@ export interface Match {
 
 export interface SyntaxArray {
     toolCalls: Array<Match>;
-    prgCalls: Array<Match>;
+    prgCallNames: Array<Match>;
     trash: Array<Match>;
     controlBlocks: Array<Match>;
     multilines: Array<Match>;
     skipBlocks: Array<Match>;
     blockNumbers: Array<Match>;
 }
-
-export const matchTypes = {
-    toolCall: "toolCall",
-    prgCall: "prgCall",
-    controlBlock: "controlBlock",
-    multiline: "multiline",
-    trash: "trash",
-    name: "name",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber"
-};
 
 /**
  * Returns a map with linenumbers as keys, and the first blocknumber-match of the line as values.
@@ -40,8 +28,8 @@ export const matchTypes = {
 export function getLineToBlockNumberMap(text: string): Map<number, Match> {
     const map: Map<number, Match> = new Map();
     getSyntaxArray(text).blockNumbers.forEach((match) => {
-        if (map.get(match.location.start.line-1) === undefined) {
-            map.set(match.location.start.line-1, match);
+        if (map.get(match.location.start.line - 1) === undefined) {
+            map.set(match.location.start.line - 1, match);
         }
     });
 
@@ -53,7 +41,7 @@ export function getLineToBlockNumberMap(text: string): Map<number, Match> {
  * @returns Array with linenumbers
  */
 export function getNumberableLines(text: string): Array<number> {
-    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(text) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+    const parseResults: ParseResults = getParseResults(text);
     const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
     //sort set because of wrong order due to recursive adding
     numberableLines.sort((a: number, b: number) => a - b);
@@ -65,10 +53,10 @@ export function getNumberableLines(text: string): Array<number> {
  * @param text the text to parse
  */
 export function getSyntaxArray(text: string): SyntaxArray {
-    const parseResults: { fileTree: Array<any>, numberableLinesUnsorted: Set<number> } = ncParser.parse(text) as unknown as { fileTree: Array<any>, numberableLinesUnsorted: Set<number> };
+    const parseResults: ParseResults = getParseResults(text);
 
     const toolCalls = new Array<Match>();
-    const prgCalls = new Array<Match>();
+    const prgCallNames = new Array<Match>();
     const trash = new Array<Match>();
     const controlBlocks = new Array<Match>();
     const multilines = new Array<Match>();
@@ -99,8 +87,11 @@ export function getSyntaxArray(text: string): SyntaxArray {
                 case matchTypes.toolCall:
                     toolCalls.push(element);
                     break;
-                case matchTypes.prgCall:
-                    prgCalls.push(element);
+                case matchTypes.localPrgCallName:
+                case matchTypes.globalPrgCallName:
+                case matchTypes.localCycleCallName:
+                case matchTypes.globalCycleCallName:
+                    prgCallNames.push(element);
                     break;
                 case matchTypes.trash:
                     trash.push(element);
@@ -119,12 +110,11 @@ export function getSyntaxArray(text: string): SyntaxArray {
                     break;
             }
         }
-
     }
 
     const syntaxArray: SyntaxArray = {
         toolCalls: toolCalls,
-        prgCalls: prgCalls,
+        prgCallNames: prgCallNames,
         trash: trash,
         controlBlocks: controlBlocks,
         multilines: multilines,
