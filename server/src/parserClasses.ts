@@ -36,6 +36,7 @@ export class FileRange {
 export interface ParseResults {
     fileTree: Array<any>;
     numberableLinesUnsorted: Set<number>;
+    mainPrg: Match | null;
 }
 
 /**
@@ -73,6 +74,7 @@ export class Match {
  */
 export const matchTypes = {
     toolCall: "toolCall",
+    mainPrg: "mainPrg",
     localSubPrg: "localSubPrg",
     localPrgCall: "localPrgCall",
     localPrgCallName: "localPrgCallName",

@@ -7,6 +7,7 @@
 {{
 	 const types = {
       toolCall: "toolCall",
+      mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
@@ -61,6 +62,7 @@
 
 {
 	const numberableLinesUnsorted = new Set();
+  let mainPrg = null;
 }
 
 //----------------------------------------------------------
@@ -71,29 +73,33 @@
 
 start                                                       // start rule
 = fileTree:file                                             // return the syntax information
-{return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted}}
+{return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}}
 
 file "file"
-= (program/.)*                                              // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
-
-program "program"
-= subprogram                                                // each program is either a sub-program or
-/ mainprogram                                               // a program
+= file:(grayline* subprogram* mainprogram? subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+{ 
+  mainPrg=file[2]?file[2]:null;
+  return file;
+}
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= comment? "%L" whitespace+ title:$name content:body{       // each subprogram requires a title and a body
+= "%L" whitespace+ title:$name content:body{                // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), title);
 }
 
 mainprogram "mainprogram"                                   // the main program
-= $(comment? mainprg_title?) body                           // for a main program, the title is optional
-
-mainprg_title "mainprg_title"                               // the title of the main program
-= "%" whitespaces title:name
+= definition:("%" whitespaces $name?)? content:body         // for a main program, the title is optional
+{
+  let name = null
+  if(definition && definition[2]){
+    name = definition[2]
+  }
+  return new Match(types.mainPrg, content, location(), text(), name)
+};
 
 body "body"                                                 // the body of a (sub-) program
-= (!(("%L" whitespace+ title:$name)/mainprg_title)          // end body when new program part reached
-($(whitespaces linebreak)									// consume empty lines / rest of lines
+= (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
+($(whitespaces linebreak)									                  // consume empty lines / rest of lines
 / ( whitespaces (comment / block) whitespaces linebreak?)))+// the body is a list of comments and blocks
 
 comment "comment"                                           // comments are either:

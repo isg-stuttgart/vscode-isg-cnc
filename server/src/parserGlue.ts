@@ -56,17 +56,23 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         } else {
             defPaths = findFilesInRootDir(rootPath, match.name);
         }
-        const defUris = defPaths.map(defPath => pathToFileURL(defPath).toString());
-        // beginnings of the found files (global prgs)
-        definitions = defUris.map(defUri => {
-            return {
-                uri: defUri,
-                range: {
-                    start: { line: 0, character: 0 },
-                    end: { line: 0, character: 0 }
-                }
+        // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
+        for (const path of defPaths) {
+            const uri = pathToFileURL(path).toString();
+            const fileContent = fs.readFileSync(path, "utf8");
+            const mainPrg = getParseResults(fileContent).mainPrg;
+            let range = {
+                start: new Position(0, 0),
+                end: new Position(0, 0)
             };
-        });
+            if (mainPrg && mainPrg.location) {
+                range = {
+                    start: new Position(mainPrg.location.start.line - 1, mainPrg.location.start.column - 1),
+                    end: new Position(mainPrg.location.end.line - 1, mainPrg.location.end.column - 1)
+                };
+            }
+            definitions.push(new FileRange(uri, range.start, range.end));
+        }
     }
     return definitions;
 }

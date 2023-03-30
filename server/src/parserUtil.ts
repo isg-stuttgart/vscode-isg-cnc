@@ -234,23 +234,21 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     // if element is a Match
     if (tree && isMatch(tree)) {
         const match = tree as Match;
-        if(!match.name){
-            return res;
-        }        
+                
         const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);       
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
-        if (globalCall && path.isAbsolute(matchName)) {
+        if (globalCall && matchName && path.isAbsolute(matchName)) {
             matchName = path.basename(matchName);
         }
-
+        
         // if correct defType and name add to found references
         if (types.includes(match.type) && matchName === name) {
             res.push(match);
         }
         // else search within the match-subtree (if existing)
         else if (match.content) {
-            const subRes = findMatchesWithinPrgTree(match.content, types, matchName);
+            const subRes = findMatchesWithinPrgTree(match.content, types, name);
             res = res.concat(subRes);
         }
     }
