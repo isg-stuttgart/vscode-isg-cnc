@@ -49,8 +49,11 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
         let defPath: string | null = null;
         // if the call contains a valid absolute path, use it
-        if (fs.existsSync(match.name)) {
-            defPath = normalizePath(match.name);
+        if (path.isAbsolute(match.name)) {
+            const normPath = normalizePath(match.name);
+            if (fs.existsSync(normPath)) {
+                defPath = normalizePath(match.name);
+            }
         } else {
             defPath = findFileInRootDir(rootPath, match.name);
         }
@@ -94,7 +97,7 @@ export function getReferences(fileContent: string, position: Position, uri: stri
 
     // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
     if (rootPath && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
-            name = path.basename(match.name);
+        name = path.basename(match.name);
     }
 
     // if local find all references in the same file and add their ranges to the result array
