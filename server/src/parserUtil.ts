@@ -202,7 +202,7 @@ export function findFileInRootDir(rootPath: string, fileName: string): string[] 
         const entryPath = path.join(rootPath, entry.name);
         if (entry.isDirectory()) {
             //search in subdirectory
-            paths = paths.concat(findFileInRootDir(entryPath, fileName));
+            paths.push(...findFileInRootDir(entryPath, fileName));
         } else if (entry.isFile() && entry.name === fileName) {
             //file found
             const normPath = normalizePath(entryPath);
@@ -227,7 +227,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     if (Array.isArray(tree)) {
         tree.forEach(e => {
             const subRes = findMatchesWithinPrgTree(e, types, name);
-            res = res.concat(subRes);
+            res.push(...subRes);
         });
     }
 
@@ -249,7 +249,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
         // else search within the match-subtree (if existing)
         else if (match.content) {
             const subRes = findMatchesWithinPrgTree(match.content, types, name);
-            res = res.concat(subRes);
+            res.push(...subRes);
         }
     }
     return res;
@@ -302,7 +302,7 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
         if (entry.isDirectory()) {
             // add all matches in subdirectories
             const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent);
-            ranges = ranges.concat(subMatches);
+            ranges.push(...subMatches);
         } else if (entry.isFile()) {
             // add all matches of the file
 
@@ -321,7 +321,7 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             const ast = getParseResults(fileContent).fileTree;
             const uri = pathToFileURL(entryPath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
-            ranges = ranges.concat(fileRanges);
+            ranges.push(...fileRanges);
         }
     }
     return ranges;

@@ -26,13 +26,13 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
-let workspaceFolders: string[] | null = null;
+let workspaceFolderUris: string[] | null = null;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
 	rootPath = params.rootUri;
-	workspaceFolders = params.workspaceFolders?.map(wF => wF.uri) || null;
+	workspaceFolderUris = params.workspaceFolders?.map(wF => wF.uri) || null;
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
 	}
@@ -69,14 +69,16 @@ connection.onInitialized(() => {
 	// change workspace folders when getting notification from client
 	if (hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
+			const addedUris = _event.added.map(folder => folder.uri);
+			const removedUris = _event.removed.map(folder => folder.uri);
 			// add new folders to workspaceFolders
-			if(workspaceFolders){
-				workspaceFolders = workspaceFolders.concat(_event.added.map(folder => folder.uri));
+			if(workspaceFolderUris){
+				workspaceFolderUris.push(...addedUris);
 			}else{
-				workspaceFolders = _event.added.map(folder => folder.uri);
+				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
-			workspaceFolders = workspaceFolders.filter(folderUri => !_event.removed.some(removed => removed.uri === folderUri));
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
 		});
 	}
 });
@@ -91,8 +93,8 @@ connection.onDefinition((docPos) => {
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
 		let rootPaths;
-		if(workspaceFolders){
-			rootPaths=workspaceFolders.map(folder => fileURLToPath(folder));
+		if(workspaceFolderUris){
+			rootPaths=workspaceFolderUris.map(folder => fileURLToPath(folder));
 		}else if(rootPath){
 			rootPaths=[rootPath];
 		}else{
