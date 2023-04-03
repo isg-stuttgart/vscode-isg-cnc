@@ -72,9 +72,9 @@ connection.onInitialized(() => {
 			const addedUris = _event.added.map(folder => folder.uri);
 			const removedUris = _event.removed.map(folder => folder.uri);
 			// add new folders to workspaceFolders
-			if(workspaceFolderUris){
+			if (workspaceFolderUris) {
 				workspaceFolderUris.push(...addedUris);
-			}else{
+			} else {
 				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
@@ -92,15 +92,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		let rootPaths;
-		if(workspaceFolderUris){
-			rootPaths=workspaceFolderUris.map(folder => fileURLToPath(folder));
-		}else if(rootPath){
-			rootPaths=[rootPath];
-		}else{
-			rootPaths = null;
-		}
-		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPaths);
+		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
 	} catch (error) {
 		console.error(error);
 	}
@@ -120,7 +112,7 @@ connection.onReferences((docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
-		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath, openFiles);
+		return parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles);
 	} catch (error) {
 		console.error(error);
 	}
@@ -132,3 +124,22 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+/**
+ * Returns the rootPaths of the workspace. 
+ * If the workspace has multiple folders, the rootPaths are the paths of the folders. 
+ * If the client did not provide worksspaceFolders the given rootPath is returned. 
+ * If no folder is open, null is returned.
+ * @returns rootPaths of the workspace
+ */
+function getRootPaths() {
+	let rootPaths: string[] | null;
+	if (workspaceFolderUris) {
+		rootPaths = workspaceFolderUris.map(folder => fileURLToPath(folder));
+	} else if (rootPath) {
+		rootPaths = [rootPath];
+	} else {
+		rootPaths = null;
+	}
+	return rootPaths;
+}

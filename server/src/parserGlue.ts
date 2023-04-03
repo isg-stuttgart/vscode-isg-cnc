@@ -85,10 +85,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param fileContent the file content of the currently focused file
  * @param position the position of the reference event
  * @param uri the uri of the currently focused file
- * @param rootPath the root path of the workspace
+ * @param rootPaths the root paths of the workspace
  * @param openFiles a map of open files with their uri as key and the file content as value
  */
-export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null, openFiles: Map<string, string>): FileRange[] {
+export function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>): FileRange[] {
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
@@ -103,7 +103,7 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     let name: string = match.name;
 
     // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
-    if (rootPath && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
+    if (rootPaths && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
         name = path.basename(match.name);
     }
 
@@ -111,9 +111,11 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     if (local) {
         referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, name, uri);
     }
-    // if global find all references in all files of workspace and add their ranges to the result array
-    else if (rootPath) {
-        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, name, openFiles);
+    // if global find all references in all files within all workspace roots and add their ranges to the result array
+    else if (rootPaths) {
+        for (const rootPath of rootPaths) {
+            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles));
+        }
     }
 
     return referenceRanges;
