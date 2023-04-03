@@ -4,9 +4,9 @@ import {
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
-	CompletionItem,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	WorkspaceFolder
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -26,11 +26,13 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
+let workspaceFolders: string[] | null = null;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
 	rootPath = params.rootUri;
+	workspaceFolders = params.workspaceFolders?.map(wF => wF.uri) || null;
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
 	}
@@ -64,9 +66,17 @@ connection.onInitialized(() => {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
+	// change workspace folders when getting notification from client
 	if (hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connection.console.log('Workspace folder change event received.');
+			// add new folders to workspaceFolders
+			if(workspaceFolders){
+				workspaceFolders = workspaceFolders.concat(_event.added.map(folder => folder.uri));
+			}else{
+				workspaceFolders = _event.added.map(folder => folder.uri);
+			}
+			// remove folders from workspaceFolders
+			workspaceFolders = workspaceFolders.filter(folderUri => !_event.removed.some(removed => removed.uri === folderUri));
 		});
 	}
 });
@@ -80,7 +90,15 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPath);
+		let rootPaths;
+		if(workspaceFolders){
+			rootPaths=workspaceFolders.map(folder => fileURLToPath(folder));
+		}else if(rootPath){
+			rootPaths=[rootPath];
+		}else{
+			rootPaths = null;
+		}
+		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPaths);
 	} catch (error) {
 		console.error(error);
 	}

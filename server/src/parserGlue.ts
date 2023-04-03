@@ -19,10 +19,10 @@ import path = require("node:path");
  * @param fileContent The file as String 
  * @param position The selected position
  * @param uri The file uri
- * @param rootPath The root path of the workspace
+ * @param rootPaths The root paths of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
+export function getDefinition(fileContent: string, position: Position, uri: string, rootPaths: string[] | null): FileRange[] {
     let defMatch: Match | null = null;
     let definitions: FileRange[] = [];
     // parse the file content and search for the selected position
@@ -31,8 +31,8 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     if (!match || !match.name) {
         return [];
     }
-    const { defType, local } = getDefType(match);
 
+    const { defType, local } = getDefType(match);
     if (defType === null) {
         return [];
     }
@@ -45,7 +45,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
         definitions.push(new FileRange(uri, start, end));
-    } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
+    } else if (rootPaths && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
         let defPaths: string[] = [];
         // if the call contains a valid absolute path, use it
         if (path.isAbsolute(match.name)) {
@@ -54,7 +54,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
                 defPaths.push(normalizePath(match.name));
             }
         } else {
-            defPaths = findFilesInRootDir(rootPath, match.name);
+            defPaths = [];
+            for (const rootPath of rootPaths) {
+                defPaths.push(...findFilesInRootDir(rootPath, match.name));
+            }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
         for (const path of defPaths) {
