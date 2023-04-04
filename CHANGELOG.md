@@ -13,6 +13,8 @@ Types of changes
     - Security in case of vulnerabilities.
 
 ## [Unreleased]
+### Added
+- Multi-root-workspace support for language server features (Go To Definition and Go To References) [Issue #117](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/117)
 
 ## [V0.4.3]
 ### Added

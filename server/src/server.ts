@@ -4,9 +4,9 @@ import {
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
-	CompletionItem,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	WorkspaceFolder
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -26,11 +26,13 @@ let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
+let workspaceFolderUris: string[] | null = null;
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
 	rootPath = params.rootUri;
+	workspaceFolderUris = params.workspaceFolders?.map(wF => wF.uri) || null;
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
 	}
@@ -64,9 +66,19 @@ connection.onInitialized(() => {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
+	// change workspace folders when getting notification from client
 	if (hasWorkspaceFolderCapability) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connection.console.log('Workspace folder change event received.');
+			const addedUris = _event.added.map(folder => folder.uri);
+			const removedUris = _event.removed.map(folder => folder.uri);
+			// add new folders to workspaceFolders
+			if (workspaceFolderUris) {
+				workspaceFolderUris.push(...addedUris);
+			} else {
+				workspaceFolderUris = addedUris;
+			}
+			// remove folders from workspaceFolders
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
 		});
 	}
 });
@@ -80,7 +92,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri, rootPath);
+		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
 	} catch (error) {
 		console.error(error);
 	}
@@ -100,7 +112,7 @@ connection.onReferences((docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
-		return parser.getReferences(text, position, docPos.textDocument.uri, rootPath, openFiles);
+		return parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles);
 	} catch (error) {
 		console.error(error);
 	}
@@ -112,3 +124,22 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+/**
+ * Returns the rootPaths of the workspace. 
+ * If the workspace has multiple folders, the rootPaths are the paths of the folders. 
+ * If the client did not provide worksspaceFolders the given rootPath is returned. 
+ * If no folder is open, null is returned.
+ * @returns rootPaths of the workspace
+ */
+function getRootPaths() {
+	let rootPaths: string[] | null;
+	if (workspaceFolderUris) {
+		rootPaths = workspaceFolderUris.map(folder => fileURLToPath(folder));
+	} else if (rootPath) {
+		rootPaths = [rootPath];
+	} else {
+		rootPaths = null;
+	}
+	return rootPaths;
+}

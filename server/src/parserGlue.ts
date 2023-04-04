@@ -19,10 +19,10 @@ import path = require("node:path");
  * @param fileContent The file as String 
  * @param position The selected position
  * @param uri The file uri
- * @param rootPath The root path of the workspace
+ * @param rootPaths The root paths of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, rootPath: string | null): FileRange[] {
+export function getDefinition(fileContent: string, position: Position, uri: string, rootPaths: string[] | null): FileRange[] {
     let defMatch: Match | null = null;
     let definitions: FileRange[] = [];
     // parse the file content and search for the selected position
@@ -31,8 +31,8 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     if (!match || !match.name) {
         return [];
     }
-    const { defType, local } = getDefType(match);
 
+    const { defType, local } = getDefType(match);
     if (defType === null) {
         return [];
     }
@@ -45,7 +45,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
         definitions.push(new FileRange(uri, start, end));
-    } else if (rootPath && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
+    } else if (rootPaths && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
         let defPaths: string[] = [];
         // if the call contains a valid absolute path, use it
         if (path.isAbsolute(match.name)) {
@@ -54,7 +54,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
                 defPaths.push(normalizePath(match.name));
             }
         } else {
-            defPaths = findFilesInRootDir(rootPath, match.name);
+            defPaths = [];
+            for (const rootPath of rootPaths) {
+                defPaths.push(...findFilesInRootDir(rootPath, match.name));
+            }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
         for (const path of defPaths) {
@@ -82,10 +85,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param fileContent the file content of the currently focused file
  * @param position the position of the reference event
  * @param uri the uri of the currently focused file
- * @param rootPath the root path of the workspace
+ * @param rootPaths the root paths of the workspace
  * @param openFiles a map of open files with their uri as key and the file content as value
  */
-export function getReferences(fileContent: string, position: Position, uri: string, rootPath: string | null, openFiles: Map<string, string>): FileRange[] {
+export function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>): FileRange[] {
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
@@ -100,7 +103,7 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     let name: string = match.name;
 
     // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
-    if (rootPath && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
+    if (rootPaths && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
         name = path.basename(match.name);
     }
 
@@ -108,9 +111,11 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     if (local) {
         referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, name, uri);
     }
-    // if global find all references in all files of workspace and add their ranges to the result array
-    else if (rootPath) {
-        referenceRanges = findMatchRangesWithinPath(rootPath, refTypes, name, openFiles);
+    // if global find all references in all files within all workspace roots and add their ranges to the result array
+    else if (rootPaths) {
+        for (const rootPath of rootPaths) {
+            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles));
+        }
     }
 
     return referenceRanges;
