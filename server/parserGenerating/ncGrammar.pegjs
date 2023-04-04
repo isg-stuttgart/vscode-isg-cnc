@@ -211,7 +211,7 @@ return new Match(types.varDeclaration, null, location(), text(), id)
 }
 
 var_name
-= $("V." ("P"/"S"/"L") "." name vardec_index?)
+= $("V." ("P"/"S"/"L"/"CYC") "." name vardec_index?)
 
 vardec_index
 = ("." name)/(("[" integer "]")*)
