@@ -248,7 +248,6 @@ linebreak?
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
 = (!stop_trashing .)+                          
-(non_delimiter)*                                            // dont stop within one token  
 {return "trash: " + text()}
 
 var
@@ -259,7 +258,7 @@ stop_trashing
 = linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
 
 command "command"                                           // a tool call or other normal command
-= (t_command/($([A-Z] number)))                             // a tool call
+= (t_command/($([A-Z] number)))                             
  
 n_command "n_command"                                       // a command defining the blocknumber, i.e., N010
 = "N" id:$non_neg_integer colon:":"?{

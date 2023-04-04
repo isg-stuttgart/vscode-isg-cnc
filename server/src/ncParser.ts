@@ -3347,24 +3347,10 @@ function peg$parse(input: string, options?: ParseOptions) {
       s1 = peg$FAILED;
     }
     if (s1 as any !== peg$FAILED) {
-      s2 = [];
-      s3 = peg$parsenon_delimiter();
-      while (s3 as any !== peg$FAILED) {
-        s2.push(s3);
-        s3 = peg$parsenon_delimiter();
-      }
-      if (s2 as any !== peg$FAILED) {
-        peg$savedPos = s0;
-        s1 = peg$c100();
-        s0 = s1;
-      } else {
-        peg$currPos = s0;
-        s0 = peg$FAILED;
-      }
-    } else {
-      peg$currPos = s0;
-      s0 = peg$FAILED;
+      peg$savedPos = s0;
+      s1 = peg$c100();
     }
+    s0 = s1;
 
     return s0;
   }
