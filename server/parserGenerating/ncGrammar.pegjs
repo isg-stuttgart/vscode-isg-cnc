@@ -239,9 +239,10 @@ default_line+){                                             // consume the last 
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
 = (($grayspace+                                               
-/  prg_call
-/  var
-/  command
+/ prg_call
+/ var
+/ command
+/ parameter
 / label)+)
 / trash_line
 linebreak?
@@ -250,10 +251,17 @@ trash_line                                                  // lines which canno
 = (!stop_trashing .)+                          
 {return "trash: " + text()}
 
+parameter "parameter"
+= "@P" grayspaces "[" (grayspace/var/parameter_trash_token)* "]"
+
+parameter_trash_token "parameter_trash_token"
+= $(!(grayspace/var/"]") .)+
+
 var
 =var_name{
   return new Match(types.variable, null, location(), text(), text());
 }
+
 stop_trashing
 = linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
 
