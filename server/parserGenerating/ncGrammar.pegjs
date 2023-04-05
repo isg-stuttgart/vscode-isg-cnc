@@ -293,31 +293,33 @@ prg_name
 prg_name_string
 = "\"" name:$(non_delimiter+) "\""
  {return name}
- 
+  
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
    "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-   $(bracket_multiline/[^\]\r\n]*) "]"){                    // brackets can contain a multline or a singleline
+    (cycle_call_param_multiline/cycle_call_param_line) grayline* "]"){          // brackets can contain a multline or a singleline
     const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
     const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let nameLM = content[6][1]                              // LightMatch of the cycle name
+    let nameLM = content[6][1]                                                  // LightMatch of the cycle name
     const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-    content[6][1] = nameMatch                               // replace nameLightMatch with nameMatch  
+    content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
     return new Match(type, content, location(), text(), nameLM.text);
   }
 
-squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"
-= "[" (bracket_multiline/[^\]\r\n]*) "]"                    // brackets can contain a multline or a singleline
-
-bracket_multiline
-= [^\]\r\n\\]* "\\" whitespaces linebreak                   // at least one line extended by \   
-( [^\]\r\n\\]* "\\" whitespaces linebreak                   // any lines extended by \
-/ whitespaces line_comment?  linebreak)*                    // or whitelines or comment lines
-[^\]\r\n\\]* (linebreak whitespaces)?{                      // last line before "]"
-	return new Match(types.multiline, null, location(), null, null);
+cycle_call_param_multiline 
+= content:
+(cycle_call_param_line "\\" whitespaces linebreak           // at least one line extended by \   
+((cycle_call_param_line "\\" whitespaces linebreak)         // any lines extended by \
+/ grayline)*                                                // or white/comment lines
+cycle_call_param_line linebreak?){             
+	return new Match(types.multiline, content, location(), text(), null);
 }
 
+cycle_call_param_line "cycle_call_param_line"
+= ((line_comment/var/cycle_call_param_line_trash_token))*
 
+cycle_call_param_line_trash_token
+= $(!("]"/"\r"/"\n"/"\\"/line_comment/var) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{
