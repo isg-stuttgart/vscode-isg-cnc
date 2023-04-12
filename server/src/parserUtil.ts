@@ -3,7 +3,7 @@ import path = require("path");
 import * as ncParser from "./ncParser";
 import { ParseResults, Match, Position, matchTypes, FileRange } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-
+import * as config from "./config";
 /** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
@@ -305,7 +305,11 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             ranges.push(...subMatches);
         } else if (entry.isFile()) {
             // add all matches of the file
-
+            
+            // if file is not a cnc-file skip parsing/searching
+            if(!config.isCncFile(entryPath)){
+                continue;
+            }
             // if file is open, get current file content of editor
             let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
             // if file is not open, read file content from disk

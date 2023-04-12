@@ -5,8 +5,7 @@ import {
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	TextDocumentSyncKind,
-	InitializeResult,
-	WorkspaceFolder
+	InitializeResult
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -14,6 +13,7 @@ import {
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
+import * as config from './config';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -27,7 +27,12 @@ let hasWorkspaceFolderCapability = false;
 let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
-connection.onInitialize((params: InitializeParams) => {
+
+interface MyLanguageSettings {
+	fileExtensions: string[];
+}
+
+connection.onInitialize(async (params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
@@ -36,6 +41,12 @@ connection.onInitialize((params: InitializeParams) => {
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
 	}
+
+	// Fetch workspace configuration and set languageIDs
+	/* const config = await connection.workspace.getConfiguration();
+	const fileConfig = config.get('files');
+	config.updateFileEndings(fileConfig); */
+
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	hasConfigurationCapability = !!(
@@ -143,3 +154,14 @@ function getRootPaths() {
 	}
 	return rootPaths;
 }
+
+/**
+ * Fetches the workspace configuration and updates the languageIDs associated with the cnc language.
+ */
+connection.onDidChangeConfiguration(async () => {
+	const workspaceConfig = await connection.workspace.getConfiguration();
+	const fileConfig = workspaceConfig['files'];
+	config.updateFileEndings(fileConfig);
+});
+
+
