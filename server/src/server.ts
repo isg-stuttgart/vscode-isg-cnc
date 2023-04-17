@@ -42,11 +42,6 @@ connection.onInitialize(async (params: InitializeParams) => {
 		rootPath = fileURLToPath(rootPath);
 	}
 
-	// Fetch workspace configuration and set languageIDs
-	/* const config = await connection.workspace.getConfiguration();
-	const fileConfig = config.get('files');
-	config.updateFileEndings(fileConfig); */
-
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	hasConfigurationCapability = !!(
@@ -92,6 +87,8 @@ connection.onInitialized(() => {
 			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
 		});
 	}
+
+	updateConfig();
 });
 
 /** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
@@ -155,13 +152,17 @@ function getRootPaths() {
 	return rootPaths;
 }
 
+
+connection.onDidChangeConfiguration(async () => {
+	await updateConfig();
+});
+
 /**
  * Fetches the workspace configuration and updates the languageIDs associated with the cnc language.
  */
-connection.onDidChangeConfiguration(async () => {
+async function updateConfig() {
 	const workspaceConfig = await connection.workspace.getConfiguration();
 	const fileConfig = workspaceConfig['files'];
 	config.updateFileEndings(fileConfig);
-});
-
+}
 

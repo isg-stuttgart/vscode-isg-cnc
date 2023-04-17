@@ -1,4 +1,11 @@
-let cncLanguageIDs: string[] = [];
+let cncLanguageIDs: string[] = [
+    ".nc",
+    ".cnc",
+    ".cyc",
+    ".ecy",
+    ".sub",
+    ".plc"
+];
 
 /**
  * Update the list of file endings which are associated with the isg-cnc language. Always includes the default endings when they are not associated with another language.
@@ -8,7 +15,7 @@ export async function updateFileEndings(fileConfig: any) {
     try {
         const fileAssociations = fileConfig.associations as { [key: string]: string } | [];
         // get all languageIDs which are associated with isg-cnc language
-        const languageIDs: string[] = [
+        let languageIDs: string[] = [
             ".nc",
             ".cnc",
             ".cyc",
@@ -22,8 +29,9 @@ export async function updateFileEndings(fileConfig: any) {
                 languageIDs.push(ending.substring(1)); // remove leading *
             }
             // remove default endings which are associated with another language
-            else if (association !== 'isg-cnc') {
-                languageIDs.filter(languageID => languageID !== ending.substring(1));
+            else {
+                const removeID = ending.substring(1);
+                languageIDs = languageIDs.filter(languageID => languageID !== removeID);
             }
         }
         cncLanguageIDs = languageIDs;
