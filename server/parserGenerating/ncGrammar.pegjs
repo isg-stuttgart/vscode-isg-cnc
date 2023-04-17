@@ -99,7 +99,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-($(whitespaces linebreak)									                  // consume empty lines / rest of lines
+($(whitespaces linebreak)									// consume empty lines / rest of lines
 / ( whitespaces (comment / block) whitespaces linebreak?)))+// the body is a list of comments and blocks
 
 comment "comment"                                           // comments are either:
@@ -229,10 +229,10 @@ default_block "default_block"                               // a default block c
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(default_line+                                    // at least one line...   (used default_line+ to match all to the next \ when there is a mix of e.g. commands and t)
-"\\" whitespaces linebreak                                  // which is extended by \
+"\\" grayspaces linebreak                                  // which is extended by \
 ((default_line+                                             // any other default lines...
-"\\" whitespaces linebreak)                                 // extended by \
-/ (whitespaces line_comment? linebreak))*                   // allow line comments and white lines between them
+"\\" grayspaces linebreak)                                 // extended by \
+/ (grayspaces line_comment? linebreak))*                   // allow line comments and white lines between them
 default_line+){                                             // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
