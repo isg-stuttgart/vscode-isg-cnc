@@ -22,8 +22,8 @@ export async function updateFileEndings(fileConfig: any) {
                 languageIDs.push(ending.substring(1)); // remove leading *
             }
             // remove default endings which are associated with another language
-            else if (association !== 'isg-cnc' && languageIDs.includes(ending.substring(1))) {
-                languageIDs.splice(languageIDs.indexOf(ending.substring(1)), 1);
+            else if (association !== 'isg-cnc') {
+                languageIDs.filter(languageID => languageID !== ending.substring(1));
             }
         }
         cncLanguageIDs = languageIDs;
