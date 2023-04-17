@@ -2969,7 +2969,7 @@ function peg$parse(input: string, options?: ParseOptions) {
         if (peg$silentFails === 0) { peg$fail(peg$c98); }
       }
       if (s3 as any !== peg$FAILED) {
-        s4 = peg$parsewhitespaces();
+        s4 = peg$parsegrayspaces();
         if (s4 as any !== peg$FAILED) {
           s5 = peg$parselinebreak();
           if (s5 as any !== peg$FAILED) {
@@ -2994,7 +2994,7 @@ function peg$parse(input: string, options?: ParseOptions) {
                 if (peg$silentFails === 0) { peg$fail(peg$c98); }
               }
               if (s9 as any !== peg$FAILED) {
-                s10 = peg$parsewhitespaces();
+                s10 = peg$parsegrayspaces();
                 if (s10 as any !== peg$FAILED) {
                   s11 = peg$parselinebreak();
                   if (s11 as any !== peg$FAILED) {
@@ -3018,7 +3018,7 @@ function peg$parse(input: string, options?: ParseOptions) {
             }
             if (s7 as any === peg$FAILED) {
               s7 = peg$currPos;
-              s8 = peg$parsewhitespaces();
+              s8 = peg$parsegrayspaces();
               if (s8 as any !== peg$FAILED) {
                 s9 = peg$parseline_comment();
                 if (s9 as any === peg$FAILED) {
@@ -3064,7 +3064,7 @@ function peg$parse(input: string, options?: ParseOptions) {
                   if (peg$silentFails === 0) { peg$fail(peg$c98); }
                 }
                 if (s9 as any !== peg$FAILED) {
-                  s10 = peg$parsewhitespaces();
+                  s10 = peg$parsegrayspaces();
                   if (s10 as any !== peg$FAILED) {
                     s11 = peg$parselinebreak();
                     if (s11 as any !== peg$FAILED) {
@@ -3088,7 +3088,7 @@ function peg$parse(input: string, options?: ParseOptions) {
               }
               if (s7 as any === peg$FAILED) {
                 s7 = peg$currPos;
-                s8 = peg$parsewhitespaces();
+                s8 = peg$parsegrayspaces();
                 if (s8 as any !== peg$FAILED) {
                   s9 = peg$parseline_comment();
                   if (s9 as any === peg$FAILED) {
@@ -3114,15 +3114,9 @@ function peg$parse(input: string, options?: ParseOptions) {
               }
             }
             if (s6 as any !== peg$FAILED) {
-              s7 = [];
-              s8 = peg$parsedefault_line();
-              if (s8 as any !== peg$FAILED) {
-                while (s8 as any !== peg$FAILED) {
-                  s7.push(s8);
-                  s8 = peg$parsedefault_line();
-                }
-              } else {
-                s7 = peg$FAILED;
+              s7 = peg$parsedefault_line();
+              if (s7 as any === peg$FAILED) {
+                s7 = null;
               }
               if (s7 as any !== peg$FAILED) {
                 s2 = [s2, s3, s4, s5, s6, s7];
