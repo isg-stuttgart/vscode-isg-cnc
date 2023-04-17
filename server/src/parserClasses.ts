@@ -1,4 +1,5 @@
 import * as peggy from "peggy";
+import { WorkDoneProgressServerReporter } from "vscode-languageserver";
 
 /**
  * A position in a text document expressed as zero-based line and character offset.
@@ -96,3 +97,33 @@ export const matchTypes = {
     varDeclaration: "varDeclaration",
     variable: "variable"
 };
+
+/**
+ * A class that can be used to increment a progress bar.
+ */
+export class IncrementableProgress {
+    progress: WorkDoneProgressServerReporter;
+    incrementPercentage: number;
+    currentPercentage: number;
+    progressName: string;
+    constructor(progress: WorkDoneProgressServerReporter, totalSteps: number, progressName: string) {
+        this.progress = progress;
+        this.incrementPercentage = 100 / totalSteps;
+        this.currentPercentage = 0;
+        this.progressName = progressName;
+        this.progress.begin(this.progressName, 0, "...");
+    }
+
+    increment(message?: string) {
+        this.currentPercentage += this.incrementPercentage;
+        if (message) {
+            this.progress.report(this.currentPercentage, message);
+        } else {
+            this.progress.report(this.currentPercentage);
+        }
+    }
+
+    done() {
+        this.progress.done();
+    }
+}

@@ -24,6 +24,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
+let hasWorkDoneProgressCapability = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
@@ -45,7 +46,9 @@ connection.onInitialize(async (params: InitializeParams) => {
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
 	);
-	
+	hasWorkDoneProgressCapability = !!(
+		capabilities.window && !!capabilities.window.workDoneProgress
+	);
 
 	const result: InitializeResult = {
 		capabilities: {
@@ -111,8 +114,8 @@ connection.onReferences(async (docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
-
-		return parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles);
+		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
+		return references;
 	} catch (error) {
 		console.error(error);
 	}
