@@ -14,10 +14,11 @@ import {
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
-
+import { setConnection } from './connection';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
+setConnection(connection);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -117,7 +118,7 @@ connection.onReferences(async (docPos) => {
 		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
 		return references;
 	} catch (error) {
-		console.error(error);
+		connection.window.showErrorMessage(JSON.stringify(error));
 	}
 });
 
@@ -160,4 +161,5 @@ async function updateConfig() {
 	const fileConfig = workspaceConfig['files'];
 	config.updateFileEndings(fileConfig);
 }
+
 

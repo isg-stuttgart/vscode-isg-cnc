@@ -4,7 +4,7 @@ import * as ncParser from "./ncParser";
 import { ParseResults, Match, Position, matchTypes, FileRange, IncrementableProgress } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
-import { WorkDoneProgressServerReporter } from "vscode-languageserver";
+import { getConnection } from "./connection";
 /** Returns the output of the peggy parser */
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
@@ -85,7 +85,8 @@ export function findMatch(tree: any, position: Position): Match | null {
 }
 
 /**
- * Returns the according definition-type to a given match and if the definition hast * to be searched locally or globally
+ * Returns the according definition-type to a given match and if the definition has
+ * to be searched locally or globally
  * @param match 
  * @returns \{ defType: string | null, local: boolean } an object containing the definition type and a boolean indicating if the definition has to be searched locally or globally
  */
@@ -326,7 +327,14 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
                 continue;
             }
 
-            const ast = getParseResults(fileContent).fileTree;
+            let ast;
+            try {
+                ast = getParseResults(fileContent).fileTree;
+            } catch (error) {
+                const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references. Please report this on https://github.com/isg-stuttgart/vscode-isg-cnc/issues`;
+                getConnection()?.window.showErrorMessage(errorMessage);
+                console.error(errorMessage);
+            }
             const uri = pathToFileURL(entryPath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges.push(...fileRanges);

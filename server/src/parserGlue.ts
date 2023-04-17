@@ -15,6 +15,7 @@ import {
 import * as fs from "fs";
 import path = require("node:path");
 import { Connection } from "vscode-languageserver";
+import { getConnection } from "./connection";
 
 /**
  * Returns the definition location of the selected position
@@ -28,7 +29,14 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     let defMatch: Match | null = null;
     let definitions: FileRange[] = [];
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
+        console.error(`Error parsing file ${path}: ${error}`);
+        return [];
+    }
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -65,7 +73,13 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         for (const path of defPaths) {
             const uri = pathToFileURL(path).toString();
             const fileContent = fs.readFileSync(path, "utf8");
-            const mainPrg = getParseResults(fileContent).mainPrg;
+            let mainPrg;
+            try {
+                mainPrg = getParseResults(fileContent).mainPrg;
+            } catch (error) {
+                getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
+                console.error(`Error parsing file ${path}: ${error}`);
+            }
             let range = {
                 start: new Position(0, 0),
                 end: new Position(0, 0)
@@ -94,7 +108,15 @@ export async function getReferences(fileContent: string, position: Position, uri
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
+        console.error(`Error parsing file ${path}: ${error}`);
+        return [];
+    }
+    
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
