@@ -24,13 +24,8 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
-
-interface MyLanguageSettings {
-	fileExtensions: string[];
-}
 
 connection.onInitialize(async (params: InitializeParams) => {
 	const capabilities = params.capabilities;
@@ -50,11 +45,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
 	);
-	hasDiagnosticRelatedInformationCapability = !!(
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation
-	);
+	
 
 	const result: InitializeResult = {
 		capabilities: {
@@ -107,7 +98,7 @@ connection.onDefinition((docPos) => {
 });
 
 /** Provides the "Go to References" functionality. Returns the locations of the references fitting to the specified position, null when no reference found. */
-connection.onReferences((docPos) => {
+connection.onReferences(async (docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
 		if (!textDocument) {
@@ -120,6 +111,7 @@ connection.onReferences((docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
+
 		return parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles);
 	} catch (error) {
 		console.error(error);
