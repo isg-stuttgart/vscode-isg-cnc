@@ -229,11 +229,11 @@ default_block "default_block"                               // a default block c
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(default_line+                                    // at least one line...   (used default_line+ to match all to the next \ when there is a mix of e.g. commands and t)
-"\\" grayspaces linebreak                                  // which is extended by \
+"\\" grayspaces linebreak                                   // which is extended by \
 ((default_line+                                             // any other default lines...
-"\\" grayspaces linebreak)                                 // extended by \
-/ (grayspaces line_comment? linebreak))*                   // allow line comments and white lines between them
-default_line+){                                             // consume the last block, so the first not extended by "\"
+"\\" grayspaces linebreak)                                  // extended by \
+/ (grayspaces line_comment? linebreak))*                    // allow line comments and white lines between them
+default_line?){                                             // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
 
