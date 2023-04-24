@@ -72,11 +72,11 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:file                                             // return the syntax information
+= fileTree:(file/.)*                                        // return the syntax information
 {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}}
 
 file "file"
-= file:(grayline* subprogram* mainprogram? subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:(grayline* subprogram* mainprogram subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 { 
   mainPrg=file[2]?file[2]:null;
   return file;
@@ -99,33 +99,10 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-($(whitespaces linebreak)									                  // consume empty lines / rest of lines
-/ ( whitespaces (comment / block) whitespaces linebreak?)))+// the body is a list of comments and blocks
-
-comment "comment"                                           // comments are either:
-= line_comment                                              // line comments, i.e.,  ";" or "()" or
-/ block_comment                                             // block comments, i.e., #COMMENT BEGIN/END
-
-line_comment "line_comment"                                 // a line comment is either:
-= paren_comment                                             // with parenthesis or
-/ semicolon_comment                                         // after semicolon
-{return text()}
-
-paren_comment "paren_comment"                               // a line comment with parenthesis
-= $("(" [^)\r\n]* ")" 
-/ "(" [^\r\n]*)                                              // if only opened, then same behaviour as ;-comment
-
-
-semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
-= ";" [^\r\n]*
-
-block_comment "block_comment"                               // a block comment
-= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
-  (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
-  ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
+(grayspace/block/linebreak))+                              // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
-= grayspaces (skipped_block/block_body)
+= (skipped_block/block_body)
 
 skipped_block "skipped_block"                               // a skipped nc block
 = content:("/"(digit/"10")?  grayspaces block_body){
@@ -239,13 +216,12 @@ multiline_line
 = default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= (($grayspace+                                               
+= (($grayspace                                               
 /  prg_call
 /  var
 /  command
 /  label)
-/ (trash_line default_line?))+                                // collected trashing
-/ ((!"\\" .)* "\\" !.)                                        // file ending with a \ line
+/ trash_line)+                                              // collected trashing
 linebreak?
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
@@ -344,6 +320,27 @@ grayline "grayline"
 = (whitespace/comment)* linebreak
 / (whitespace/comment)+
 
+comment "comment"                                           // comments are either:
+= line_comment                                              // line comments, i.e.,  ";" or "()" or
+/ block_comment                                             // block comments, i.e., #COMMENT BEGIN/END
+
+line_comment "line_comment"                                 // a line comment is either:
+= paren_comment                                             // with parenthesis or
+/ semicolon_comment                                         // after semicolon
+{return text()}
+
+paren_comment "paren_comment"                               // a line comment with parenthesis
+= $("(" [^)\r\n]* ")" 
+/ "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
+
+semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
+= ";" [^\r\n]*
+
+block_comment "block_comment"                               // a block comment
+= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
+  (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
+  ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
+  
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
 
