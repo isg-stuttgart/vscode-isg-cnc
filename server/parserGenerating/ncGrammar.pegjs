@@ -61,7 +61,7 @@
 //----------------------------------------------------------
 
 {
-	const numberableLinesUnsorted = new Set();
+  const numberableLinesUnsorted = new Set();
   let mainPrg = null;
 }
 
@@ -99,7 +99,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-($(whitespaces linebreak)									// consume empty lines / rest of lines
+($(whitespaces linebreak)									                  // consume empty lines / rest of lines
 / ( whitespaces (comment / block) whitespaces linebreak?)))+// the body is a list of comments and blocks
 
 comment "comment"                                           // comments are either:
@@ -120,8 +120,7 @@ semicolon_comment "semicolon_comment"                       // a line comment af
 = ";" [^\r\n]*
 
 block_comment "block_comment"                               // a block comment
-= grayspaces                                                // may be proceeded by ws or comments
-  "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
+= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
   (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
 
@@ -228,22 +227,25 @@ default_block "default_block"                               // a default block c
 / default_line
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
-= content:(default_line+                                    // at least one line...   (used default_line+ to match all to the next \ when there is a mix of e.g. commands and t)
-"\\" grayspaces linebreak                                   // which is extended by \
-((default_line+                                             // any other default lines...
-"\\" grayspaces linebreak)                                  // extended by \
-/ (grayspaces line_comment? linebreak))*                    // allow line comments and white lines between them
-default_line?){                                             // consume the last block, so the first not extended by "\"
+= content:(
+ multiline_line
+(multiline_line)*    // default_lines extended by \ ... also allow line comments and white lines between them
+default_line? "\\"?                                         // last line may be extended by \ or not
+){                                                          // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
+
+multiline_line
+= default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
 = (($grayspace+                                               
 /  prg_call
 /  var
 /  command
-/ label)+)
-/ trash_line
+/  label)
+/ (trash_line default_line?))+                                // collected trashing
+/ ((!"\\" .)* "\\" !.)                                        // file ending with a \ line
 linebreak?
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
@@ -329,9 +331,9 @@ label                                                       // a label to which 
 gap                                                         // a gap
 = paren_comment* whitespace grayspaces                      // at least one whitespace surrounded by grayspace
 
-grayspace "grayspace"                                       // grayspace, a generalization whitespace, contains
-= whitespace                                                // whitespace or
-/ paren_comment                                             // a parenthesis line comment
+grayspace "grayspace"                                       // grayspace, a generalization whitespace, contains whitespace/comments
+= whitespace                                               
+/ comment
 
 grayspaces "grayspaces"
 = grayspace*{
