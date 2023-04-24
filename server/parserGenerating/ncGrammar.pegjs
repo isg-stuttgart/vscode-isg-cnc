@@ -76,7 +76,7 @@ start                                                       // start rule
 {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}}
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 { 
   mainPrg=file[2]?file[2]:null;
   return file;
@@ -200,14 +200,14 @@ endvar_line
 = (!"#ENDVAR" non_linebreak)* "#ENDVAR"
 
 default_block "default_block"                               // a default block containing "normal" NC-commands
-= multiline_default_block 
-/ default_line
+= (multiline_default_block 
+/ default_line)
+linebreak?
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(
- multiline_line
-(multiline_line)*    // default_lines extended by \ ... also allow line comments and white lines between them
-default_line? "\\"?                                         // last line may be extended by \ or not
+ multiline_line+
+ default_line?                                             
 ){                                                          // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
@@ -222,7 +222,7 @@ default_line                                                // line with any whi
 /  command
 /  label)
 / trash_line)+                                              // collected trashing
-linebreak?
+
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
 = (!stop_trashing .)+                          
