@@ -76,10 +76,12 @@ start                                                       // start rule
 {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}}
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
-{ 
-  mainPrg=file[2]?file[2]:null;
-  return file;
+= file:(grayline* subprogram* mainprogram subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+{
+  if(!mainPrg){
+    mainPrg=file[2]?file[2]:null;
+    return file;
+  }
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle

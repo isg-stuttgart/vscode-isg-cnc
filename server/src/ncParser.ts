@@ -265,9 +265,11 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c0 = peg$anyExpectation();
   const peg$c1 = function(fileTree: any): any {return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}};
   const peg$c2 = peg$otherExpectation("file");
-  const peg$c3 = function(file: any): any { 
-    mainPrg=file[2]?file[2]:null;
-    return file;
+  const peg$c3 = function(file: any): any {
+    if(!mainPrg){
+      mainPrg=file[2]?file[2]:null;
+      return file;
+    }
   };
   const peg$c4 = peg$otherExpectation("subprogram");
   const peg$c5 = "%L";
