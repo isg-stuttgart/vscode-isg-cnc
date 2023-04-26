@@ -302,17 +302,23 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
 
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
+        // leave loop if progress is cancelled
+        if (progressHandler.isCancelled()) {
+            break;
+        }
         const entryPath = normalizePath(path.join(rootPath, entry.name));
         if (entry.isDirectory()) {
             // add all matches in subdirectories
             const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler);
             ranges.push(...subMatches);
         } else if (entry.isFile()) {
+
             // report progress
-            progressHandler.increment(entryPath);
+            progressHandler.changeMessage(entryPath);
 
             // if file is not a cnc-file skip parsing/searching
             if (!config.isCncFile(entryPath)) {
+                progressHandler.increment();
                 continue;
             }
             // if file is open, get current file content of editor
@@ -329,7 +335,8 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             console.log(`File ${entryPath} has ${lines} lines. Reading took ${Date.now() - startTime}ms.\n`);
             // if file does not contain the searched match-name skip parsing/searching
             if (!fileContent.includes(name) || lines > 3000) {
-              //  continue;
+                // progressHandler.increment();
+                //  continue;
             }
 
             let ast;
@@ -347,6 +354,7 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             console.log(`Searching took ${Date.now() - startTime}ms. \n\n`);
             ranges.push(...fileRanges);
+            progressHandler.increment();
         }
     }
     return ranges;

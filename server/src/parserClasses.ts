@@ -102,16 +102,17 @@ export const matchTypes = {
  * A class that can be used to increment a progress bar.
  */
 export class IncrementableProgress {
-    progress: WorkDoneProgressServerReporter;
-    incrementPercentage: number;
-    currentPercentage: number;
-    progressName: string;
+    private progress: WorkDoneProgressServerReporter;
+    private incrementPercentage: number;
+    private currentPercentage: number;
+    private progressName: string;
+    private canceled: boolean = false;
     constructor(progress: WorkDoneProgressServerReporter, totalSteps: number, progressName: string) {
         this.progress = progress;
         this.incrementPercentage = 100 / totalSteps;
         this.currentPercentage = 0;
         this.progressName = progressName;
-        this.progress.begin(this.progressName, 0, "...");
+        this.progress.begin(this.progressName, 0, "...", true);
     }
 
     increment(message?: string) {
@@ -123,7 +124,20 @@ export class IncrementableProgress {
         }
     }
 
+    changeMessage(message: string) {
+        this.progress.report(this.currentPercentage, message);
+    }
+
     done() {
         this.progress.done();
+    }
+
+    cancel() {
+        this.canceled = true;
+        this.progress.done();
+    }
+
+    isCancelled() {
+        return this.canceled;
     }
 }
