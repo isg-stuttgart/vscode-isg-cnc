@@ -263,7 +263,6 @@ function peg$parse(input: string, options?: ParseOptions) {
   let peg$startRuleFunction: () => any = peg$parsestart;
 
   const peg$c0 = function(fileTree: any): any {
-    console.log("Parsing took: " + (Date.now() - startTime) + "ms");
     return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
   };
   const peg$c1 = peg$otherExpectation("anyTrash");
