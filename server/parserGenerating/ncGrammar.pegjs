@@ -66,9 +66,9 @@
 
   // Save start time and cancel and throw error when parsing needs more than 10 seconds
   const startTime = Date.now();
-  const timeOutMsg = "Parsing took longer than 10 seconds";
+  const timeOutMsg = "Parsing took longer than 5 seconds";
   function checkTimeout() {
-    if(Date.now() - startTime > 10000){
+    if(Date.now() - startTime > 5000){
       throw new Error(timeOutMsg);
     }
   }
