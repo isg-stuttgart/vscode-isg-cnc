@@ -107,11 +107,16 @@ export class IncrementableProgress {
     private currentPercentage: number;
     private progressName: string;
     private canceled: boolean = false;
+
     constructor(progress: WorkDoneProgressServerReporter, totalSteps: number, progressName: string) {
         this.progress = progress;
         this.incrementPercentage = 100 / totalSteps;
         this.currentPercentage = 0;
         this.progressName = progressName;
+        this.progress.token.onCancellationRequested(() => {
+            this.cancel();
+            console.error("Progress canceled");
+        });
         this.progress.begin(this.progressName, 0, "...", true);
     }
 

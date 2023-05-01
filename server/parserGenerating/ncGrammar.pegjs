@@ -63,6 +63,15 @@
 {
   const numberableLinesUnsorted = new Set();
   let mainPrg = null;
+
+  // Save start time and cancel and throw error when parsing needs more than 10 seconds
+  const startTime = Date.now();
+  const timeOutMsg = "Parsing took longer than 10 seconds";
+  function checkTimeout() {
+    if(Date.now() - startTime > 10000){
+      throw new Error(timeOutMsg);
+    }
+  }
 }
 
 //----------------------------------------------------------
@@ -72,11 +81,20 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:(file/.)*                                        // return the syntax information
-{return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg}}
+= fileTree:(file/anyTrash)*                                        
+{
+  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
+}
+
+anyTrash "anyTrash"                                         // any trash which is not a file, only needed for cancellation after timeout
+= char: .
+{
+  checkTimeout();
+  return char
+}
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)            // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 {
   if(!mainPrg){
     mainPrg=file[2]?file[2]:null;
@@ -104,7 +122,11 @@ body "body"                                                 // the body of a (su
 (grayspace/block/linebreak))+                              // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
-= (skipped_block/block_body)
+= content:(skipped_block/block_body)
+{
+  checkTimeout();
+  return content;
+}
 
 skipped_block "skipped_block"                               // a skipped nc block
 = content:("/"(digit/"10")?  grayspaces block_body){

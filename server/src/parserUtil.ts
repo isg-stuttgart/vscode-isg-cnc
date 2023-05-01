@@ -312,7 +312,6 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler);
             ranges.push(...subMatches);
         } else if (entry.isFile()) {
-
             // report progress
             progressHandler.changeMessage(entryPath);
 
@@ -324,37 +323,32 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             // if file is open, get current file content of editor
             let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
 
-            let startTime = Date.now();
-
             // if file is not open, read file content from disk
             if (!fileContent) {
                 fileContent = fs.readFileSync(entryPath, 'utf8');
             }
             // print number of lines in file
             const lines = fileContent.split(/\r?\n/).length;
-            console.log(`File ${entryPath} has ${lines} lines. Reading took ${Date.now() - startTime}ms.\n`);
             // if file does not contain the searched match-name skip parsing/searching
-            if (!fileContent.includes(name) || lines > 3000) {
-                // progressHandler.increment();
-                //  continue;
+            if (!fileContent.includes(name)) {
+                progressHandler.increment();
+                continue;
             }
-
+            let startTime;
             let ast;
             try {
                 startTime = Date.now();
                 ast = getParseResults(fileContent).fileTree;
-                console.log(`Parsing took ${Date.now() - startTime}ms.`);
+                console.log(`File ${entryPath} with ${lines} lines: Parsing took ${Date.now() - startTime}ms.`);
             } catch (error) {
                 const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references. Please report this on https://github.com/isg-stuttgart/vscode-isg-cnc/issues`;
                 getConnection()?.window.showErrorMessage(errorMessage);
                 console.error(errorMessage);
             }
             const uri = pathToFileURL(entryPath).toString();
-            startTime = Date.now();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
-            console.log(`Searching took ${Date.now() - startTime}ms. \n\n`);
             ranges.push(...fileRanges);
-            progressHandler.increment();
+            progressHandler.increment(entryPath);
         }
     }
     return ranges;
