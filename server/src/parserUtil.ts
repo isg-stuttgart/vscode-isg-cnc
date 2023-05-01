@@ -5,7 +5,9 @@ import { ParseResults, Match, Position, matchTypes, FileRange, IncrementableProg
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
 import { getConnection } from "./connection";
-/** Returns the output of the peggy parser */
+/** Returns the output of the peggy parser.
+ *  Throws an error if the parser takes too long.
+*/
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
 }

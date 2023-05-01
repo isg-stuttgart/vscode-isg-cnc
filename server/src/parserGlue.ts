@@ -33,8 +33,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     try {
         ast = getParseResults(fileContent).fileTree;
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
-        console.error(`Error parsing file ${path}: ${error}`);
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
         return [];
     }
     const match = findMatch(ast, position);
@@ -77,7 +76,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             try {
                 mainPrg = getParseResults(fileContent).mainPrg;
             } catch (error) {
-                getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
+                getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
                 console.error(`Error parsing file ${path}: ${error}`);
             }
             let range = {
@@ -112,8 +111,7 @@ export async function getReferences(fileContent: string, position: Position, uri
     try {
         ast = getParseResults(fileContent).fileTree;
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${path}: ${error}`);
-        console.error(`Error parsing file ${path}: ${error}`);
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
         return [];
     }
     
