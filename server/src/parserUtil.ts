@@ -343,7 +343,7 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
                 ast = getParseResults(fileContent).fileTree;
                 console.log(`File ${entryPath} with ${lines} lines: Parsing took ${Date.now() - startTime}ms.`);
             } catch (error) {
-                const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references. Please report this on https://github.com/isg-stuttgart/vscode-isg-cnc/issues`;
+                const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references.`;
                 getConnection()?.window.showErrorMessage(errorMessage);
                 console.error(errorMessage);
             }
