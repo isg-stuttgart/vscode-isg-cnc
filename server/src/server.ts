@@ -5,8 +5,7 @@ import {
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	TextDocumentSyncKind,
-	InitializeResult,
-	WorkspaceFolder
+	InitializeResult
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -14,20 +13,23 @@ import {
 } from 'vscode-languageserver-textdocument';
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
-
+import * as config from './config';
+import { setConnection } from './connection';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
+setConnection(connection);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
+let hasWorkDoneProgressCapability = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
-connection.onInitialize((params: InitializeParams) => {
+
+connection.onInitialize(async (params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
@@ -36,6 +38,7 @@ connection.onInitialize((params: InitializeParams) => {
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
 	}
+
 	// Does the client support the `workspace/configuration` request?
 	// If not, we fall back using global settings.
 	hasConfigurationCapability = !!(
@@ -44,10 +47,8 @@ connection.onInitialize((params: InitializeParams) => {
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
 	);
-	hasDiagnosticRelatedInformationCapability = !!(
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation
+	hasWorkDoneProgressCapability = !!(
+		capabilities.window && !!capabilities.window.workDoneProgress
 	);
 
 	const result: InitializeResult = {
@@ -81,6 +82,8 @@ connection.onInitialized(() => {
 			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
 		});
 	}
+
+	updateConfig();
 });
 
 /** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
@@ -99,7 +102,7 @@ connection.onDefinition((docPos) => {
 });
 
 /** Provides the "Go to References" functionality. Returns the locations of the references fitting to the specified position, null when no reference found. */
-connection.onReferences((docPos) => {
+connection.onReferences(async (docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
 		if (!textDocument) {
@@ -112,9 +115,10 @@ connection.onReferences((docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
-		return parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles);
+		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
+		return references;
 	} catch (error) {
-		console.error(error);
+		connection.window.showErrorMessage(JSON.stringify(error));
 	}
 });
 
@@ -143,3 +147,19 @@ function getRootPaths() {
 	}
 	return rootPaths;
 }
+
+
+connection.onDidChangeConfiguration(async () => {
+	await updateConfig();
+});
+
+/**
+ * Fetches the workspace configuration and updates the languageIDs associated with the cnc language.
+ */
+async function updateConfig() {
+	const workspaceConfig = await connection.workspace.getConfiguration();
+	const fileConfig = workspaceConfig['files'];
+	config.updateFileEndings(fileConfig);
+}
+
+

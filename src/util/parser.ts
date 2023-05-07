@@ -1,4 +1,5 @@
 import * as peggy from "peggy";
+import * as vscode from "vscode";
 import { matchTypes, ParseResults } from "../../server/src/parserClasses";
 import { getParseResults } from "../../server/src/parserUtil";
 export interface Match {
@@ -37,23 +38,38 @@ export function getLineToBlockNumberMap(text: string): Map<number, Match> {
 }
 /**
  * Returns all linenumbers of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
+ * If the parser throws an error, an empty array is returned.
  * @param text the text to parse
  * @returns Array with linenumbers
  */
 export function getNumberableLines(text: string): Array<number> {
-    const parseResults: ParseResults = getParseResults(text);
-    const numberableLines: Array<number> = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
-    //sort set because of wrong order due to recursive adding
-    numberableLines.sort((a: number, b: number) => a - b);
+    let numberableLines: Array<number> = [];
+    try {
+        const parseResults: ParseResults = getParseResults(text);
+        numberableLines = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
+        //sort set because of wrong order due to recursive adding
+        numberableLines.sort((a: number, b: number) => a - b);
+    } catch (error) {
+        vscode.window.showErrorMessage("Error while parsing file: " + error);
+    }
+
     return numberableLines;
 }
 
 /**
- * Collects the important matches of the nc-file-content into an array
+ * Collects the important matches of the nc-file-content into an array.
+ * The array contains the following matches within own arrays: toolCalls, prgCallNames, trash, controlBlocks, multilines, skipBlocks, blockNumbers.
+ * If the parser throws an error, empty arrays are returned.
  * @param text the text to parse
  */
 export function getSyntaxArray(text: string): SyntaxArray {
-    const parseResults: ParseResults = getParseResults(text);
+    let fileTree: any = [];
+
+    try {
+        fileTree = getParseResults(text).fileTree;
+    } catch (error) {
+        vscode.window.showErrorMessage("Error while parsing file: " + error);
+    }
 
     const toolCalls = new Array<Match>();
     const prgCallNames = new Array<Match>();
@@ -63,7 +79,7 @@ export function getSyntaxArray(text: string): SyntaxArray {
     const skipBlocks = new Array<Match>();
     const blockNumbers = new Array<Match>();
 
-    traverseRecursive(parseResults.fileTree);
+    traverseRecursive(fileTree);
     function traverseRecursive(element: any) {
         // current element is array to traverse recursively
         if (Array.isArray(element)) {
