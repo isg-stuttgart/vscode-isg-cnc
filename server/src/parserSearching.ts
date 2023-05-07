@@ -1,10 +1,13 @@
 import * as fs from "fs";
 import path = require("path");
 import * as ncParser from "./ncParser";
-import { ParseResults, Match, Position, matchTypes, FileRange, IncrementableProgress } from "./parserClasses";
+import { ParseResults, Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
 import { getConnection } from "./connection";
+import { normalizePath } from "./fileSystem";
+import { compareLocation } from "./stringSearching";
+import { matchTypes } from "./matchTypes";
 /** Returns the output of the peggy parser.
  *  Throws an error if the parser takes too long.
 */
@@ -31,7 +34,6 @@ export function findFirstMatchWithinPrg(tree: any, defType: string, name: string
         });
     }
 
-
     // when element is a Match (Subtree) , otherwise 
     if (tree && isMatch(tree)) {
         const match = tree as Match;
@@ -53,7 +55,6 @@ export function findFirstMatchWithinPrg(tree: any, defType: string, name: string
 * @returns the most precise match if existing, otherwise null
 */
 export function findMatch(tree: any, position: Position): Match | null {
-
     let res: Match | null = null;
 
     // if no match found yet, search in other subtree
@@ -64,7 +65,6 @@ export function findMatch(tree: any, position: Position): Match | null {
             }
         });
     }
-
 
     // when element is a Match (Subtree) try to search more precise, if not possible we found our match
     if (tree && isMatch(tree)) {
@@ -84,137 +84,6 @@ export function findMatch(tree: any, position: Position): Match | null {
         }
     }
     return res;
-}
-
-/**
- * Returns the according definition-type to a given match and if the definition has
- * to be searched locally or globally
- * @param match 
- * @returns \{ defType: string | null, local: boolean } an object containing the definition type and a boolean indicating if the definition has to be searched locally or globally
- */
-export function getDefType(match: Match): { defType: string | null, local: boolean } {
-    let defType: string | null;
-    let local = true;
-    //determine the defType e.g. localSubPrg
-    switch (match.type) {
-        // program calls
-        case matchTypes.localPrgCallName:
-            defType = matchTypes.localSubPrg;
-            break;
-        case matchTypes.localCycleCallName:
-            defType = matchTypes.localSubPrg;
-            break;
-        case matchTypes.globalCycleCallName:
-            defType = matchTypes.globalCycleCall;
-            local = false;
-            break;
-        case matchTypes.globalPrgCallName:
-            defType = matchTypes.globalPrgCall;
-            local = false;
-            break;
-        // goto statements
-        case matchTypes.gotoLabel:
-            defType = matchTypes.label;
-            break;
-        case matchTypes.gotoBlocknumber:
-            defType = matchTypes.blockNumberLabel;
-            break;
-        //variables
-        case matchTypes.variable:
-            defType = matchTypes.varDeclaration;
-            break;
-        default: defType = null;
-    }
-    return { defType, local };
-}
-
-/**
- * Returns the according reference-types to a given match and if the references have to be searched locally or globally
- * @param match 
- * @returns \{ refTypes: string | null, local: boolean } an object containing the reference types and a boolean indicating if the references have to be searched locally or globally
- */
-export function getRefTypes(match: Match): { refTypes: string[], local: boolean } {
-    let refTypes: string[];
-    let local = true;
-
-    switch (match.type) {
-        // global program calls
-        case matchTypes.globalCycleCallName:
-        case matchTypes.globalPrgCallName:
-            local = false;
-            refTypes = [matchTypes.globalCycleCallName, matchTypes.globalPrgCallName];
-            break;
-        // local program calls
-        case matchTypes.localPrgCallName:
-        case matchTypes.localCycleCallName:
-        case matchTypes.localSubPrg:
-            refTypes = [matchTypes.localPrgCallName, matchTypes.localCycleCallName];
-            break;
-        // goto label
-        case matchTypes.gotoLabel:
-        case matchTypes.label:
-            refTypes = [matchTypes.gotoLabel];
-            break;
-        // goto blocknumber
-        case matchTypes.gotoBlocknumber:
-        case matchTypes.blockNumberLabel:
-            refTypes = [matchTypes.gotoBlocknumber];
-            break;
-        // variables
-        case matchTypes.variable:
-        case matchTypes.varDeclaration:
-            refTypes = [matchTypes.variable];
-            break;
-        default: refTypes = [];
-    }
-    return { refTypes, local };
-}
-
-/** Returns if a given object is a Match and so can be converted to such*/
-export function isMatch(obj: any): boolean {
-    const exampleMatch: Match = new Match("", null, null, null, null);
-    return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
-}
-
-/**
- * Returns whether pos1 is before,after or equal to pos2
- * @param pos1 
- * @param pos2 
- */
-export function compareLocation(pos1: Position, pos2: Position): number {
-    let result: number;
-    if (pos1.line > pos2.line || (pos1.line === pos2.line && pos1.character > pos2.character)) {
-        result = 1;
-    } else if (pos1.line < pos2.line || (pos1.line === pos2.line && pos1.character < pos2.character)) {
-        result = -1;
-    } else {
-        result = 0;
-    };
-    return result;
-}
-
-/**
- * Finds a file in a root directory and all subdirectories. Returns the path to the file or null if not found.
- * @param rootPath 
- * @param fileName 
- * @returns 
- */
-export function findFileInRootDir(rootPath: string, fileName: string): string[] {
-    let paths: string[] = [];
-    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
-    for (const entry of dirEntries) {
-        const entryPath = path.join(rootPath, entry.name);
-        if (entry.isDirectory()) {
-            //search in subdirectory
-            paths.push(...findFileInRootDir(entryPath, fileName));
-        } else if (entry.isFile() && entry.name === fileName) {
-            //file found
-            const normPath = normalizePath(entryPath);
-            paths.push(normPath);
-            break;
-        }
-    }
-    return paths;
 }
 
 /**
@@ -355,43 +224,3 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
     }
     return ranges;
 }
-
-/**
- * Normalizes a given path to a lowercase drive letter and a normalized (by path module) path
- * @param filePath 
- * @returns 
- */
-export function normalizePath(filePath: string): string {
-    const pathObj = path.parse(filePath);
-    // Make the drive letter lowercase
-    const lowercaseDrive = pathObj.root.toLowerCase();
-
-    // remove the root from the dir component
-    const dirWithoutRoot = pathObj.dir.substring(pathObj.root.length);
-
-    // Combine the lowercase drive with the rest of the path components
-    const combinedPath = path.join(lowercaseDrive, dirWithoutRoot, pathObj.base);
-    const normalizedPath = path.normalize(combinedPath);
-    return normalizedPath;
-}
-
-/**
- * Counts all files in a given path
- * @param rootPath 
- * @returns 
- */
-export function countFilesInPath(rootPath: string): number {
-    let count = 0;
-    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
-    for (const entry of dirEntries) {
-        const entryPath = path.join(rootPath, entry.name);
-        if (entry.isDirectory()) {
-            count += countFilesInPath(entryPath);
-        } else if (entry.isFile()) {
-            count++;
-        }
-    }
-    return count;
-}
-
-

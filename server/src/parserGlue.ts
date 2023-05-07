@@ -1,21 +1,19 @@
 import { pathToFileURL } from "node:url";
-import { Match, Position, FileRange, matchTypes, IncrementableProgress } from "./parserClasses";
+import { Match, Position, FileRange, IncrementableProgress } from "./parserClasses";
 import {
-    findFileInRootDir as findFilesInRootDir,
     getParseResults,
-    getDefType,
     findMatch,
     findFirstMatchWithinPrg,
-    getRefTypes,
     findMatchRangesWithinPrgTree,
     findMatchRangesWithinPath,
-    normalizePath,
-    countFilesInPath
-} from "./parserUtil";
+} from "./parserSearching";
 import * as fs from "fs";
 import path = require("node:path");
 import { Connection } from "vscode-languageserver";
 import { getConnection } from "./connection";
+import { getSurroundingVar, findLocalStringRanges } from "./stringSearching";
+import { countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
+import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
 
 /**
  * Returns the definition location of the selected position
@@ -65,7 +63,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         } else {
             defPaths = [];
             for (const rootPath of rootPaths) {
-                defPaths.push(...findFilesInRootDir(rootPath, match.name));
+                defPaths.push(...findFileInRootDir(rootPath, match.name));
             }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
@@ -114,7 +112,7 @@ export async function getReferences(fileContent: string, position: Position, uri
         getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
         return [];
     }
-    
+
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -148,6 +146,5 @@ export async function getReferences(fileContent: string, position: Position, uri
 
     return referenceRanges;
 }
-
 
 

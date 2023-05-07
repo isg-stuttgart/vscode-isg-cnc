@@ -70,33 +70,11 @@ export class Match {
     }
 }
 
-/**
- * The different types a match returned by the peggy parser for ISG-CNC files can have.
- */
-export const matchTypes = {
-    toolCall: "toolCall",
-    mainPrg: "mainPrg",
-    localSubPrg: "localSubPrg",
-    localPrgCall: "localPrgCall",
-    localPrgCallName: "localPrgCallName",
-    globalPrgCall: "globalPrgCall",
-    globalPrgCallName: "globalPrgCallName",
-    localCycleCall: "localCycleCall",
-    localCycleCallName: "localCycleCallName",
-    globalCycleCall: "globalCycleCall",
-    globalCycleCallName: "globalCycleCallName",
-    controlBlock: "controlBlock",
-    gotoBlocknumber: "gotoBlocknumber",
-    gotoLabel: "gotoLabel",
-    label: "label",
-    multiline: "multiline",
-    trash: "trash",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber",
-    blockNumberLabel: "blockNumberLabel",
-    varDeclaration: "varDeclaration",
-    variable: "variable"
-};
+/** Returns if a given object is a Match and so can be converted to such*/
+export function isMatch(obj: any): boolean {
+    const exampleMatch: Match = new Match("", null, null, null, null);
+    return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
+}
 
 /**
  * A class that can be used to increment a progress bar.

@@ -9,6 +9,8 @@
       toolCall: "toolCall",
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
+
+      // prg calls
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
       globalPrgCall: "globalPrgCall",
@@ -17,6 +19,7 @@
       localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
       globalCycleCallName: "globalCycleCallName",
+
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -27,7 +30,8 @@
       blockNumber: "blockNumber",
       blockNumberLabel: "blockNumberLabel",
       varDeclaration: "varDeclaration",
-      variable:"variable"
+      variable:"variable",
+      comment: "comment",
   }
  class LightMatch {
     location;
@@ -119,7 +123,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(grayspace/block/linebreak))+                              // the body is a list of comments and blocks
+(grayspace/block/linebreak))+                               // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
 = content:(skipped_block/block_body)
@@ -130,7 +134,7 @@ block "block"                                               // an NC block
 
 skipped_block "skipped_block"                               // a skipped nc block
 = content:("/"(digit/"10")?  grayspaces block_body){
-    return new Match(types.skipBlock, content, location(), text() ,null);
+    return new Match(types.skipBlock, content, location(), text(), null);
 }
 
 block_body "block_body"
@@ -355,15 +359,18 @@ line_comment "line_comment"                                 // a line comment is
 paren_comment "paren_comment"                               // a line comment with parenthesis
 = $("(" [^)\r\n]* ")" 
 / "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
+{ return new Match(types.comment, text(), location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
 = ";" [^\r\n]*
+{ return new Match(types.comment, text(), location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
 = "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
   (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-  
+{ return new Match(types.comment, text(), location(), text(), null)}
+
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
 

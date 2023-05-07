@@ -115,6 +115,7 @@ connection.onReferences(async (docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
+
 		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
 		return references;
 	} catch (error) {
