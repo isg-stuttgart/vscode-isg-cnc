@@ -1,10 +1,13 @@
 import * as fs from "fs";
 import path = require("path");
 import * as ncParser from "./ncParser";
-import { ParseResults, Match, Position, matchTypes, FileRange } from "./parserClasses";
+import { ParseResults, Match, Position, matchTypes, FileRange, IncrementableProgress } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-
-/** Returns the output of the peggy parser */
+import * as config from "./config";
+import { getConnection } from "./connection";
+/** Returns the output of the peggy parser.
+ *  Throws an error if the parser takes too long.
+*/
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
 }
@@ -84,7 +87,8 @@ export function findMatch(tree: any, position: Position): Match | null {
 }
 
 /**
- * Returns the according definition-type to a given match and if the definition hast * to be searched locally or globally
+ * Returns the according definition-type to a given match and if the definition has
+ * to be searched locally or globally
  * @param match 
  * @returns \{ defType: string | null, local: boolean } an object containing the definition type and a boolean indicating if the definition has to be searched locally or globally
  */
@@ -234,14 +238,14 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     // if element is a Match
     if (tree && isMatch(tree)) {
         const match = tree as Match;
-                
-        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);       
+
+        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
         if (globalCall && matchName && path.isAbsolute(matchName)) {
             matchName = path.basename(matchName);
         }
-        
+
         // if correct defType and name add to found references
         if (types.includes(match.type) && matchName === name) {
             res.push(match);
@@ -284,9 +288,11 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
  * @param types possible types of matches to search for
  * @param name name/identifier of the matches to search for
  * @param uriToOpenFileContent mapping of file-uris to file-contents
+ * @param progress progress reporter
+ * @param totalFiles total number of files to search in
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>): FileRange[] {
+export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress): FileRange[] {
     let ranges: FileRange[] = [];
 
     // convert uri mapping of open files to normalized path mapping
@@ -298,36 +304,63 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
 
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
+        // leave loop if progress is cancelled
+        if (progressHandler.isCancelled()) {
+            break;
+        }
         const entryPath = normalizePath(path.join(rootPath, entry.name));
         if (entry.isDirectory()) {
             // add all matches in subdirectories
-            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent);
+            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler);
             ranges.push(...subMatches);
         } else if (entry.isFile()) {
-            // add all matches of the file
+            // report progress
+            progressHandler.changeMessage(entryPath);
 
+            // if file is not a cnc-file skip parsing/searching
+            if (!config.isCncFile(entryPath)) {
+                progressHandler.increment();
+                continue;
+            }
             // if file is open, get current file content of editor
             let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
+
             // if file is not open, read file content from disk
             if (!fileContent) {
                 fileContent = fs.readFileSync(entryPath, 'utf8');
             }
-
+            // print number of lines in file
+            const lines = fileContent.split(/\r?\n/).length;
             // if file does not contain the searched match-name skip parsing/searching
             if (!fileContent.includes(name)) {
+                progressHandler.increment();
                 continue;
             }
-
-            const ast = getParseResults(fileContent).fileTree;
+            let startTime;
+            let ast;
+            try {
+                startTime = Date.now();
+                ast = getParseResults(fileContent).fileTree;
+                console.log(`File ${entryPath} with ${lines} lines: Parsing took ${Date.now() - startTime}ms.`);
+            } catch (error) {
+                const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references.`;
+                getConnection()?.window.showErrorMessage(errorMessage);
+                console.error(errorMessage);
+            }
             const uri = pathToFileURL(entryPath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges.push(...fileRanges);
+            progressHandler.increment(entryPath);
         }
     }
     return ranges;
 }
 
-
+/**
+ * Normalizes a given path to a lowercase drive letter and a normalized (by path module) path
+ * @param filePath 
+ * @returns 
+ */
 export function normalizePath(filePath: string): string {
     const pathObj = path.parse(filePath);
     // Make the drive letter lowercase
@@ -341,4 +374,24 @@ export function normalizePath(filePath: string): string {
     const normalizedPath = path.normalize(combinedPath);
     return normalizedPath;
 }
+
+/**
+ * Counts all files in a given path
+ * @param rootPath 
+ * @returns 
+ */
+export function countFilesInPath(rootPath: string): number {
+    let count = 0;
+    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
+    for (const entry of dirEntries) {
+        const entryPath = path.join(rootPath, entry.name);
+        if (entry.isDirectory()) {
+            count += countFilesInPath(entryPath);
+        } else if (entry.isFile()) {
+            count++;
+        }
+    }
+    return count;
+}
+
 

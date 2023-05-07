@@ -1,4 +1,5 @@
 import * as peggy from "peggy";
+import { WorkDoneProgressServerReporter } from "vscode-languageserver";
 
 /**
  * A position in a text document expressed as zero-based line and character offset.
@@ -96,3 +97,52 @@ export const matchTypes = {
     varDeclaration: "varDeclaration",
     variable: "variable"
 };
+
+/**
+ * A class that can be used to increment a progress bar.
+ */
+export class IncrementableProgress {
+    private progress: WorkDoneProgressServerReporter;
+    private incrementPercentage: number;
+    private currentPercentage: number;
+    private progressName: string;
+    private canceled: boolean = false;
+
+    constructor(progress: WorkDoneProgressServerReporter, totalSteps: number, progressName: string) {
+        this.progress = progress;
+        this.incrementPercentage = 100 / totalSteps;
+        this.currentPercentage = 0;
+        this.progressName = progressName;
+        this.progress.token.onCancellationRequested(() => {
+            this.cancel();
+            console.error("Progress canceled");
+        });
+        this.progress.begin(this.progressName, 0, "...", true);
+    }
+
+    increment(message?: string) {
+        this.currentPercentage += this.incrementPercentage;
+        if (message) {
+            this.progress.report(this.currentPercentage, message);
+        } else {
+            this.progress.report(this.currentPercentage);
+        }
+    }
+
+    changeMessage(message: string) {
+        this.progress.report(this.currentPercentage, message);
+    }
+
+    done() {
+        this.progress.done();
+    }
+
+    cancel() {
+        this.canceled = true;
+        this.progress.done();
+    }
+
+    isCancelled() {
+        return this.canceled;
+    }
+}

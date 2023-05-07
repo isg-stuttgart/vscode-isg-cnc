@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { Match, Position, FileRange, matchTypes } from "./parserClasses";
+import { Match, Position, FileRange, matchTypes, IncrementableProgress } from "./parserClasses";
 import {
     findFileInRootDir as findFilesInRootDir,
     getParseResults,
@@ -9,10 +9,13 @@ import {
     getRefTypes,
     findMatchRangesWithinPrgTree,
     findMatchRangesWithinPath,
-    normalizePath
+    normalizePath,
+    countFilesInPath
 } from "./parserUtil";
 import * as fs from "fs";
 import path = require("node:path");
+import { Connection } from "vscode-languageserver";
+import { getConnection } from "./connection";
 
 /**
  * Returns the definition location of the selected position
@@ -26,7 +29,13 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     let defMatch: Match | null = null;
     let definitions: FileRange[] = [];
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+        return [];
+    }
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -63,7 +72,13 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         for (const path of defPaths) {
             const uri = pathToFileURL(path).toString();
             const fileContent = fs.readFileSync(path, "utf8");
-            const mainPrg = getParseResults(fileContent).mainPrg;
+            let mainPrg;
+            try {
+                mainPrg = getParseResults(fileContent).mainPrg;
+            } catch (error) {
+                getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+                console.error(`Error parsing file ${path}: ${error}`);
+            }
             let range = {
                 start: new Position(0, 0),
                 end: new Position(0, 0)
@@ -88,11 +103,18 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param rootPaths the root paths of the workspace
  * @param openFiles a map of open files with their uri as key and the file content as value
  */
-export function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>): FileRange[] {
+export async function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>, connection: Connection): Promise<FileRange[]> {
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+        return [];
+    }
+    
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -113,9 +135,15 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     }
     // if global find all references in all files within all workspace roots and add their ranges to the result array
     else if (rootPaths) {
+        // calculate how much percent are done after parsing each file
+        let fileCount = 0;
+        rootPaths.forEach(rootPath => fileCount += countFilesInPath(rootPath));
+        const progress = await connection.window.createWorkDoneProgress();
+        const progressHandler = new IncrementableProgress(progress, fileCount, "Searching references");
         for (const rootPath of rootPaths) {
-            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles));
+            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler));
         }
+        progressHandler.done();
     }
 
     return referenceRanges;
