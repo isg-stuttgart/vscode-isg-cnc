@@ -18,6 +18,9 @@ Types of changes
 
 ### Fixed
 - V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)
+- Cancel file parsing when taking too long. Show Progress of Referencing Searching to User. Skip non CNC-associated files while searching references.
+[Issue #124](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/124)
+
 ## [V0.4.3]
 ### Added
 - Adding "Go To Definition" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #90](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/90)
