@@ -2,7 +2,7 @@ import * as peggy from "peggy";
 import * as vscode from "vscode";
 import { ParseResults } from "./parserClasses";
 import { matchTypes } from "./matchTypes";
-import * as ncParser from "./ncParser";
+import * as ncParser from "./parserGenerating/ncParser";
 
 /** Returns the output of the peggy parser.
  *  Throws an error if the parser takes too long.
