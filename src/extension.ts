@@ -6,7 +6,7 @@ import * as vscode from "vscode";
 import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
-import * as parser from "./util/parsingResults";
+import * as parser from "../server/src/parsingResults";
 import * as Formatter from "./util/Formatter";
 import {
     LanguageClient,
