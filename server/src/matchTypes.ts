@@ -5,27 +5,31 @@ import { Match } from "./parserClasses";
  */
 export const matchTypes = {
     toolCall: "toolCall",
-    mainPrg: "mainPrg",
-    localSubPrg: "localSubPrg",
-    localPrgCall: "localPrgCall",
-    localPrgCallName: "localPrgCallName",
-    globalPrgCall: "globalPrgCall",
-    globalPrgCallName: "globalPrgCallName",
-    localCycleCall: "localCycleCall",
-    localCycleCallName: "localCycleCallName",
-    globalCycleCall: "globalCycleCall",
-    globalCycleCallName: "globalCycleCallName",
-    controlBlock: "controlBlock",
-    gotoBlocknumber: "gotoBlocknumber",
-    gotoLabel: "gotoLabel",
-    label: "label",
-    multiline: "multiline",
-    trash: "trash",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber",
-    blockNumberLabel: "blockNumberLabel",
-    varDeclaration: "varDeclaration",
-    variable: "variable"
+      mainPrg: "mainPrg",
+      localSubPrg: "localSubPrg",
+
+      // prg calls
+      localPrgCall: "localPrgCall",
+      localPrgCallName: "localPrgCallName",
+      globalPrgCall: "globalPrgCall",
+      globalPrgCallName: "globalPrgCallName",
+      localCycleCall: "localCycleCall",
+      localCycleCallName: "localCycleCallName",
+      globalCycleCall: "globalCycleCall",
+      globalCycleCallName: "globalCycleCallName",
+
+      controlBlock: "controlBlock",
+      gotoBlocknumber: "gotoBlocknumber",
+      gotoLabel: "gotoLabel",
+      label: "label",
+      multiline: "multiline",
+      trash: "trash",
+      skipBlock: "skipBlock",
+      blockNumber: "blockNumber",
+      blockNumberLabel: "blockNumberLabel",
+      varDeclaration: "varDeclaration",
+      variable:"variable",
+      comment: "comment",
 };
 
 

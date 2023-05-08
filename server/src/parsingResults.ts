@@ -26,6 +26,7 @@ export interface SyntaxArray {
     multilines: Array<Match>;
     skipBlocks: Array<Match>;
     blockNumbers: Array<Match>;
+    comments: Array<Match>;
 }
 
 /**
@@ -78,6 +79,7 @@ export function getSyntaxArray(text: string): SyntaxArray {
     const multilines = new Array<Match>();
     const skipBlocks = new Array<Match>();
     const blockNumbers = new Array<Match>();
+    const comments = new Array<Match>();
 
     traverseRecursive(fileTree);
     function traverseRecursive(element: any) {
@@ -124,6 +126,9 @@ export function getSyntaxArray(text: string): SyntaxArray {
                 case matchTypes.blockNumber:
                     blockNumbers.push(element);
                     break;
+                case matchTypes.comment:
+                    comments.push(element);
+                    break;
             }
         }
     }
@@ -135,7 +140,8 @@ export function getSyntaxArray(text: string): SyntaxArray {
         controlBlocks: controlBlocks,
         multilines: multilines,
         skipBlocks: skipBlocks,
-        blockNumbers: blockNumbers
+        blockNumbers: blockNumbers,
+        comments: comments
     };
 
     return syntaxArray;

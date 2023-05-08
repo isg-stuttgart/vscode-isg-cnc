@@ -1,6 +1,6 @@
 import { EOL } from "os";
 import { FileRange, Position } from "./parserClasses";
-import { isInComment } from "./parserSearching";
+import { Match, getSyntaxArray } from "./parsingResults";
 
 /**
  * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based).
@@ -13,12 +13,21 @@ import { isInComment } from "./parserSearching";
 export function findLocalStringRanges(fileContent: string, string: string, uri: string): FileRange[] {
     let ranges: FileRange[] = [];
     const lines = fileContent.split(EOL);
+    let commentMatches: Match[];
+    try {
+        commentMatches = getSyntaxArray(fileContent).comments;
+    } catch (error) {
+        // if the parser fails, comments are not excluded
+        commentMatches = [];
+    }
+
+
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         let varIndex = line.indexOf(string);
         while (varIndex !== -1) {
             const varEnd = varIndex + string.length;
-            if (!isInComment(line, varIndex)) {
+            if (!isWithinMatches(commentMatches, new Position(i, varIndex))) {
                 const range = new FileRange(uri, new Position(i, varIndex), new Position(i, varEnd));
                 ranges.push(range);
                 varIndex = line.indexOf(string, varEnd);
@@ -27,7 +36,29 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
     }
     return ranges;
 }
-
+/**
+ * Returns whether a given position is within a comment
+ * @param line 
+ * @param varIndex 
+ */
+export function isWithinMatches(matches:Match[], pos: Position): boolean {
+    let isInComment = false;
+    for (const match of matches) {
+        const matchStart = new Position(match.location.start.line - 1, match.location.start.column - 1);
+        const matchEnd = new Position(match.location.end.line - 1, match.location.end.column - 1);
+        if (compareLocations(matchStart, pos) <= 0 && compareLocations(pos, matchEnd) <= 0) {
+            isInComment = true;
+            break;
+        }
+    }
+    return isInComment;
+}
+/**
+ * Return the surrounding variable string at the given position in the given file content. If no variable is found, return null.
+ * @param fileContent 
+ * @param position 
+ * @returns 
+ */
 export function getSurroundingVar(fileContent: string, position: Position): string | null {
     let result = null;
     const lines = fileContent.split(EOL);
@@ -58,7 +89,7 @@ export function getSurroundingVar(fileContent: string, position: Position): stri
  * @param pos1 
  * @param pos2 
  */
-export function compareLocation(pos1: Position, pos2: Position): number {
+export function compareLocations(pos1: Position, pos2: Position): number {
     let result: number;
     if (pos1.line > pos2.line || (pos1.line === pos2.line && pos1.character > pos2.character)) {
         result = 1;

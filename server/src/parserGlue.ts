@@ -104,6 +104,13 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
 export async function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>, connection: Connection): Promise<FileRange[]> {
     let referenceRanges: FileRange[] = [];
 
+    // if the selected position is a variable use string search to find all references and return the result
+    const surroundingVar = getSurroundingVar(fileContent, position);
+    if (surroundingVar) {
+        const stringRanges = findLocalStringRanges(fileContent, surroundingVar, uri);
+        return stringRanges;
+    }
+
     // parse the file content and search for the selected position
     let ast: any[];
     try {

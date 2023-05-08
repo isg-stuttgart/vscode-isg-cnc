@@ -5,9 +5,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
 import { getConnection } from "./connection";
 import { normalizePath } from "./fileSystem";
-import { compareLocation } from "./stringSearching";
+import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
-import { getParseResults } from "./parsingResults";
+import { getParseResults, getSyntaxArray } from "./parsingResults";
 
 /**
 * Recursively find the definition of the given type and name within the tree
@@ -68,7 +68,7 @@ export function findMatch(tree: any, position: Position): Match | null {
         }
         const start = new Position(match.location.start.line - 1, match.location.start.column - 1);
         const end = new Position(match.location.end.line - 1, match.location.end.column - 1);
-        if (compareLocation(position, start) >= 0 && compareLocation(position, end) <= 0) {
+        if (compareLocations(position, start) >= 0 && compareLocations(position, end) <= 0) {
             res = findMatch(match.content, position);
 
             //if subtree did not give better result then take this match
@@ -220,7 +220,4 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
 }
 
 
-export function isInComment(line: string, varIndex: number): boolean {
-    return false;
-}
 
