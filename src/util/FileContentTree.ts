@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from "path";
-import * as parser from "./parser";
+import * as parser from "./parsingResults";
 
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";

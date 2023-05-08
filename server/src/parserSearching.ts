@@ -1,19 +1,13 @@
 import * as fs from "fs";
 import path = require("path");
-import * as ncParser from "./ncParser";
-import { ParseResults, Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
+import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
 import { getConnection } from "./connection";
 import { normalizePath } from "./fileSystem";
 import { compareLocation } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
-/** Returns the output of the peggy parser.
- *  Throws an error if the parser takes too long.
-*/
-export function getParseResults(fileContent: string): ParseResults {
-    return ncParser.parse(fileContent) as unknown as ParseResults;
-}
+import { getParseResults } from "./parsingResults";
 
 /**
 * Recursively find the definition of the given type and name within the tree
@@ -224,3 +218,9 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
     }
     return ranges;
 }
+
+
+export function isInComment(line: string, varIndex: number): boolean {
+    return false;
+}
+

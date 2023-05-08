@@ -1,7 +1,16 @@
 import * as peggy from "peggy";
 import * as vscode from "vscode";
-import { matchTypes, ParseResults } from "../../server/src/parserClasses";
-import { getParseResults } from "../../server/src/parserUtil";
+import { ParseResults } from "./parserClasses";
+import { matchTypes } from "./matchTypes";
+import * as ncParser from "./ncParser";
+
+/** Returns the output of the peggy parser.
+ *  Throws an error if the parser takes too long.
+*/
+export function getParseResults(fileContent: string): ParseResults {
+    return ncParser.parse(fileContent) as unknown as ParseResults;
+}
+
 export interface Match {
     name: Match | null;
     type: string;

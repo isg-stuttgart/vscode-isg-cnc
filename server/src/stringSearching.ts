@@ -1,6 +1,57 @@
 import { EOL } from "os";
 import { FileRange, Position } from "./parserClasses";
+import { isInComment } from "./parserSearching";
 
+/**
+ * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based).
+ * When the parser fails, comments are not excluded.
+ * @param fileContent the file string
+ * @param string the string to search for
+ * @param uri the uri of the file
+ * @returns an array of file ranges (uri and start/end positions)
+ */
+export function findLocalStringRanges(fileContent: string, string: string, uri: string): FileRange[] {
+    let ranges: FileRange[] = [];
+    const lines = fileContent.split(EOL);
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        let varIndex = line.indexOf(string);
+        while (varIndex !== -1) {
+            const varEnd = varIndex + string.length;
+            if (!isInComment(line, varIndex)) {
+                const range = new FileRange(uri, new Position(i, varIndex), new Position(i, varEnd));
+                ranges.push(range);
+                varIndex = line.indexOf(string, varEnd);
+            }
+        }
+    }
+    return ranges;
+}
+
+export function getSurroundingVar(fileContent: string, position: Position): string | null {
+    let result = null;
+    const lines = fileContent.split(EOL);
+    const line = lines[position.line];
+    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|\[-?[0-9]+\])?/gm;
+
+    // word begin can be between 0 and position.character
+    for (let begin = 0; begin <= position.character; begin++) {
+        // get match which starts at current begin
+        const substring = line.substring(begin);
+        const match = substring.match(varRegex);
+        if (match) {
+            const matchString = match[0];
+            const matchEnd = begin + matchString.length;
+
+            // if match ends after position.character, we found the surrounding variable
+            if (matchEnd > position.character) {
+                result = matchString;
+                break;
+            }
+        }
+    }
+    return result;
+}
 
 /**
  * Returns whether pos1 is before(-1), after(1) or equal(0) to pos2

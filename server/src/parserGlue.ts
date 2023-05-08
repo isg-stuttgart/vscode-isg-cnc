@@ -1,7 +1,6 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, IncrementableProgress } from "./parserClasses";
 import {
-    getParseResults,
     findMatch,
     findFirstMatchWithinPrg,
     findMatchRangesWithinPrgTree,
@@ -14,6 +13,7 @@ import { getConnection } from "./connection";
 import { getSurroundingVar, findLocalStringRanges } from "./stringSearching";
 import { countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
 import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
+import { getParseResults } from "./parsingResults";
 
 /**
  * Returns the definition location of the selected position
