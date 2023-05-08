@@ -1,11 +1,10 @@
 import * as peggy from "peggy";
-import * as vscode from "vscode";
 import { ParseResults } from "./parserClasses";
 import { matchTypes } from "./matchTypes";
 import * as ncParser from "./parserGenerating/ncParser";
 
 /** Returns the output of the peggy parser.
- *  Throws an error if the parser takes too long.
+ * @throws Error if the parser throws an error
 */
 export function getParseResults(fileContent: string): ParseResults {
     return ncParser.parse(fileContent) as unknown as ParseResults;
@@ -34,6 +33,7 @@ export interface SyntaxArray {
  * This is 0 based, in contrast to the original location objects of the parser.
  * @param text 
  * @returns a map with linenumbers as keys, and the first blocknumber-match of the line as values
+ * @throws Error if the parser throws an error
  */
 export function getLineToBlockNumberMap(text: string): Map<number, Match> {
     const map: Map<number, Match> = new Map();
@@ -49,19 +49,14 @@ export function getLineToBlockNumberMap(text: string): Map<number, Match> {
  * Returns all linenumbers of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
  * If the parser throws an error, an empty array is returned.
  * @param text the text to parse
+ * @throws Error if the parser throws an error
  * @returns Array with linenumbers
  */
 export function getNumberableLines(text: string): Array<number> {
-    let numberableLines: Array<number> = [];
-    try {
-        const parseResults: ParseResults = getParseResults(text);
-        numberableLines = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
-        //sort set because of wrong order due to recursive adding
-        numberableLines.sort((a: number, b: number) => a - b);
-    } catch (error) {
-        vscode.window.showErrorMessage("Error while parsing file: " + error);
-    }
-
+    const parseResults: ParseResults = getParseResults(text);
+    const numberableLines = Array.from(parseResults.numberableLinesUnsorted.values()).map(line => line - 1);
+    //sort set because of wrong order due to recursive adding
+    numberableLines.sort((a: number, b: number) => a - b);
     return numberableLines;
 }
 
@@ -70,16 +65,12 @@ export function getNumberableLines(text: string): Array<number> {
  * The array contains the following matches within own arrays: toolCalls, prgCallNames, trash, controlBlocks, multilines, skipBlocks, blockNumbers.
  * If the parser throws an error, empty arrays are returned.
  * @param text the text to parse
+ * @throws Error if the parser throws an error
+ * @returns Array with the important matches
  */
 export function getSyntaxArray(text: string): SyntaxArray {
-    let fileTree: any = [];
-
-    try {
-        fileTree = getParseResults(text).fileTree;
-    } catch (error) {
-        vscode.window.showErrorMessage("Error while parsing file: " + error);
-    }
-
+    let fileTree: any = getParseResults(text).fileTree;
+  
     const toolCalls = new Array<Match>();
     const prgCallNames = new Array<Match>();
     const trash = new Array<Match>();
