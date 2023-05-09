@@ -244,7 +244,7 @@ multiline_line
 = default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= (($grayspace                                               
+= ((grayspace                                               
 /  prg_call
 /  var
 /  command
@@ -316,11 +316,11 @@ squared_bracket_block "squared_bracket_block"               // a block between "
 = "[" (bracket_multiline/[^\]\r\n]*) "]"                    // brackets can contain a multline or a singleline
 
 bracket_multiline
-= [^\]\r\n\\]* "\\" whitespaces linebreak                   // at least one line extended by \   
+= content:([^\]\r\n\\]* "\\" whitespaces linebreak          // at least one line extended by \   
 ( [^\]\r\n\\]* "\\" whitespaces linebreak                   // any lines extended by \
 / whitespaces line_comment?  linebreak)*                    // or whitelines or comment lines
-[^\]\r\n\\]* (linebreak whitespaces)?{                      // last line before "]"
-	return new Match(types.multiline, null, location(), null, null);
+[^\]\r\n\\]* (linebreak whitespaces))?{                     // last line before "]"
+	return new Match(types.multiline, content, location(), null, null);
 }
 
 
@@ -339,9 +339,7 @@ grayspace "grayspace"                                       // grayspace, a gene
 / comment
 
 grayspaces "grayspaces"
-= grayspace*{
-  return text()
-}
+= grayspace*
 
 grayline "grayline"
 = (whitespace/comment)* linebreak
@@ -354,22 +352,21 @@ comment "comment"                                           // comments are eith
 line_comment "line_comment"                                 // a line comment is either:
 = paren_comment                                             // with parenthesis or
 / semicolon_comment                                         // after semicolon
-{return text()}
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
 = $("(" [^)\r\n]* ")" 
 / "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
-{ return new Match(types.comment, text(), location(), text(), null)}
+{ return new Match(types.comment, null, location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
 = ";" [^\r\n]*
-{ return new Match(types.comment, text(), location(), text(), null)}
+{ return new Match(types.comment, null, location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
 = "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
   (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-{ return new Match(types.comment, text(), location(), text(), null)}
+{ return new Match(types.comment, null, location(), text(), null)}
 
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]

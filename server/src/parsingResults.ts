@@ -63,15 +63,12 @@ export function getNumberableLines(text: string): Array<number> {
 
 /**
  * Collects the important matches of the nc-file-content into an array.
- * The array contains the following matches within own arrays: toolCalls, prgCallNames, trash, controlBlocks, multilines, skipBlocks, blockNumbers.
- * If the parser throws an error, empty arrays are returned.
- * @param text the text to parse
+ * The array contains the following matches within own arrays: toolCalls, prgCallNames, trash, controlBlocks, multilines, skipBlocks, blockNumbers, comments.
+ * @param tree ast returned by the parser
  * @throws Error if the parser throws an error
  * @returns Array with the important matches
  */
-export function getSyntaxArray(text: string): SyntaxArray {
-    let fileTree: any = getParseResults(text).fileTree;
-  
+export function getSyntaxArrayByTree(tree:any[]): SyntaxArray {
     const toolCalls = new Array<Match>();
     const prgCallNames = new Array<Match>();
     const trash = new Array<Match>();
@@ -81,7 +78,7 @@ export function getSyntaxArray(text: string): SyntaxArray {
     const blockNumbers = new Array<Match>();
     const comments = new Array<Match>();
 
-    traverseRecursive(fileTree);
+    traverseRecursive(tree);
     function traverseRecursive(element: any) {
         // current element is array to traverse recursively
         if (Array.isArray(element)) {
@@ -145,4 +142,16 @@ export function getSyntaxArray(text: string): SyntaxArray {
     };
 
     return syntaxArray;
+}
+
+/**
+ * Collects the important matches of the nc-file-content into an array.
+ * The array contains the following matches within own arrays: toolCalls, prgCallNames, trash, controlBlocks, multilines, skipBlocks, blockNumbers, comments.
+ * @param text the text to parse
+ * @throws Error if the parser throws an error
+ * @returns Array with the important matches
+ */
+export function getSyntaxArray(text: string): SyntaxArray {
+    let fileTree: any = getParseResults(text).fileTree;
+    return getSyntaxArrayByTree(fileTree);
 }

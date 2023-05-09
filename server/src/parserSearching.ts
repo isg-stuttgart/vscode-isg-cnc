@@ -7,7 +7,7 @@ import { getConnection } from "./connection";
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
-import { getParseResults, getSyntaxArray } from "./parsingResults";
+import { getParseResults } from "./parsingResults";
 
 /**
 * Recursively find the definition of the given type and name within the tree
@@ -218,6 +218,4 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
     }
     return ranges;
 }
-
-
 

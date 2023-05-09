@@ -1,6 +1,6 @@
 import { EOL } from "os";
 import { FileRange, Position } from "./parserClasses";
-import { Match, getSyntaxArray } from "./parsingResults";
+import { Match, getSyntaxArray, getSyntaxArrayByTree } from "./parsingResults";
 
 /**
  * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based).
@@ -21,7 +21,6 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
         commentMatches = [];
     }
 
-
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         let varIndex = line.indexOf(string);
@@ -30,18 +29,30 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
             if (!isWithinMatches(commentMatches, new Position(i, varIndex))) {
                 const range = new FileRange(uri, new Position(i, varIndex), new Position(i, varEnd));
                 ranges.push(range);
-                varIndex = line.indexOf(string, varEnd);
             }
+            varIndex = line.indexOf(string, varEnd);
         }
     }
     return ranges;
 }
+
+/**
+ * Returns whether a given position is within a comment, based on the passed AST
+ * @param ast 
+ * @param position 
+ * @returns 
+ */
+export function isPositionInComment(ast: any, position: Position): boolean {
+    const comments = getSyntaxArrayByTree(ast).comments;
+    return isWithinMatches(comments, position);
+}
+
 /**
  * Returns whether a given position is within a comment
  * @param line 
  * @param varIndex 
  */
-export function isWithinMatches(matches:Match[], pos: Position): boolean {
+export function isWithinMatches(matches: Match[], pos: Position): boolean {
     let isInComment = false;
     for (const match of matches) {
         const matchStart = new Position(match.location.start.line - 1, match.location.start.column - 1);
@@ -63,7 +74,7 @@ export function getSurroundingVar(fileContent: string, position: Position): stri
     let result = null;
     const lines = fileContent.split(EOL);
     const line = lines[position.line];
-    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|\[-?[0-9]+\])?/gm;
+    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|(\[-?[0-9]+\])*)?/gm;
 
     // word begin can be between 0 and position.character
     for (let begin = 0; begin <= position.character; begin++) {
