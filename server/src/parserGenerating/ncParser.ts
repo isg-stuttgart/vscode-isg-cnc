@@ -2532,16 +2532,10 @@ function peg$parse(input: string, options?: ParseOptions) {
   }
 
   function peg$parsedefault_line(): any {
-    let s0, s1, s2;
+    let s0, s1;
 
     s0 = [];
-    s1 = peg$currPos;
-    s2 = peg$parsegrayspace();
-    if (s2 as any !== peg$FAILED) {
-      s1 = input.substring(s1, peg$currPos);
-    } else {
-      s1 = s2;
-    }
+    s1 = peg$parsegrayspace();
     if (s1 as any === peg$FAILED) {
       s1 = peg$parseprg_call();
       if (s1 as any === peg$FAILED) {
@@ -2560,13 +2554,7 @@ function peg$parse(input: string, options?: ParseOptions) {
     if (s1 as any !== peg$FAILED) {
       while (s1 as any !== peg$FAILED) {
         s0.push(s1);
-        s1 = peg$currPos;
-        s2 = peg$parsegrayspace();
-        if (s2 as any !== peg$FAILED) {
-          s1 = input.substring(s1, peg$currPos);
-        } else {
-          s1 = s2;
-        }
+        s1 = peg$parsegrayspace();
         if (s1 as any === peg$FAILED) {
           s1 = peg$parseprg_call();
           if (s1 as any === peg$FAILED) {

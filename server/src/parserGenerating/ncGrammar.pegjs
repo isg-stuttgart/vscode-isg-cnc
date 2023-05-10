@@ -244,7 +244,7 @@ multiline_line
 = default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= (($grayspace                                               
+= ((grayspace                                               
 / prg_call
 / var
 / command
