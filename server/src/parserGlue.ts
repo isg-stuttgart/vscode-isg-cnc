@@ -1,18 +1,19 @@
 import { pathToFileURL } from "node:url";
-import { Match, Position, FileRange, matchTypes } from "./parserClasses";
+import { Match, Position, FileRange, IncrementableProgress } from "./parserClasses";
 import {
-    findFileInRootDir as findFilesInRootDir,
-    getParseResults,
-    getDefType,
     findMatch,
     findFirstMatchWithinPrg,
-    getRefTypes,
     findMatchRangesWithinPrgTree,
     findMatchRangesWithinPath,
-    normalizePath
-} from "./parserUtil";
+} from "./parserSearching";
 import * as fs from "fs";
 import path = require("node:path");
+import { Connection } from "vscode-languageserver";
+import { getConnection } from "./connection";
+import { getSurroundingVar, findLocalStringRanges, isPositionInComment } from "./stringSearching";
+import { countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
+import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
+import { getParseResults } from "./parsingResults";
 
 /**
  * Returns the definition location of the selected position
@@ -25,8 +26,33 @@ import path = require("node:path");
 export function getDefinition(fileContent: string, position: Position, uri: string, rootPaths: string[] | null): FileRange[] {
     let defMatch: Match | null = null;
     let definitions: FileRange[] = [];
+
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+        return [];
+    }
+
+    // if the location is within comments, return empty array
+    if (isPositionInComment(ast, position)) {
+        return [];
+    }
+
+    /**If the location is on a variable, search for it's definition via the parser. This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
+    const surroundingVar = getSurroundingVar(fileContent, position);
+    if (surroundingVar) {
+        const varMatch = findFirstMatchWithinPrg(ast, matchTypes.varDeclaration, surroundingVar);
+        if (varMatch && varMatch.location) {
+            const start: Position = new Position(varMatch.location.start.line - 1, varMatch.location.start.column - 1);
+            const end: Position = new Position(varMatch.location.end.line - 1, varMatch.location.end.column - 1);
+            definitions.push(new FileRange(uri, start, end));
+        }
+        return definitions;
+    }
+
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -56,14 +82,20 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         } else {
             defPaths = [];
             for (const rootPath of rootPaths) {
-                defPaths.push(...findFilesInRootDir(rootPath, match.name));
+                defPaths.push(...findFileInRootDir(rootPath, match.name));
             }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
         for (const path of defPaths) {
             const uri = pathToFileURL(path).toString();
             const fileContent = fs.readFileSync(path, "utf8");
-            const mainPrg = getParseResults(fileContent).mainPrg;
+            let mainPrg;
+            try {
+                mainPrg = getParseResults(fileContent).mainPrg;
+            } catch (error) {
+                getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+                console.error(`Error parsing file ${path}: ${error}`);
+            }
             let range = {
                 start: new Position(0, 0),
                 end: new Position(0, 0)
@@ -88,11 +120,30 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
  * @param rootPaths the root paths of the workspace
  * @param openFiles a map of open files with their uri as key and the file content as value
  */
-export function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>): FileRange[] {
+export async function getReferences(fileContent: string, position: Position, uri: string, rootPaths: string[] | null, openFiles: Map<string, string>, connection: Connection): Promise<FileRange[]> {
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
-    const ast: any[] = getParseResults(fileContent).fileTree;
+    let ast: any[];
+    try {
+        ast = getParseResults(fileContent).fileTree;
+    } catch (error) {
+        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+        return [];
+    }
+
+    // if the location is within comments, return empty array
+    if (isPositionInComment(ast, position)) {
+        return [];
+    }
+
+    // if the selected position is a variable use string search to find all references and return the result
+    const surroundingVar = getSurroundingVar(fileContent, position);
+    if (surroundingVar) {
+        const stringRanges = findLocalStringRanges(fileContent, surroundingVar, uri);
+        return stringRanges;
+    }
+
     const match = findMatch(ast, position);
     if (!match || !match.name) {
         return [];
@@ -113,13 +164,18 @@ export function getReferences(fileContent: string, position: Position, uri: stri
     }
     // if global find all references in all files within all workspace roots and add their ranges to the result array
     else if (rootPaths) {
+        // calculate how much percent are done after parsing each file
+        let fileCount = 0;
+        rootPaths.forEach(rootPath => fileCount += countFilesInPath(rootPath));
+        const progress = await connection.window.createWorkDoneProgress();
+        const progressHandler = new IncrementableProgress(progress, fileCount, "Searching references");
         for (const rootPath of rootPaths) {
-            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles));
+            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler));
         }
+        progressHandler.done();
     }
 
     return referenceRanges;
 }
-
 
 

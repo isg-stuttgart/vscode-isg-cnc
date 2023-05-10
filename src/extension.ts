@@ -6,7 +6,7 @@ import * as vscode from "vscode";
 import * as fileContentTree from "./util/FileContentTree";
 import { config } from "./util/config";
 import * as blowfish from "./util/encryption/encryption";
-import * as parser from "./util/parser";
+import * as parser from "../server/src/parsingResults";
 import * as Formatter from "./util/Formatter";
 import {
     LanguageClient,
@@ -14,7 +14,6 @@ import {
     ServerOptions,
     TransportKind
 } from 'vscode-languageclient/node';
-import { debug } from "console";
 let language: string;
 let docuPath: string;
 
@@ -53,7 +52,6 @@ let currentOffsetStatusBarItem: vscode.StatusBarItem;
 
 //NC-file sidebar tree provider
 let fileContentProvider: fileContentTree.FileContentProvider;
-let fileContentTreeView: vscode.TreeView<vscode.TreeItem>;
 
 // package.json information
 let packageFile;
@@ -64,7 +62,6 @@ let extContext: vscode.ExtensionContext;
 // Technology regex for too, feed, spindle rpm
 const regExTechnology = new RegExp("([TFS])([0-9]+)");
 // Blocknumber regex
-const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 
 let client: LanguageClient;
@@ -117,11 +114,8 @@ export function activate(context: vscode.ExtensionContext): void {
     });
 
     //NC-file sidebar tree provider
-    const currentFile = vscode.window.activeTextEditor?.document.uri;
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);
-    fileContentTreeView = vscode.window.createTreeView('cnc-show-filecontent', {
-        treeDataProvider: fileContentProvider
-    });
+
 
     // commands
     context.subscriptions.push(
@@ -469,9 +463,11 @@ async function goToPosition(): Promise<void> {
                     value: String(cursorOffset),
                 })
                 .then((input?: string) => {
-                    input !== undefined
-                        ? setCursorPosition(parseFloat(String(input)))
-                        : setCursorPosition(cursorOffset);
+                    if (input) {
+                        setCursorPosition(parseFloat(String(input)));
+                    } else {
+                        setCursorPosition(cursorOffset);
+                    }
                 });
         }
     }
@@ -550,7 +546,13 @@ function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
-            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+            let linesToBlocknumberMap;
+            try {
+                linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled removing blocknumbers: " + JSON.stringify(error));
+                return;
+            }
 
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
@@ -595,7 +597,6 @@ async function addBlocknumbers() {
     let start = 10;
     let step = 10;
     let blocknumber = start;
-    let blocknumbertext: string;
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
 
@@ -653,10 +654,24 @@ async function addBlocknumbers() {
             const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
 
             const skipLineBeginIndexes: Map<number, number> = new Map();
-            parser.getSyntaxArray(document.getText()).skipBlocks.forEach((match) => {
+            let skipBlocks;
+            try {
+                skipBlocks = parser.getSyntaxArray(document.getText()).skipBlocks;
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
+                return;
+            }
+            skipBlocks.forEach((match) => {
                 skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
             });
-            const linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+
+            let linesToBlocknumberMap;
+            try {
+                linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
+                return;
+            }
             // add new blocknumbers
             const maximalLeadingZeros = digitCount(start + linesToNumber.length * step);
 
@@ -681,7 +696,6 @@ async function addBlocknumbers() {
                         document.positionAt(startPos),
                         document.positionAt(endPos)
                     );
-                    blocknumbertext = document.getText(range);
                     if (matchLabel !== null
                         && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
                         && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
@@ -755,7 +769,6 @@ function startDocu() {
  * @returns {string}
  */
 function getContextbasedSite(): string {
-    let searchContext: string;
     let localeDocuPath: string = docuPath;
     let docuAddress: string = "";
     const { activeTextEditor } = vscode.window;
@@ -840,7 +853,6 @@ function updateDecorations() {
         message = "Line: " + ln + " " + nonAsciiChar.hoverMessage;
         outputChannel.appendLine(message);
     }
-    outputChannel.show.apply;
 }
 
 function triggerUpdateDecorations() {

@@ -1,4 +1,5 @@
 import * as peggy from "peggy";
+import { WorkDoneProgressServerReporter } from "vscode-languageserver";
 
 /**
  * A position in a text document expressed as zero-based line and character offset.
@@ -69,30 +70,57 @@ export class Match {
     }
 }
 
+/** Returns if a given object is a Match and so can be converted to such*/
+export function isMatch(obj: any): boolean {
+    const exampleMatch: Match = new Match("", null, null, null, null);
+    return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
+}
+
 /**
- * The different types a match returned by the peggy parser for ISG-CNC files can have.
+ * A class that can be used to increment a progress bar.
  */
-export const matchTypes = {
-    toolCall: "toolCall",
-    mainPrg: "mainPrg",
-    localSubPrg: "localSubPrg",
-    localPrgCall: "localPrgCall",
-    localPrgCallName: "localPrgCallName",
-    globalPrgCall: "globalPrgCall",
-    globalPrgCallName: "globalPrgCallName",
-    localCycleCall: "localCycleCall",
-    localCycleCallName: "localCycleCallName",
-    globalCycleCall: "globalCycleCall",
-    globalCycleCallName: "globalCycleCallName",
-    controlBlock: "controlBlock",
-    gotoBlocknumber: "gotoBlocknumber",
-    gotoLabel: "gotoLabel",
-    label: "label",
-    multiline: "multiline",
-    trash: "trash",
-    skipBlock: "skipBlock",
-    blockNumber: "blockNumber",
-    blockNumberLabel: "blockNumberLabel",
-    varDeclaration: "varDeclaration",
-    variable: "variable"
-};
+export class IncrementableProgress {
+    private progress: WorkDoneProgressServerReporter;
+    private incrementPercentage: number;
+    private currentPercentage: number;
+    private progressName: string;
+    private canceled: boolean = false;
+
+    constructor(progress: WorkDoneProgressServerReporter, totalSteps: number, progressName: string) {
+        this.progress = progress;
+        this.incrementPercentage = 100 / totalSteps;
+        this.currentPercentage = 0;
+        this.progressName = progressName;
+        this.progress.token.onCancellationRequested(() => {
+            this.cancel();
+            console.error("Progress canceled");
+        });
+        this.progress.begin(this.progressName, 0, "...", true);
+    }
+
+    increment(message?: string) {
+        this.currentPercentage += this.incrementPercentage;
+        if (message) {
+            this.progress.report(this.currentPercentage, message);
+        } else {
+            this.progress.report(this.currentPercentage);
+        }
+    }
+
+    changeMessage(message: string) {
+        this.progress.report(this.currentPercentage, message);
+    }
+
+    done() {
+        this.progress.done();
+    }
+
+    cancel() {
+        this.canceled = true;
+        this.progress.done();
+    }
+
+    isCancelled() {
+        return this.canceled;
+    }
+}
