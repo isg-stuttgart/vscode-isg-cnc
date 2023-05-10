@@ -4,7 +4,7 @@ var peggy = require('peggy');
 const tsPegjs = require('ts-pegjs');
 
 try {
-    let grammar = fs.readFileSync('./server/parserGenerating/ncGrammar.pegjs', 'utf8');
+    let grammar = fs.readFileSync('./server/src/parserGenerating/ncGrammar.pegjs', 'utf8');
     let parser = peggy.generate(grammar, {
         output: 'source',
         format: 'commonjs',
@@ -14,7 +14,7 @@ try {
         }
     });
     // write result to filer
-    fs.writeFileSync('./server/src/ncParser.ts', parser);
+    fs.writeFileSync('./server/src/parserGenerating/ncParser.ts', parser);
 } catch (error) {
     console.error(error);
 }

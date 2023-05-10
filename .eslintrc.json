@@ -14,8 +14,12 @@
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
+        "no-unused-expressions": "warn",
+        "no-unused-vars": "warn",
+        "no-unsafe-finally": "warn",
+        "no-empty": "warn",
         "semi": "off"
-    },
+        },
     "ignorePatterns": [
         "out",
         "dist",

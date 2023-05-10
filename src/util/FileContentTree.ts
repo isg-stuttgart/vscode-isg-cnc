@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as Path from "path";
-import * as parser from "./parser";
+import * as parser from "../../server/src/parsingResults";
 
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
@@ -44,7 +44,13 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             this.fileItem = new FileItem("The currently opened file is no NC-file", vscode.TreeItemCollapsibleState.None);
         } else {
             const fileContent = fs.readFileSync(this.file.fsPath, "utf-8");
-            const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(fileContent);
+            let syntaxArray: parser.SyntaxArray;
+            try {
+                syntaxArray = parser.getSyntaxArray(fileContent);
+            } catch (error) {
+                this.fileItem = new FileItem("Error while parsing: " + error, vscode.TreeItemCollapsibleState.None);
+                return;
+            }
             this.updateMatchItems(syntaxArray);
             this.fileItem = new FileItem(Path.basename(this.file.fsPath), vscode.TreeItemCollapsibleState.Expanded, this.matchCategories);
         }
@@ -107,6 +113,7 @@ class FileItem extends vscode.TreeItem implements MyItem {
         super(label, collapsibleState);
         this._children = new Array<MyItem>();
         if (matchCategories !== undefined) {
+            // eslint-disable-next-line no-unused-vars
             Object.entries(matchCategories).forEach(([key, category]) => {
                 this.addChild(category);
             });

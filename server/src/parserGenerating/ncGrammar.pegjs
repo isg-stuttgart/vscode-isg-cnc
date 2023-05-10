@@ -9,6 +9,8 @@
       toolCall: "toolCall",
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
+
+      // prg calls
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
       globalPrgCall: "globalPrgCall",
@@ -17,6 +19,7 @@
       localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
       globalCycleCallName: "globalCycleCallName",
+
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -27,7 +30,8 @@
       blockNumber: "blockNumber",
       blockNumberLabel: "blockNumberLabel",
       varDeclaration: "varDeclaration",
-      variable:"variable"
+      variable:"variable",
+      comment: "comment",
   }
  class LightMatch {
     location;
@@ -119,7 +123,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(grayspace/block/linebreak))+                              // the body is a list of comments and blocks
+(grayspace/block/linebreak))+                               // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
 = content:(skipped_block/block_body)
@@ -130,7 +134,7 @@ block "block"                                               // an NC block
 
 skipped_block "skipped_block"                               // a skipped nc block
 = content:("/"(digit/"10")?  grayspaces block_body){
-    return new Match(types.skipBlock, content, location(), text() ,null);
+    return new Match(types.skipBlock, content, location(), text(), null);
 }
 
 block_body "block_body"
@@ -240,28 +244,35 @@ multiline_line
 = default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
 
 default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= (($grayspace                                               
-/  prg_call
-/  var
-/  command
-/  label)
-/ trash_line)+                                              // collected trashing
+= ((grayspace                                               
+/ prg_call
+/ var
+/ command
+/ parameter
+/ label)+)
+/ trash_line                                                // collected trashing
 
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
 = (!stop_trashing .)+                          
-(non_delimiter)*                                            // dont stop within one token  
 {return "trash: " + text()}
+
+parameter "parameter"
+= "@P" grayspaces "[" (grayspace/var/parameter_trash_token)* "]"
+
+parameter_trash_token "parameter_trash_token"
+= $(!(grayspace/var/"]") .)+
 
 var
 =var_name{
   return new Match(types.variable, null, location(), text(), text());
 }
+
 stop_trashing
 = linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
 
 command "command"                                           // a tool call or other normal command
-= (t_command/($([A-Z] number)))                             // a tool call
+= (t_command/($([A-Z] number)))                             
  
 n_command "n_command"                                       // a command defining the blocknumber, i.e., N010
 = "N" id:$non_neg_integer colon:":"?{
@@ -296,31 +307,33 @@ prg_name
 prg_name_string
 = "\"" name:$(non_delimiter+) "\""
  {return name}
- 
+  
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
    "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-   $(bracket_multiline/[^\]\r\n]*) "]"){                    // brackets can contain a multline or a singleline
+    (cycle_call_param_multiline/cycle_call_param_line) grayline* "]"){          // brackets can contain a multline or a singleline
     const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
     const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let nameLM = content[6][1]                              // LightMatch of the cycle name
+    let nameLM = content[6][1]                                                  // LightMatch of the cycle name
     const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-    content[6][1] = nameMatch                               // replace nameLightMatch with nameMatch  
+    content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
     return new Match(type, content, location(), text(), nameLM.text);
   }
 
-squared_bracket_block "squared_bracket_block"               // a block between "[" and "]"
-= "[" (bracket_multiline/[^\]\r\n]*) "]"                    // brackets can contain a multline or a singleline
-
-bracket_multiline
-= [^\]\r\n\\]* "\\" whitespaces linebreak                   // at least one line extended by \   
-( [^\]\r\n\\]* "\\" whitespaces linebreak                   // any lines extended by \
-/ whitespaces line_comment?  linebreak)*                    // or whitelines or comment lines
-[^\]\r\n\\]* (linebreak whitespaces)?{                      // last line before "]"
-	return new Match(types.multiline, null, location(), null, null);
+cycle_call_param_multiline 
+= content:
+(cycle_call_param_line "\\" whitespaces linebreak           // at least one line extended by \   
+((cycle_call_param_line "\\" whitespaces linebreak)         // any lines extended by \
+/ grayline)*                                                // or white/comment lines
+cycle_call_param_line linebreak?){             
+	return new Match(types.multiline, content, location(), text(), null);
 }
 
+cycle_call_param_line "cycle_call_param_line"
+= ((line_comment/var/cycle_call_param_line_trash_token))*
 
+cycle_call_param_line_trash_token
+= $(!("]"/"\r"/"\n"/"\\"/line_comment/var) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{
@@ -336,9 +349,7 @@ grayspace "grayspace"                                       // grayspace, a gene
 / comment
 
 grayspaces "grayspaces"
-= grayspace*{
-  return text()
-}
+= grayspace*
 
 grayline "grayline"
 = (whitespace/comment)* linebreak
@@ -351,20 +362,22 @@ comment "comment"                                           // comments are eith
 line_comment "line_comment"                                 // a line comment is either:
 = paren_comment                                             // with parenthesis or
 / semicolon_comment                                         // after semicolon
-{return text()}
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
 = $("(" [^)\r\n]* ")" 
 / "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
+{ return new Match(types.comment, null, location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
 = ";" [^\r\n]*
+{ return new Match(types.comment, null, location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
 = "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
   (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-  
+{ return new Match(types.comment, null, location(), text(), null)}
+
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
 

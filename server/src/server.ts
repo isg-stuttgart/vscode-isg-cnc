@@ -97,7 +97,7 @@ connection.onDefinition((docPos) => {
 		const position: Position = docPos.position;
 		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
 	} catch (error) {
-		console.error(error);
+		console.error("Getting definition failed: " + JSON.stringify(error));
 	}
 });
 
@@ -115,10 +115,11 @@ connection.onReferences(async (docPos) => {
 		for (const doc of allDocs) {
 			openFiles.set(doc.uri, doc.getText());
 		}
+
 		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
 		return references;
 	} catch (error) {
-		connection.window.showErrorMessage(JSON.stringify(error));
+		connection.window.showErrorMessage("Getting references failed: " + JSON.stringify(error));
 	}
 });
 
