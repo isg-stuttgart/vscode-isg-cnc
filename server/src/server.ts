@@ -25,7 +25,6 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasWorkDoneProgressCapability = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
@@ -46,9 +45,6 @@ connection.onInitialize(async (params: InitializeParams) => {
 	);
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
-	);
-	hasWorkDoneProgressCapability = !!(
-		capabilities.window && !!capabilities.window.workDoneProgress
 	);
 
 	const result: InitializeResult = {
@@ -79,10 +75,9 @@ connection.onInitialized(() => {
 				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
-			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));		
 		});
 	}
-
 	updateConfig();
 });
 
@@ -159,8 +154,7 @@ connection.onDidChangeConfiguration(async () => {
  */
 async function updateConfig() {
 	const workspaceConfig = await connection.workspace.getConfiguration();
-	const fileConfig = workspaceConfig['files'];
-	config.updateFileEndings(fileConfig);
+	config.updateSettings(workspaceConfig);
 }
 
 

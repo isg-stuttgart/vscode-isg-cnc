@@ -4,7 +4,7 @@ import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./pa
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as config from "./config";
 import { getConnection } from "./connection";
-import { normalizePath } from "./fileSystem";
+import { WorkspaceIgnorer, normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
 import { getParseResults } from "./parsingResults";
@@ -48,14 +48,14 @@ export function findFirstMatchWithinPrg(tree: any, defType: string, name: string
 * @param position the position where the match should be found
 * @returns the most precise match if existing, otherwise null
 */
-export function findMatch(tree: any, position: Position): Match | null {
+export function findPreciseMatch(tree: any, position: Position): Match | null {
     let res: Match | null = null;
 
     // if no match found yet, search in other subtree
     if (Array.isArray(tree)) {
         tree.forEach(e => {
             if (!res) {
-                res = findMatch(e, position);
+                res = findPreciseMatch(e, position);
             }
         });
     }
@@ -69,7 +69,7 @@ export function findMatch(tree: any, position: Position): Match | null {
         const start = new Position(match.location.start.line - 1, match.location.start.column - 1);
         const end = new Position(match.location.end.line - 1, match.location.end.column - 1);
         if (compareLocations(position, start) >= 0 && compareLocations(position, end) <= 0) {
-            res = findMatch(match.content, position);
+            res = findPreciseMatch(match.content, position);
 
             //if subtree did not give better result then take this match
             if (!res) {
@@ -155,7 +155,7 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
  * @param totalFiles total number of files to search in
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress): FileRange[] {
+export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress, ignorer: WorkspaceIgnorer = new WorkspaceIgnorer("")): FileRange[] {
     let ranges: FileRange[] = [];
 
     // convert uri mapping of open files to normalized path mapping
@@ -172,9 +172,15 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             break;
         }
         const entryPath = normalizePath(path.join(rootPath, entry.name));
+
+        // ignore file if ignorer says so
+        if (ignorer.ignores(entryPath)) {
+            continue;
+        }
+
         if (entry.isDirectory()) {
             // add all matches in subdirectories
-            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler);
+            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler, ignorer);
             ranges.push(...subMatches);
         } else if (entry.isFile()) {
             // report progress
