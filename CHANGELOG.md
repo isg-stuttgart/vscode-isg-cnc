@@ -11,7 +11,7 @@ Types of changes:
 - Removed for now removed features.
 - Fixed for any bug fixes.
 - Security in case of vulnerabilities.
-- 
+
 ## [Unreleased]
 
 ## [V0.4.4]
