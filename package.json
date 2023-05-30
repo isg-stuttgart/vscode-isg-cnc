@@ -56,7 +56,7 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:isg-cnc.AlignEqualSigns"
+        "onCommand:isg-cnc.addToIgnore"
     ],
     "contributes": {
         "configurationDefaults": {
@@ -68,6 +68,18 @@
             "title": "ISG CNC",
             "type": "object",
             "properties": {
+                "isg-cnc.enableFormatter": {
+                    "type": "boolean",
+                    "description": "Enable/Disable the CNC formatter.",
+                    "default": true,
+                    "order": 10
+                },
+                "isg-cnc.documentation": {
+                    "type": "string",
+                    "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
+                    "description": "Path to the ISG documentation. Important: Address must end with a slash character (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)",
+                    "order": 20
+                },
                 "isg-cnc.locale": {
                     "type": "string",
                     "default": "de-DE",
@@ -75,22 +87,14 @@
                         "de-DE",
                         "en-GB"
                     ],
-                    "description": "Choose the documentation language"
-                },
-                "isg-cnc.documentation": {
-                    "type": "string",
-                    "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash charakter (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)"
+                    "description": "Choose the documentation language",
+                    "order": 30
                 },
                 "isg-cnc.outputchannel": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Enable/Disable Outputchannel"
-                },
-                "isg-cnc.enableFormatter": {
-                    "type": "boolean",
-                    "description": "Enable/Disable the CNC formatter.",
-                    "default": true
+                    "description": "Enable/Disable Outputchannel",
+                    "order": 40
                 }
             }
         },
@@ -122,51 +126,50 @@
             },
             {
                 "command": "isg-cnc.EncryptAnyFile",
-                "title": "ISG-CNC: Encrypt any file"
+                "title": "ISG-CNC: Chose file to encrypt"
             },
             {
                 "command": "isg-cnc.DecryptAnyFile",
-                "title": "ISG-CNC: Decrypt any file"
+                "title": "ISG-CNC: Chose file to decrypt"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindAllToolCalls",
-                "title": "ISG-CNC: Find all tool calls in opened nc files"
+                "title": "ISG-CNC: Find all tool calls in opened nc files",
+                "enablement": "resourceLangId == isg-cnc"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.GoToPosition",
-                "title": "ISG-CNC: Go to Fileoffset"
+                "title": "ISG-CNC: Go to Fileoffset",
+                "enablement": "editorIsOpen"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                "title": "ISG-CNC: Show Fileoffset Information"
+                "title": "ISG-CNC: Show Fileoffset Information",
+                "enablement": "editorIsOpen"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNextTFS",
-                "title": "ISG-CNC: Find next TFS code"
+                "title": "ISG-CNC: Find next TFS code",
+                "enablement": "resourceLangId == isg-cnc"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.RemoveAllBlocknumbers",
-                "title": "ISG-CNC: Remove all Blocknumbers"
+                "title": "ISG-CNC: Remove all Blocknumbers",
+                "enablement": "resourceLangId == isg-cnc"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.AddBlocknumbers",
-                "title": "ISG-CNC: Add Blocknumbers"
+                "title": "ISG-CNC: Add Blocknumbers",
+                "enablement": "resourceLangId == isg-cnc"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.StartDocu",
                 "title": "ISG-CNC: Start the Documentation"
             },
             {
-                "enablement": "resourceLangId == isg-cnc",
                 "command": "isg-cnc.FindNonAsciiCharacters",
-                "title": "ISG-CNC: Find not ASCII characters"
+                "title": "ISG-CNC: Find not ASCII characters",
+                "enablement": "editorIsOpen"
             },
             {
                 "command": "isg-cnc.sortLineByLineOn",
@@ -188,7 +191,13 @@
             },
             {
                 "command": "isg-cnc.AlignEqualSigns",
-                "title": "ISG-CNC: Align equal signs in selected range"
+                "title": "ISG-CNC: Align equal signs in selected range",
+                "enablement": "editorHasSelection"
+            },
+            {
+                "command": "isg-cnc.addToIgnore",
+                "title": "ISG-CNC: Add to .isg-cnc-ignore",
+                "enablement": "isFileSystemResource"
             }
         ],
         "menus": {
@@ -221,86 +230,111 @@
                     "group": "sort@2"
                 }
             ],
-            "commandPalette": [
-                {
-                    "command": "isg-cnc.EncryptThis",
-                    "when": "false"
-                },
-                {
-                    "command": "isg-cnc.DecryptThis",
-                    "when": "false"
-                }
-            ],
             "explorer/context": [
                 {
-                    "submenu": "isg-commands",
+                    "submenu": "isg-commands-explorer",
                     "group": "isg-cnc@1"
                 }
             ],
             "editor/context": [
                 {
-                    "submenu": "isg-commands",
+                    "submenu": "isg-commands-editor",
                     "group": "isg-cnc@1"
                 }
             ],
-            "isg-commands": [
-                {
-                    "command": "isg-cnc.FindNonAsciiCharacters",
-                    "group": "isg-cnc@2"
-                },
-                {
-                    "command": "isg-cnc.GoToPosition",
-                    "group": "isg-cnc@3"
-                },
-                {
-                    "command": "isg-cnc.FindNextTFS",
-                    "group": "isg-cnc@4"
-                },
-                {
-                    "command": "isg-cnc.FindAllToolCalls",
-                    "group": "isg-cnc@5"
-                },
-                {
-                    "command": "isg-cnc.AddBlocknumbers",
-                    "group": "isg-cnc@6"
-                },
-                {
-                    "command": "isg-cnc.RemoveAllBlocknumbers",
-                    "group": "isg-cnc@7"
-                },
-                {
-                    "command": "isg-cnc.AlignEqualSigns",
-                    "group": "isg-cnc@8"
-                },
+            "isg-commands-explorer": [
                 {
                     "command": "isg-cnc.StartDocu",
-                    "group": "isg-cnc@9"
-                },
-                {
-                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                    "group": "isg-cnc@10"
+                    "group": "isg-cnc.docu@9"
                 },
                 {
                     "command": "isg-cnc.EncryptAnyFile",
-                    "group": "isg-cnc@11"
+                    "group": "isg-cnc.encryption@11"
                 },
                 {
                     "command": "isg-cnc.DecryptAnyFile",
-                    "group": "isg-cnc@12"
+                    "group": "isg-cnc.encryption@12"
                 },
                 {
                     "command": "isg-cnc.EncryptThis",
-                    "group": "isg-cnc@13"
+                    "group": "isg-cnc.encryption@13"
                 },
                 {
                     "command": "isg-cnc.DecryptThis",
-                    "group": "isg-cnc@14"
+                    "group": "isg-cnc.encryption@14"
+                },
+                {
+                    "command": "isg-cnc.addToIgnore",
+                    "group": "isg-cnc.ignore@15"
+                }
+            ],
+            "isg-commands-editor": [
+                {
+                    "command": "isg-cnc.AlignEqualSigns",
+                    "group": "isg-cnc.align@8",
+                    "when": "!explorerResource"
+                },
+                {
+                    "command": "isg-cnc.StartDocu",
+                    "group": "isg-cnc.docu@9"
+                },
+                {
+                    "command": "isg-cnc.GoToPosition",
+                    "group": "isg-cnc.offset@1"
+                },
+                {
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "group": "isg-cnc.offset@2"
+                },
+                {
+                    "command": "isg-cnc.FindNextTFS",
+                    "group": "isg-cnc.find@1"
+                },
+                {
+                    "command": "isg-cnc.FindAllToolCalls",
+                    "group": "isg-cnc.find@2"
+                },
+                {
+                    "command": "isg-cnc.FindNonAsciiCharacters",
+                    "group": "isg-cnc.find@3"
+                },
+                {
+                    "command": "isg-cnc.AddBlocknumbers",
+                    "group": "isg-cnc.blocknumbers@1"
+                },
+                {
+                    "command": "isg-cnc.RemoveAllBlocknumbers",
+                    "group": "isg-cnc.blocknumbers@2"
+                },
+                {
+                    "command": "isg-cnc.EncryptAnyFile",
+                    "group": "isg-cnc.encryption@11"
+                },
+                {
+                    "command": "isg-cnc.DecryptAnyFile",
+                    "group": "isg-cnc.encryption@12"
+                },
+                {
+                    "command": "isg-cnc.EncryptThis",
+                    "group": "isg-cnc.encryption@13"
+                },
+                {
+                    "command": "isg-cnc.DecryptThis",
+                    "group": "isg-cnc.encryption@14"
+                },
+                {
+                    "command": "isg-cnc.addToIgnore",
+                    "group": "isg-cnc.ignore@15"
                 }
             ]
         },
         "submenus": [
             {
-                "id": "isg-commands",
+                "id": "isg-commands-editor",
+                "label": "ISG Commands"
+            },
+            {
+                "id": "isg-commands-explorer",
                 "label": "ISG Commands"
             },
             {
@@ -459,6 +493,7 @@
         "@vscode/test-electron": "^1.6.2",
         "eslint": "^7.32.0",
         "glob": "^7.1.7",
+        "ignore": "^5.2.4",
         "mocha": "^9.1.1",
         "node-gyp": "^9.1.0",
         "peggy": "^2.0.1",

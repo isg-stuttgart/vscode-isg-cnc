@@ -1,3 +1,4 @@
+
 let cncLanguageIDs: string[] = [
     ".nc",
     ".cnc",
@@ -8,10 +9,16 @@ let cncLanguageIDs: string[] = [
 ];
 
 /**
+ * Updates the important settings with the setting of the IDE.
+*/
+export function updateSettings(workspaceConfig: any) {
+    updateFileConfig(workspaceConfig['files']);
+}
+/**
  * Update the list of file endings which are associated with the isg-cnc language. Always includes the default endings when they are not associated with another language.
  * @param fileConfig 
  */
-export async function updateFileEndings(fileConfig: any) {
+function updateFileConfig(fileConfig: any) {
     try {
         const fileAssociations = fileConfig.associations as { [key: string]: string } | [];
         // get all languageIDs which are associated with isg-cnc language

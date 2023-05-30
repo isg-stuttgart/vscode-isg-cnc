@@ -28,20 +28,26 @@ Visual Studio Code V1.73.1 or higher
   - Direct link to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 
 ## Features
-- "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "strg+hover+leftclick" or "F12"
-- "Go to References" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "shift+F12"
-- Syntax highlighting
-- Code completion
-- Code formatting
-- Add and remove blocknumbers
-- Find technology like T, F, S commands
-- Show and jump to fileoffset
-- Open documentation in browser
-- Light and dark color theme for ISG CNC language
-- Sidebar to show important code fragments (at the moment: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
-- Region folding (snippets triggered when typing "#region")
-- Align equal signs in selected range via command
-- Encrypt/decrypt files by key
+  ### Editing
+  - Code completion
+  - Code formatting
+  - Add and remove blocknumbers
+  - Align equal signs in selected range via command
+
+  ### Getting information
+  - "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "strg+hover+leftclick" or "F12"
+  - "Go to References" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "shift+F12"
+  - .isg-cnc-ignore file to ignore files/directories while searching for references/definitions. Create it by your own or use the "Add to -isg-cnc-ignore"-command on a file/directory. It follows the rules of the .gitignore specification. See https://git-scm.com/docs/gitignore for more information.
+  - Syntax highlighting
+  - Light and dark color theme for ISG CNC language
+  - Find technology like T, F, S commands
+  - Show and jump to fileoffset
+  - Open documentation in browser
+  - Sidebar to show important code fragments (currently: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
+
+  ### Additionals
+  - Encrypt/decrypt files by key
+  - Region folding (snippets triggered when typing "#region")
 
 ## License
 

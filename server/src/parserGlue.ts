@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, IncrementableProgress } from "./parserClasses";
 import {
-    findMatch,
+    findPreciseMatch,
     findFirstMatchWithinPrg,
     findMatchRangesWithinPrgTree,
     findMatchRangesWithinPath,
@@ -11,7 +11,7 @@ import path = require("node:path");
 import { Connection } from "vscode-languageserver";
 import { getConnection } from "./connection";
 import { getSurroundingVar, findLocalStringRanges, isPositionInComment } from "./stringSearching";
-import { countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
+import { WorkspaceIgnorer, countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
 import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
 import { getParseResults } from "./parsingResults";
 
@@ -53,7 +53,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         return definitions;
     }
 
-    const match = findMatch(ast, position);
+    const match = findPreciseMatch(ast, position);
     if (!match || !match.name) {
         return [];
     }
@@ -82,7 +82,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         } else {
             defPaths = [];
             for (const rootPath of rootPaths) {
-                defPaths.push(...findFileInRootDir(rootPath, match.name));
+                defPaths.push(...findFileInRootDir(rootPath, match.name, new WorkspaceIgnorer(rootPath)));
             }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
@@ -144,7 +144,7 @@ export async function getReferences(fileContent: string, position: Position, uri
         return stringRanges;
     }
 
-    const match = findMatch(ast, position);
+    const match = findPreciseMatch(ast, position);
     if (!match || !match.name) {
         return [];
     }
@@ -170,7 +170,7 @@ export async function getReferences(fileContent: string, position: Position, uri
         const progress = await connection.window.createWorkDoneProgress();
         const progressHandler = new IncrementableProgress(progress, fileCount, "Searching references");
         for (const rootPath of rootPaths) {
-            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler));
+            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler, new WorkspaceIgnorer(rootPath)));
         }
         progressHandler.done();
     }
