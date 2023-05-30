@@ -39,7 +39,7 @@
 		{
 			"label": "generateParser",
 			"type": "shell",
-			"command": "node ./server/parserGenerating/generateParser.js",
+			"command": "node ./server/src/parserGenerating/generateParser.js",
 			"problemMatcher": [],
 			"group": {
 				"kind": "build"

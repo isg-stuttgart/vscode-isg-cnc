@@ -2,17 +2,30 @@
 
 All notable changes to the "vscode-isg-cnc" extension will be documented in this file
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file
-Types of changes
+Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-    - Added for new features.
-    - Changed for changes in existing functionality.
-    - Deprecated for soon-to-be removed features.
-    - Removed for now removed features.
-    - Fixed for any bug fixes.
-    - Security in case of vulnerabilities.
+Types of changes:
+- Added for new features.
+- Changed for changes in existing functionality.
+- Deprecated for soon-to-be removed features.
+- Removed for now removed features.
+- Fixed for any bug fixes.
+- Security in case of vulnerabilities.
 
 ## [Unreleased]
+
+## [V0.4.4]
+
+### Added
+- Language icon for "isg-cnc", "isg-list" and "isg-cnc-cycle-error"
+- Multi-root-workspace support for language server features (Go To Definition and Go To References) [Issue #117](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/117)
+- .isg-cnc-ignore to ignore paths (files/directories) while searching for references/definitions
+
+### Fixed
+- V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/119)
+- Cancel file parsing when taking too long. Show Progress of Referencing Searching to User. Skip non CNC-associated files while searching references.
+[Issue #124](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/124)
+- Use String-based (instead parser-based) search for variables. This is needed because of an incomplete grammar. [Issue #120](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)
 
 ## [V0.4.3]
 ### Added
@@ -326,6 +339,7 @@ Types of changes
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.4.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.3...V0.4.4
 [V0.4.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.3
 [V0.4.2]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.0
 [V0.4.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.0...V0.3.5

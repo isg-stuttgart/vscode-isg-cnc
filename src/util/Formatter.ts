@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import * as parser from "./parser";
+import * as parser from "../../server/src/parsingResults";
 import { config } from "./config";
 
 // Blocknumber regex
@@ -7,12 +7,12 @@ const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 
 export class DocumentRangeFormattingEditProvider implements vscode.DocumentRangeFormattingEditProvider {
-    provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, options: vscode.FormattingOptions, token: vscode.CancellationToken): vscode.ProviderResult<vscode.TextEdit[]> {
+    provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, options: vscode.FormattingOptions): vscode.ProviderResult<vscode.TextEdit[]> {
         // if formatter disabled, cancel
-        if(config.getParam("enableFormatter") === false){
+        if (config.getParam("enableFormatter") === false) {
             return;
         }
-       
+
         let currentLine: string = "";
         let newLine: string = "";
         let saveBlockNumber: string = "";
@@ -20,7 +20,13 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
         let currentPos = 0;
         let isCommentBlock = false;
         const textEdits: vscode.TextEdit[] = [];
-        const syntaxArray: parser.SyntaxArray = parser.getSyntaxArray(document.getText());
+        let syntaxArray;
+        try {
+            syntaxArray = parser.getSyntaxArray(document.getText());
+        } catch (error) {
+            vscode.window.showErrorMessage("Errow while parsing file: " + error);
+            return;
+        }
 
         for (let ln = 0; ln < document.lineCount; ln++) {
             const line = document.lineAt(ln);
@@ -165,14 +171,14 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
             for (let lineNumber = start; lineNumber < end; lineNumber++) {
                 const line: vscode.TextLine = document.lineAt(lineNumber);
                 newLine = " ".repeat(whiteSpaces) + line.text;
-                if(range.contains(line.range)){
+                if (range.contains(line.range)) {
                     textEdits.push(vscode.TextEdit.replace(line.range, newLine));
                 }
             }
         });
 
         //filter textEdits to only format selected range
-        return textEdits.filter(edit=>edit.range.intersection(range)?.isEmpty === false);
+        return textEdits.filter(edit => edit.range.intersection(range)?.isEmpty === false);
     }
 }
 
