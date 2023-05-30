@@ -17,6 +17,7 @@ Types of changes:
 ## [V0.4.4]
 
 ### Added
+- Language icon for "isg-cnc", "isg-list" and "isg-cnc-cycle-error"
 - Multi-root-workspace support for language server features (Go To Definition and Go To References) [Issue #117](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/117)
 - .isg-cnc-ignore to ignore paths (files/directories) while searching for references/definitions
 

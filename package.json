@@ -400,6 +400,10 @@
                     ".sub",
                     ".plc"
                 ],
+                "icon": {
+                    "light": "resources/ISGCncEditor.png",
+                    "dark": "resources/ISGCncEditor.png"
+                },
                 "configuration": "./languages/isg-cnc-language-configuration.json"
             },
             {
@@ -411,10 +415,18 @@
                 "extensions": [
                     ".lis"
                 ],
+                "icon": {
+                    "light": "resources/ISGCncEditor.png",
+                    "dark": "resources/ISGCncEditor.png"
+                },
                 "configuration": "./languages/isg-list-language-configuration.json"
             },
             {
                 "id": "isg-cnc-cycle-error",
+                "icon": {
+                    "light": "resources/ISGCncEditor.png",
+                    "dark": "resources/ISGCncEditor.png"
+                },
                 "aliases": [
                     "ISG CNC cycle error definition file",
                     "ISG CNC Zyklen Fehlerdefinitionddatei"
