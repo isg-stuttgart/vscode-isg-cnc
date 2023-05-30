@@ -21,7 +21,7 @@ Types of changes:
 - .isg-cnc-ignore to ignore paths (files/directories) while searching for references/definitions
 
 ### Fixed
-- V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)
+- V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/119)
 - Cancel file parsing when taking too long. Show Progress of Referencing Searching to User. Skip non CNC-associated files while searching references.
 [Issue #124](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/124)
 - Use String-based (instead parser-based) search for variables. This is needed because of an incomplete grammar. [Issue #120](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)

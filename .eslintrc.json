@@ -19,7 +19,7 @@
         "no-unsafe-finally": "warn",
         "no-empty": "warn",
         "semi": "off"
-        },
+    },
     "ignorePatterns": [
         "out",
         "dist",
