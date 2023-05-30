@@ -198,19 +198,14 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
             if (!fileContent) {
                 fileContent = fs.readFileSync(entryPath, 'utf8');
             }
-            // print number of lines in file
-            const lines = fileContent.split(/\r?\n/).length;
             // if file does not contain the searched match-name skip parsing/searching
             if (!fileContent.includes(name)) {
                 progressHandler.increment();
                 continue;
             }
-            let startTime;
             let ast;
             try {
-                startTime = Date.now();
-                ast = getParseResults(fileContent).fileTree;
-                console.log(`File ${entryPath} with ${lines} lines: Parsing took ${Date.now() - startTime}ms.`);
+                ast = getParseResults(fileContent).fileTree;     
             } catch (error) {
                 const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references.`;
                 getConnection()?.window.showErrorMessage(errorMessage);

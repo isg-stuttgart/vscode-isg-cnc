@@ -14,6 +14,8 @@ import {
     ServerOptions,
     TransportKind
 } from 'vscode-languageclient/node';
+import { includeInIgnore } from "./util/ignoreFileCommands";
+
 let language: string;
 let docuPath: string;
 
@@ -181,6 +183,11 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) => fileContentTree.jumpToMatch(item))
     );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.addToIgnore", (inputUri) => includeInIgnore(inputUri))
+    );
+
 
     //sorting of sidebar content
     vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
@@ -924,3 +931,5 @@ class EqSignLine {
         return this.beforeEq + ' '.repeat(paddingLength) + " = " + this.afterEq;
     }
 }
+
+
