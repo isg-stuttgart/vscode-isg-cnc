@@ -15,6 +15,7 @@ Types of changes
 ## [Unreleased]
 ### Added
 - Multi-root-workspace support for language server features (Go To Definition and Go To References) [Issue #117](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/117)
+- .isg-cnc-ignore to ignore paths (files/directories) while searching for references/definitions
 
 ### Fixed
 - V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)

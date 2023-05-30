@@ -10,5 +10,9 @@
     "typescript.tsc.autoDetect": "off",
     "i18n-ally.localesPaths": [
         "languages"
-    ]
+    ],
+    "files.autoSave": "onFocusChange",
+    "github.copilot.enable": {
+        "*": true,
+    }
 }
