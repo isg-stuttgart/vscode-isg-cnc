@@ -15,6 +15,7 @@ import {
     TransportKind
 } from 'vscode-languageclient/node';
 import { includeInIgnore } from "./util/ignoreFileCommands";
+import path = require("path");
 
 let language: string;
 let docuPath: string;
@@ -187,7 +188,9 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(
         vscode.commands.registerCommand("isg-cnc.addToIgnore", (inputUri) => includeInIgnore(inputUri))
     );
-
+    context.subscriptions.push(
+        vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) => changeLanguageMode(inputUri))
+    );
 
     //sorting of sidebar content
     vscode.commands.executeCommand('setContext', "vscode-isg-cnc.sidebarSorting", "lineByLine");
@@ -932,4 +935,36 @@ class EqSignLine {
     }
 }
 
+
+function changeLanguageMode(inputUri: any): any {
+    try {
+        if (!fs.existsSync(inputUri.fsPath)) {
+            vscode.window.showErrorMessage("File/folder to change language mode does not exist: " + inputUri.fsPath);
+            return;
+        }
+        const currentAssociation = vscode.workspace.textDocuments.find(doc => doc.uri === inputUri)?.languageId;
+        // convert uri to glob pattern
+        let globPattern = path.normalize(inputUri.fsPath).replace(/\\/g, "/");
+
+        //if uri is folder add ** to glob pattern
+        if (fs.lstatSync(inputUri.fsPath).isDirectory()) {
+            globPattern = globPattern.concat("/**");
+        }
+
+        // add the pattern to the files.associations setting if not already associated with the language
+        const currentAssociations = Object.entries(vscode.workspace.getConfiguration("files").get("associations") as { [key: string]: string });
+
+        if(!currentAssociations) {
+            vscode.window.showErrorMessage("Could not get current file associations");
+            return;
+        }
+
+        
+    } catch (error) {
+        vscode.window.showErrorMessage("Error while changing language mode: " + error);
+    }
+
+
+
+}
 
