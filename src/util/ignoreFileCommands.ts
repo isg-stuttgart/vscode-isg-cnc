@@ -4,7 +4,13 @@ import path = require("path");
 import * as os from "os";
 import ignore, { Ignore } from "ignore";
 
-export function includeInIgnore(inputUri: vscode.Uri): any {
+/**
+ * Adds the given file/folder to the ignore file of the workspace folder of the file/folder.
+ * If the ignore file does not exist, it will be created.
+ * If the file/folder is already ignored, a message will be shown and the ignore file will not be changed.
+ * @param inputUri  file/folder to ignore
+ */
+export function includeInIgnore(inputUri: vscode.Uri): void {
     const pathToIgnore: string = inputUri.fsPath;
     const workspaceFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(inputUri);
     if (workspaceFolder === undefined) {
