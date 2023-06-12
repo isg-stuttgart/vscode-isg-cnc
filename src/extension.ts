@@ -117,7 +117,9 @@ export function activate(context: vscode.ExtensionContext): void {
 
     //NC-file sidebar tree provider
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);
-
+    vscode.window.createTreeView('cnc-show-filecontent', {
+        treeDataProvider: fileContentProvider
+    });
 
     // commands
     context.subscriptions.push(
