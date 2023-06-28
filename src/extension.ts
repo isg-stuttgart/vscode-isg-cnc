@@ -16,7 +16,6 @@ import {
 } from 'vscode-languageclient/node';
 import { includeInIgnore } from "./util/ignoreFileCommands";
 import path = require("path");
-import { get } from "http";
 
 let language: string;
 let docuPath: string;
@@ -949,17 +948,15 @@ async function changeLanguageMode(inputUri: any): Promise<void> {
         }
         const currentAssociationsEntryArray = Object.entries(vscode.workspace.getConfiguration("files").get("associations") as Map<string, string>);
         const currentAssociationsObject: { [k: string]: any } = {};
+        currentAssociationsEntryArray.forEach((entry) => {
+            currentAssociationsObject[entry[0]] = entry[1];
+        });
+
         if (!currentAssociationsEntryArray) {
             vscode.window.showErrorMessage("Could not get current file associations");
             return;
         }
-        const currentCncPatterns = new Array<string>();
-        for (const [pattern, languageId] of currentAssociationsEntryArray) {
-            if (languageId === "isg-cnc") {
-                currentCncPatterns.push(pattern);
-            }
-            currentAssociationsObject[pattern] = languageId;
-        }
+
         // convert uri to glob pattern
         let globPattern: string = path.normalize(inputUri.fsPath).replace(/\\/g, "/");
 
@@ -968,8 +965,9 @@ async function changeLanguageMode(inputUri: any): Promise<void> {
             globPattern = globPattern.concat("/**");
         }
 
-        // ask user for language mode
-        const languageMode: string | undefined = await getLanguageMode();
+        // ask user for language mode by quickselect
+        const allLanguages: string[] = await vscode.languages.getLanguages();
+        const languageMode: string | undefined = await vscode.window.showQuickPick(allLanguages, { placeHolder: "Select language mode" });
         if (!languageMode) {
             vscode.window.showWarningMessage("No language mode selected. Aborting changing language mode.");
             return;
@@ -978,20 +976,8 @@ async function changeLanguageMode(inputUri: any): Promise<void> {
         // update settings with new association
         currentAssociationsObject[globPattern] = languageMode;
         vscode.workspace.getConfiguration("files").update("associations", currentAssociationsObject, vscode.ConfigurationTarget.Workspace);
-
     } catch (error) {
         vscode.window.showErrorMessage("Error while changing language mode: " + error);
-    }
-
-    /**
-     * Asks the user to select a language mode from a quick pick menu.
-     * @returns The language mode selected by the user or undefined if no language mode was selected.
-     */
-    async function getLanguageMode(): Promise<string | undefined> {
-        const allLanguages: string[] = await vscode.languages.getLanguages();
-        // let user select language mode by quickselect
-        const languageMode: string | undefined = await vscode.window.showQuickPick(allLanguages, { placeHolder: "Select language mode" });
-        return languageMode;
     }
 }
 
