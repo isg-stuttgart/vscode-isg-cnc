@@ -16,6 +16,7 @@ import {
 } from 'vscode-languageclient/node';
 import { includeInIgnore } from "./util/ignoreFileCommands";
 import path = require("path");
+import { get } from "http";
 
 let language: string;
 let docuPath: string;
@@ -935,36 +936,62 @@ class EqSignLine {
     }
 }
 
-
-function changeLanguageMode(inputUri: any): any {
+/**
+ * Change the language mode of the specified file/folder to a new one
+ * The new language mode is selected by the user in a quick pick menu.
+ * @param inputUri The file/folder to change the language mode of
+ */
+async function changeLanguageMode(inputUri: any): Promise<void> {
     try {
         if (!fs.existsSync(inputUri.fsPath)) {
             vscode.window.showErrorMessage("File/folder to change language mode does not exist: " + inputUri.fsPath);
             return;
         }
-        const currentAssociation = vscode.workspace.textDocuments.find(doc => doc.uri === inputUri)?.languageId;
+        const currentAssociationsEntryArray = Object.entries(vscode.workspace.getConfiguration("files").get("associations") as Map<string, string>);
+        const currentAssociationsObject: { [k: string]: any } = {};
+        if (!currentAssociationsEntryArray) {
+            vscode.window.showErrorMessage("Could not get current file associations");
+            return;
+        }
+        const currentCncPatterns = new Array<string>();
+        for (const [pattern, languageId] of currentAssociationsEntryArray) {
+            if (languageId === "isg-cnc") {
+                currentCncPatterns.push(pattern);
+            }
+            currentAssociationsObject[pattern] = languageId;
+        }
         // convert uri to glob pattern
-        let globPattern = path.normalize(inputUri.fsPath).replace(/\\/g, "/");
+        let globPattern: string = path.normalize(inputUri.fsPath).replace(/\\/g, "/");
 
-        //if uri is folder add ** to glob pattern
+        //if uri is folder add ** to glob pattern and add it to the current associations
         if (fs.lstatSync(inputUri.fsPath).isDirectory()) {
             globPattern = globPattern.concat("/**");
         }
 
-        // add the pattern to the files.associations setting if not already associated with the language
-        const currentAssociations = Object.entries(vscode.workspace.getConfiguration("files").get("associations") as { [key: string]: string });
-
-        if(!currentAssociations) {
-            vscode.window.showErrorMessage("Could not get current file associations");
+        // ask user for language mode
+        const languageMode: string | undefined = await getLanguageMode();
+        if (!languageMode) {
+            vscode.window.showWarningMessage("No language mode selected. Aborting changing language mode.");
             return;
         }
 
-        
+        // update settings with new association
+        currentAssociationsObject[globPattern] = languageMode;
+        vscode.workspace.getConfiguration("files").update("associations", currentAssociationsObject, vscode.ConfigurationTarget.Workspace);
+
     } catch (error) {
         vscode.window.showErrorMessage("Error while changing language mode: " + error);
     }
 
-
-
+    /**
+     * Asks the user to select a language mode from a quick pick menu.
+     * @returns The language mode selected by the user or undefined if no language mode was selected.
+     */
+    async function getLanguageMode(): Promise<string | undefined> {
+        const allLanguages: string[] = await vscode.languages.getLanguages();
+        // let user select language mode by quickselect
+        const languageMode: string | undefined = await vscode.window.showQuickPick(allLanguages, { placeHolder: "Select language mode" });
+        return languageMode;
+    }
 }
 
