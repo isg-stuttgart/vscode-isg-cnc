@@ -46,6 +46,7 @@ Visual Studio Code V1.73.1 or higher
   - Sidebar to show important code fragments (currently: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
 
   ### Additionals
+  - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)
   - Encrypt/decrypt files by key
   - Region folding (snippets triggered when typing "#region")
 
