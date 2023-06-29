@@ -14,6 +14,7 @@ import { getSurroundingVar, findLocalStringRanges, isPositionInComment } from ".
 import { WorkspaceIgnorer, countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
 import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
 import { getParseResults } from "./parsingResults";
+import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
 
 /**
  * Returns the definition location of the selected position
@@ -162,16 +163,18 @@ export async function getReferences(fileContent: string, position: Position, uri
     if (local) {
         referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, name, uri);
     }
-    // if global find all references in all files within all workspace roots and add their ranges to the result array
+    // if global find all references in all isg-cnc associated and not ignored files within all workspace roots and add their ranges to the result array
     else if (rootPaths) {
-        // calculate how much percent are done after parsing each file
-        let fileCount = 0;
-        rootPaths.forEach(rootPath => fileCount += countFilesInPath(rootPath));
-        const progress = await connection.window.createWorkDoneProgress();
-        const progressHandler = new IncrementableProgress(progress, fileCount, "Searching references");
+        // collect all isg-cnc files in the rootpaths which aren't ignored
+        const isgCncFiles: string[] = [];
         for (const rootPath of rootPaths) {
-            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler, new WorkspaceIgnorer(rootPath)));
+            isgCncFiles.push(...getAllNotIgnoredCncFilePathsInRoot(rootPath));
         }
+
+        // create a progress bar and search for references in all isg-cnc files
+        const progress = await connection.window.createWorkDoneProgress();
+        const progressHandler = new IncrementableProgress(progress, isgCncFiles.length, "Searching references");
+        referenceRanges.push(...findMatchRangesWithinPath(isgCncFiles, refTypes, name, openFiles, progressHandler));
         progressHandler.done();
     }
 
