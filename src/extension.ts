@@ -942,7 +942,7 @@ class EqSignLine {
  */
 async function changeLanguageMode(inputUri: any): Promise<void> {
     try {
-        if (!fs.existsSync(inputUri.fsPath)) {
+        if (!inputUri || !inputUri.fsPath || !fs.existsSync(inputUri.fsPath)) {
             vscode.window.showErrorMessage("File/folder to change language mode does not exist: " + inputUri.fsPath);
             return;
         }

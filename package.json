@@ -201,10 +201,9 @@
             },
             {
                 "command": "isg-cnc.changeLanguageMode",
-                "title": "Change Language Mode",
+                "title": "Change Language Mode (provided by ISG-CNC)",
                 "enablement": "isFileSystemResource"
             }
-
         ],
         "menus": {
             "view/title": [
