@@ -1,6 +1,43 @@
 import path = require("path");
 import * as fs from "fs";
 import ignore, { Ignore } from "ignore";
+import * as minimatch from "minimatch";
+import { isCncFile } from "./config";
+
+/**
+ * Finds the most specific glob pattern which matches the given path. "Most specific" is estimated by the depth (count of /) of the pattern.
+ * @param path the path to find the most specific glob pattern for. 
+ * @param patterns the glob patterns in which the most specific pattern should be found.
+ * @returns  the most specific glob pattern which matches the given path.
+ */
+export function findMostSpecificGlobPattern(path: string, patterns: string[]): string | undefined {
+    path = normalizePath(path);
+    // replace backslashes with forward slashes
+    if (!path.includes("git")) {
+        path = path.replace(/\\/g, "/");
+    }
+    let mostSpecificPattern: string | undefined;
+    let mostSpecificPatternDepth = -1;
+    for (const pattern of patterns) {
+        let adaptedPattern = pattern;
+        // if pattern only specifies file ending (e.g. '*.nc') add **/ to work with absolute paths
+        if (pattern.startsWith("*.") && !pattern.includes("/")) {
+            adaptedPattern = "**/" + pattern;
+        }
+        // if the pattern matches the path
+        if (minimatch(path, adaptedPattern)) {
+            // get the depth of the pattern
+            const patternDepth = pattern.split("/").length;
+            // if the pattern is more specific than the current most specific pattern
+            if (patternDepth > mostSpecificPatternDepth) {
+                // set the pattern as the most specific pattern
+                mostSpecificPattern = pattern;
+                mostSpecificPatternDepth = patternDepth;
+            }
+        }
+    }
+    return mostSpecificPattern;
+}
 
 /**
  * Finds all files with the given name in a root directory and all subdirectories. Returns the paths to the files.
@@ -14,18 +51,14 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
         const entryPath = path.join(rootPath, entry.name);
-        try {
-            // skip ignored files/directories
-            if (ignorer.ignores(entryPath)) {
-                continue;
-            }
-        } catch (error) {
-            console.error(error);
+        // skip ignored files/directories
+        if (ignorer.ignores(entryPath)) {
+            continue;
         }
         if (entry.isDirectory()) {
             //search in subdirectory
             paths.push(...findFileInRootDir(entryPath, fileName, ignorer));
-        } else if (entry.isFile() && entry.name === fileName) {
+        } else if (entry.isFile() && entry.name === fileName && isCncFile(entryPath)) {
             //file found
             const normPath = normalizePath(entryPath);
             paths.push(normPath);

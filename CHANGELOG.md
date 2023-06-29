@@ -14,6 +14,10 @@ Types of changes:
 
 ## [Unreleased]
 
+### Added
+- Command to change the language mode of a selected file or directory. This can be found in the context menu of the explorer (not in the ISG Command Submenu). [Issue #132](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/132)
+### Fixed
+- Language server now properly checks for the file association by glob patterns instead of only be able to handle file extensions[Issue #132](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/132)
 ## [V0.4.4]
 
 ### Added

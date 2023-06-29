@@ -198,6 +198,11 @@
                 "command": "isg-cnc.addToIgnore",
                 "title": "ISG-CNC: Add to .isg-cnc-ignore",
                 "enablement": "isFileSystemResource"
+            },
+            {
+                "command": "isg-cnc.changeLanguageMode",
+                "title": "Change Language Mode (provided by ISG-CNC)",
+                "enablement": "isFileSystemResource"
             }
         ],
         "menus": {
@@ -234,12 +239,20 @@
                 {
                     "submenu": "isg-commands-explorer",
                     "group": "isg-cnc@1"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
                 }
             ],
             "editor/context": [
                 {
                     "submenu": "isg-commands-editor",
                     "group": "isg-cnc@1"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
                 }
             ],
             "isg-commands-explorer": [
