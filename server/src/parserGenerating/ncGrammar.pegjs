@@ -160,19 +160,19 @@ if_block "if_block"                                         // an if block
 if_block_for_indentation
 = content:(grayspaces "$IF" line_end                        // begins with $IF line
   if_block_content){
-  return new Match(types.controlBlock, content, location(), null, null);
+  return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 elseif_block
 = content:(grayspaces ("$ELSEIF" line_end                   // begins with $ELSEIF line
    if_block_content)){
-	return new Match(types.controlBlock, content, location(), null, null);
+	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 else_block
 = grayspaces  content:("$ELSE" line_end                     // begins with $ELSEIF line
    if_block_content){
-	return new Match(types.controlBlock, content, location(), null, null);
+	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 if_block_content

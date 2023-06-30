@@ -19,12 +19,11 @@ const nonAsciiCharacterDecorationType = vscode.window.createTextEditorDecoration
     }
 );
 
-export function updateDecorations() {
+export function highlightNonAsciiChars() {
     const activeEditor = vscode.window.activeTextEditor;
     if (!activeEditor) {
         return;
     }
-    // eslint-disable-next-line no-control-regex
     const regEx = /[^\x00-\x7F]+/gm;
     const text = activeEditor.document.getText();
     const nonAsciiCharacters: vscode.DecorationOptions[] = [];

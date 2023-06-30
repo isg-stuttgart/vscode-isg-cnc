@@ -1,6 +1,8 @@
 import * as vscode from "vscode";
 import * as parser from "../../server/src/parsingResults";
 import { digitCount, isNumeric } from "./util";
+import { ParseResults } from "../../server/src/parsingResults";
+import { Match } from "server/src/parserClasses";
 
 // Blocknumber regex
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
@@ -17,7 +19,7 @@ export function removeAllBlocknumbers() {
         if (document) {
             let linesToBlocknumberMap;
             try {
-                linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+                linesToBlocknumberMap = new ParseResults(document.getText()).getLineToBlockNumberMap();
             } catch (error) {
                 vscode.window.showErrorMessage("Canceled removing blocknumbers: " + JSON.stringify(error));
                 return;
@@ -27,7 +29,7 @@ export function removeAllBlocknumbers() {
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
                 const matchLabel = regExpLabels.exec(line.text);
-                const blockNumber: parser.Match | undefined = linesToBlocknumberMap.get(ln);
+                const blockNumber: Match | undefined = linesToBlocknumberMap.get(ln);
                 if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
                     const startPos = document.offsetAt(
@@ -73,6 +75,7 @@ export async function addBlocknumbers() {
         const { document } = activeTextEditor;
         if (document) {
             // get start number
+            const parseResult: ParseResults = new ParseResults(document.getText());
             const startInput = await vscode.window.showInputBox({
                 prompt: `Type a start number.`,
                 validateInput: (input: string) => {
@@ -103,12 +106,12 @@ export async function addBlocknumbers() {
             }
             step = parseInt(stepInput, 10);
 
-            const linesToNumber: Array<number> = parser.getNumberableLines(document.getText());
+            const linesToNumber: Array<number> = parseResult.getNumberableLines();
 
             const skipLineBeginIndexes: Map<number, number> = new Map();
             let skipBlocks;
             try {
-                skipBlocks = parser.getSyntaxArray(document.getText()).skipBlocks;
+                skipBlocks = parseResult.syntaxArray.skipBlocks;
             } catch (error) {
                 vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
                 return;
@@ -119,7 +122,7 @@ export async function addBlocknumbers() {
 
             let linesToBlocknumberMap;
             try {
-                linesToBlocknumberMap = parser.getLineToBlockNumberMap(document.getText());
+                linesToBlocknumberMap = parseResult.getLineToBlockNumberMap();
             } catch (error) {
                 vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
                 return;
@@ -132,7 +135,7 @@ export async function addBlocknumbers() {
                 // generate blocknumber
                 const blockNumberString =
                     "N" + blocknumber.toString().padStart(maxDigits, "0");
-                let oldBlockNumber: undefined | parser.Match = linesToBlocknumberMap.get(line.lineNumber);
+                let oldBlockNumber: undefined | Match = linesToBlocknumberMap.get(line.lineNumber);
                 let insert: boolean = false;
                 // add or replace blocknumber
                 const matchLabel = regExpLabels.exec(line.text);

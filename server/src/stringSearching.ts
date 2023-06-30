@@ -1,6 +1,6 @@
 import { EOL } from "os";
-import { FileRange, Position } from "./parserClasses";
-import { Match, getSyntaxArray, getSyntaxArrayByTree } from "./parsingResults";
+import { FileRange, Match, Position } from "./parserClasses";
+import { ParseResults } from "./parsingResults";
 
 /**
  * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based).
@@ -15,7 +15,7 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
     const lines = fileContent.split(EOL);
     let commentMatches: Match[];
     try {
-        commentMatches = getSyntaxArray(fileContent).comments;
+        commentMatches = new ParseResults(fileContent).syntaxArray.comments;
     } catch (error) {
         // if the parser fails, comments are not excluded
         commentMatches = [];
@@ -37,20 +37,9 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
 }
 
 /**
- * Returns whether a given position is within a comment, based on the passed AST
- * @param ast 
- * @param position 
- * @returns 
- */
-export function isPositionInComment(ast: any, position: Position): boolean {
-    const comments = getSyntaxArrayByTree(ast).comments;
-    return isWithinMatches(comments, position);
-}
-
-/**
- * Returns whether a given position is within a comment
- * @param line 
- * @param varIndex 
+ * Returns whether a given position is within one of the given matches.
+ * @param matches the matches to check
+ * @param pos the position
  */
 export function isWithinMatches(matches: Match[], pos: Position): boolean {
     let isInComment = false;
@@ -111,6 +100,3 @@ export function compareLocations(pos1: Position, pos2: Position): number {
     };
     return result;
 }
-
-
-

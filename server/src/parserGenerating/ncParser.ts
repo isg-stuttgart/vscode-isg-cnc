@@ -326,12 +326,12 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c31 = "$IF";
   const peg$c32 = peg$literalExpectation("$IF", false);
   const peg$c33 = function(content: any): any {
-    return new Match(types.controlBlock, content, location(), null, null);
+    return new Match(types.controlBlock, content, location(), text(), null);
   };
   const peg$c34 = "$ELSEIF";
   const peg$c35 = peg$literalExpectation("$ELSEIF", false);
   const peg$c36 = function(content: any): any {
-  	return new Match(types.controlBlock, content, location(), null, null);
+  	return new Match(types.controlBlock, content, location(), text(), null);
   };
   const peg$c37 = "$ELSE";
   const peg$c38 = peg$literalExpectation("$ELSE", false);

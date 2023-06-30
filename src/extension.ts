@@ -19,7 +19,7 @@ import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
 import { alignEqualSign } from "./util/alignEqualSign";
-import { updateDecorations } from "./util/nonAsciiCharacters";
+import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
 //NC-file sidebar tree provider
 let fileContentProvider: fileContentTree.FileContentProvider;
 
@@ -28,8 +28,6 @@ let packageFile;
 let extensionPackage;
 
 let extContext: vscode.ExtensionContext;
-
-
 let client: LanguageClient;
 
 /**
@@ -103,7 +101,7 @@ export function activate(context: vscode.ExtensionContext): void {
             startDocu()
         ),
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
-            updateDecorations()
+            highlightNonAsciiChars()
         ),
         vscode.commands.registerCommand("isg-cnc.EncryptAnyFile", () =>
             blowfish.encryptFileFromSystem()
