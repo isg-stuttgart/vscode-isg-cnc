@@ -30,6 +30,11 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             prgCallNames: new CategoryItem("Program Calls"),
         };
         this.context = extContext;
+        // update on editor change
+        this.context.subscriptions.push(
+            vscode.window.onDidChangeActiveTextEditor(() =>
+                this.update())
+        );
         this.update();
         this.updateFileWatcher();
     }

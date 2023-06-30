@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import * as parser from "../../server/src/parsingResults";
-import { config } from "./config";
-
+import { getEnableFormatter } from './config';
 // Blocknumber regex
 const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
@@ -9,7 +8,7 @@ const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 export class DocumentRangeFormattingEditProvider implements vscode.DocumentRangeFormattingEditProvider {
     provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, options: vscode.FormattingOptions): vscode.ProviderResult<vscode.TextEdit[]> {
         // if formatter disabled, cancel
-        if (config.getParam("enableFormatter") === false) {
+        if (!getEnableFormatter()) {
             return;
         }
 
