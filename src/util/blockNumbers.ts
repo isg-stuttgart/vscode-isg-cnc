@@ -1,0 +1,187 @@
+import * as vscode from "vscode";
+import * as parser from "../../server/src/parsingResults";
+import { digitCount, isNumeric } from "./util";
+import { ParseResults } from "../../server/src/parsingResults";
+import { Match } from "server/src/parserClasses";
+
+// Blocknumber regex
+const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
+
+/**
+ * Remove all block numbers
+ *
+ */
+export function removeAllBlocknumbers() {
+    const textEdits: vscode.TextEdit[] = [];
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (activeTextEditor) {
+        const document = activeTextEditor.document;
+        if (document) {
+            let linesToBlocknumberMap;
+            try {
+                linesToBlocknumberMap = new ParseResults(document.getText()).getLineToBlockNumberMap();
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled removing blocknumbers: " + JSON.stringify(error));
+                return;
+            }
+
+            // edit document line by line
+            for (let ln = 0; ln < document.lineCount; ln++) {
+                const line = document.lineAt(ln);
+                const matchLabel = regExpLabels.exec(line.text);
+                const blockNumber: Match | undefined = linesToBlocknumberMap.get(ln);
+                if (blockNumber !== undefined) {
+                    let gotoPos = line.text.indexOf("$GOTO");
+                    const startPos = document.offsetAt(
+                        new vscode.Position(ln, blockNumber.location.start.column - 1)
+                    );
+                    const endPos = document.offsetAt(
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
+                    );
+                    const range = new vscode.Range(
+                        document.positionAt(startPos),
+                        document.positionAt(endPos)
+                    );
+                    // if label found and blocknumber are the same -> skip deleting
+                    if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
+                        continue;
+                    }
+
+                    textEdits.push(vscode.TextEdit.replace(range, ""));
+                }
+            }
+        }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
+    }
+}
+
+
+/**
+ * Add new block numbers. You can input start block number and the stepsize in a input box.
+ * Returns undefinded when somethings wrong.
+ *
+ * @returns
+ */
+export async function addBlocknumbers() {
+    let start = 10;
+    let step = 10;
+    let blocknumber = start;
+    const textEdits: vscode.TextEdit[] = [];
+    const { activeTextEditor } = vscode.window;
+
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            // get start number
+            const parseResult: ParseResults = new ParseResults(document.getText());
+            const startInput = await vscode.window.showInputBox({
+                prompt: `Type a start number.`,
+                validateInput: (input: string) => {
+                    if (!isNumeric(parseInt(input, 10))) {
+                        return "Please type a number.";
+                    }
+                },
+                value: start.toString(),
+            });
+            if (!startInput) {
+                return;
+            }
+            start = parseInt(startInput, 10);
+            blocknumber = start;
+
+            // get step size
+            const stepInput = await vscode.window.showInputBox({
+                prompt: `Type a step size.`,
+                validateInput: (input: string) => {
+                    if (!isNumeric(parseInt(input, 10))) {
+                        return "Please type a number.";
+                    }
+                },
+                value: step.toString(),
+            });
+            if (!stepInput) {
+                return;
+            }
+            step = parseInt(stepInput, 10);
+
+            const linesToNumber: Array<number> = parseResult.getNumberableLines();
+
+            const skipLineBeginIndexes: Map<number, number> = new Map();
+            let skipBlocks;
+            try {
+                skipBlocks = parseResult.syntaxArray.skipBlocks;
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
+                return;
+            }
+            skipBlocks.forEach((match) => {
+                skipLineBeginIndexes.set(match.location.start.line, match.location.start.column);
+            });
+
+            let linesToBlocknumberMap;
+            try {
+                linesToBlocknumberMap = parseResult.getLineToBlockNumberMap();
+            } catch (error) {
+                vscode.window.showErrorMessage("Canceled adding blocknumbers: " + JSON.stringify(error));
+                return;
+            }
+            // add new blocknumbers
+            const maxDigits = digitCount(start + linesToNumber.length * step);
+
+            for (let ln of linesToNumber) {
+                const line = document.lineAt(ln);
+                // generate blocknumber
+                const blockNumberString =
+                    "N" + blocknumber.toString().padStart(maxDigits, "0");
+                let oldBlockNumber: undefined | Match = linesToBlocknumberMap.get(line.lineNumber);
+                let insert: boolean = false;
+                // add or replace blocknumber
+                const matchLabel = regExpLabels.exec(line.text);
+                if (oldBlockNumber !== undefined) {
+                    let gotoPos = line.text.indexOf("$GOTO");
+                    const startPos = document.offsetAt(
+                        new vscode.Position(oldBlockNumber.location.start.line - 1, oldBlockNumber.location.start.column - 1)
+                    );
+                    const endPos = document.offsetAt(
+                        new vscode.Position(oldBlockNumber.location.end.line - 1, oldBlockNumber.location.end.column - 1)
+                    );
+                    const range = new vscode.Range(
+                        document.positionAt(startPos),
+                        document.positionAt(endPos)
+                    );
+                    if (matchLabel !== null
+                        && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos))
+                        && (line.text.indexOf(matchLabel[0].trim()) === (oldBlockNumber.location.start.column - 1))) {
+                        // if blocknumber and label the same insert a new blocknumber
+                        insert = true;
+                    } else {
+                        textEdits.push(vscode.TextEdit.replace(range, blockNumberString));
+                    }
+                } else {
+                    insert = true;
+                }
+                if (insert) {
+                    let insertIndex: number;
+                    const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);  //parser is 1 based
+                    if (skipLineBegin !== undefined) {
+                        insertIndex = skipLineBegin;
+                    } else {
+                        insertIndex = line.range.start.character;
+                    }
+                    textEdits.push(
+                        vscode.TextEdit.insert(
+                            new vscode.Position(line.lineNumber, insertIndex),
+                            blockNumberString + " "
+                        )
+                    );
+                }
+                blocknumber += step;
+            }
+        }
+        const workEdits = new vscode.WorkspaceEdit();
+        workEdits.set(document.uri, textEdits); // give the edits
+        vscode.workspace.applyEdit(workEdits); // apply the edits
+    }
+}

@@ -2,12 +2,11 @@ import * as fs from "fs";
 import path = require("path");
 import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import * as config from "./config";
 import { getConnection } from "./connection";
-import { WorkspaceIgnorer, normalizePath } from "./fileSystem";
+import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
-import { getParseResults } from "./parsingResults";
+import { ParseResults } from "./parsingResults";
 
 /**
 * Recursively find the definition of the given type and name within the tree
@@ -181,9 +180,8 @@ export function findMatchRangesWithinPath(filePaths: string[], types: string[], 
             progressHandler.increment();
             continue;
         }
-        let ast;
         try {
-            ast = getParseResults(fileContent).fileTree;
+            const ast = new ParseResults(fileContent).results.fileTree;
             const uri = pathToFileURL(filePath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges.push(...fileRanges);

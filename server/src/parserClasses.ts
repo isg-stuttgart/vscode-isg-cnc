@@ -34,7 +34,7 @@ export class FileRange {
 /**
  * The peggy parser for ISG-CNC files returns an object containing the fileTree and a set of line numbers that are numberable.
  */
-export interface ParseResults {
+export interface ParseResultContent {
     fileTree: Array<any>;
     numberableLinesUnsorted: Set<number>;
     mainPrg: Match | null;
@@ -55,24 +55,23 @@ export class Document {
 /**
  * A match object returned by the peggy parser for ISG-CNC files.
  */
-export class Match {
+export interface Match {
     type: string;
     content: any;
-    location: peggy.LocationRange | null;
-    text: string | null;
+    location: peggy.LocationRange;
+    text: string;
     name: string | null;
-    constructor(type: string, content: any, location: peggy.LocationRange | null, text: string | null, name: string | null) {
-        this.type = type;
-        this.content = content;
-        this.location = location;
-        this.text = text;
-        this.name = name;
-    }
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
 export function isMatch(obj: any): boolean {
-    const exampleMatch: Match = new Match("", null, null, null, null);
+    const exampleMatch = {
+        type: null,
+        content: null,
+        location: null,
+        text: null,
+        name: null
+    };
     return Object.keys(exampleMatch).every(key => obj.hasOwnProperty(key));
 }
 

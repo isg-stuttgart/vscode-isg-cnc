@@ -74,7 +74,7 @@
                     "default": true,
                     "order": 10
                 },
-                "isg-cnc.documentation": {
+                "isg-cnc.documentationPath": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
                     "description": "Path to the ISG documentation. Important: Address must end with a slash character (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)",
@@ -90,7 +90,7 @@
                     "description": "Choose the documentation language",
                     "order": 30
                 },
-                "isg-cnc.outputchannel": {
+                "isg-cnc.enableOutputchannel": {
                     "type": "boolean",
                     "default": false,
                     "description": "Enable/Disable Outputchannel",
