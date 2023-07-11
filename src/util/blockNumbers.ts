@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as parser from "../../server/src/parsingResults";
 import { digitCount, isNumeric } from "./util";
 import { ParseResults } from "../../server/src/parsingResults";
 import { Match } from "server/src/parserClasses";

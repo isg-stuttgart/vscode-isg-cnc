@@ -6,6 +6,11 @@ import { getDocumentationPath, getLocale } from "./config";
  The address is combined from the settings "isg-cnc.documentationPath" and "isg-cnc.locale".
  */
 export function startDocu() {
+    let docuAddress: string = createFullAddress();
+    vscode.env.openExternal(vscode.Uri.parse(docuAddress));
+}
+
+export function createFullAddress() {
     const docuPath = getDocumentationPath();
     let localeDocuPath: string = docuPath;
     const locale: string = getLocale();
@@ -36,5 +41,5 @@ export function startDocu() {
     printToOutputchannel(docuAddress);
     printToOutputchannel(`Path to the documentation: ${docuPath}`);
     printToOutputchannel(`Address to the website: ${docuAddress}`);
-    vscode.env.openExternal(vscode.Uri.parse(docuAddress));
+    return docuAddress;
 }
