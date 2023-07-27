@@ -190,7 +190,7 @@
                 "enablement": "false"
             },
             {
-                "command": "isg-cnc.alignEqualSigns",
+                "command": "isg-cnc.AlignEqualSigns",
                 "title": "ISG-CNC: Align equal signs in selected range",
                 "enablement": "editorHasSelection"
             },
@@ -283,7 +283,7 @@
             ],
             "isg-commands-editor": [
                 {
-                    "command": "isg-cnc.alignEqualSigns",
+                    "command": "isg-cnc.AlignEqualSigns",
                     "group": "isg-cnc.align@8",
                     "when": "!explorerResource"
                 },
@@ -394,7 +394,7 @@
             },
             {
                 "key": "ctrl+i ctrl+e",
-                "command": "isg-cnc.alignEqualSigns",
+                "command": "isg-cnc.AlignEqualSigns",
                 "when": "editorTextFocus"
             }
         ],

@@ -13,7 +13,7 @@ import * as formatter from "./util/formatter";
 import { includeInIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
-import { addBlocknumbers, removeAllBlocknumbers } from "./util/blockNumbers";
+import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
 import { startDocu } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
@@ -94,7 +94,7 @@ export function activate(context: vscode.ExtensionContext): void {
             removeAllBlocknumbers()
         ),
         vscode.commands.registerCommand("isg-cnc.AddBlocknumbers", () =>
-            addBlocknumbers()
+            addBlocknumbersCommand()
         ),
         vscode.commands.registerCommand("isg-cnc.StartDocu", () =>
             startDocu()
@@ -114,7 +114,7 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         ),
-        vscode.commands.registerCommand("isg-cnc.alignEqualSigns", () =>
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () =>
             alignEqualSigns()
         ),
         //command which is executed when sidebar-Matchitem is clicked

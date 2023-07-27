@@ -14,13 +14,8 @@ suite("Align Equal Sign Command Test", () => {
         editor.selection = new vscode.Selection(5, 21, 24, 32);
 
         // execute command
-        await vscode.commands.executeCommand("isg-cnc.alignEqualSigns");
+        await vscode.commands.executeCommand("isg-cnc.AlignEqualSigns");
         const newContent = doc.getText();
-
-        // compare result
-        const expectedPath = testHelper.getPathOfWorkspaceFile("alignEqualSign_test_expected.nc");
-        const expectedContent = fs.readFileSync(expectedPath, "utf8");
-        assert.strictEqual(newContent, expectedContent);
 
         // undo changes by applying old text
         await editor.edit(editBuilder => {
@@ -28,5 +23,9 @@ suite("Align Equal Sign Command Test", () => {
         });
         await doc.save();
 
+        // compare result
+        const expectedPath = testHelper.getPathOfWorkspaceFile("alignEqualSign_test_expected.nc");
+        const expectedContent = fs.readFileSync(expectedPath, "utf8");
+        assert.strictEqual(newContent, expectedContent);
     });
 });

@@ -31,15 +31,9 @@ export function removeAllBlocknumbers() {
                 const blockNumber: Match | undefined = linesToBlocknumberMap.get(ln);
                 if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
-                    const startPos = document.offsetAt(
-                        new vscode.Position(ln, blockNumber.location.start.column - 1)
-                    );
-                    const endPos = document.offsetAt(
-                        new vscode.Position(line.lineNumber, blockNumber.location.end.column - 1)
-                    );
                     const range = new vscode.Range(
-                        document.positionAt(startPos),
-                        document.positionAt(endPos)
+                        new vscode.Position(ln, blockNumber.location.start.column - 1),
+                        new vscode.Position(line.lineNumber, blockNumber.location.end.column)
                     );
                     // if label found and blocknumber are the same -> skip deleting
                     if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
@@ -63,18 +57,15 @@ export function removeAllBlocknumbers() {
  *
  * @returns
  */
-export async function addBlocknumbers() {
+export async function addBlocknumbersCommand() {
     let start = 10;
     let step = 10;
-    let blocknumber = start;
-    const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
 
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
             // get start number
-            const parseResult: ParseResults = new ParseResults(document.getText());
             const startInput = await vscode.window.showInputBox({
                 prompt: `Type a start number.`,
                 validateInput: (input: string) => {
@@ -88,7 +79,6 @@ export async function addBlocknumbers() {
                 return;
             }
             start = parseInt(startInput, 10);
-            blocknumber = start;
 
             // get step size
             const stepInput = await vscode.window.showInputBox({
@@ -105,6 +95,27 @@ export async function addBlocknumbers() {
             }
             step = parseInt(stepInput, 10);
 
+            await addBlockNumbers(start, step);
+        }
+    }
+}
+
+export async function addBlockNumbers(start: number, step: number) {
+    if (start === undefined) {
+        start = 10;
+    }
+    if (step === undefined) {
+        step = 10;
+    }
+
+    let blocknumber = start;
+    const textEdits: vscode.TextEdit[] = [];
+    const { activeTextEditor } = vscode.window;
+
+    if (activeTextEditor) {
+        const { document } = activeTextEditor;
+        if (document) {
+            const parseResult: ParseResults = new ParseResults(document.getText());
             const linesToNumber: Array<number> = parseResult.getNumberableLines();
 
             const skipLineBeginIndexes: Map<number, number> = new Map();
