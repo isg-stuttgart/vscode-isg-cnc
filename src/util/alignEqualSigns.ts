@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 /**
  * Aligns the first equal signs in the current editor selection below each other.
  */
-export function alignEqualSign(): void {
+export async function alignEqualSigns(): Promise<void> {
     const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
     if (editor && editor.document) {
         const selection: vscode.Selection = editor.selection;
         if (!selection.isEmpty) {
             const lines: Array<EqSignLine> = new Array();
-            // collect all selected lignes with "="
+            // collect all selected lines with "="
             for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
                 //get intersection of selection and current line to only handle selected part when in first or last line
                 const range = selection.intersection(editor.document.lineAt(ln).range);
@@ -25,7 +25,7 @@ export function alignEqualSign(): void {
             // write back edits
             const workEdits = new vscode.WorkspaceEdit();
             workEdits.set(editor.document.uri, textEdits); // give the edits
-            vscode.workspace.applyEdit(workEdits); // apply the edits
+            await vscode.workspace.applyEdit(workEdits); // apply the edits
         }
     }
 }
