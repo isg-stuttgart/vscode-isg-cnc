@@ -21,7 +21,7 @@ import { changeLanguageMode } from "./util/config";
 import { alignEqualSigns } from "./util/alignEqualSigns";
 import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
 //NC-file sidebar tree provider
-let fileContentProvider: fileContentTree.FileContentProvider;
+export let fileContentProvider: fileContentTree.FileContentProvider;
 // package.json information
 let packageFile;
 let extensionPackage;
@@ -118,8 +118,8 @@ export function activate(context: vscode.ExtensionContext): void {
             alignEqualSigns()
         ),
         //command which is executed when sidebar-Matchitem is clicked
-        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) =>
-            fileContentTree.jumpToMatch(item)
+        vscode.commands.registerCommand("matchItem.selected", async (item: fileContentTree.MatchItem) =>
+            await fileContentTree.jumpToMatch(item)
         ),
         vscode.commands.registerCommand("isg-cnc.addToIgnore", (inputUri) =>
             includeInIgnore(inputUri)

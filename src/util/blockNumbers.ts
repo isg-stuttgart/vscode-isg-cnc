@@ -10,7 +10,7 @@ const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
  * Remove all block numbers
  *
  */
-export function removeAllBlocknumbers() {
+export async function removeAllBlocknumbers() {
     const textEdits: vscode.TextEdit[] = [];
     const activeTextEditor = vscode.window.activeTextEditor;
     if (activeTextEditor) {
@@ -46,7 +46,7 @@ export function removeAllBlocknumbers() {
         }
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
-        vscode.workspace.applyEdit(workEdits); // apply the edits
+        await vscode.workspace.applyEdit(workEdits); // apply the edits
     }
 }
 
@@ -192,6 +192,6 @@ export async function addBlockNumbers(start: number, step: number) {
         }
         const workEdits = new vscode.WorkspaceEdit();
         workEdits.set(document.uri, textEdits); // give the edits
-        vscode.workspace.applyEdit(workEdits); // apply the edits
+        await vscode.workspace.applyEdit(workEdits); // apply the edits
     }
 }

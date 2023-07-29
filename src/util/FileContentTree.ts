@@ -276,7 +276,8 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
  */
 export class MatchItem extends vscode.TreeItem implements MyItem {
     private _match: Match;
-    private _label: MatchLineLabel;
+    matchLineLabel: MatchLineLabel;
+
     public getMatch(): Match {
         return this._match;
     }
@@ -286,7 +287,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
 
     constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
         super(new MatchLineLabel(match).label);
-        this._label = new MatchLineLabel(match);
+        this.matchLineLabel = new MatchLineLabel(match);
         this._match = match;
         const commandID: string = match.name + "_" + match.location.start.offset.toString() + "_" + itemPos;
         this.command = {
@@ -301,8 +302,8 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
      * @param match 
      */
     addHighlightingForLineMatch(match: Match) {
-        this._label.addHighlightingForLineMatch(match);
-        this.label = this._label.label;
+        this.matchLineLabel.addHighlightingForLineMatch(match);
+        this.label = this.matchLineLabel.label;
     }
 
     /**
@@ -317,7 +318,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
 /**
  * Class for a match-line-label
  */
-class MatchLineLabel {
+export class MatchLineLabel {
     private _file;
     private _label: { label: string; highlights: [number, number][]; };
     public get label(): { label: string; highlights: [number, number][]; } {
@@ -390,7 +391,7 @@ enum ItemPosition {
 /**
  * Forces my item classes to have a getChildren method, which returns their children as an array
  */
-interface MyItem extends vscode.TreeItem {
+export interface MyItem extends vscode.TreeItem {
     getChildren(): MyItem[];
 }
 
@@ -451,11 +452,11 @@ function ncFileOpened(): boolean {
     return isIsgCnc;
 }
 
-export function jumpToMatch(item: MatchItem) {
+export async function jumpToMatch(item: MatchItem) {
     const file = vscode.window.activeTextEditor?.document.uri;
     if (file !== undefined) {
         //open the text document
-        vscode.workspace.openTextDocument(file).then(async (doc) => {
+        await vscode.workspace.openTextDocument(file).then((doc) => {
             let pos1 = new vscode.Position(0, 0);
             let pos2 = new vscode.Position(0, 0);
             let sel = new vscode.Selection(pos1, pos2);
@@ -476,8 +477,7 @@ export function jumpToMatch(item: MatchItem) {
                     });
                 });
             });
-        }
-        );
+        });
     }
 }
 //#endregion

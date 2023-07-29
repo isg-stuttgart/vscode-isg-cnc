@@ -1,6 +1,7 @@
 import assert = require('assert');
 import path = require('path');
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 export function getPathOfWorkspaceFile(filename: string): string {
     const workSpaceFolders = vscode.workspace.workspaceFolders;
     if (!workSpaceFolders) {
@@ -9,8 +10,9 @@ export function getPathOfWorkspaceFile(filename: string): string {
     return path.join(workSpaceFolders[0].uri.fsPath, filename);
 }
 
-export async function testApplyingCommandToFile(fileName: string, expectedPath: string, command: () => void | Promise<void>) {
+export async function testApplyingCommandToFile(fileName: string, expectedName: string, command: () => void | Promise<void>) {
     //open test file
+    const expectedPath = getPathOfWorkspaceFile(expectedName);
     const filePath = getPathOfWorkspaceFile(fileName);
     const doc = await vscode.workspace.openTextDocument(filePath);
     const oldText = doc.getText();
@@ -19,7 +21,6 @@ export async function testApplyingCommandToFile(fileName: string, expectedPath: 
     //execute
     await command();
     const newContent = doc.getText();
-
     //undo changes by applying old text
     await editor.edit(editBuilder => {
         editBuilder.replace(new vscode.Range(0, 0, doc.lineCount, 0), oldText);
@@ -27,6 +28,6 @@ export async function testApplyingCommandToFile(fileName: string, expectedPath: 
     await doc.save();
 
     //compare result
-    const expectedContent = vscode.workspace.fs.readFile(vscode.Uri.file(expectedPath));
+    const expectedContent = fs.readFileSync(expectedPath, 'utf8');
     assert.strictEqual(newContent, expectedContent);
 }

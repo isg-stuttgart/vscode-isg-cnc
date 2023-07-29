@@ -45,8 +45,9 @@ export function getEnableOutputchannel(): boolean {
  * Change the language mode of the specified file/folder to a new one
  * The new language mode is selected by the user in a quick pick menu.
  * @param inputUri The file/folder to change the language mode of
+ * @param languageId The new language mode, if not specified the user is asked to select one
  */
-export async function changeLanguageMode(inputUri: any): Promise<void> {
+export async function changeLanguageMode(inputUri: any, languageId?: string): Promise<void> {
     try {
         if (!inputUri || !inputUri.fsPath) {
             vscode.window.showErrorMessage("No file/folder selected");
@@ -77,7 +78,7 @@ export async function changeLanguageMode(inputUri: any): Promise<void> {
 
         // ask user for language mode by quickselect
         const allLanguages: string[] = await vscode.languages.getLanguages();
-        const languageMode: string | undefined = await vscode.window.showQuickPick(allLanguages, { placeHolder: "Select language mode" });
+        const languageMode: string | undefined = languageId ? languageId : await vscode.window.showQuickPick(allLanguages, { placeHolder: "Select language mode" });
         if (!languageMode) {
             vscode.window.showWarningMessage("No language mode selected. Aborting changing language mode.");
             return;
@@ -85,7 +86,7 @@ export async function changeLanguageMode(inputUri: any): Promise<void> {
 
         // update settings with new association
         currentAssociationsObject[globPattern] = languageMode;
-        vscode.workspace.getConfiguration("files").update("associations", currentAssociationsObject, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration("files").update("associations", currentAssociationsObject, vscode.ConfigurationTarget.Workspace);
     } catch (error) {
         vscode.window.showErrorMessage("Error while changing language mode: " + error);
     }
