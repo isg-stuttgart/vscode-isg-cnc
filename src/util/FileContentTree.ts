@@ -5,6 +5,7 @@ import * as parser from "../../server/src/parsingResults";
 
 //New line marker, based on operating system
 import { EOL as newline } from "node:os";
+import { Match } from '../../server/src/parserClasses';
 
 export enum Sorting {
     lineByLine,
@@ -30,6 +31,11 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             prgCallNames: new CategoryItem("Program Calls"),
         };
         this.context = extContext;
+        // update on editor change
+        this.context.subscriptions.push(
+            vscode.window.onDidChangeActiveTextEditor(() =>
+                this.update())
+        );
         this.update();
         this.updateFileWatcher();
     }
@@ -46,7 +52,7 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
             const fileContent = fs.readFileSync(this.file.fsPath, "utf-8");
             let syntaxArray: parser.SyntaxArray;
             try {
-                syntaxArray = parser.getSyntaxArray(fileContent);
+                syntaxArray = new parser.ParseResults(fileContent).syntaxArray;
             } catch (error) {
                 this.fileItem = new FileItem("Error while parsing: " + error, vscode.TreeItemCollapsibleState.None);
                 return;
@@ -181,7 +187,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    resetMatches(newMatches: parser.Match[], context: vscode.ExtensionContext, sorting: Sorting) {
+    resetMatches(newMatches: Match[], context: vscode.ExtensionContext, sorting: Sorting) {
 
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
@@ -189,7 +195,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
          * @param matchMap 
          * @param itemPosition 
          */
-        function addMatchToMatchLine(match: parser.Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
+        function addMatchToMatchLine(match: Match, matchMap: Map<number, MatchItem>, itemPosition: ItemPosition) {
             // create item for the match-line if it doesn't already exist
             let matchLineItem: MatchItem | undefined = matchMap.get(match.location.start.line);
             if (matchLineItem === undefined) {
@@ -210,7 +216,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
                     const tooManyMatchesException = {};
                     throw tooManyMatchesException;
                 }
-                let matchToHiglight: parser.Match;
+                let matchToHiglight: Match;
                 matchToHiglight = match;
                 if (sorting === Sorting.lineByLine) {
                     addMatchToMatchLine(matchToHiglight, this.children.matchMap, ItemPosition.category);
@@ -269,16 +275,16 @@ class SubCategoryTreeItem extends vscode.TreeItem implements MyItem {
  * The tree item of a concrete match like "T31"
  */
 export class MatchItem extends vscode.TreeItem implements MyItem {
-    private _match: parser.Match;
+    private _match: Match;
     private _label: MatchLineLabel;
-    public getMatch(): parser.Match {
+    public getMatch(): Match {
         return this._match;
     }
-    public set match(value: parser.Match) {
+    public set match(value: Match) {
         this._match = value;
     }
 
-    constructor(match: parser.Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
+    constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
         super(new MatchLineLabel(match).label);
         this._label = new MatchLineLabel(match);
         this._match = match;
@@ -294,7 +300,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    addHighlightingForLineMatch(match: parser.Match) {
+    addHighlightingForLineMatch(match: Match) {
         this._label.addHighlightingForLineMatch(match);
         this.label = this._label.label;
     }
@@ -319,7 +325,7 @@ class MatchLineLabel {
     }
 
     private _textoffset: number;
-    constructor(match: parser.Match) {
+    constructor(match: Match) {
         this._file = vscode.window.activeTextEditor?.document.uri.fsPath;
         let labelString: string;
         let textoffset: number;
@@ -354,7 +360,7 @@ class MatchLineLabel {
      * Additionally highlight the specified match in the match-line-label
      * @param match 
      */
-    public addHighlightingForLineMatch(match: parser.Match) {
+    public addHighlightingForLineMatch(match: Match) {
         const highlightStart = match.location.start.column + this._textoffset;
         let highlightEnd = highlightStart + (match.location.end.offset - match.location.start.offset);
         if (highlightEnd > this._label.label.length) {

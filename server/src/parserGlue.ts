@@ -10,10 +10,11 @@ import * as fs from "fs";
 import path = require("node:path");
 import { Connection } from "vscode-languageserver";
 import { getConnection } from "./connection";
-import { getSurroundingVar, findLocalStringRanges, isPositionInComment } from "./stringSearching";
-import { WorkspaceIgnorer, countFilesInPath, findFileInRootDir, normalizePath } from "./fileSystem";
+import { getSurroundingVar, findLocalStringRanges, isWithinMatches } from "./stringSearching";
+import { WorkspaceIgnorer, findFileInRootDir, normalizePath } from "./fileSystem";
 import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
-import { getParseResults } from "./parsingResults";
+import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
+import { ParseResults } from "./parsingResults";
 
 /**
  * Returns the definition location of the selected position
@@ -28,16 +29,17 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     let definitions: FileRange[] = [];
 
     // parse the file content and search for the selected position
-    let ast: any[];
+    let parseResult: ParseResults;
     try {
-        ast = getParseResults(fileContent).fileTree;
+        parseResult = new ParseResults(fileContent);
     } catch (error) {
         getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
         return [];
     }
+    const ast: any[] = parseResult.results.fileTree;
 
     // if the location is within comments, return empty array
-    if (isPositionInComment(ast, position)) {
+    if (isWithinMatches(parseResult.syntaxArray.comments, position)) {
         return [];
     }
 
@@ -88,10 +90,10 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
         for (const path of defPaths) {
             const uri = pathToFileURL(path).toString();
-            const fileContent = fs.readFileSync(path, "utf8");
+            const defFileContent = fs.readFileSync(path, "utf8");
             let mainPrg;
             try {
-                mainPrg = getParseResults(fileContent).mainPrg;
+                mainPrg = new ParseResults(defFileContent).results.mainPrg;
             } catch (error) {
                 getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
                 console.error(`Error parsing file ${path}: ${error}`);
@@ -124,16 +126,16 @@ export async function getReferences(fileContent: string, position: Position, uri
     let referenceRanges: FileRange[] = [];
 
     // parse the file content and search for the selected position
-    let ast: any[];
+    let parseResult: ParseResults;
     try {
-        ast = getParseResults(fileContent).fileTree;
+        parseResult = new ParseResults(fileContent);
     } catch (error) {
         getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
         return [];
     }
 
     // if the location is within comments, return empty array
-    if (isPositionInComment(ast, position)) {
+    if (isWithinMatches(parseResult.syntaxArray.comments, position)) {
         return [];
     }
 
@@ -144,7 +146,7 @@ export async function getReferences(fileContent: string, position: Position, uri
         return stringRanges;
     }
 
-    const match = findPreciseMatch(ast, position);
+    const match = findPreciseMatch(parseResult.results.fileTree, position);
     if (!match || !match.name) {
         return [];
     }
@@ -160,22 +162,22 @@ export async function getReferences(fileContent: string, position: Position, uri
 
     // if local find all references in the same file and add their ranges to the result array
     if (local) {
-        referenceRanges = findMatchRangesWithinPrgTree(ast, refTypes, name, uri);
+        referenceRanges = findMatchRangesWithinPrgTree(parseResult.results.fileTree, refTypes, name, uri);
     }
-    // if global find all references in all files within all workspace roots and add their ranges to the result array
+    // if global find all references in all isg-cnc associated and not ignored files within all workspace roots and add their ranges to the result array
     else if (rootPaths) {
-        // calculate how much percent are done after parsing each file
-        let fileCount = 0;
-        rootPaths.forEach(rootPath => fileCount += countFilesInPath(rootPath));
-        const progress = await connection.window.createWorkDoneProgress();
-        const progressHandler = new IncrementableProgress(progress, fileCount, "Searching references");
+        // collect all isg-cnc files in the rootpaths which aren't ignored
+        const isgCncFiles: string[] = [];
         for (const rootPath of rootPaths) {
-            referenceRanges.push(...findMatchRangesWithinPath(rootPath, refTypes, name, openFiles, progressHandler, new WorkspaceIgnorer(rootPath)));
+            isgCncFiles.push(...getAllNotIgnoredCncFilePathsInRoot(rootPath));
         }
+
+        // create a progress bar and search for references in all isg-cnc files
+        const progress = await connection.window.createWorkDoneProgress();
+        const progressHandler = new IncrementableProgress(progress, isgCncFiles.length, "Searching references");
+        referenceRanges.push(...findMatchRangesWithinPath(isgCncFiles, refTypes, name, openFiles, progressHandler));
         progressHandler.done();
     }
 
     return referenceRanges;
 }
-
-

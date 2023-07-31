@@ -58,7 +58,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 	return result;
 });
 
-connection.onInitialized(() => {
+connection.onInitialized(async () => {
 	if (hasConfigurationCapability) {
 		// Register for all configuration changes.
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -75,10 +75,10 @@ connection.onInitialized(() => {
 				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
-			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));		
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
 		});
 	}
-	updateConfig();
+	await updateConfig();
 });
 
 /** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
@@ -150,7 +150,7 @@ connection.onDidChangeConfiguration(async () => {
 });
 
 /**
- * Fetches the workspace configuration and updates the languageIDs associated with the cnc language.
+ * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
 	const workspaceConfig = await connection.workspace.getConfiguration();

@@ -2,12 +2,11 @@ import * as fs from "fs";
 import path = require("path");
 import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import * as config from "./config";
 import { getConnection } from "./connection";
-import { WorkspaceIgnorer, normalizePath } from "./fileSystem";
+import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
-import { getParseResults } from "./parsingResults";
+import { ParseResults } from "./parsingResults";
 
 /**
 * Recursively find the definition of the given type and name within the tree
@@ -139,7 +138,6 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
         }
         const start: Position = new Position(ref.location.start.line - 1, ref.location.start.column - 1);
         const end: Position = new Position(ref.location.end.line - 1, ref.location.end.column - 1);
-        // convert path to vscode uri 
         ranges.push(new FileRange(uri, start, end));
     }
     return ranges;
@@ -147,15 +145,14 @@ export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: s
 
 /**
  * Finds all match-ranges of a given name and types within a given root directory and all subdirectories
- * @param rootPath root directory to search in
+ * @param filePaths paths of files to search in
  * @param types possible types of matches to search for
  * @param name name/identifier of the matches to search for
  * @param uriToOpenFileContent mapping of file-uris to file-contents
- * @param progress progress reporter
- * @param totalFiles total number of files to search in
+ * @param progressHandler progress reporter
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(rootPath: string, types: string[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress, ignorer: WorkspaceIgnorer = new WorkspaceIgnorer("")): FileRange[] {
+export function findMatchRangesWithinPath(filePaths: string[], types: string[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress): FileRange[] {
     let ranges: FileRange[] = [];
 
     // convert uri mapping of open files to normalized path mapping
@@ -165,58 +162,38 @@ export function findMatchRangesWithinPath(rootPath: string, types: string[], nam
         pathToOpenFileContent.set(normalizedPath, value);
     });
 
-    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
-    for (const entry of dirEntries) {
+    for (const filePath of filePaths) {
         // leave loop if progress is cancelled
         if (progressHandler.isCancelled()) {
             break;
         }
-        const entryPath = normalizePath(path.join(rootPath, entry.name));
-
-        // ignore file if ignorer says so
-        if (ignorer.ignores(entryPath)) {
+        // report progress
+        progressHandler.changeMessage(filePath);
+        // if file is open, get current file content of editor
+        let fileContent: string | undefined = pathToOpenFileContent.get(filePath);
+        // if file is not open, read file content from disk
+        if (!fileContent) {
+            fileContent = fs.readFileSync(filePath, 'utf8');
+        }
+        // if file does not contain the searched match-name skip parsing/searching
+        if (!fileContent.includes(name)) {
+            progressHandler.increment();
             continue;
         }
-
-        if (entry.isDirectory()) {
-            // add all matches in subdirectories
-            const subMatches = findMatchRangesWithinPath(entryPath, types, name, uriToOpenFileContent, progressHandler, ignorer);
-            ranges.push(...subMatches);
-        } else if (entry.isFile()) {
-            // report progress
-            progressHandler.changeMessage(entryPath);
-
-            // if file is not a cnc-file skip parsing/searching
-            if (!config.isCncFile(entryPath)) {
-                progressHandler.increment();
-                continue;
-            }
-            // if file is open, get current file content of editor
-            let fileContent: string | undefined = pathToOpenFileContent.get(entryPath);
-
-            // if file is not open, read file content from disk
-            if (!fileContent) {
-                fileContent = fs.readFileSync(entryPath, 'utf8');
-            }
-            // if file does not contain the searched match-name skip parsing/searching
-            if (!fileContent.includes(name)) {
-                progressHandler.increment();
-                continue;
-            }
-            let ast;
-            try {
-                ast = getParseResults(fileContent).fileTree;     
-            } catch (error) {
-                const errorMessage = `Error while parsing ${entryPath}: ${error} \n This file is not included in the found references.`;
-                getConnection()?.window.showErrorMessage(errorMessage);
-                console.error(errorMessage);
-            }
-            const uri = pathToFileURL(entryPath).toString();
+        try {
+            const ast = new ParseResults(fileContent).results.fileTree;
+            const uri = pathToFileURL(filePath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges.push(...fileRanges);
-            progressHandler.increment(entryPath);
+        } catch (error) {
+            const errorMessage = `Error while parsing ${filePath}: ${error} \nThis file is not included in the found references.`;
+            getConnection()?.window.showErrorMessage(errorMessage);
+            console.error(errorMessage);
         }
+
+        progressHandler.increment(filePath);
     }
+
     return ranges;
 }
 

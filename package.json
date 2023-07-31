@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
@@ -74,7 +74,7 @@
                     "default": true,
                     "order": 10
                 },
-                "isg-cnc.documentation": {
+                "isg-cnc.documentationPath": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
                     "description": "Path to the ISG documentation. Important: Address must end with a slash character (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)",
@@ -90,7 +90,7 @@
                     "description": "Choose the documentation language",
                     "order": 30
                 },
-                "isg-cnc.outputchannel": {
+                "isg-cnc.enableOutputchannel": {
                     "type": "boolean",
                     "default": false,
                     "description": "Enable/Disable Outputchannel",
@@ -198,6 +198,11 @@
                 "command": "isg-cnc.addToIgnore",
                 "title": "ISG-CNC: Add to .isg-cnc-ignore",
                 "enablement": "isFileSystemResource"
+            },
+            {
+                "command": "isg-cnc.changeLanguageMode",
+                "title": "Change Language Mode (provided by ISG-CNC)",
+                "enablement": "isFileSystemResource"
             }
         ],
         "menus": {
@@ -234,12 +239,20 @@
                 {
                     "submenu": "isg-commands-explorer",
                     "group": "isg-cnc@1"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
                 }
             ],
             "editor/context": [
                 {
                     "submenu": "isg-commands-editor",
                     "group": "isg-cnc@1"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
                 }
             ],
             "isg-commands-explorer": [
