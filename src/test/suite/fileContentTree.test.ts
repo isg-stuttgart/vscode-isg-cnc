@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { fileContentProvider } from "../../extension";
-import { getPathOfWorkspaceFile } from "./testHelper";
+import { getPathOfWorkspaceFile, openTestFile } from "./testHelper";
 import assert = require("assert");
-import { MatchItem, MatchLineLabel, MyItem } from "src/util/fileContentTree";
+import { MatchItem } from "src/util/fileContentTree";
 suite("File Content Tree Provider Test", () => {
     test("Correct items sorted by line", async () => {
         // set to line by line sorting
@@ -193,9 +193,7 @@ suite("File Content Tree Provider Test", () => {
 });
 
 async function openTreeTestFile() {
-    const testFile = vscode.Uri.file(getPathOfWorkspaceFile("fileContentTree_test.nc"));
-    await vscode.workspace.openTextDocument(testFile);
-    await vscode.window.showTextDocument(testFile);
+    await openTestFile("fileContentTree_test.nc");
     // wait until tree is loaded
     let root = (await fileContentProvider.getChildren())[0];
     while (root.label === "Loading..." || root.label === "There is no currently opened file" || root.label === "The currently opened file is no NC-file") {

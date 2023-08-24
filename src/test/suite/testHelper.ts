@@ -10,6 +10,13 @@ export function getPathOfWorkspaceFile(filename: string): string {
     return path.join(workSpaceFolders[0].uri.fsPath, filename);
 }
 
+export async function openTestFile(fileName: string): Promise<vscode.TextDocument> {
+    const filePath = getPathOfWorkspaceFile(fileName);
+    const doc = await vscode.workspace.openTextDocument(filePath);
+    await vscode.window.showTextDocument(doc);
+    return doc;
+}
+
 export async function testApplyingCommandToFile(fileName: string, expectedName: string, command: () => void | Promise<void>) {
     //open test file
     const expectedPath = getPathOfWorkspaceFile(expectedName);
