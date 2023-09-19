@@ -121,9 +121,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("matchItem.selected", async (item: fileContentTree.MatchItem) =>
             await fileContentTree.jumpToMatch(item)
         ),
-        vscode.commands.registerCommand("isg-cnc.addToIgnore", (inputUri) =>
-            includeInIgnore(inputUri)
-        ),
+        vscode.commands.registerCommand("isg-cnc.addToIgnore", async (inputUri) => {
+            await includeInIgnore(inputUri);
+        }),
         vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) =>
             changeLanguageMode(inputUri)
         )

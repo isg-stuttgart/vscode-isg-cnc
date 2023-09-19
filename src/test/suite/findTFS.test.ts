@@ -2,7 +2,6 @@ import assert = require("assert");
 import * as vscode from "vscode";
 import { openTestFile } from "./testHelper";
 import { getCurrentFileOffset, setCursorPosition } from "../../util/fileoffset";
-import { } from "../../util/findTFS";
 
 suite("Find TFS Test", () => {
     test("Find next TFS", async () => {
