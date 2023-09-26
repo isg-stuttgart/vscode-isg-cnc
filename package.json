@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "0.4.5",
+    "version": "0.4.6",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
@@ -505,7 +505,7 @@
         "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js",
+        "test": "node ./out/src/test/runTest.js",
         "postinstall": "cd server && npm install"
     },
     "devDependencies": {

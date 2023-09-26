@@ -49,7 +49,7 @@ export function findNextTFS(): boolean {
 
 export function findAllToolCalls(): any {
     let params = {
-        query: "[^a-zA-Z0-9](T[0-9]+)",
+        query: "(?<![\w\d])T[0-9]+",
         triggerSearch: true,
         isRegex: true,
         isCaseSensitive: true,

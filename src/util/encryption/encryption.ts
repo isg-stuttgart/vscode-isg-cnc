@@ -190,7 +190,6 @@ async function askForDecryptedFilename(inputPath: string): Promise<string | unde
     let finalOutputName: string | undefined = undefined;
     let endSelection = false;
     do {
-        currentOutputName === undefined;
         currentOutputName = await vscode.window.showInputBox({
             ignoreFocusOut: true,
             title: "Decrypted File",
@@ -222,7 +221,6 @@ async function askForEncryptedFilename(inputPath: string): Promise<string | unde
     let finalOutputName: string | undefined = undefined;
     let endSelection = false;
     do {
-        currentOutputName === undefined;
         currentOutputName = await vscode.window.showInputBox({
             ignoreFocusOut: true,
             title: "Encrypted File",

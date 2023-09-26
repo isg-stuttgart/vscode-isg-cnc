@@ -10,7 +10,7 @@ import ignore, { Ignore } from "ignore";
  * If the file/folder is already ignored, a message will be shown and the ignore file will not be changed.
  * @param inputUri  file/folder to ignore
  */
-export function includeInIgnore(inputUri: vscode.Uri): void {
+export async function includeInIgnore(inputUri: vscode.Uri): Promise<void> {
     const pathToIgnore: string = inputUri.fsPath;
     const workspaceFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(inputUri);
     if (workspaceFolder === undefined) {
@@ -33,7 +33,6 @@ export function includeInIgnore(inputUri: vscode.Uri): void {
             "# The ignore syntax is equivalent to the .gitignore syntax. See https://git-scm.com/docs/gitignore for more information." + os.EOL;
         fs.writeFileSync(ignoreFilePath, explanationText);
     }
-
     // check if ignored file has unsaved changes and read ignore file 
     let ignoreFileContent: string | undefined = vscode.workspace.textDocuments.find(doc => doc.uri.fsPath === ignoreFilePath)?.getText();
     if (ignoreFileContent === undefined) {
@@ -44,16 +43,14 @@ export function includeInIgnore(inputUri: vscode.Uri): void {
     const ignorer: Ignore = ignore().add(ignoreFileContent);
     const isAlreadyIgnored: boolean = ignorer.ignores(relativeFilePathToIgnore);
     if (isAlreadyIgnored) {
-        vscode.window.showInformationMessage("ISG-CNC: Path " + relativeFilePathToIgnore + " is already ignored.");
+        await vscode.window.showInformationMessage("ISG-CNC: Path " + relativeFilePathToIgnore + " is already ignored.");
     } else {
         // edit ignore file by vscode editing
-        vscode.workspace.openTextDocument(ignoreFilePath).then((doc) => {
-            vscode.window.showTextDocument(doc).then((editor) => {
-                const pos = new vscode.Position(editor.document.lineCount, 0);
-                editor.edit((editBuilder) => {
-                    editBuilder.insert(pos, os.EOL + relativeFilePathToIgnore);
-                });
-            });
+        const ignoreDoc = await vscode.workspace.openTextDocument(ignoreFilePath);
+        const editor = await vscode.window.showTextDocument(ignoreDoc);
+        const pos = new vscode.Position(editor.document.lineCount, 0);
+        await editor.edit((editBuilder) => {
+            editBuilder.insert(pos, os.EOL + relativeFilePathToIgnore);
         });
     }
 }

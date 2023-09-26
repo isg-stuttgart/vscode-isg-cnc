@@ -18,6 +18,10 @@ Types of changes:
 
 ### Fixed
 
+## [V0.4.6]
+
+### Fixed
+- Correction of npm dependencies because language server crash at startup.
 
 ## [V0.4.5]
 
@@ -351,6 +355,7 @@ Types of changes:
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V0.4.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.5...V0.4.6
 [V0.4.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.4...V0.4.5
 [V0.4.4]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.3...V0.4.4
 [V0.4.3]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.2...V0.4.3

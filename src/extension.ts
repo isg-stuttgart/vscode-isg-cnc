@@ -9,20 +9,19 @@ import {
 } from 'vscode-languageclient/node';
 import * as fileContentTree from "./util/fileContentTree";
 import * as blowfish from "./util/encryption/encryption";
-import * as Formatter from "./util/formatter";
+import * as formatter from "./util/formatter";
 import { includeInIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
-import { addBlocknumbers, removeAllBlocknumbers } from "./util/blockNumbers";
+import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
 import { startDocu } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
-import { alignEqualSign } from "./util/alignEqualSign";
+import { alignEqualSigns } from "./util/alignEqualSigns";
 import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
 //NC-file sidebar tree provider
-let fileContentProvider: fileContentTree.FileContentProvider;
-
+export let fileContentProvider: fileContentTree.FileContentProvider;
 // package.json information
 let packageFile;
 let extensionPackage;
@@ -69,7 +68,7 @@ export function activate(context: vscode.ExtensionContext): void {
     client.start();
 
     // code formatter
-    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new Formatter.DocumentRangeFormattingEditProvider());
+    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider());
 
     //NC-file sidebar tree provider
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);
@@ -95,7 +94,7 @@ export function activate(context: vscode.ExtensionContext): void {
             removeAllBlocknumbers()
         ),
         vscode.commands.registerCommand("isg-cnc.AddBlocknumbers", () =>
-            addBlocknumbers()
+            addBlocknumbersCommand()
         ),
         vscode.commands.registerCommand("isg-cnc.StartDocu", () =>
             startDocu()
@@ -116,15 +115,15 @@ export function activate(context: vscode.ExtensionContext): void {
             blowfish.decryptThis(inputUri)
         ),
         vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () =>
-            alignEqualSign()
+            alignEqualSigns()
         ),
         //command which is executed when sidebar-Matchitem is clicked
-        vscode.commands.registerCommand("matchItem.selected", (item: fileContentTree.MatchItem) =>
-            fileContentTree.jumpToMatch(item)
+        vscode.commands.registerCommand("matchItem.selected", async (item: fileContentTree.MatchItem) =>
+            await fileContentTree.jumpToMatch(item)
         ),
-        vscode.commands.registerCommand("isg-cnc.addToIgnore", (inputUri) =>
-            includeInIgnore(inputUri)
-        ),
+        vscode.commands.registerCommand("isg-cnc.addToIgnore", async (inputUri) => {
+            await includeInIgnore(inputUri);
+        }),
         vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) =>
             changeLanguageMode(inputUri)
         )
