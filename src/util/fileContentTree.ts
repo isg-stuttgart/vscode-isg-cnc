@@ -385,6 +385,7 @@ enum ItemPosition {
  * Forces my item classes to have a getChildren method, which returns their children as an array
  */
 export interface MyItem extends vscode.TreeItem {
+interface MyItem extends vscode.TreeItem {
     getChildren(): MyItem[];
 }
 
