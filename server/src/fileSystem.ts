@@ -1,7 +1,7 @@
 import path = require("path");
 import * as fs from "fs";
 import ignore, { Ignore } from "ignore";
-import * as minimatch from "minimatch";
+import { minimatch } from "minimatch";
 import { isCncFile } from "./config";
 
 /**

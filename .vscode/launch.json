@@ -23,22 +23,25 @@
 			"name": "Attach to Server",
 			"port": 6009,
 			"restart": true,
-			"outFiles": ["${workspaceRoot}/server/out/**/*.js"]
+			"outFiles": [
+				"${workspaceRoot}/server/out/**/*.js"
+			]
 		},
 		{
 			"name": "Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",
+			"runtimeExecutable": "${execPath}",
 			"args": [
+				"${workspaceFolder}/src/test/res",
+				"--disable-extensions",
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
+				"--extensionTestsPath=${workspaceFolder}/out/src/test/suite/index"
 			],
 			"outFiles": [
-				"${workspaceFolder}/out/**/*.js"
+				"${workspaceFolder}/out/src/test/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}",
-			"autoAttachChildProcesses": true,
-			"internalConsoleOptions": "openOnSessionStart",
+			"preLaunchTask": "${defaultBuildTask}"
 		}
 	]
 }

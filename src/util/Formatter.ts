@@ -24,7 +24,7 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
         try {
             syntaxArray = new ParseResults(document.getText()).syntaxArray;
         } catch (error) {
-            vscode.window.showErrorMessage("Errow while parsing file: " + error);
+            vscode.window.showErrorMessage("Error while parsing file: " + error);
             return;
         }
 
