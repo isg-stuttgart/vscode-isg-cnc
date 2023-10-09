@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { fileContentProvider } from "../../extension";
-import { getPathOfWorkspaceFile, openTestFile } from "./testHelper";
+import { openTestFile } from "./testHelper";
 import assert = require("assert");
 import { MatchItem } from "src/util/fileContentTree";
 suite("File Content Tree Provider Test", () => {

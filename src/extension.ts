@@ -10,7 +10,7 @@ import {
 import * as fileContentTree from "./util/fileContentTree";
 import * as blowfish from "./util/encryption/encryption";
 import * as formatter from "./util/formatter";
-import { includeInIgnore } from "./util/ignoreFileCommands";
+import { addToIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
 import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
@@ -122,7 +122,7 @@ export function activate(context: vscode.ExtensionContext): void {
             await fileContentTree.jumpToMatch(item)
         ),
         vscode.commands.registerCommand("isg-cnc.addToIgnore", async (inputUri) => {
-            await includeInIgnore(inputUri);
+            await addToIgnore(inputUri);
         }),
         vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) =>
             changeLanguageMode(inputUri)
