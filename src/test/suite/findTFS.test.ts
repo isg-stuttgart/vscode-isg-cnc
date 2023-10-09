@@ -7,7 +7,7 @@ suite("Find TFS Test", () => {
     test("Find next TFS", async () => {
         await openTestFile("fileContentTree_test.nc");
         setCursorPosition(20);
-        vscode.commands.executeCommand("isg-cnc.FindNextTFS");
+        await vscode.commands.executeCommand("isg-cnc.FindNextTFS");
         assert.strictEqual(getCurrentFileOffset(), 40);
         const activeTextEditor = vscode.window.activeTextEditor;
         const document = activeTextEditor?.document;
