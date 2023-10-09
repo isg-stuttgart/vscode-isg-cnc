@@ -445,6 +445,10 @@ function ncFileOpened(): boolean {
     return isIsgCnc;
 }
 
+/**
+ * Lets the editor cursor jump to the specified match within the currently opened file
+ * @param item the match to jump to as a MatchItem within the file content tree
+ */
 export async function jumpToMatch(item: MatchItem) {
     const file = vscode.window.activeTextEditor?.document.uri;
     if (file !== undefined) {
