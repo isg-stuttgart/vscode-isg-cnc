@@ -1,5 +1,9 @@
 sudo: false
 
+name: Extension Tests
+on:
+  - pull_request
+  - push
 os:
   - osx
   - linux
