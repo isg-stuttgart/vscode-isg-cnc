@@ -505,7 +505,7 @@
         "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "node ./node_modules/vscode/bin/test",
+        "test": "node ./out/src/test/runTest.js",
         "postinstall": "cd server && npm install"
     },
     "devDependencies": {
