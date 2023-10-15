@@ -11,6 +11,7 @@ suite("Find TFS Test", () => {
         const activeTextEditor = vscode.window.activeTextEditor;
         const document = activeTextEditor?.document;
         const selection = activeTextEditor?.selection;
+        console.log("selection: " + JSON.stringify(selection));
         assert.deepStrictEqual(selection?.start, document?.positionAt(37));
         assert.deepStrictEqual(selection?.end, document?.positionAt(40));
         assert.strictEqual(getCurrentFileOffset(), 40);

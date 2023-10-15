@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import * as fileoffset from './fileoffset';
 
 /**
  * Find next technology in cnc file.
