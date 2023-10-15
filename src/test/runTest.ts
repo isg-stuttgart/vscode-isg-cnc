@@ -11,7 +11,6 @@ async function main() {
 		// The path to test runner
 		// Passed to --extensionTestsPath
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
-		//const testWorkSpace = path.resolve(__dirname, '../../src/test/res');
 		// Download VS Code, unzip it and run the integration test
 		const workspacePath = path.resolve("test-fixtures", "test.code-workspace");
 		await runTests({
