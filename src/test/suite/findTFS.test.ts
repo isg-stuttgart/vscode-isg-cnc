@@ -1,24 +1,23 @@
 import assert = require("assert");
 import * as vscode from "vscode";
 import { openTestFile } from "./testHelper";
-import { getCurrentFileOffset, setCursorPosition } from "../../util/fileoffset";
 
 suite("Find TFS Test", () => {
     test("Find next TFS", async () => {
         await openTestFile("fileContentTree_test.nc");
-        setCursorPosition(20);
-        await vscode.commands.executeCommand("isg-cnc.FindNextTFS");
         const activeTextEditor = vscode.window.activeTextEditor;
-        const document = activeTextEditor?.document;
-        const selection = activeTextEditor?.selection;
-        console.log("selection: " + JSON.stringify(selection));
-        console.log("Expected start: " + JSON.stringify(document?.positionAt(37)));
-        console.log("Actual start: " + JSON.stringify(selection?.start));
-        console.log("Expected end: " + JSON.stringify(document?.positionAt(40)));
-        console.log("Actual end: " + JSON.stringify(selection?.end));
-        assert.deepStrictEqual(selection?.start, document?.positionAt(37));
-        assert.deepStrictEqual(selection?.end, document?.positionAt(40));
-        assert.strictEqual(getCurrentFileOffset(), 40);
+        if (!activeTextEditor) {
+            assert.fail("No active text editor");
+        }
+        activeTextEditor.selection = new vscode.Selection(
+            new vscode.Position(0, 2),
+            new vscode.Position(0, 2)
+        );
+        await vscode.commands.executeCommand("isg-cnc.FindNextTFS");
+        const selection = activeTextEditor.selection;
+        assert.deepStrictEqual(selection?.start, new vscode.Position(3, 10));
+        assert.deepStrictEqual(selection?.end, new vscode.Position(3, 14));
+        assert.deepStrictEqual(selection?.active, new vscode.Position(3, 14));
     });
 
     test("Find all TFS", async () => {

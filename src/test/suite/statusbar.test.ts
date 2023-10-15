@@ -13,7 +13,7 @@ suite("Statusbar Tests", async () => {
         const statusBarOffsetItem = statusbar.getCurrentOffsetStatusBarItem();
         await loopUntilTextIsEqual(statusBarOffsetItem, `$(arrow-right) Fileoffset: ${editor?.document.offsetAt(editor.selection.active)}`);
         // set editor cursor to offset 80 and check if status bar updates correctly
-        editor.selection = new vscode.Selection(new vscode.Position(6, 8), new vscode.Position(6, 8));
+        editor.selection = new vscode.Selection(editor.document.positionAt(80), editor.document.positionAt(80));
         await loopUntilTextIsEqual(statusBarOffsetItem, `$(arrow-right) Fileoffset: 80`);
     });
 
