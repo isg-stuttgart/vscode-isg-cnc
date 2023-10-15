@@ -28,7 +28,6 @@ export function findNextTFS(): boolean {
             const match = regExTechnology.exec(textToMatch);
             if (match !== null) {
                 const startoffset = match.index + document.offsetAt(startposition);
-                fileoffset.setCursorPosition(startoffset);
                 const startPos = document.positionAt(startoffset);
                 const endPos = document.positionAt(startoffset + match[0].length);
                 const range = new vscode.Range(startPos, endPos);
