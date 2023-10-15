@@ -16,8 +16,8 @@ suite("Find TFS Test", () => {
         await vscode.commands.executeCommand("isg-cnc.FindNextTFS");
         const selection = activeTextEditor.selection;
         assert.deepStrictEqual(selection?.start, new vscode.Position(3, 10));
-        assert.deepStrictEqual(selection?.end, new vscode.Position(3, 14));
-        assert.deepStrictEqual(selection?.active, new vscode.Position(3, 14));
+        assert.deepStrictEqual(selection?.end, new vscode.Position(3, 13));
+        assert.deepStrictEqual(selection?.active, new vscode.Position(3, 13));
     });
 
     test("Find all TFS", async () => {
