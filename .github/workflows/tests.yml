@@ -16,8 +16,6 @@ jobs:
         with:
           node-version: 18
           check-latest: true
-          cache: "npm"
-          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: xvfb-run -a npm run test
         if: runner.os == 'Linux'
