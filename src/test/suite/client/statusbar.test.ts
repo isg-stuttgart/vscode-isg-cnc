@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import * as statusbar from "../../util/statusbar";
+import * as statusbar from "../../../util/statusbar";
 import { openTestFile } from "./testHelper";
 
 suite("Statusbar Tests", async () => {

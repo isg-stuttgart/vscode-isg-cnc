@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { getISGCNCOutputChannel } from '../../util/outputChannel';
+import { getISGCNCOutputChannel } from '../../../util/outputChannel';
 
 // only few tests because vscode API gives no access on reading information from output channel
 suite('Output Channel Tests', () => {

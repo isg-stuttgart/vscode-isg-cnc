@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { openTestFile } from './testHelper';
-import { findNonAsciiRanges } from '../..//util/nonAsciiCharacters';
+import { findNonAsciiRanges } from '../../../util/nonAsciiCharacters';
 
 suite('Non-ASCII Characters Tests', () => {
     test('Test non-ASCII characters decoration', async function () {

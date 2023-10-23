@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { fileContentProvider } from "../../extension";
+import { fileContentProvider } from "../../../extension";
 import { openTestFile } from "./testHelper";
 import assert = require("assert");
 import { MatchItem } from "src/util/fileContentTree";

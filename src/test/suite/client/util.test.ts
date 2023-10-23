@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { digitCount, isNumeric } from "../../util/util";
+import { digitCount, isNumeric } from "../../../util/util";
 
 suite("Util Tests", async () => {
     test("Test isNumeric", async function () {

@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { createFullAddress, startDocu } from "../../util/documentation";
+import { createFullAddress, startDocu } from "../../../util/documentation";
 import * as vscode from "vscode";
 suite("Open Documentation Test Suite", () => {
 
