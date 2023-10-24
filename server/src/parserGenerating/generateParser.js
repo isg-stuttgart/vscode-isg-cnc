@@ -13,7 +13,6 @@ try {
             customHeader: "/* eslint-disable */\n// @ts-nocheck"
         }
     });
-    // write result to filer
     fs.writeFileSync('./server/src/parserGenerating/ncParser.ts', parser);
 } catch (error) {
     console.error(error);

@@ -1,6 +1,6 @@
 import assert = require("assert");
 import * as vscode from "vscode";
-import { openTestFile } from "./testHelper";
+import { openTestFile } from "../testHelper";
 
 suite("Find TFS Test", () => {
     test("Find next TFS", async () => {

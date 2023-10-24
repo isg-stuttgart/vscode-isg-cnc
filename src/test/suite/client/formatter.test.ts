@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getPathOfWorkspaceFile, testApplyingCommandToFile } from "./testHelper";
+import { getPathOfWorkspaceFile, testApplyingCommandToFile } from "../testHelper";
 import { } from "../../../util/formatter";
 
 suite("Formatter Test", () => {

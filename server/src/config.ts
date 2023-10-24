@@ -15,6 +15,14 @@ let fileAssociations: { [key: string]: string } = {
     "*.plc": "isg-cnc"
 };
 
+export function cloneFileAssociations(): { [key: string]: string } {
+    const clone: { [key: string]: string } = {};
+    for (const [key, value] of Object.entries(fileAssociations)) {
+        clone[key] = value;
+    }
+    return clone;
+}
+
 /**
  * Updates the important settings with the setting of the IDE. Currently only the file associations are updated and saved in the fileAssociations variable.
 */

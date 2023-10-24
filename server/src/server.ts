@@ -79,6 +79,7 @@ connection.onInitialized(async () => {
 		});
 	}
 	await updateConfig();
+	connection.window.showInformationMessage("ISG-CNC Language Server started.");
 });
 
 /** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */

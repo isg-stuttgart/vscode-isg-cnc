@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { testApplyingCommandToFile } from "./testHelper";
+import { testApplyingCommandToFile } from "../testHelper";
 import { addBlockNumbers } from "../../../util/blockNumbers";
 suite("Block Numbers Commands Tests", () => {
     const addedName = "blockNumbers_test_added.nc";

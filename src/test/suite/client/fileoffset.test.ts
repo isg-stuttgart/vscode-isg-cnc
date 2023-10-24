@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { openTestFile } from "./testHelper";
+import { openTestFile } from "../testHelper";
 import { getCurrentFileOffset, setCursorPosition, showCursorFileOffsetInfobox } from "../../../util/fileoffset";
 
 suite("File Offset Test", () => {

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { fileContentProvider } from "../../../extension";
-import { openTestFile } from "./testHelper";
+import { openTestFile } from "../testHelper";
 import assert = require("assert");
 import { MatchItem } from "src/util/fileContentTree";
 suite("File Content Tree Provider Test", () => {
@@ -174,7 +174,7 @@ suite("File Content Tree Provider Test", () => {
         // get test tool item
         const matchCategories = await fileContentProvider.getChildren(root);
         const toolCalls = await fileContentProvider.getChildren(matchCategories[0]);
-        const testToolCallItem = toolCalls[1]  as MatchItem;
+        const testToolCallItem = toolCalls[1] as MatchItem;
 
         // execute command of item
         await vscode.commands.executeCommand(testToolCallItem?.command?.command as string, testToolCallItem);

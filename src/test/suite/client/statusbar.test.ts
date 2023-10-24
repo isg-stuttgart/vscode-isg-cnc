@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as statusbar from "../../../util/statusbar";
-import { openTestFile } from "./testHelper";
+import { openTestFile } from "../testHelper";
 
 suite("Statusbar Tests", async () => {
     test("Test Current Offset Status Bar Item", async function () {

@@ -509,7 +509,6 @@
         "postinstall": "cd server && npm install"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.4",
         "@types/mocha": "^9.0.0",
         "@types/node": "14.x",
         "@types/vscode": "^1.59.0",
@@ -517,7 +516,7 @@
         "@typescript-eslint/parser": "^4.31.1",
         "@vscode/test-electron": "^2.3.5",
         "eslint": "^7.32.0",
-        "glob": "^7.1.7",
+        "glob": "^10.3.0",
         "mocha": "^9.1.1",
         "node-gyp": "^9.1.0",
         "peggy": "^2.0.1",
@@ -527,6 +526,7 @@
     },
     "dependencies": {
         "ignore": "^5.2.4",
-        "vscode-languageclient": "^8.0.2"
+        "vscode-languageclient": "^8.0.2",
+        "minimatch": "^9.0.3"
     }
 }
