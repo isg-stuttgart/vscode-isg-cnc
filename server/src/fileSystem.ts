@@ -43,15 +43,15 @@ export function findMostSpecificGlobPattern(path: string, patterns: string[]): s
  * @param rootPath the root directory to start searching in
  * @param fileName the name of the file to search for
  * @param ignorer optional ignorer to ignore files/directories, defaults to empty ignorer which ignores nothing
- * @returns 
+ * @returns the paths to the found files 
  */
-export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer = new WorkspaceIgnorer("")): string[] {
+export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer | undefined = undefined): string[] {
     let paths: string[] = [];
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
         const entryPath = path.join(rootPath, entry.name);
         // skip ignored files/directories
-        if (ignorer.ignores(entryPath)) {
+        if (ignorer && ignorer.ignores(entryPath)) {
             continue;
         }
         if (entry.isDirectory()) {
@@ -69,7 +69,7 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
 /**
  * Normalizes a given path to a lowercase drive letter and a normalized (by path module) path
  * @param filePath 
- * @returns 
+ * @returns the normalized path 
  */
 export function normalizePath(filePath: string): string {
     const pathObj = path.parse(filePath);
@@ -83,25 +83,6 @@ export function normalizePath(filePath: string): string {
     const combinedPath = path.join(lowercaseDrive, dirWithoutRoot, pathObj.base);
     const normalizedPath = path.normalize(combinedPath);
     return normalizedPath;
-}
-
-/**
- * Counts all files in a given path
- * @param rootPath 
- * @returns 
- */
-export function countFilesInPath(rootPath: string): number {
-    let count = 0;
-    const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
-    for (const entry of dirEntries) {
-        const entryPath = path.join(rootPath, entry.name);
-        if (entry.isDirectory()) {
-            count += countFilesInPath(entryPath);
-        } else if (entry.isFile()) {
-            count++;
-        }
-    }
-    return count;
 }
 
 /**
@@ -124,10 +105,10 @@ export class WorkspaceIgnorer {
     /**
      * Checks if the given file path is ignored by the ignorer.
      * @param filePath 
-     * @returns 
+     * @returns true if the file is ignored, false otherwise
      */
     public ignores(filePath: string): boolean {
-        const relativePath = path.relative(this.workspacePath, filePath);
+        const relativePath = path.posix.normalize(path.relative(this.workspacePath, filePath)).replaceAll("\\", "/");
         return this.ignorer.ignores(relativePath);
     }
 }

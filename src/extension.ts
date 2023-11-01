@@ -166,7 +166,7 @@ export function activate(context: vscode.ExtensionContext): void {
  *
  */
 export function deactivate(): void {
-    printToOutputchannel("Close vscode-isg-cnc");
+    printToOutputchannel("Deactivate vscode-isg-cnc extension");
     disposeOutputchannel();
     if (client) {
         client.stop();

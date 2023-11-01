@@ -1,4 +1,3 @@
-import { getConnection } from "./connection";
 import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./fileSystem";
 import * as fs from "fs";
 import * as path from "path";
@@ -42,7 +41,7 @@ export function updateSettings(workspaceConfig: any) {
             fileAssociations[key] = value;
         }
     } catch (e) {
-        getConnection()?.console.error("Error while updating settings: " + e);
+        throw new Error("Error while updating settings. " + e);
     }
 }
 

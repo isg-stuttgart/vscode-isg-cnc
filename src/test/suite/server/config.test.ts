@@ -2,7 +2,7 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import { cloneFileAssociations, getAllNotIgnoredCncFilePathsInRoot, isCncFile, updateSettings } from "../../../../server/src/config";
-import path = require("path");
+import * as path from "path";
 import { getPathOfWorkspaceFile, openTestFile } from "../testHelper";
 suite("LS Config Tests", async () => {
     test("Updating file associations in Single Workspace", async function () {

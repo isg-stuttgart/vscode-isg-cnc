@@ -2,6 +2,21 @@ import assert = require('assert');
 import path = require('path');
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+
+export async function openTestFileForLS(fileName: string): Promise<vscode.TextDocument> {
+    const doc = await openTestFile(fileName);
+    // wait 2 seconds for the language server to be ready
+    await sleep(2000);
+    return doc;
+}
+/**
+ * Waits for the specified time. To use this function to pause an async function, you have to use the await keyword when calling it.
+ * @param ms The time to wait in milliseconds.
+ * @returns  A promise which resolves after the specified time.
+ */
+export async function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 /**
  * Returns the path of the file in the workspace which is the combination of the workspace folder and passed the filename.
  * @param filename The name of the file in the workspace.

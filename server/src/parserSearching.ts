@@ -2,7 +2,6 @@ import * as fs from "fs";
 import path = require("path");
 import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { getConnection } from "./connection";
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
 import { matchTypes } from "./matchTypes";
@@ -187,8 +186,7 @@ export function findMatchRangesWithinPath(filePaths: string[], types: string[], 
             ranges.push(...fileRanges);
         } catch (error) {
             const errorMessage = `Error while parsing ${filePath}: ${error} \nThis file is not included in the found references.`;
-            getConnection()?.window.showErrorMessage(errorMessage);
-            console.error(errorMessage);
+            throw new Error(errorMessage);
         }
 
         progressHandler.increment(filePath);

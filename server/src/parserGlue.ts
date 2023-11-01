@@ -9,7 +9,6 @@ import {
 import * as fs from "fs";
 import path = require("node:path");
 import { Connection } from "vscode-languageserver";
-import { getConnection } from "./connection";
 import { getSurroundingVar, findLocalStringRanges, isWithinMatches } from "./stringSearching";
 import { WorkspaceIgnorer, findFileInRootDir, normalizePath } from "./fileSystem";
 import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
@@ -33,8 +32,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     try {
         parseResult = new ParseResults(fileContent);
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
-        return [];
+        throw new Error(`Error parsing file ${uri}: ${error}`);
     }
     const ast: any[] = parseResult.results.fileTree;
 
@@ -95,7 +93,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             try {
                 mainPrg = new ParseResults(defFileContent).results.mainPrg;
             } catch (error) {
-                getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
+                throw new Error(`Error parsing file ${uri}: ${error}`);
                 console.error(`Error parsing file ${path}: ${error}`);
             }
             let range = {
@@ -130,8 +128,7 @@ export async function getReferences(fileContent: string, position: Position, uri
     try {
         parseResult = new ParseResults(fileContent);
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
-        return [];
+        throw new Error(`Error parsing file ${uri}: ${error}`);
     }
 
     // if the location is within comments, return empty array
