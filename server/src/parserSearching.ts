@@ -4,7 +4,7 @@ import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./pa
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
-import { matchTypes } from "./matchTypes";
+import { MatchType } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
 
 /**
@@ -100,7 +100,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     if (tree && isMatch(tree)) {
         const match = tree as Match;
 
-        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);
+        const globalCall = types.includes(MatchType.globalCycleCallName) || types.includes(MatchType.globalPrgCallName);
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
         if (globalCall && matchName && path.isAbsolute(matchName)) {

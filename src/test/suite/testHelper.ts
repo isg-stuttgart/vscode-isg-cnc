@@ -2,6 +2,9 @@ import assert = require('assert');
 import path = require('path');
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { Match } from '../../../server/src/parserClasses';
+import * as peggy from 'peggy';
+import { MatchType } from '../../../server/src/parserClasses';
 
 export async function openTestFileForLS(fileName: string): Promise<vscode.TextDocument> {
     const doc = await openTestFile(fileName);
@@ -69,4 +72,54 @@ export async function testApplyingCommandToFile(fileName: string, expectedName: 
     //compare result
     const expectedContent = fs.readFileSync(expectedPath, 'utf8');
     assert.strictEqual(newContent, expectedContent);
+}
+
+/**
+ * A Mock object for a Match object. The type must be specified, the other parameters default to null when not specified.
+ */
+export class MatchMock implements Match {
+    type: MatchType;
+    content: any;
+    location: peggy.LocationRange;
+    text: string;
+    name: string | null;
+
+    constructor(type: MatchType, content: any = null, location: peggy.LocationRange = new LocationRangeMock(), text: string = "", name: string | null = null) {
+        this.type = type;
+        this.content = content;
+        this.location = location;
+        this.text = text;
+        this.name = name;
+    }
+}
+
+/** A peggy.LocationRange Mock object which defaults to a default object when not specified. */
+export class LocationRangeMock implements peggy.LocationRange {
+    source: any;
+    start: peggy.Location;
+    end: peggy.Location;
+
+    constructor(
+        source: any = null,
+        start: peggy.Location = new LocationMock(),
+        end: peggy.Location = new LocationMock()
+    ) {
+        this.source = source;
+        this.start = start;
+        this.end = end;
+    }
+}
+
+/**
+ * A peggy.Location Mock object which defaults to a default object when not specified.
+ */
+export class LocationMock implements peggy.Location {
+    line: number;
+    column: number;
+    offset: number;
+    constructor(line: number = 0, column: number = 0, offset: number = 0) {
+        this.line = line;
+        this.column = column;
+        this.offset = offset;
+    }
 }

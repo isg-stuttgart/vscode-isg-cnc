@@ -1,5 +1,5 @@
 import { Match, ParseResultContent } from "./parserClasses";
-import { matchTypes } from "./matchTypes";
+import { MatchType } from "./parserClasses";
 import * as ncParser from "./parserGenerating/ncParser";
 
 /**
@@ -80,31 +80,31 @@ export class ParseResults {
             // add to specific array
             if (element.type !== null && element.type !== undefined) {
                 switch (element.type) {
-                    case matchTypes.toolCall:
+                    case MatchType.toolCall:
                         toolCalls.push(element);
                         break;
-                    case matchTypes.localPrgCallName:
-                    case matchTypes.globalPrgCallName:
-                    case matchTypes.localCycleCallName:
-                    case matchTypes.globalCycleCallName:
+                    case MatchType.localPrgCallName:
+                    case MatchType.globalPrgCallName:
+                    case MatchType.localCycleCallName:
+                    case MatchType.globalCycleCallName:
                         prgCallNames.push(element);
                         break;
-                    case matchTypes.trash:
+                    case MatchType.trash:
                         trash.push(element);
                         break;
-                    case matchTypes.controlBlock:
+                    case MatchType.controlBlock:
                         controlBlocks.push(element);
                         break;
-                    case matchTypes.multiline:
+                    case MatchType.multiline:
                         multilines.push(element);
                         break;
-                    case matchTypes.skipBlock:
+                    case MatchType.skipBlock:
                         skipBlocks.push(element);
                         break;
-                    case matchTypes.blockNumber:
+                    case MatchType.blockNumber:
                         blockNumbers.push(element);
                         break;
-                    case matchTypes.comment:
+                    case MatchType.comment:
                         comments.push(element);
                         break;
                 }
