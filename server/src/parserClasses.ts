@@ -64,7 +64,7 @@ export interface Match {
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
-export function isMatch(obj: any): boolean {
+export function hasMatchProperties(obj: any): boolean {
     const exampleMatch = {
         type: null,
         content: null,

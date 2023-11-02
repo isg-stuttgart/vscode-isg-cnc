@@ -143,19 +143,24 @@ block_body "block_body"
 ( control_block                                             // a control block, i.e., $IF, $FOR etc.
 / plaintext_block                                           // some plaintext command, i.e., #MSG SAVE
 / default_block)){                                          // default block, i.e., G01 X12 Y23
-	numberableLinesUnsorted.add(location().start.line);
+// if text is not only whitespace, then add line to numberableLinesUnsorted
+  if(text().trim().length>0){
+    numberableLinesUnsorted.add(location().start.line);
+  }
 	return content;
 }
 
 control_block "control_block"                               // a control block, i.e., $IF, $ELSE, $SWITCH etc.
-= if_block/gotoBlock 
-/ grayspaces "$" trash_line
-    
+= content: (if_block/gotoBlock){
+  numberableLinesUnsorted.add(location().end.line);
+  return content;
+}
+
 if_block "if_block"                                         // an if block
 = if_block_for_indentation                                  // this will be saved in controlBlocks
   elseif_block*                                             // any else-if extensions 
   else_block?                                               // optional else extension
-  grayspaces "$ENDIF" grayspaces linebreak?                 // ends when closed by $ENDIF which does not close inner block                                         
+  grayspaces "$ENDIF" grayspaces                            // ends when closed by $ENDIF which does not close inner block                                         
     
 if_block_for_indentation
 = content:(grayspaces "$IF" line_end                        // begins with $IF line
@@ -176,8 +181,8 @@ else_block
 }
 
 if_block_content
-= (!(grayspaces ("$ELSEIF"/"$ELSE"/"$ENDIF")                // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
-  grayspaces linebreak?)block)*
+= (!("$ELSEIF"/"$ELSE"/"$ENDIF")block)*                // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
+  
   
 gotoBlock "gotoBlock"
 = "$GOTO" gap (gotoNCommand/gotoLabel)
@@ -230,7 +235,6 @@ endvar_line
 default_block "default_block"                               // a default block containing "normal" NC-commands
 = (multiline_default_block 
 / default_line)
-linebreak?
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(
@@ -254,7 +258,7 @@ default_line                                                // line with any whi
 
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
-= (!stop_trashing .)+                          
+= ((!stop_trashing .)+ linebreak?/linebreak)                         
 {return "trash: " + text()}
 
 parameter "parameter"
@@ -269,7 +273,7 @@ var
 }
 
 stop_trashing
-= linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
+= linebreak/"\\"/comment/prg_call/command/control_block/label/var
 
 command "command"                                           // a tool call or other normal command
 = (t_command/($([A-Z] number)))                             
@@ -282,7 +286,7 @@ n_command "n_command"                                       // a command definin
 
 t_command "t_command"                                       // a command calling a specified tool, i.e., T1
 = "T" number {
-    return new Match(types.toolCall, null, location(), text(), null);
+    return new Match(types.toolCall, null, location(), text(), text());
 }
 
 prg_call "prg_call"                                         // a subprogram/cycle call
@@ -417,5 +421,5 @@ string "string"                                             // a string
 {return text()}
 
 line_end
-= non_linebreak* linebreak 
+= non_linebreak* linebreak?
 {return text()}

@@ -102,6 +102,7 @@ export class ParseResults {
                         skipBlocks.push(element);
                         break;
                     case MatchType.blockNumber:
+                    case MatchType.blockNumberLabel:
                         blockNumbers.push(element);
                         break;
                     case MatchType.comment:
