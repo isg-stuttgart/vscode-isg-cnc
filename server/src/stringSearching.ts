@@ -3,7 +3,7 @@ import { FileRange, Match, Position } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
 
 /**
- * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based).
+ * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based). If an empty string is specified to be searched, an empty array is returned.
  * When the parser fails, comments are not excluded.
  * @param fileContent the file string
  * @param string the string to search for
@@ -11,6 +11,10 @@ import { ParseResults } from "./parsingResults";
  * @returns an array of file ranges (uri and start/end positions)
  */
 export function findLocalStringRanges(fileContent: string, string: string, uri: string): FileRange[] {
+    // if string is empty, return empty array
+    if (string.length === 0) {
+        return [];
+    }
     let ranges: FileRange[] = [];
     const lines = fileContent.split(EOL);
     let commentMatches: Match[];
@@ -42,28 +46,28 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
  * @param pos the position
  */
 export function isWithinMatches(matches: Match[], pos: Position): boolean {
-    let isInComment = false;
+    let isInMatch = false;
     for (const match of matches) {
         const matchStart = new Position(match.location.start.line - 1, match.location.start.column - 1);
         const matchEnd = new Position(match.location.end.line - 1, match.location.end.column - 1);
         if (compareLocations(matchStart, pos) <= 0 && compareLocations(pos, matchEnd) <= 0) {
-            isInComment = true;
+            isInMatch = true;
             break;
         }
     }
-    return isInComment;
+    return isInMatch;
 }
 /**
- * Return the surrounding variable string at the given position in the given file content. If no variable is found, return null.
- * @param fileContent 
- * @param position 
- * @returns 
+ * Return the surrounding variable string (locally defined vars) at the given position in the given text. If no variable is found, return null.
+ * @param text the text to search in
+ * @param position the position to search at 
+ * @returns the surrounding variable string or null if no variable is found at the given position 
  */
-export function getSurroundingVar(fileContent: string, position: Position): string | null {
+export function getSurroundingVar(text: string, position: Position): string | null {
     let result = null;
-    const lines = fileContent.split(EOL);
+    const lines = text.split(EOL);
     const line = lines[position.line];
-    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|(\[-?[0-9]+\])*)?/gm;
+    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|(\[-?[_a-zA-Z0-9.]+\])*)?/gm;
 
     // word begin can be between 0 and position.character
     for (let begin = 0; begin <= position.character; begin++) {
@@ -75,7 +79,7 @@ export function getSurroundingVar(fileContent: string, position: Position): stri
             const matchEnd = begin + matchString.length;
 
             // if match ends after position.character, we found the surrounding variable
-            if (matchEnd > position.character) {
+            if (matchEnd >= position.character) {
                 result = matchString;
                 break;
             }

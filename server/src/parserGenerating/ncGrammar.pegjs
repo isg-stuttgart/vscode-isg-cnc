@@ -152,6 +152,7 @@ block_body "block_body"
 
 control_block "control_block"                               // a control block, i.e., $IF, $ELSE, $SWITCH etc.
 = content: (if_block/gotoBlock){
+  numberableLinesUnsorted.add(location().start.line);
   numberableLinesUnsorted.add(location().end.line);
   return content;
 }
@@ -165,18 +166,21 @@ if_block "if_block"                                         // an if block
 if_block_for_indentation
 = content:(grayspaces "$IF" line_end                        // begins with $IF line
   if_block_content){
+  numberableLinesUnsorted.add(location().start.line);
   return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 elseif_block
 = content:(grayspaces ("$ELSEIF" line_end                   // begins with $ELSEIF line
    if_block_content)){
+  numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 else_block
 = grayspaces  content:("$ELSE" line_end                     // begins with $ELSEIF line
    if_block_content){
+  numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
