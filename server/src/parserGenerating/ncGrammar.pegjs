@@ -123,11 +123,14 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(grayspace/block/linebreak))+                               // the body is a list of comments and blocks
+(block/linebreak))+                                         // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
-= content:(skipped_block/block_body)
-{
+= content:(
+  grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+/ skipped_block
+/block_body
+){
   checkTimeout();
   return content;
 }
@@ -185,7 +188,7 @@ else_block
 }
 
 if_block_content
-= (!("$ELSEIF"/"$ELSE"/"$ENDIF")block)*                // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
+= (!("$ELSEIF"/"$ELSE"/"$ENDIF")block)*                     // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
   
   
 gotoBlock "gotoBlock"

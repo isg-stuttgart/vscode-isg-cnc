@@ -981,12 +981,9 @@ function peg$parse(input: string, options?: ParseOptions) {
       s2 = peg$FAILED;
     }
     if (s2 as any !== peg$FAILED) {
-      s3 = peg$parsegrayspace();
+      s3 = peg$parseblock();
       if (s3 as any === peg$FAILED) {
-        s3 = peg$parseblock();
-        if (s3 as any === peg$FAILED) {
-          s3 = peg$parselinebreak();
-        }
+        s3 = peg$parselinebreak();
       }
       if (s3 as any !== peg$FAILED) {
         s2 = [s2, s3];
@@ -1081,12 +1078,9 @@ function peg$parse(input: string, options?: ParseOptions) {
           s2 = peg$FAILED;
         }
         if (s2 as any !== peg$FAILED) {
-          s3 = peg$parsegrayspace();
+          s3 = peg$parseblock();
           if (s3 as any === peg$FAILED) {
-            s3 = peg$parseblock();
-            if (s3 as any === peg$FAILED) {
-              s3 = peg$parselinebreak();
-            }
+            s3 = peg$parselinebreak();
           }
           if (s3 as any !== peg$FAILED) {
             s2 = [s2, s3];
@@ -1117,9 +1111,12 @@ function peg$parse(input: string, options?: ParseOptions) {
 
     peg$silentFails++;
     s0 = peg$currPos;
-    s1 = peg$parseskipped_block();
+    s1 = peg$parsegrayspace();
     if (s1 as any === peg$FAILED) {
-      s1 = peg$parseblock_body();
+      s1 = peg$parseskipped_block();
+      if (s1 as any === peg$FAILED) {
+        s1 = peg$parseblock_body();
+      }
     }
     if (s1 as any !== peg$FAILED) {
       peg$savedPos = s0;

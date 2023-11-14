@@ -90,6 +90,12 @@
                     "description": "Choose the documentation language",
                     "order": 30
                 },
+                "isg-cnc.includeCommentsInNumbering": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Include comments when using the Add/Remove Blocknumbers command",
+                    "order": 35
+                },
                 "isg-cnc.enableOutputchannel": {
                     "type": "boolean",
                     "default": false,

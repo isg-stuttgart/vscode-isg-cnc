@@ -19,6 +19,7 @@
 
 $IF IS_STRING[@P1] == TRUE
   V.P.ARRAY_1[3][6]
+
   ; V.P.ARRAY_1[3][6]
   V.P.ARRAY_1[3][6] = [10,11 ]
   #MSG["Text: %s",@P1]

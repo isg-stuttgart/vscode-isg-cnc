@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { digitCount, isNumeric } from "./util";
 import { ParseResults } from "../../server/src/parsingResults";
 import { Match } from "server/src/parserClasses";
+import { getIncludeCommentsInNumbering } from "./config";
 
 // Blocknumber regex
 const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
@@ -16,14 +17,15 @@ export async function removeAllBlocknumbers() {
     if (activeTextEditor) {
         const document = activeTextEditor.document;
         if (document) {
-            let linesToBlocknumberMap;
+            let linesToBlocknumberMap: Map<number, Match>;
+            let parseResults: ParseResults;
             try {
-                linesToBlocknumberMap = new ParseResults(document.getText()).getLineToBlockNumberMap();
+                parseResults = new ParseResults(document.getText());
+                linesToBlocknumberMap = parseResults.getLineToBlockNumberMap();
             } catch (error) {
                 vscode.window.showErrorMessage("Canceled removing blocknumbers: " + JSON.stringify(error));
                 return;
             }
-
             // edit document line by line
             for (let ln = 0; ln < document.lineCount; ln++) {
                 const line = document.lineAt(ln);
@@ -43,10 +45,32 @@ export async function removeAllBlocknumbers() {
                     textEdits.push(vscode.TextEdit.replace(range, ""));
                 }
             }
+            const workEdits = new vscode.WorkspaceEdit();
+            workEdits.set(document.uri, textEdits); // give the edits
+            await vscode.workspace.applyEdit(workEdits); // apply the edits
+
+            // if configuration says to also number comments, iterate over all comments and add an entry to linesToBlocknumberMap
+            if (getIncludeCommentsInNumbering()) {
+                textEdits.length = 0;
+                parseResults.syntaxArray.comments.forEach((match) => {
+                    // check for all comment lines if the trimmed version BEGINS with a N[0-9]*
+                    for (let i = match.location.start.line - 1; i <= match.location.end.line - 1; i++) {
+                        const line = document.lineAt(i);
+                        const blockNumberMatch = new RegExp(/^\s*N[0-9]*/).exec(line.text.trim());
+                        if (blockNumberMatch !== null) {
+                            const range = new vscode.Range(
+                                new vscode.Position(i, blockNumberMatch.index),
+                                new vscode.Position(i, blockNumberMatch.index + blockNumberMatch[0].length +1)
+                            );
+                            textEdits.push(vscode.TextEdit.replace(range, ""));
+                        }  
+                    }
+                });
+                const workEdits = new vscode.WorkspaceEdit();
+                workEdits.set(document.uri, textEdits); // give the edits
+                await vscode.workspace.applyEdit(workEdits); // apply the edits
+            }
         }
-        const workEdits = new vscode.WorkspaceEdit();
-        workEdits.set(document.uri, textEdits); // give the edits
-        await vscode.workspace.applyEdit(workEdits); // apply the edits
     }
 }
 
@@ -117,7 +141,15 @@ export async function addBlockNumbers(start: number, step: number) {
         if (document) {
             const parseResult: ParseResults = new ParseResults(document.getText());
             const linesToNumber: Array<number> = parseResult.getNumberableLines();
-
+            // if configuration says to also number comments, add them to linesToNumber
+            if (getIncludeCommentsInNumbering()) {
+                parseResult.syntaxArray.comments.forEach((match) => {
+                    // push all lines between match.location.start.line and match.location.end.line to linesToNumber
+                    for (let i = match.location.start.line - 1; i <= match.location.end.line - 1; i++) {
+                        linesToNumber.push(i);
+                    }
+                });
+            }
             const skipLineBeginIndexes: Map<number, number> = new Map();
             let skipBlocks;
             try {
@@ -142,6 +174,10 @@ export async function addBlockNumbers(start: number, step: number) {
 
             for (let ln of linesToNumber) {
                 const line = document.lineAt(ln);
+                // if line is empty skip it
+                if (line.text.trim() === "") {
+                    continue;
+                }
                 // generate blocknumber
                 const blockNumberString =
                     "N" + blocknumber.toString().padStart(maxDigits, "0");
