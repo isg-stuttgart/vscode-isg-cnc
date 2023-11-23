@@ -3,7 +3,7 @@ import * as assert from 'assert';
 import { getPathOfWorkspaceFile } from "../testHelper";
 import * as fs from "fs";
 import { MatchType } from "../../../../server/src/parserClasses";
-const usedFilePath = getPathOfWorkspaceFile("testWithEverything.nc");
+const usedFilePath = getPathOfWorkspaceFile("parsingResults_test.nc");
 const fileContent = fs.readFileSync(usedFilePath, "utf8");
 const results = new ParseResults(fileContent);
 

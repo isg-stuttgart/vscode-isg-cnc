@@ -73,7 +73,7 @@ connection.onInitialized(async () => {
 				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
-			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.includes(folderUri));
 		});
 	}
 	await updateConfig();
