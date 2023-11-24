@@ -31,7 +31,7 @@ export class ParseResults {
     }
 
     /**
-     * Returns all linenumbers of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
+     * Returns all linenumbers (sorted) of lines which should be numbered by blocknumbers. This is 0 based, in contrast to the original location objects of the parser.
      * If the parser throws an error, an empty array is returned.
      * @param text the text to parse
      * @returns Array with linenumbers

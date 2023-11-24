@@ -59,15 +59,19 @@ export async function testApplyingCommandToFile(fileName: string, expectedName: 
     const doc = await vscode.workspace.openTextDocument(filePath);
     const oldText = doc.getText();
     const editor = await vscode.window.showTextDocument(doc);
+    let newContent;
 
     //execute
-    await command();
-    const newContent = doc.getText();
-    //undo changes by applying old text
-    await editor.edit(editBuilder => {
-        editBuilder.replace(new vscode.Range(0, 0, doc.lineCount, 0), oldText);
-    });
-    await doc.save();
+    try {
+        await command();
+        newContent = doc.getText();
+    } finally {
+        //undo changes by applying old text
+        await editor.edit(editBuilder => {
+            editBuilder.replace(new vscode.Range(0, 0, doc.lineCount, 0), oldText);
+        });
+        await doc.save();
+    }
 
     //compare result
     const expectedContent = fs.readFileSync(expectedPath, 'utf8');

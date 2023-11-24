@@ -42,7 +42,8 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         return [];
     }
 
-    /**If the location is on a variable, search for it's definition via the parser. This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
+    /*If the location is on a variable, search for it's definition via the parser. 
+    This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
     const surroundingVar = getSurroundingVar(fileContent, position);
     if (surroundingVar) {
         const varMatch = findFirstMatchWithinPrg(ast, MatchType.varDeclaration, surroundingVar);

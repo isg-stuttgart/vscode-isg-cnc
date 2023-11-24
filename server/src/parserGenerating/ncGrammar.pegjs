@@ -214,7 +214,7 @@ plaintext_block "plaintext_block"                           // a block containin
 
 var_block "var_block"                                       // a block of variable declarations
 = content:("#VAR" 
-  (grayline/(!endvar_line (var_dec/non_linebreak)))*
+  (n_command/grayline/(!endvar_line (var_dec/non_linebreak)))*
   grayspaces "#ENDVAR"){
   numberableLinesUnsorted.add(location().start.line);
   numberableLinesUnsorted.add(location().end.line);
@@ -222,18 +222,17 @@ var_block "var_block"                                       // a block of variab
 }
 
 var_dec                                                     // var declaration
-= id:var_name $allocation?{
-return new Match(types.varDeclaration, null, location(), text(), id)
+= id:var_dec_name $(var_index?) $(grayspaces ":" grayspaces data_type grayspaces)? $initialization?{
+  numberableLinesUnsorted.add(location().start.line);
+  return new Match(types.varDeclaration, null, location(), text(), id)
 }
 
-var_name
-= $("V." ("P"/"S"/"L"/"CYC") "." name vardec_index?)
 
-vardec_index
+var_index
 = ("." name)/(("[" integer "]")*)
 
-allocation
-= gap "=" gap 
+initialization
+= grayspaces "=" grayspaces
   (("["[^\]]* "]")/number/string)
 
 endvar_line
@@ -275,8 +274,8 @@ parameter_trash_token "parameter_trash_token"
 = $(!(grayspace/var/"]") .)+
 
 var
-=var_name{
-  return new Match(types.variable, null, location(), text(), text());
+=id:var_name $var_index?{
+  return new Match(types.variable, null, location(), text(), id);
 }
 
 stop_trashing
@@ -352,6 +351,19 @@ label                                                       // a label to which 
   return new Match(types.label, null, location(), text(), id) 
 }
 
+data_type = 
+  $("BOOLEAN"/"SGN08"/"UNS08"/"SGN16"/"UNS16"/"SGN32"/"UNS32"/"REAL"/
+  ("STRING[" (("12"[0-6]) / ("1"[01][1-9]) / ([1-9][0-9]) / ([0-9]))  "]")) // STRING[i] with i = 1...126
+
+
+var_dec_name
+= $(("V." ("P"/"S"/"L"/"CYC") ".") name) 
+
+var_name
+=  var_dec_name                                             // copy of var_dec_name because we don't want var_dec_name to include the same type for definition searching
+{
+  return new Match(types.variable, text(), location(), text(), text()) 
+}
 gap                                                         // a gap
 = paren_comment* whitespace grayspaces                      // at least one whitespace surrounded by grayspace
 

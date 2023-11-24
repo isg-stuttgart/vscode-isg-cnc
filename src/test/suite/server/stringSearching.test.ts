@@ -56,10 +56,10 @@ suite('LS stringSearching', () => {
         assert.strictEqual(getSurroundingVar(text, new Position(8, 2)), "V.P.VAR_1");
         assert.strictEqual(getSurroundingVar(text, new Position(10, 3)), "V.P.VAR_2");
         assert.strictEqual(getSurroundingVar(text, new Position(12, 11)), "V.P.VAR_3");
-        assert.strictEqual(getSurroundingVar(text, new Position(30, 2)), "V.P.ARRAY_1[3][6]");
-        assert.strictEqual(getSurroundingVar(text, new Position(42, 14)), "V.S.EXAMPLE[2]");
+        assert.strictEqual(getSurroundingVar(text, new Position(30, 2)), "V.P.ARRAY_1");
+        assert.strictEqual(getSurroundingVar(text, new Position(42, 14)), "V.S.EXAMPLE");
         assert.strictEqual(getSurroundingVar(text, new Position(62, 9)), "V.L.LOC_VAR2");
-        assert.strictEqual(getSurroundingVar(text, new Position(86, 11)), "V.CYC.TEST_A[P1][P2]");
+        assert.strictEqual(getSurroundingVar(text, new Position(86, 11)), "V.CYC.TEST_A");
     });
 
     test("getSurroundingVar with comments", () => {

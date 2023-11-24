@@ -67,7 +67,7 @@ export function getSurroundingVar(text: string, position: Position): string | nu
     let result = null;
     const lines = text.split(EOL);
     const line = lines[position.line];
-    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+(\.[_a-zA-Z0-9.]+|(\[-?[_a-zA-Z0-9.]+\])*)?/gm;
+    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+/gm;
 
     // word begin can be between 0 and position.character
     for (let begin = 0; begin <= position.character; begin++) {
