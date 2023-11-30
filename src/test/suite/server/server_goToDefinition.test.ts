@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import path = require('path');
 import * as fs from "fs";
 import * as OS from "os";
+import { VSCodeLocationMock,assertSameLocations } from '../testHelper';
 const testFilePath = getPathOfWorkspaceFile("testWithEverything.nc");
 const testFileUri = vscode.Uri.file(testFilePath);
 suite('Go To Definition', () => {
@@ -27,6 +28,7 @@ suite('Go To Definition', () => {
             testFileUri,
             new vscode.Position(37, 6)
         ) as vscode.Location[];
+        assert.deepStrictEqual(actualDefinitions, []);
     });
 
     test("Local Prg Call Name", async () => {
@@ -84,6 +86,7 @@ suite('Go To Definition', () => {
     });
 
     test("Global Prg/Cycle Call Name (by absolute path)", async () => {
+        // create a tmp file which uses the absolute path to the called program within a prg call and a cycle call
         const absolutePathToCalledProgram = getPathOfWorkspaceFile(path.join("multiRoot2", "calledProgram.nc"));
         const callString = "L " + absolutePathToCalledProgram + OS.EOL +
             "L CYCLE [NAME = " + absolutePathToCalledProgram + "]";
@@ -158,23 +161,4 @@ suite('Go To Definition', () => {
 
 });
 
-function assertSameLocations(actual: vscode.Location[], expected: VSCodeLocationMock[]) {
-    assert.strictEqual(actual.length, expected.length);
-    // sort locations by uri
-    actual.sort((a, b) => a.uri.fsPath.localeCompare(b.uri.fsPath));
-    expected.sort((a, b) => a.path.localeCompare(b.path));
-    // compare locations
-    for (let i = 0; i < actual.length; i++) {
-        assert.strictEqual(actual[i].uri.fsPath, expected[i].path);
-        assert.deepStrictEqual(actual[i].range, expected[i].range);
-    }
-}
 
-class VSCodeLocationMock {
-    path: string;
-    range: vscode.Range;
-    constructor(path: string, startLine: number, startColumn: number, endLine: number, endColumn: number) {
-        this.path = path;
-        this.range = new vscode.Range(startLine, startColumn, endLine, endColumn);
-    }
-}

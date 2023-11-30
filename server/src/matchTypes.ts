@@ -60,9 +60,9 @@ export function getRefTypes(match: Match): { refTypes: MatchType[], local: boole
             refTypes = [MatchType.globalCycleCallName, MatchType.globalPrgCallName];
             break;
         // local program calls
+        case MatchType.localPrgDefinitionName:
         case MatchType.localPrgCallName:
         case MatchType.localCycleCallName:
-        case MatchType.localSubPrg:
             refTypes = [MatchType.localPrgCallName, MatchType.localCycleCallName];
             break;
         // goto label

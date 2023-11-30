@@ -13,6 +13,7 @@
       // prg calls
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
+      localPrgDefinitionName: "localPrgDefinitionName",
       globalPrgCall: "globalPrgCall",
       globalPrgCallName: "globalPrgCallName",
       localCycleCall: "localCycleCall",
@@ -107,8 +108,14 @@ file "file"
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= "%L" whitespace+ title:$name content:body{                // each subprogram requires a title and a body
- return new Match(types.localSubPrg, content, location(), text(), title);
+= content:("%L" $whitespace+ subprogram_name body){                // each subprogram requires a title and a body
+ return new Match(types.localSubPrg, content, location(), text(), content[2].name);
+}
+
+subprogram_name "subprogram_name"                           // a subprogram name
+= name
+{
+  return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
 }
 
 mainprogram "mainprogram"                                   // the main program
@@ -127,7 +134,8 @@ body "body"                                                 // the body of a (su
 
 block "block"                                               // an NC block
 = content:(
-  grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+  $whitespace+
+/ grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
 / skipped_block
 /block_body
 ){
@@ -275,7 +283,7 @@ parameter_trash_token "parameter_trash_token"
 
 var
 =id:var_name $var_index?{
-  return new Match(types.variable, null, location(), text(), id);
+  return new Match(types.variable, id, location(), text(), id.name);
 }
 
 stop_trashing
@@ -427,10 +435,9 @@ number "number"                                             // a number
 {return text()}
 
 name "name"                                                 // a name/identifier consisting of alphabetical Characters, "_" and "."
-= [_a-zA-Z0-9.]+
+= $[_a-zA-Z0-9.]+
 
-digit "digit" = [0-9]                                       // a digit
-{return text()}
+digit "digit" = $[0-9]                                       // a digit
 
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]

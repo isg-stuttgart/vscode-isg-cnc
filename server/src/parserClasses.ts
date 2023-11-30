@@ -136,6 +136,7 @@ export enum MatchType {
     // prg calls
     localPrgCall = "localPrgCall",
     localPrgCallName = "localPrgCallName",
+    localPrgDefinitionName = "localPrgDefinitionName",
     globalPrgCall = "globalPrgCall",
     globalPrgCallName = "globalPrgCallName",
     localCycleCall = "localCycleCall",

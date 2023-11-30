@@ -127,3 +127,29 @@ export class LocationMock implements peggy.Location {
         this.offset = offset;
     }
 }
+
+/**
+ * Asserts that the passed locations are equal, ignoring the order of the locations.
+ * @param actual the actual locations
+ * @param expected the expected locations
+ */
+export function assertSameLocations(actual: vscode.Location[], expected: VSCodeLocationMock[]) {
+    assert.strictEqual(actual.length, expected.length);
+    // sort locations by JSON.stringify to ignore the order
+    actual.sort((a, b) => JSON.stringify(a) > JSON.stringify(b) ? 1 : -1);
+    expected.sort((a, b) => JSON.stringify(a) > JSON.stringify(b) ? 1 : -1);
+    // compare locations
+    for (let i = 0; i < actual.length; i++) {
+        assert.strictEqual(actual[i].uri.fsPath, expected[i].path);
+        assert.deepStrictEqual(actual[i].range, expected[i].range);
+    }
+}
+export class VSCodeLocationMock {
+    path: string;
+    range: vscode.Range;
+    constructor(path: string, startLine: number, startColumn: number, endLine: number, endColumn: number) {
+        this.path = path;
+        this.range = new vscode.Range(startLine, startColumn, endLine, endColumn);
+    }
+}
+

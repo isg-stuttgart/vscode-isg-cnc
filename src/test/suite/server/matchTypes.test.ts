@@ -28,7 +28,7 @@ suite("LS matchTypes", () => {
         const expectedLocalPrgRefTypes = { refTypes: [MatchType.localCycleCallName, MatchType.localPrgCallName].sort(), local: true };
         assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.localPrgCallName)), expectedLocalPrgRefTypes);
         assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.localCycleCallName)), expectedLocalPrgRefTypes);
-        assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.localSubPrg)), expectedLocalPrgRefTypes);
+        assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.localPrgDefinitionName)), expectedLocalPrgRefTypes);
         // goto label
         const expectedGotoLabelRefTypes = { refTypes: [MatchType.gotoLabel].sort(), local: true };
         assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.gotoLabel)), expectedGotoLabelRefTypes);

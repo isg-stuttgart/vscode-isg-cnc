@@ -65,7 +65,7 @@ N300 M30         (Hauptprogrammende)
 
 :
 
-XV.L.LOC_VAR5        ;X10.0
+XV.L.LOC_VAR5        ;X10.0 V.L.LOC_VAR5
 
 V.L.LOC_VAR6     ;X212
 LL UP3           (3. lokales Unterprogramm)
@@ -162,3 +162,6 @@ $FOR V.P.my_var = 0, 4, 1
 $ENDFOR
 
 [CONTINUE]                             ;Label Definition [CONTINUE]
+
+%L UP5           (5. lokales Unterprogramm)
+LL CYCLE [NAME = UP4]
