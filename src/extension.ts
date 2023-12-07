@@ -64,8 +64,13 @@ export function activate(context: vscode.ExtensionContext): void {
     };
 
     // start the cnc language server
-    client = new LanguageClient("cnc-client", serverOptions, clientOptions);
-    client.start();
+    try {
+        client = new LanguageClient("cnc-client", serverOptions, clientOptions);
+        client.start();
+    } catch (error) {
+        console.error(error);
+    }
+
     // code formatter
     vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider());
 

@@ -27,6 +27,7 @@ let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
 connection.onInitialize(async (params: InitializeParams) => {
+	console.log("Initializing ISG-CNC Language Server");
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
@@ -52,7 +53,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 			referencesProvider: true
 		}
 	};
-
+	console.log("ISG-CNC Language Server initialized");
 	return result;
 });
 
