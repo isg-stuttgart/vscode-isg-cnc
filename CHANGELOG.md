@@ -15,9 +15,13 @@ Types of changes:
 ## [Unreleased]
 
 ### Added
+- Mocha tests for the client and server side of the extension. [Issue #137](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/137)
+- Possibility to define if adding blocknumbers should include numbering of comments
 
 ### Fixed
-
+- Different fixes/improvements on adding/removing blocknumbers regarding comments, blocknumber labels and other special cases
+- Fixes/Improvments on references/definitions for variables
+- 
 ## [V0.4.6]
 
 ### Fixed
