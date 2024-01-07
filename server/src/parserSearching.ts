@@ -103,8 +103,10 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
         const globalCall = types.includes(MatchType.globalCycleCallName) || types.includes(MatchType.globalPrgCallName);
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
-        if (globalCall && matchName && path.isAbsolute(matchName)) {
-            matchName = path.basename(matchName);
+        if (globalCall && matchName && path.win32.isAbsolute(matchName)) {
+            matchName = path.win32.basename(matchName);
+        } else if(globalCall && matchName && path.posix.isAbsolute(matchName)) {
+            matchName = path.posix.basename(matchName);
         }
 
         // if correct defType and name add to found matches

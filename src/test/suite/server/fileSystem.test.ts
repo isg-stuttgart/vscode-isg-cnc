@@ -42,8 +42,11 @@ suite("LS fileSystem", () => {
 
     // normalizePath
     test('Normalizepath', () => {
-        assert.strictEqual(normalizePath('C:/MyFolder/MyFile.txt'), 'c:' + path.sep + 'MyFolder' + path.sep + 'MyFile.txt');
-        assert.strictEqual(normalizePath('/myfolder/nestedFolder\\myfile.txt'), path.sep + 'myfolder' + path.sep + 'nestedFolder' + path.sep + 'myfile.txt');
+        // root will be lower cased on windows
+        // check if on windows by using os.platform()
+        const root = os.platform() === "win32" ? "c:" : "C:";
+        assert.strictEqual(normalizePath('C:/MyFolder/MyFile.txt'), root + path.sep + 'MyFolder' + path.sep + 'MyFile.txt');
+        assert.strictEqual(normalizePath('/myfolder/nestedFolder//myfile.txt'), path.sep + 'myfolder' + path.sep + 'nestedFolder' + path.sep + 'myfile.txt');
         assert.strictEqual(normalizePath(''), '.');
     });
 

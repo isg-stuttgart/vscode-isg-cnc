@@ -520,7 +520,7 @@
         "@types/vscode": "^1.59.0",
         "@typescript-eslint/eslint-plugin": "^4.31.1",
         "@typescript-eslint/parser": "^4.31.1",
-        "@vscode/test-electron": "^2.3.5",
+        "@vscode/test-electron": "^2.3.8",
         "eslint": "^7.32.0",
         "glob": "^10.3.0",
         "mocha": "^9.1.1",
@@ -534,6 +534,6 @@
     "dependencies": {
         "ignore": "^5.2.4",
         "minimatch": "^9.0.3",
-        "vscode-languageclient": "^8.0.2"
+        "vscode-languageclient": "^9.0.1"
     }
 }

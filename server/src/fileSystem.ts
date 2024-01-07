@@ -67,7 +67,8 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
 }
 
 /**
- * Normalizes a given path to a lowercase drive letter and a normalized (by path module) path
+ * Normalizes a given path to a lowercase drive letter and a normalized (by path module) path.
+ * The root will only be affected on non-POSIX systems like Windows.
  * @param filePath 
  * @returns the normalized path 
  */
@@ -75,10 +76,8 @@ export function normalizePath(filePath: string): string {
     const pathObj = path.parse(filePath);
     // Make the drive letter lowercase
     const lowercaseDrive = pathObj.root.toLowerCase();
-
     // remove the root from the dir component
     const dirWithoutRoot = pathObj.dir.substring(pathObj.root.length);
-
     // Combine the lowercase drive with the rest of the path components
     const combinedPath = path.join(lowercaseDrive, dirWithoutRoot, pathObj.base);
     const normalizedPath = path.normalize(combinedPath);
