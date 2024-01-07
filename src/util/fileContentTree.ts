@@ -91,8 +91,8 @@ export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeI
      */
     async updateMatchItems(syntaxArray: parser.SyntaxArray): Promise<void> {
         await Promise.all([
-            new Promise(() => this.matchCategories.toolCalls.resetMatches(syntaxArray.toolCalls, this.context, this.sorting)),
-            new Promise(() => this.matchCategories.prgCallNames.resetMatches(syntaxArray.prgCallNames, this.context, this.sorting))
+            new Promise(() => this.matchCategories.toolCalls.resetMatches(syntaxArray.toolCalls, this.sorting)),
+            new Promise(() => this.matchCategories.prgCallNames.resetMatches(syntaxArray.prgCallNames, this.sorting))
         ]);
     }
 
@@ -120,7 +120,7 @@ class FileItem extends vscode.TreeItem implements MyItem {
         this._children = new Array<MyItem>();
         if (matchCategories !== undefined) {
             // eslint-disable-next-line no-unused-vars
-            Object.entries(matchCategories).forEach(([key, category]) => {
+            Object.entries(matchCategories).forEach(([, category]) => {
                 this.addChild(category);
             });
         }
@@ -187,7 +187,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
      * Overwrites old children with new ones
      * @param newMatches 
      */
-    resetMatches(newMatches: Match[], context: vscode.ExtensionContext, sorting: Sorting) {
+    resetMatches(newMatches: Match[], sorting: Sorting) {
 
         /**
          * Inner function to add a match to its match-line or create a new one if non-existing
@@ -199,7 +199,7 @@ class CategoryItem extends vscode.TreeItem implements MyItem {
             // create item for the match-line if it doesn't already exist
             let matchLineItem: MatchItem | undefined = matchMap.get(match.location.start.line);
             if (matchLineItem === undefined) {
-                matchMap.set(match.location.start.line, new MatchItem(match, context, itemPosition));
+                matchMap.set(match.location.start.line, new MatchItem(match, itemPosition));
             }
             //or additionally highlight new match if line already exists
             else {
@@ -278,7 +278,7 @@ export class MatchItem extends vscode.TreeItem implements MyItem {
     match: Match;
     matchLineLabel: MatchLineLabel;
 
-    constructor(match: Match, context: vscode.ExtensionContext, itemPos: ItemPosition) {
+    constructor(match: Match, itemPos: ItemPosition) {
         super(new MatchLineLabel(match).label);
         this.matchLineLabel = new MatchLineLabel(match);
         this.match = match;
@@ -445,6 +445,10 @@ function ncFileOpened(): boolean {
     return isIsgCnc;
 }
 
+/**
+ * Lets the editor cursor jump to the specified match within the currently opened file
+ * @param item the match to jump to as a MatchItem within the file content tree
+ */
 export async function jumpToMatch(item: MatchItem) {
     const file = vscode.window.activeTextEditor?.document.uri;
     if (file !== undefined) {

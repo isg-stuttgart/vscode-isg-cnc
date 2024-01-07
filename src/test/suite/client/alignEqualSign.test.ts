@@ -1,6 +1,6 @@
 import assert = require("assert");
 import * as vscode from "vscode";
-import * as testHelper from "./testHelper";
+import * as testHelper from "../testHelper";
 import * as fs from "fs";
 suite("Align Equal Sign Command Test", () => {
     test("Default case", async () => {

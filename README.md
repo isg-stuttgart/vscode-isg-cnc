@@ -62,6 +62,17 @@ Please find and report issues on [git issues](https://github.com/isg-stuttgart/v
 
 For release notes see [changlog.md](CHANGELOG.md).
 
+## Testing of the extension
+All extension utilities (client + server) are being tested by running mocha tests in
+a vscode test instance with [electron](https://www.npmjs.com/package/@vscode/test-electron). \
+The tests are located in the [test](src/test/suite) folder being split in client and server tests. \
+The vscode test instance uses the [res](src/test/res) directory as workspace root, which contains some nc files for testing. \
+If you want to run the tests within vscode, run the "Extension Tests" task in the vscode task menu. This will execute the tests in a new window.\
+To run the tests via console, run `npm run test` in the root folder of the extension. 
+This is also be done by a github action on pushes and pull requests.
+In most cases one typescript source file is tested by one test file with the same name and the suffix `.test.ts`. Only when testing the server top level features like "Go to Definition" one file per feature is used. 
+
+
 ## Trademarks
 
 The license does not grant permission to use the trade names, trademarks, service marks, logos or product names of ISG Industrielle Steuerungstechnik GmbH,

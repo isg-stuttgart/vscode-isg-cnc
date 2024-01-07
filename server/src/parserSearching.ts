@@ -1,21 +1,20 @@
 import * as fs from "fs";
 import path = require("path");
-import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
+import { Match, Position, FileRange, IncrementableProgress, hasMatchProperties } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { getConnection } from "./connection";
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
-import { matchTypes } from "./matchTypes";
+import { MatchType } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
 
 /**
-* Recursively find the definition of the given type and name within the tree
+* Recursively find the first match of the given type and name within the tree
 * @param tree the current subtree to search 
-* @param defType the definition type e.g. localPrgCall
-* @param name the name/identifier of the definition
-* @returns the definition match if existing, otherwise null
+* @param defType the match type e.g. localPrgCall
+* @param name the name/identifier of the match
+* @returns the match if existing, otherwise null
 */
-export function findFirstMatchWithinPrg(tree: any, defType: string, name: string): Match | null {
+export function findFirstMatchWithinPrg(tree: any, defType: MatchType, name: string): Match | null {
     let res: Match | null = null;
 
     // if no match found yet, search in other subtree
@@ -27,8 +26,8 @@ export function findFirstMatchWithinPrg(tree: any, defType: string, name: string
         });
     }
 
-    // when element is a Match (Subtree) , otherwise 
-    if (tree && isMatch(tree)) {
+    // when element is a Match (Subtree)
+    if (tree && hasMatchProperties(tree)) {
         const match = tree as Match;
         // if correct defType and name we found the definition
         if (match.type === defType && match.name === name) {
@@ -60,7 +59,7 @@ export function findPreciseMatch(tree: any, position: Position): Match | null {
     }
 
     // when element is a Match (Subtree) try to search more precise, if not possible we found our match
-    if (tree && isMatch(tree)) {
+    if (tree && hasMatchProperties(tree)) {
         const match = tree as Match;
         if (!match.location) {
             return null;
@@ -81,15 +80,15 @@ export function findPreciseMatch(tree: any, position: Position): Match | null {
 
 /**
  * Finds all matches of a given name and types within a given program-tree
- * @param tree 
- * @param types 
- * @param name 
+ * @param tree the current subtree to search in
+ * @param types the possible types of matches to search for
+ * @param name the name/identifier of the matches to search for
  * @returns the found matches
  */
 export function findMatchesWithinPrgTree(tree: any, types: string[], name: string): Match[] {
     let res: Match[] = [];
 
-    // search in each subtree and add its references to the result array
+    // search in each subtree and add its matches to the result array
     if (Array.isArray(tree)) {
         tree.forEach(e => {
             const subRes = findMatchesWithinPrgTree(e, types, name);
@@ -98,17 +97,19 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
     }
 
     // if element is a Match
-    if (tree && isMatch(tree)) {
+    if (tree && hasMatchProperties(tree)) {
         const match = tree as Match;
 
-        const globalCall = types.includes(matchTypes.globalCycleCallName) || types.includes(matchTypes.globalPrgCallName);
+        const globalCall = types.includes(MatchType.globalCycleCallName) || types.includes(MatchType.globalPrgCallName);
         let matchName = match.name;
         // if we search for global prg/cycle calls and absolute path is found take filename instead, because we dont know which file exactly is meant
-        if (globalCall && matchName && path.isAbsolute(matchName)) {
-            matchName = path.basename(matchName);
+        if (globalCall && matchName && path.win32.isAbsolute(matchName)) {
+            matchName = path.win32.basename(matchName);
+        } else if(globalCall && matchName && path.posix.isAbsolute(matchName)) {
+            matchName = path.posix.basename(matchName);
         }
 
-        // if correct defType and name add to found references
+        // if correct defType and name add to found matches
         if (types.includes(match.type) && matchName === name) {
             res.push(match);
         }
@@ -123,16 +124,16 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name: strin
 
 /**
  * Finds all matches of a given name and types within a given program-tree and returns the according ranges
- * @param tree 
- * @param types 
- * @param name 
- * @param uri 
+ * @param tree the current subtree to search in
+ * @param types the possible types of matches to search for 
+ * @param name the name/identifier of the matches to search for 
+ * @param uri the uri of the file the tree is from 
  * @returns the found ranges
  */
 export function findMatchRangesWithinPrgTree(tree: any, types: string[], name: string, uri: string): FileRange[] {
     let ranges: FileRange[] = [];
-    const references: Match[] = findMatchesWithinPrgTree(tree, types, name);
-    for (const ref of references) {
+    const matches: Match[] = findMatchesWithinPrgTree(tree, types, name);
+    for (const ref of matches) {
         if (!ref.location) {
             continue;
         }
@@ -187,8 +188,7 @@ export function findMatchRangesWithinPath(filePaths: string[], types: string[], 
             ranges.push(...fileRanges);
         } catch (error) {
             const errorMessage = `Error while parsing ${filePath}: ${error} \nThis file is not included in the found references.`;
-            getConnection()?.window.showErrorMessage(errorMessage);
-            console.error(errorMessage);
+            throw new Error(errorMessage);
         }
 
         progressHandler.increment(filePath);

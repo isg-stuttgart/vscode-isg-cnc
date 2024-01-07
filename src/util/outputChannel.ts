@@ -6,6 +6,10 @@ vscode.workspace.onDidChangeConfiguration(() => {
 });
 updateOutputchannel();
 
+export function getISGCNCOutputChannel(): vscode.OutputChannel {
+    return outputChannel;
+}
+
 export function printToOutputchannel(text: string): void {
     outputChannel.appendLine(text);
 }

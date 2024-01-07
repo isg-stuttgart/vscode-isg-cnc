@@ -1,8 +1,8 @@
 import assert = require("assert");
 import * as vscode from "vscode";
-import * as testHelper from "./testHelper";
+import * as testHelper from "../testHelper";
 import path = require("path");
-import { changeLanguageMode } from "../../util/config";
+import { changeLanguageMode } from "../../../util/config";
 suite("Config test", () => {
     test("Change language mode in config", async () => {
         const folderPath = testHelper.getPathOfWorkspaceFile("languageFolder");

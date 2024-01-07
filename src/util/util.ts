@@ -20,6 +20,6 @@ export function digitCount(nr: number): number {
     do {
         nr /= 10;
         digitCount++;
-    } while (nr >= 1);
+    } while (nr >= 1 || nr <= -1);
     return digitCount;
 }

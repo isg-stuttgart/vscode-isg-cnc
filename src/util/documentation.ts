@@ -5,12 +5,12 @@ import { getDocumentationPath, getLocale } from "./config";
  *Load the ISG-CNC Kernel html documentation in default webbrowser.
  The address is combined from the settings "isg-cnc.documentationPath" and "isg-cnc.locale".
  */
-export function startDocu() {
+export function startDocu(): void {
     let docuAddress: string = createFullAddress();
     vscode.env.openExternal(vscode.Uri.parse(docuAddress));
 }
 
-export function createFullAddress() {
+export function createFullAddress(): string {
     const docuPath = getDocumentationPath();
     let localeDocuPath: string = docuPath;
     const locale: string = getLocale();

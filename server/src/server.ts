@@ -14,11 +14,9 @@ import {
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
-import { setConnection } from './connection';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
-setConnection(connection);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -29,6 +27,7 @@ let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
 connection.onInitialize(async (params: InitializeParams) => {
+	console.log("Initializing ISG-CNC Language Server");
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
@@ -54,7 +53,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 			referencesProvider: true
 		}
 	};
-
+	console.log("ISG-CNC Language Server initialized");
 	return result;
 });
 
@@ -75,10 +74,11 @@ connection.onInitialized(async () => {
 				workspaceFolderUris = addedUris;
 			}
 			// remove folders from workspaceFolders
-			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.some(removed => removed === folderUri));
+			workspaceFolderUris = workspaceFolderUris.filter(folderUri => !removedUris.includes(folderUri));
 		});
 	}
 	await updateConfig();
+	connection.window.showInformationMessage("ISG-CNC Language Server started.");
 });
 
 /** Provides the "Go to Definition" functionality. Returns the location of the definition fitting to the specified position, null when no definition found. */
@@ -93,6 +93,7 @@ connection.onDefinition((docPos) => {
 		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
 	}
 });
 
@@ -114,6 +115,7 @@ connection.onReferences(async (docPos) => {
 		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
 		return references;
 	} catch (error) {
+		console.error("Getting references failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting references failed: " + JSON.stringify(error));
 	}
 });

@@ -22,7 +22,7 @@ export function getDocumentationPath(): string {
 }
 
 /**
- *  eturns the value of the setting isg-cnc.locale. If the value cannot be found correctly, "en-GB" is returned.
+ *  @returns the value of the setting isg-cnc.locale. If the value cannot be found correctly, "en-GB" is returned.
  * @returns isg-cnc.locale
  */
 export function getLocale(): string {
@@ -38,6 +38,15 @@ export function getLocale(): string {
 export function getEnableOutputchannel(): boolean {
     const value = vscode.workspace.getConfiguration().get("isg-cnc.enableOutputchannel");
     // if value is boolean return value else return false
+    return typeof value === "boolean" ? value : false;
+}
+
+/**
+ * 
+ * @returns the value of the setting isg-cnc.includeCommentsInNumbering. If the value cannot be found correctly, false is returned.
+ */
+export function getIncludeCommentsInNumbering():boolean{
+    const value = vscode.workspace.getConfiguration().get("isg-cnc.includeCommentsInNumbering");
     return typeof value === "boolean" ? value : false;
 }
 

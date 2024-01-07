@@ -1,4 +1,3 @@
-import { getConnection } from "./connection";
 import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./fileSystem";
 import * as fs from "fs";
 import * as path from "path";
@@ -14,6 +13,14 @@ let fileAssociations: { [key: string]: string } = {
     "*.sub": "isg-cnc",
     "*.plc": "isg-cnc"
 };
+
+export function cloneFileAssociations(): { [key: string]: string } {
+    const clone: { [key: string]: string } = {};
+    for (const [key, value] of Object.entries(fileAssociations)) {
+        clone[key] = value;
+    }
+    return clone;
+}
 
 /**
  * Updates the important settings with the setting of the IDE. Currently only the file associations are updated and saved in the fileAssociations variable.
@@ -34,7 +41,7 @@ export function updateSettings(workspaceConfig: any) {
             fileAssociations[key] = value;
         }
     } catch (e) {
-        getConnection()?.console.error("Error while updating settings: " + e);
+        throw new Error("Error while updating settings. " + e);
     }
 }
 

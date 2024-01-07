@@ -14,8 +14,8 @@ let currentOffsetStatusBarItem: vscode.StatusBarItem;
  */
 export function updateSelectedLinesStatusBarItem(): void {
     const n = getNumberOfSelectedLines();
+    selectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
     if (n > 0) {
-        selectedLinesStatusBarItem.text = `$(megaphone) ${n} line(s) selected`;
         selectedLinesStatusBarItem.show();
     } else {
         selectedLinesStatusBarItem.hide();
@@ -98,6 +98,14 @@ export function updateCurrentOffsetStatusBarItem(): void {
     currentOffsetStatusBarItem.show();
 }
 
+export function getCurrentOffsetStatusBarItem(): vscode.StatusBarItem {
+    return currentOffsetStatusBarItem;
+}
+
+export function getSelectedLinesStatusBarItem(): vscode.StatusBarItem {
+    return selectedLinesStatusBarItem;
+}
+
 /**
  * Get number of selected lines and returns the count.
  *
@@ -105,12 +113,11 @@ export function updateCurrentOffsetStatusBarItem(): void {
  */
 function getNumberOfSelectedLines(): number {
     // get number of selected lines
-    const { activeTextEditor } = vscode.window;
-    if (activeTextEditor) {
-        return activeTextEditor.selections.reduce(
-            (prev: number, curr: { end: { line: number; }; start: { line: number; }; }) => prev + (curr.end.line - curr.start.line),
-            0
-        );
+    const activeTextEditor = vscode.window.activeTextEditor;
+    if (activeTextEditor && !activeTextEditor.selection.start.isEqual(activeTextEditor.selection.end)) {
+        const startLine = activeTextEditor.selection.start.line;
+        const endLine = activeTextEditor.selection.end.line;
+        return endLine - startLine + 1;
     }
     return 0;
 }

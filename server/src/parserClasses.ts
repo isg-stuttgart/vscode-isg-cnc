@@ -56,7 +56,7 @@ export class Document {
  * A match object returned by the peggy parser for ISG-CNC files.
  */
 export interface Match {
-    type: string;
+    type: MatchType;
     content: any;
     location: peggy.LocationRange;
     text: string;
@@ -64,7 +64,7 @@ export interface Match {
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
-export function isMatch(obj: any): boolean {
+export function hasMatchProperties(obj: any): boolean {
     const exampleMatch = {
         type: null,
         content: null,
@@ -123,3 +123,37 @@ export class IncrementableProgress {
         return this.canceled;
     }
 }
+
+/**
+ * The different types a match returned by the peggy parser for ISG-CNC files can have.
+ */
+
+export enum MatchType {
+    toolCall = "toolCall",
+    mainPrg = "mainPrg",
+    localSubPrg = "localSubPrg",
+
+    // prg calls
+    localPrgCall = "localPrgCall",
+    localPrgCallName = "localPrgCallName",
+    localPrgDefinitionName = "localPrgDefinitionName",
+    globalPrgCall = "globalPrgCall",
+    globalPrgCallName = "globalPrgCallName",
+    localCycleCall = "localCycleCall",
+    localCycleCallName = "localCycleCallName",
+    globalCycleCall = "globalCycleCall",
+    globalCycleCallName = "globalCycleCallName",
+
+    controlBlock = "controlBlock",
+    gotoBlocknumber = "gotoBlocknumber",
+    gotoLabel = "gotoLabel",
+    label = "label",
+    multiline = "multiline",
+    trash = "trash",
+    skipBlock = "skipBlock",
+    blockNumber = "blockNumber",
+    blockNumberLabel = "blockNumberLabel",
+    varDeclaration = "varDeclaration",
+    variable = "variable",
+    comment = "comment"
+};

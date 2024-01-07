@@ -21,9 +21,10 @@ N100 .....
 
 N105 .....
 $IF [Options]
-  N200 LL UP1      (Aufruf des 1. LUPs)
+N200   LL UP1      (Aufruf des 1. LUPs)
 $ENDIF
 
+L C:\ISG\vscode-isg-cnc\src\test\res\test.nc
 .
 
 N250 LL UP2      (Aufruf des 2. LUPs)
@@ -31,3 +32,4 @@ N250 LL UP2      (Aufruf des 2. LUPs)
 .
 
 N300 M30         (Hauptprogrammende)
+

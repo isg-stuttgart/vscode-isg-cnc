@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { fileContentProvider } from "../../extension";
-import { getPathOfWorkspaceFile, openTestFile } from "./testHelper";
+import { fileContentProvider } from "../../../extension";
+import { openTestFile } from "../testHelper";
 import assert = require("assert");
 import { MatchItem } from "src/util/fileContentTree";
 suite("File Content Tree Provider Test", () => {
@@ -174,21 +174,21 @@ suite("File Content Tree Provider Test", () => {
         // get test tool item
         const matchCategories = await fileContentProvider.getChildren(root);
         const toolCalls = await fileContentProvider.getChildren(matchCategories[0]);
-        const testToolCallItems = toolCalls[1] as vscode.TreeItem;
+        const testToolCallItem = toolCalls[1] as MatchItem;
 
         // execute command of item
-        await vscode.commands.executeCommand(testToolCallItems?.command?.command as string, testToolCallItems?.command?.arguments);
+        await vscode.commands.executeCommand(testToolCallItem?.command?.command as string, testToolCallItem);
         // check if cursor is at correct position
-        //assert.deepStrictEqual(vscode.window.activeTextEditor?.selection, new vscode.Selection(4, 11, 4, 11));
+        assert.deepStrictEqual(vscode.window.activeTextEditor?.selection, new vscode.Selection(3, 10, 3, 10));
 
         // get test program item
         const programCalls = await fileContentProvider.getChildren(matchCategories[1]);
-        const testProgramCallItems = programCalls[1] as vscode.TreeItem;
+        const testProgramCallItem = programCalls[1] as MatchItem;
 
         // execute command of item
-        await vscode.commands.executeCommand(testProgramCallItems?.command?.command as string, testProgramCallItems?.command?.arguments);
+        await vscode.commands.executeCommand(testProgramCallItem?.command?.command as string, testProgramCallItem);
         // check if cursor is at correct position
-        //assert.deepStrictEqual(vscode.window.activeTextEditor?.selection, new vscode.Selection(8, 7, 8, 7));
+        assert.deepStrictEqual(vscode.window.activeTextEditor?.selection, new vscode.Selection(7, 6, 7, 6));
     });
 });
 

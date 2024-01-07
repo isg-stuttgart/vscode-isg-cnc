@@ -10,7 +10,7 @@ import ignore, { Ignore } from "ignore";
  * If the file/folder is already ignored, a message will be shown and the ignore file will not be changed.
  * @param inputUri  file/folder to ignore
  */
-export async function includeInIgnore(inputUri: vscode.Uri): Promise<void> {
+export async function addToIgnore(inputUri: vscode.Uri): Promise<void> {
     const pathToIgnore: string = inputUri.fsPath;
     const workspaceFolder: vscode.WorkspaceFolder | undefined = vscode.workspace.getWorkspaceFolder(inputUri);
     if (workspaceFolder === undefined) {
@@ -25,25 +25,32 @@ export async function includeInIgnore(inputUri: vscode.Uri): Promise<void> {
     }
 
     const ignoreFilePath: string = path.join(workspaceFolder.uri.fsPath, ".isg-cnc-ignore");
-
+    const ignoreFileDoc: vscode.TextDocument | undefined = vscode.workspace.textDocuments.find(doc => doc.uri.fsPath === ignoreFilePath);
     // create ignore file if it not exists
-    if (!fs.existsSync(ignoreFilePath)) {
+    if (!fs.existsSync(ignoreFilePath) && ignoreFileDoc === undefined) {
         const explanationText: string = "# Adding files/directories to this file will prevent the ISG-CNC extension from searching for references/definitions in these files/directories." + os.EOL +
             "# This does not affect other features of the ISG-CNC extension." + os.EOL +
             "# The ignore syntax is equivalent to the .gitignore syntax. See https://git-scm.com/docs/gitignore for more information." + os.EOL;
         fs.writeFileSync(ignoreFilePath, explanationText);
     }
     // check if ignored file has unsaved changes and read ignore file 
-    let ignoreFileContent: string | undefined = vscode.workspace.textDocuments.find(doc => doc.uri.fsPath === ignoreFilePath)?.getText();
+    let ignoreFileContent: string | undefined = ignoreFileDoc?.getText();
     if (ignoreFileContent === undefined) {
         ignoreFileContent = fs.readFileSync(ignoreFilePath, "utf-8");
     }
 
     // create ignorer to check if file/folder is already ignored
     const ignorer: Ignore = ignore().add(ignoreFileContent);
-    const isAlreadyIgnored: boolean = ignorer.ignores(relativeFilePathToIgnore);
+    // if the new relative path is the folder itself /* dont check with the ignorer because it can't handle an empty relative path
+    let isAlreadyIgnored: boolean = false;
+    if (relativeFilePathToIgnore === "/*") {
+        // check if any line of the ignore files contains the pattern /* (ignore all files)
+        isAlreadyIgnored = ignoreFileContent.split(os.EOL).some(line => line === "/*");
+    } else {
+        isAlreadyIgnored = ignorer.ignores(relativeFilePathToIgnore);
+    }
     if (isAlreadyIgnored) {
-        await vscode.window.showInformationMessage("ISG-CNC: Path " + relativeFilePathToIgnore + " is already ignored.");
+        vscode.window.showInformationMessage("ISG-CNC: Path " + relativeFilePathToIgnore + " is already ignored.");
     } else {
         // edit ignore file by vscode editing
         const ignoreDoc = await vscode.workspace.openTextDocument(ignoreFilePath);

@@ -1,5 +1,6 @@
 {
     "isg-cnc.documentationPath": "customPathToWebsite",
     "isg-cnc.locale": "de-DE",
+    "isg-cnc.includeCommentsInNumbering": false,
     "files.associations": {}
 }

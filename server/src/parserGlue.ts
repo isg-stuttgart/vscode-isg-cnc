@@ -9,10 +9,10 @@ import {
 import * as fs from "fs";
 import path = require("node:path");
 import { Connection } from "vscode-languageserver";
-import { getConnection } from "./connection";
 import { getSurroundingVar, findLocalStringRanges, isWithinMatches } from "./stringSearching";
 import { WorkspaceIgnorer, findFileInRootDir, normalizePath } from "./fileSystem";
-import { getDefType, getRefTypes, matchTypes } from "./matchTypes";
+import { getDefType, getRefTypes } from "./matchTypes";
+import { MatchType } from "./parserClasses";
 import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
 import { ParseResults } from "./parsingResults";
 
@@ -33,8 +33,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
     try {
         parseResult = new ParseResults(fileContent);
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
-        return [];
+        throw new Error(`Error parsing file ${uri}: ${error}`);
     }
     const ast: any[] = parseResult.results.fileTree;
 
@@ -43,10 +42,11 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         return [];
     }
 
-    /**If the location is on a variable, search for it's definition via the parser. This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
+    /*If the location is on a variable, search for it's definition via the parser. 
+    This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
     const surroundingVar = getSurroundingVar(fileContent, position);
     if (surroundingVar) {
-        const varMatch = findFirstMatchWithinPrg(ast, matchTypes.varDeclaration, surroundingVar);
+        const varMatch = findFirstMatchWithinPrg(ast, MatchType.varDeclaration, surroundingVar);
         if (varMatch && varMatch.location) {
             const start: Position = new Position(varMatch.location.start.line - 1, varMatch.location.start.column - 1);
             const end: Position = new Position(varMatch.location.end.line - 1, varMatch.location.end.column - 1);
@@ -73,7 +73,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
         definitions.push(new FileRange(uri, start, end));
-    } else if (rootPaths && [matchTypes.globalPrgCall, matchTypes.globalCycleCall].includes(defType)) {
+    } else if (rootPaths && [MatchType.globalPrgCall, MatchType.globalCycleCall].includes(defType)) {
         let defPaths: string[] = [];
         // if the call contains a valid absolute path, use it
         if (path.isAbsolute(match.name)) {
@@ -95,8 +95,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             try {
                 mainPrg = new ParseResults(defFileContent).results.mainPrg;
             } catch (error) {
-                getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
-                console.error(`Error parsing file ${path}: ${error}`);
+                throw new Error(`Error parsing file ${uri}: ${error}`);
             }
             let range = {
                 start: new Position(0, 0),
@@ -130,8 +129,7 @@ export async function getReferences(fileContent: string, position: Position, uri
     try {
         parseResult = new ParseResults(fileContent);
     } catch (error) {
-        getConnection()?.window.showErrorMessage(`Error parsing file ${uri}: ${error}`);
-        return [];
+        throw new Error(`Error parsing file ${uri}: ${error}`);
     }
 
     // if the location is within comments, return empty array
@@ -156,7 +154,7 @@ export async function getReferences(fileContent: string, position: Position, uri
     let name: string = match.name;
 
     // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
-    if (rootPaths && [matchTypes.globalPrgCallName, matchTypes.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
+    if (rootPaths && [MatchType.globalPrgCallName, MatchType.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
         name = path.basename(match.name);
     }
 

@@ -13,6 +13,7 @@
       // prg calls
       localPrgCall: "localPrgCall",
       localPrgCallName: "localPrgCallName",
+      localPrgDefinitionName: "localPrgDefinitionName",
       globalPrgCall: "globalPrgCall",
       globalPrgCallName: "globalPrgCallName",
       localCycleCall: "localCycleCall",
@@ -107,8 +108,14 @@ file "file"
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= "%L" whitespace+ title:$name content:body{                // each subprogram requires a title and a body
- return new Match(types.localSubPrg, content, location(), text(), title);
+= content:("%L" $whitespace+ subprogram_name body){                // each subprogram requires a title and a body
+ return new Match(types.localSubPrg, content, location(), text(), content[2].name);
+}
+
+subprogram_name "subprogram_name"                           // a subprogram name
+= name
+{
+  return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
 }
 
 mainprogram "mainprogram"                                   // the main program
@@ -123,11 +130,15 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(grayspace/block/linebreak))+                               // the body is a list of comments and blocks
+(block/linebreak))+                                         // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
-= content:(skipped_block/block_body)
-{
+= content:(
+  $whitespace+
+/ grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+/ skipped_block
+/block_body
+){
   checkTimeout();
   return content;
 }
@@ -143,41 +154,50 @@ block_body "block_body"
 ( control_block                                             // a control block, i.e., $IF, $FOR etc.
 / plaintext_block                                           // some plaintext command, i.e., #MSG SAVE
 / default_block)){                                          // default block, i.e., G01 X12 Y23
-	numberableLinesUnsorted.add(location().start.line);
+// if text is not only whitespace, then add line to numberableLinesUnsorted
+  if(text().trim().length>0){
+    numberableLinesUnsorted.add(location().start.line);
+  }
 	return content;
 }
 
 control_block "control_block"                               // a control block, i.e., $IF, $ELSE, $SWITCH etc.
-= if_block/gotoBlock 
-/ grayspaces "$" trash_line
-    
+= content: (if_block/gotoBlock){
+  numberableLinesUnsorted.add(location().start.line);
+  numberableLinesUnsorted.add(location().end.line);
+  return content;
+}
+
 if_block "if_block"                                         // an if block
 = if_block_for_indentation                                  // this will be saved in controlBlocks
   elseif_block*                                             // any else-if extensions 
   else_block?                                               // optional else extension
-  grayspaces "$ENDIF" grayspaces linebreak?                 // ends when closed by $ENDIF which does not close inner block                                         
+  grayspaces "$ENDIF" grayspaces                            // ends when closed by $ENDIF which does not close inner block                                         
     
 if_block_for_indentation
 = content:(grayspaces "$IF" line_end                        // begins with $IF line
   if_block_content){
+  numberableLinesUnsorted.add(location().start.line);
   return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 elseif_block
 = content:(grayspaces ("$ELSEIF" line_end                   // begins with $ELSEIF line
    if_block_content)){
+  numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 else_block
 = grayspaces  content:("$ELSE" line_end                     // begins with $ELSEIF line
    if_block_content){
+  numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 if_block_content
-= (!(grayspaces ("$ELSEIF"/"$ELSE"/"$ENDIF")                // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
-  grayspaces linebreak?)block)*
+= (!("$ELSEIF"/"$ELSE"/"$ENDIF")block)*                     // contains some other blocks while not finished or extended by $ELSE/ELSEIF/ENDIF
+  
   
 gotoBlock "gotoBlock"
 = "$GOTO" gap (gotoNCommand/gotoLabel)
@@ -202,7 +222,7 @@ plaintext_block "plaintext_block"                           // a block containin
 
 var_block "var_block"                                       // a block of variable declarations
 = content:("#VAR" 
-  (grayline/(!endvar_line (var_dec/non_linebreak)))*
+  (n_command/grayline/(!endvar_line (var_dec/non_linebreak)))*
   grayspaces "#ENDVAR"){
   numberableLinesUnsorted.add(location().start.line);
   numberableLinesUnsorted.add(location().end.line);
@@ -210,18 +230,17 @@ var_block "var_block"                                       // a block of variab
 }
 
 var_dec                                                     // var declaration
-= id:var_name $allocation?{
-return new Match(types.varDeclaration, null, location(), text(), id)
+= id:var_dec_name $(var_index?) $(grayspaces ":" grayspaces data_type grayspaces)? $initialization?{
+  numberableLinesUnsorted.add(location().start.line);
+  return new Match(types.varDeclaration, null, location(), text(), id)
 }
 
-var_name
-= $("V." ("P"/"S"/"L"/"CYC") "." name vardec_index?)
 
-vardec_index
+var_index
 = ("." name)/(("[" integer "]")*)
 
-allocation
-= gap "=" gap 
+initialization
+= grayspaces "=" grayspaces
   (("["[^\]]* "]")/number/string)
 
 endvar_line
@@ -230,7 +249,6 @@ endvar_line
 default_block "default_block"                               // a default block containing "normal" NC-commands
 = (multiline_default_block 
 / default_line)
-linebreak?
 
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(
@@ -254,7 +272,7 @@ default_line                                                // line with any whi
 
 
 trash_line                                                  // lines which cannot be matched by other rules at the moment
-= (!stop_trashing .)+                          
+= ((!stop_trashing .)+ linebreak?/linebreak)                         
 {return "trash: " + text()}
 
 parameter "parameter"
@@ -264,12 +282,12 @@ parameter_trash_token "parameter_trash_token"
 = $(!(grayspace/var/"]") .)+
 
 var
-=var_name{
-  return new Match(types.variable, null, location(), text(), text());
+=id:var_name $var_index?{
+  return new Match(types.variable, id, location(), text(), id.name);
 }
 
 stop_trashing
-= linebreak/"\\"/grayspace/prg_call/command/control_block/label/var
+= linebreak/"\\"/comment/prg_call/command/control_block/label/var
 
 command "command"                                           // a tool call or other normal command
 = (t_command/($([A-Z] number)))                             
@@ -282,7 +300,7 @@ n_command "n_command"                                       // a command definin
 
 t_command "t_command"                                       // a command calling a specified tool, i.e., T1
 = "T" number {
-    return new Match(types.toolCall, null, location(), text(), null);
+    return new Match(types.toolCall, null, location(), text(), text());
 }
 
 prg_call "prg_call"                                         // a subprogram/cycle call
@@ -341,6 +359,19 @@ label                                                       // a label to which 
   return new Match(types.label, null, location(), text(), id) 
 }
 
+data_type = 
+  $("BOOLEAN"/"SGN08"/"UNS08"/"SGN16"/"UNS16"/"SGN32"/"UNS32"/"REAL"/
+  ("STRING[" (("12"[0-6]) / ("1"[01][1-9]) / ([1-9][0-9]) / ([0-9]))  "]")) // STRING[i] with i = 1...126
+
+
+var_dec_name
+= $(("V." ("P"/"S"/"L"/"CYC") ".") name) 
+
+var_name
+=  var_dec_name                                             // copy of var_dec_name because we don't want var_dec_name to include the same type for definition searching
+{
+  return new Match(types.variable, text(), location(), text(), text()) 
+}
 gap                                                         // a gap
 = paren_comment* whitespace grayspaces                      // at least one whitespace surrounded by grayspace
 
@@ -404,10 +435,9 @@ number "number"                                             // a number
 {return text()}
 
 name "name"                                                 // a name/identifier consisting of alphabetical Characters, "_" and "."
-= [_a-zA-Z0-9.]+
+= $[_a-zA-Z0-9.]+
 
-digit "digit" = [0-9]                                       // a digit
-{return text()}
+digit "digit" = $[0-9]                                       // a digit
 
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]
@@ -417,5 +447,5 @@ string "string"                                             // a string
 {return text()}
 
 line_end
-= non_linebreak* linebreak 
+= non_linebreak* linebreak?
 {return text()}
