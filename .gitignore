@@ -9,3 +9,4 @@ test_and_info/
 *.tgz
 docs/book/
 .vscode/settings.json
+src/test/res/tmp.nc

@@ -52,7 +52,7 @@
       content;                                              // the syntax tree of this match
       text;
       isMatch = true;
-      constructor(type, content, location, text,name) {
+      constructor(type, content, location, text, name) {
         this.type = type;
         this.content = content;
         this.location = location;

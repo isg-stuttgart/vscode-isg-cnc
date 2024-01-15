@@ -3,6 +3,7 @@ import * as Mocha from 'mocha';
 import { globSync } from 'glob';
 import * as vscode from 'vscode';
 import { getPathOfWorkspaceFile } from "./testHelper";
+import * as fs from "fs";
 export async function run(): Promise<void> {
     // Create the mocha test
     const mocha = new Mocha({
@@ -10,7 +11,9 @@ export async function run(): Promise<void> {
     });
     mocha.timeout(10000);
     const testsRoot = path.resolve(__dirname, '..');
-
+    // Create an empty tmp file which is used to test the extension commands
+    const tmpPath = getPathOfWorkspaceFile("tmp.nc");
+    fs.writeFileSync(tmpPath, "");
     // open the test workspace and wait for the server to initialize
     const ext = vscode.extensions.getExtension("vscode-isg-cnc");
     await ext?.activate();
@@ -22,7 +25,7 @@ export async function run(): Promise<void> {
     } catch (e) {
         console.error(e);
     }
-    
+
     return new Promise((c, e) => {
 
         const testFiles = globSync('**/**.test.js', { cwd: testsRoot });

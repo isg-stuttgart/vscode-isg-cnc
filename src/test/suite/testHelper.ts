@@ -46,34 +46,32 @@ export async function openTestFile(fileName: string): Promise<vscode.TextDocumen
 }
 
 /**
- * Applies the specified command to the file with the passed filename and compares the result with the file with the expected-filename.
- * After the command is applied the changes are undone by applying the old text.
+ * 1. Copies the content of the file with the passed name to the tmp file.
+ * 2. Opens the tmp file.
+ * 3. Executes the passed function which may include extension commands.
+ * 4. Asserts that the content of the tmp file is equal to the content of the file with the passed expected name.
  * @param fileName The name of the file the command should be applied to.
  * @param expectedName The name of the file which contains the expected result.
  * @param command The command which should be applied to the file.
  */
-export async function testApplyingCommandToFile(fileName: string, expectedName: string, command: () => void | Promise<void>) {
-    //open test file
+export async function assertApplyingCommandToFile(fileName: string, expectedName: string, command: () => void | Promise<void>) {
+    // write content of file to tmp file and open it
     const expectedPath = getPathOfWorkspaceFile(expectedName);
     const filePath = getPathOfWorkspaceFile(fileName);
-    const doc = await vscode.workspace.openTextDocument(filePath);
-    const oldText = doc.getText();
-    const editor = await vscode.window.showTextDocument(doc);
-    let newContent;
+    const oldText = (await vscode.workspace.openTextDocument(filePath)).getText();
+    const tmpPath = getPathOfWorkspaceFile("tmp.nc");
+    const tmpDoc = await vscode.workspace.openTextDocument(tmpPath);
+    const editor = await vscode.window.showTextDocument(tmpDoc);
+    await editor.edit(editBuilder => {
+        editBuilder.replace(new vscode.Range(0, 0, tmpDoc.lineCount, 0), oldText);
+    });
+    
 
-    //execute
-    try {
-        await command();
-        newContent = doc.getText();
-    } finally {
-        //undo changes by applying old text
-        await editor.edit(editBuilder => {
-            editBuilder.replace(new vscode.Range(0, 0, doc.lineCount, 0), oldText);
-        });
-        await doc.save();
-    }
+    //execute passed command
+    await command();
 
     //compare result
+    const newContent = tmpDoc.getText();
     const expectedContent = fs.readFileSync(expectedPath, 'utf8');
     assert.strictEqual(newContent, expectedContent);
 }
