@@ -33,6 +33,7 @@ Visual Studio Code V1.73.1 or higher
   - Code formatting
   - Add and remove blocknumbers
   - Align equal signs in selected range via command
+  - Align line comments in selected range via command
 
   ### Getting information
   - "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "strg+hover+leftclick" or "F12"
