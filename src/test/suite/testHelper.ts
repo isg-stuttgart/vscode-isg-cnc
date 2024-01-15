@@ -56,26 +56,22 @@ export async function openTestFile(fileName: string): Promise<vscode.TextDocumen
  */
 export async function assertApplyingCommandToFile(fileName: string, expectedName: string, command: () => void | Promise<void>) {
     // write content of file to tmp file and open it
-    const tmpPath = getPathOfWorkspaceFile('tmp.nc');
     const expectedPath = getPathOfWorkspaceFile(expectedName);
     const filePath = getPathOfWorkspaceFile(fileName);
     const oldText = (await vscode.workspace.openTextDocument(filePath)).getText();
-    fs.writeFileSync(expectedPath, oldText);
+    const tmpPath = getPathOfWorkspaceFile("tmp.nc");
     const tmpDoc = await vscode.workspace.openTextDocument(tmpPath);
-    await vscode.window.showTextDocument(tmpDoc);
-    let newContent;
+    const editor = await vscode.window.showTextDocument(tmpDoc);
+    await editor.edit(editBuilder => {
+        editBuilder.replace(new vscode.Range(0, 0, tmpDoc.lineCount, 0), oldText);
+    });
+    
 
     //execute passed command
-    try {
-        await command();
-        newContent = tmpDoc.getText();
-    } finally {
-        // delete tmp file
-        await tmpDoc.save();
-        fs.unlinkSync(tmpPath);
-    }
+    await command();
 
     //compare result
+    const newContent = tmpDoc.getText();
     const expectedContent = fs.readFileSync(expectedPath, 'utf8');
     assert.strictEqual(newContent, expectedContent);
 }
