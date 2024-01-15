@@ -201,6 +201,11 @@
                 "enablement": "editorHasSelection"
             },
             {
+                "command": "isg-cnc.AlignComments",
+                "title": "ISG-CNC: Align comments in selected range",
+                "enablement": "editorHasSelection"
+            },
+            {
                 "command": "isg-cnc.addToIgnore",
                 "title": "ISG-CNC: Add to .isg-cnc-ignore",
                 "enablement": "isFileSystemResource"
@@ -288,6 +293,11 @@
                 }
             ],
             "isg-commands-editor": [
+                {
+                    "command": "isg-cnc.AlignComments",
+                    "group": "isg-cnc.align@7",
+                    "when": "!explorerResource"
+                },
                 {
                     "command": "isg-cnc.AlignEqualSigns",
                     "group": "isg-cnc.align@8",
@@ -394,8 +404,13 @@
                 "when": "editorTextFocus"
             },
             {
-                "key": "ctrl+i ctrl+c",
+                "key": "ctrl+i ctrl+n",
                 "command": "isg-cnc.FindNonAsciiCharacters",
+                "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+c",
+                "command": "isg-cnc.AlignComments",
                 "when": "editorTextFocus"
             },
             {

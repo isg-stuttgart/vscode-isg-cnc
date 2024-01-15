@@ -18,7 +18,7 @@ import { startDocu } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
-import { alignEqualSigns } from "./util/alignEqualSigns";
+import { alignComments, alignEqualSigns } from "./util/aligning";
 import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
 //NC-file sidebar tree provider
 export let fileContentProvider: fileContentTree.FileContentProvider;
@@ -118,8 +118,11 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
             blowfish.decryptThis(inputUri)
         ),
-        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", () =>
-            alignEqualSigns()
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async() =>
+            await alignEqualSigns()
+        ),
+        vscode.commands.registerCommand("isg-cnc.AlignComments", async() =>
+            await alignComments()
         ),
         //command which is executed when sidebar-Matchitem is clicked
         vscode.commands.registerCommand("matchItem.selected", async (item: fileContentTree.MatchItem) =>

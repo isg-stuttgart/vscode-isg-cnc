@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getPathOfWorkspaceFile, testApplyingCommandToFile } from "../testHelper";
+import { getPathOfWorkspaceFile, assertApplyingCommandToFile } from "../testHelper";
 import { } from "../../../util/formatter";
 
 suite("Formatter Test", () => {
@@ -8,13 +8,13 @@ suite("Formatter Test", () => {
     const unformattedPath = getPathOfWorkspaceFile(unformattedName);
     const formattedPath = getPathOfWorkspaceFile(formattedName);
     test("Formatting file with different indentings", async () => {
-        await testApplyingCommandToFile(unformattedName, formattedName, async () => {
+        await assertApplyingCommandToFile(unformattedName, formattedName, async () => {
             await formatDocument(unformattedPath);
         });
     });
 
     test("Formatting already formatted file changes nothing", async () => {
-        await testApplyingCommandToFile(formattedName, formattedName, async () => {
+        await assertApplyingCommandToFile(formattedName, formattedName, async () => {
             await formatDocument(formattedPath);
         });
     });
