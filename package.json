@@ -45,9 +45,7 @@
         "onLanguage:isg-cnc",
         "onView:cnc-show-filecontent",
         "onCommand:isg-cnc.EncryptThis",
-        "onCommand:isg-cnc.DecryptThis",
         "onCommand:isg-cnc.EncryptAnyFile",
-        "onCommand:isg-cnc.DecryptAnyFile",
         "onCommand:isg-cnc.FindAllToolCalls",
         "onCommand:isg-cnc.GoToPosition",
         "onCommand:isg-cnc.ShowCursorFileOffsetInfobox",
@@ -56,7 +54,14 @@
         "onCommand:isg-cnc.AddBlocknumbers",
         "onCommand:isg-cnc.StartDocu",
         "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:isg-cnc.addToIgnore"
+        "onCommand:isg-cnc.addToIgnore",
+        "onCommand:isg-cnc.changeLanguageMode",
+        "onCommand:isg-cnc.sortLineByLineOn",
+        "onCommand:isg-cnc.sortLineByLineSelected",
+        "onCommand:isg-cnc.sortGroupedOn",
+        "onCommand:isg-cnc.sortGroupedSelected",
+        "onCommand:isg-cnc.AlignEqualSigns",
+        "onCommand:isg-cnc.AlignComments"
     ],
     "contributes": {
         "configurationDefaults": {
@@ -127,16 +132,8 @@
                 "title": "ISG-CNC: Encrypt this file"
             },
             {
-                "command": "isg-cnc.DecryptThis",
-                "title": "ISG-CNC: Decrypt this file"
-            },
-            {
                 "command": "isg-cnc.EncryptAnyFile",
                 "title": "ISG-CNC: Chose file to encrypt"
-            },
-            {
-                "command": "isg-cnc.DecryptAnyFile",
-                "title": "ISG-CNC: Chose file to decrypt"
             },
             {
                 "command": "isg-cnc.FindAllToolCalls",
@@ -276,16 +273,8 @@
                     "group": "isg-cnc.encryption@11"
                 },
                 {
-                    "command": "isg-cnc.DecryptAnyFile",
-                    "group": "isg-cnc.encryption@12"
-                },
-                {
                     "command": "isg-cnc.EncryptThis",
                     "group": "isg-cnc.encryption@13"
-                },
-                {
-                    "command": "isg-cnc.DecryptThis",
-                    "group": "isg-cnc.encryption@14"
                 },
                 {
                     "command": "isg-cnc.addToIgnore",
@@ -340,16 +329,8 @@
                     "group": "isg-cnc.encryption@11"
                 },
                 {
-                    "command": "isg-cnc.DecryptAnyFile",
-                    "group": "isg-cnc.encryption@12"
-                },
-                {
                     "command": "isg-cnc.EncryptThis",
                     "group": "isg-cnc.encryption@13"
-                },
-                {
-                    "command": "isg-cnc.DecryptThis",
-                    "group": "isg-cnc.encryption@14"
                 },
                 {
                     "command": "isg-cnc.addToIgnore",

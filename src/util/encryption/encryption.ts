@@ -16,16 +16,16 @@ const filter = {
 };
 
 /**
- * Let the user enter a key for en/decryption via an InputBox. 
+ * Let the user enter a key for encryption via an InputBox. 
  * The key can only be accepted if it contains no non-ASCII Characters.
- * @returns the key for en/decryption
+ * @returns the key for encryption
  */
 async function askForKey(): Promise<string | undefined> {
-    //Option parameter for asking for encryption/decryption key by InputBox
+    //Option parameter for asking for encryption key by InputBox
     let keyInputOptions: vscode.InputBoxOptions = {
         ignoreFocusOut: true,
         title: "Key",
-        prompt: "Type the key to use for en/decryption",
+        prompt: "Type the key to use for encryption",
         placeHolder: "key...",
         password: true,
         validateInput: key => {
@@ -72,42 +72,7 @@ export async function encryptThis(inputUri: vscode.Uri): Promise<void> {
     } else {
         vscode.window.showInformationMessage("Encryption canceled");
     }
-
 }
-
-/**
- * Decrypts the file at the specified inputUri. The outputName and key will be specified by InputBox-prompts.
- * The decrypted file will be at the same directory as the input file and will have the specified outputName.
- * 
- * If inputUri doesn't describe a file location or an InputBox-prompt didn't resolve, 
- * the process will be canceled and an information message will be shown.
- * @param inputUri - URI representaion of the location of the fiel to decrypt
- */
-export async function decryptThis(inputUri: vscode.Uri): Promise<void> {
-    const inputPath: string = inputUri.fsPath;
-    const inputName: string = path.basename(inputPath);
-    let outputName: string | undefined;
-    let key: string | undefined;
-    if (inputUri !== undefined && fs.lstatSync(inputUri.fsPath).isFile()) {
-        outputName = await askForDecryptedFilename(inputPath);
-    } else {
-        vscode.window.showInformationMessage("No file to decrypt is currently selected");
-    }
-
-    if (inputUri !== undefined && outputName !== undefined) {
-        key = await askForKey();
-    }
-
-    if (inputUri !== undefined && outputName !== undefined && key !== undefined) {
-        const outputPath: string = path.join(path.dirname(inputPath), outputName);
-        blowfish.decryptFileToFile(inputPath, outputPath, key);
-        vscode.window.showInformationMessage(inputName + " was decrypted into " + outputName);
-    } else {
-        vscode.window.showWarningMessage("Decryption canceled");
-    }
-}
-
-
 
 /**
  * Encrypts a file which is chosen by user input.
@@ -144,75 +109,10 @@ export async function encryptFileFromSystem(): Promise<void> {
     }
 }
 
-
-/**
- * Decrypts a file which is chosen by user input.
- * 
- * Let the user pick inputUri, outputName and key by input-prompts. 
- * The decrypted output file will be in the same directory as the file at inputUri and will have the specified outputName. 
- */
-export async function decryptFileFromSystem(): Promise<void> {
-    let key: string | undefined;
-    let inputUri: vscode.Uri[] | undefined;
-    let outputName: string | undefined;
-
-    inputUri = await vscode.window.showOpenDialog({
-        canSelectMany: false,
-        filters: filter,
-        openLabel: "Choose",
-        title: "Choose the file you want to decrypt",
-    });
-
-    if (inputUri !== undefined) {
-        outputName = await askForDecryptedFilename(inputUri[0].fsPath);
-    }
-    if (inputUri !== undefined && outputName !== undefined) {
-        key = await askForKey();
-    }
-
-    if (inputUri !== undefined && key !== undefined && outputName !== undefined) {
-        blowfish.decryptFileToFile(inputUri[0].fsPath, path.join(path.dirname(inputUri[0].fsPath), outputName), key);
-        vscode.window.showInformationMessage(path.basename(inputUri[0].fsPath) + " was decrypted into " + outputName);
-    } else {
-        vscode.window.showWarningMessage("Decryption canceled");
-    }
-}
-
-/**
- * Asks the user via InputBox which name the result-file of an decryption-process should have. 
- * 
- * @param inputPath - path of the file to decrypt 
- * @returns Promise of the name-String chosen by the user, or if Promise<undefined> if the input was canceled
- */
-async function askForDecryptedFilename(inputPath: string): Promise<string | undefined> {
-    let currentOutputName: string | undefined;
-    let currentOutputPath: string | undefined = undefined;
-    let finalOutputName: string | undefined = undefined;
-    let endSelection = false;
-    do {
-        currentOutputName = await vscode.window.showInputBox({
-            ignoreFocusOut: true,
-            title: "Decrypted File",
-            prompt: "Type the name of the decrypted file",
-            value: path.basename(inputPath).replace(/(.ecy)$/, ""),
-            valueSelection: undefined
-        });
-        if (currentOutputName !== undefined) {
-            currentOutputPath = path.join(path.dirname(inputPath), currentOutputName);
-            endSelection = (await isFinalDestinationFound(currentOutputPath)).valueOf();
-            finalOutputName = endSelection ? currentOutputName : undefined;
-        } else {
-            endSelection = true;
-        }
-    } while (!endSelection);
-
-    return finalOutputName;
-}
-
 /**
  * Asks the user via InputBox which name the result-file of an encryption-process should have. 
  * 
- * @param inputPath - path of the file to decrypt 
+ * @param inputPath - path of the file to encrypt 
  * @returns Promise of the name-String chosen by the user, or if Promise<undefined> if the input was canceled
  */
 async function askForEncryptedFilename(inputPath: string): Promise<string | undefined> {

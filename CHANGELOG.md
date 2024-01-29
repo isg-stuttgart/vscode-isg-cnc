@@ -22,6 +22,9 @@ Types of changes:
 ### Fixed
 - Different fixes/improvements on adding/removing blocknumbers regarding comments, blocknumber labels and other special cases
 - Fixes/Improvments on references/definitions for variables
+
+### Removed
+- Removed the decrypt command because of new security EU-guidelines
   
 ## [V0.4.6]
 
