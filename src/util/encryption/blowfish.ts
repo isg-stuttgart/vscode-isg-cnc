@@ -339,7 +339,7 @@ export function encryptFileToFile(inputPath: string, outputPath: string, key: Ui
   if (key instanceof Uint8Array) {
     blowfish = new Blowfish(key);
   } else {
-    blowfish = new Blowfish(new TextEncoder().encode(key))
+    blowfish = new Blowfish(new TextEncoder().encode(key));
   }
 
   const plainBuffer: Buffer = fs.readFileSync(inputPath);
