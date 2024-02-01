@@ -109,14 +109,8 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.EncryptAnyFile", () =>
             blowfish.encryptFileFromSystem()
         ),
-        vscode.commands.registerCommand("isg-cnc.DecryptAnyFile", () =>
-            blowfish.decryptFileFromSystem()
-        ),
         vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
             blowfish.encryptThis(inputUri)
-        ),
-        vscode.commands.registerCommand("isg-cnc.DecryptThis", (inputUri) =>
-            blowfish.decryptThis(inputUri)
         ),
         vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async() =>
             await alignEqualSigns()

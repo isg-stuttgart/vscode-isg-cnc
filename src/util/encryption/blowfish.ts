@@ -122,8 +122,8 @@ function getRandomByte(): number {
     randomHex = randomHex.substring(randomInt, randomInt + 2);
   }
   return parseInt(randomHex, 16);
-
 }
+
 /**
  * Converts a specifed double word in an Array of 4 Byte-numbers.
  * @param dword 
@@ -158,7 +158,7 @@ function bytesToDword(bytes: Uint8Array) {
 }
 
 /**
- * Class which contains all necessary methods for Blowfish-en/decryption of Uint8Arrays
+ * Class which contains all necessary methods for Blowfish-encryption of Uint8Arrays
  */
 class Blowfish {
   private pArray: Uint32Array;
@@ -208,39 +208,6 @@ class Blowfish {
     xrDWord ^= this.pArray[17];
     xrDWord = xrDWord >>> 0;
 
-    let xrBytesTemp: Uint8Array = dWordToBytes(xlDWord);
-    let xlBytesTemp: Uint8Array = dWordToBytes(xrDWord);
-
-    for (let i = 0; i < 4; i++) {
-      xrBytes[i] = xrBytesTemp[i];
-      xlBytes[i] = xlBytesTemp[i];
-    }
-  }
-
-  /**
-   * The low level encryption function to manipulate/decrypt 8 bytes.
-   * @param xlBytes the first 4 bytes
-   * @param xrBytes the last 4 bytes
-   */ 
-  private decipher(xlBytes: Uint8Array, xrBytes: Uint8Array): void {
-    let xlDWord: number;
-    let xrDWord: number;
-
-    xlDWord = bytesToDword(xlBytes);
-    xrDWord = bytesToDword(xrBytes);
-
-    xlDWord ^= this.pArray[17];
-    xlDWord = xlDWord >>> 0;
-
-    for (let i: number = 16; i > 0; i--) {
-      if (i % 2 === 0) {
-        xrDWord = this.round(xrDWord, xlDWord, i);
-      } else {
-        xlDWord = this.round(xlDWord, xrDWord, i);
-      }
-    }
-    xrDWord ^= this.pArray[0];
-    xrDWord = xrDWord >>> 0;
     let xrBytesTemp: Uint8Array = dWordToBytes(xlDWord);
     let xlBytesTemp: Uint8Array = dWordToBytes(xrDWord);
 
@@ -352,30 +319,12 @@ class Blowfish {
     }
     return output;
   }
-  /**
-   * Decodes the input array and returns result.
-   * @param input the array to decode
-   * @returns decoded array
-   */
-  decode(input: Uint8Array): Uint8Array {
-    let i: number;
-    let inputLength = input.length;
-
-    let output: Uint8Array = new Uint8Array(inputLength);
-    for (let byteIndex = 0; byteIndex < input.length; byteIndex += 8) {
-      for (i = 0; i < 8; i++) {
-        output[byteIndex + i] = input[byteIndex + i];
-      }
-      this.decipher(output.subarray(byteIndex, byteIndex + 4), output.subarray(byteIndex + 4, byteIndex + 8));
-    }
-    return output;
-  }
 }
 
 /**
  * Encrypts a file and writes encrypted version into another file.
  * @param inputPath path where the plain file lies
- * @param outputPath folder-path where the decrypted output will be written in
+ * @param outputPath folder-path where the encrypted output will be written in
  * @param key - key for blowfish-encryption
  */
 export function encryptFileToFile(inputPath: string, outputPath: string, key: Uint8Array | string): void {
@@ -399,32 +348,4 @@ export function encryptFileToFile(inputPath: string, outputPath: string, key: Ui
   let encodedArray: Uint8Array = blowfish.encode(plainArray);
   fs.writeFileSync(outputPath, encodedArray);
 }
-
-/**
- * Decrypts a file and writes decrypted version into another file.
- * @param inputPath path where the encrypted file lies
- * @param outputPath folder-path where the decrypted output will be written in
- * @param key - key for blowfish-decryption
- */
-export function decryptFileToFile(inputPath: string, outputPath: string, key: Uint8Array | string): void {
-  let blowfish: Blowfish;
-  if (!fs.existsSync(inputPath)) {
-    throw new Error("The file at path " + inputPath + " to decrypt doesn't exist");
-  }
-  if(!fs.existsSync(path.dirname(outputPath))){
-    throw new Error("The directory at path " + path.dirname(outputPath) + " to encrypt doesn't exist");
-  }
-  if (key instanceof Uint8Array) {
-    blowfish = new Blowfish(key);
-  } else {
-    blowfish = new Blowfish(new TextEncoder().encode(key));
-  }
-
-  const encodedBuffer: Buffer = fs.readFileSync(inputPath);
-  let encodedArray: Uint8Array = new Uint8Array(encodedBuffer);
-  let decodedArray: Uint8Array = blowfish.decode(encodedArray);
-
-  fs.writeFileSync(outputPath, decodedArray);
-}
-
 

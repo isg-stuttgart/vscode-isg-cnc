@@ -34,6 +34,7 @@ Visual Studio Code V1.73.1 or higher
   - Add and remove blocknumbers
   - Align equal signs in selected range via command
   - Align line comments in selected range via command
+  - Region folding (snippets triggered when typing "#region")
 
   ### Getting information
   - "Go to Definition" for program calls, goto-statements and self-defined variables (last one only rudimentary), use it via "strg+hover+leftclick" or "F12"
@@ -48,8 +49,7 @@ Visual Studio Code V1.73.1 or higher
 
   ### Additionals
   - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)
-  - Encrypt/decrypt files by key
-  - Region folding (snippets triggered when typing "#region")
+  - Encrypt files by key
 
 ## License
 
