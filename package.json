@@ -41,28 +41,7 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "main": "./out/src/extension.js",
-    "activationEvents": [
-        "onLanguage:isg-cnc",
-        "onView:cnc-show-filecontent",
-        "onCommand:isg-cnc.EncryptThis",
-        "onCommand:isg-cnc.EncryptAnyFile",
-        "onCommand:isg-cnc.FindAllToolCalls",
-        "onCommand:isg-cnc.GoToPosition",
-        "onCommand:isg-cnc.ShowCursorFileOffsetInfobox",
-        "onCommand:isg-cnc.FindNextTFS",
-        "onCommand:isg-cnc.RemoveAllBlocknumbers",
-        "onCommand:isg-cnc.AddBlocknumbers",
-        "onCommand:isg-cnc.StartDocu",
-        "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:isg-cnc.addToIgnore",
-        "onCommand:isg-cnc.changeLanguageMode",
-        "onCommand:isg-cnc.sortLineByLineOn",
-        "onCommand:isg-cnc.sortLineByLineSelected",
-        "onCommand:isg-cnc.sortGroupedOn",
-        "onCommand:isg-cnc.sortGroupedSelected",
-        "onCommand:isg-cnc.AlignEqualSigns",
-        "onCommand:isg-cnc.AlignComments"
-    ],
+    "activationEvents": [],
     "contributes": {
         "configurationDefaults": {
             "[isg-cnc]": {
@@ -94,6 +73,12 @@
                     ],
                     "description": "Choose the documentation language",
                     "order": 30
+                },
+                "isg-cnc.extensionForCycles":{
+                    "type": "string",
+                    "default": "ecy",
+                    "description": "File extension of cycle files, currently used for cycle snippets",
+                    "order": 32
                 },
                 "isg-cnc.includeCommentsInNumbering": {
                     "type": "boolean",

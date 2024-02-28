@@ -1,7 +1,12 @@
 import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./fileSystem";
 import * as fs from "fs";
 import * as path from "path";
-// declare object mapping strings to strings
+
+export enum Locale {
+    en = "en-US",
+    de = "de-DE"
+}
+
 /**
  * Object mapping file extensions to languages. Used to determine if a file is a cnc file.
  */
@@ -14,6 +19,22 @@ let fileAssociations: { [key: string]: string } = {
     "*.plc": "isg-cnc"
 };
 
+let locale: Locale = Locale.en;
+/** 
+ * @returns the current {@link Locale} to use for the language server documentation features.
+ */
+export function getLocale(): Locale {
+    return locale;
+}
+
+let extensionForCycles:string = ".ecy";
+/**
+ * @returns the file extension for cycle calls
+ */
+export function getExtensionForCycles(): string {
+    return extensionForCycles;
+}
+
 export function cloneFileAssociations(): { [key: string]: string } {
     const clone: { [key: string]: string } = {};
     for (const [key, value] of Object.entries(fileAssociations)) {
@@ -23,12 +44,17 @@ export function cloneFileAssociations(): { [key: string]: string } {
 }
 
 /**
- * Updates the important settings with the setting of the IDE. Currently only the file associations are updated and saved in the fileAssociations variable.
+ * Updates the important settings with the setting of the IDE, namely:
+ * 
+ * - {@link fileAssociations}
+ * - {@link locale}
+ * - {@link extensionForCycles}
+ *
 */
 export function updateSettings(workspaceConfig: any) {
     try {
+        // update file associations
         const newFileAssociations: { [key: string]: string } = workspaceConfig['files']['associations'];
-        //reset file associations to default and overwrite with new ones
         fileAssociations = {
             "*.nc": "isg-cnc",
             "*.cnc": "isg-cnc",
@@ -39,6 +65,20 @@ export function updateSettings(workspaceConfig: any) {
         };
         for (const [key, value] of Object.entries(newFileAssociations)) {
             fileAssociations[key] = value;
+        }
+
+        // update extension for cycles
+        extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+        // update locale
+        switch (workspaceConfig['isg-cnc']['locale']) {
+            case "en-GB":
+                locale = Locale.en;
+                break;
+            case "de-DE":
+                locale = Locale.de;
+                break;
+            default:
+                throw new Error("Unsupported locale: " + workspaceConfig['isg-cnc']['locale']);
         }
     } catch (e) {
         throw new Error("Error while updating settings. " + e);
@@ -86,3 +126,4 @@ export function isCncFile(path: string): boolean {
         return false;
     }
 }
+

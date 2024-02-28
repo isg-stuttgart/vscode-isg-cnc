@@ -14,6 +14,7 @@ import {
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
+import { getCompletions } from './completion';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -50,7 +51,13 @@ connection.onInitialize(async (params: InitializeParams) => {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			definitionProvider: true,
-			referencesProvider: true
+			referencesProvider: true,
+			completionProvider: {
+				completionItem: {
+					labelDetailsSupport: false
+				},
+				resolveProvider: false
+			}
 		}
 	};
 	console.log("ISG-CNC Language Server initialized");
@@ -118,6 +125,10 @@ connection.onReferences(async (docPos) => {
 		console.error("Getting references failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting references failed: " + JSON.stringify(error));
 	}
+});
+
+connection.onCompletion(() => {
+	return getCompletions();
 });
 
 // Make the text document manager listen on the connection

@@ -1,6 +1,7 @@
 {
     "isg-cnc.documentationPath": "customPathToWebsite",
-    "isg-cnc.locale": "de-DE",
+    "isg-cnc.locale": "en-GB",
     "isg-cnc.includeCommentsInNumbering": false,
-    "files.associations": {}
+    "files.associations": {},
+    "isg-cnc.extensionForCycles": ".cyc"
 }
