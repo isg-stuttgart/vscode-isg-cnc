@@ -80,6 +80,16 @@
                     "description": "File extension of cycle files, currently used for cycle snippets",
                     "order": 32
                 },
+                "isg-cnc.cycleSnippetFormatting": {
+                    "type": "string",
+                    "default": "multi-line",
+                    "enum": [
+                        "multi-line",
+                        "single-line"
+                    ],
+                    "description": "Choose if cycle snippets should have their parameters in one line or in multiple lines",
+                    "order": 33
+                },
                 "isg-cnc.includeCommentsInNumbering": {
                     "type": "boolean",
                     "default": false,
@@ -196,6 +206,16 @@
                 "command": "isg-cnc.changeLanguageMode",
                 "title": "Change Language Mode (provided by ISG-CNC)",
                 "enablement": "isFileSystemResource"
+            },
+            {
+                "command": "isg-cnc.changeCycleSnippetsToSingleLine",
+                "title": "ISG-CNC: Change cycle snippet formatting to single-line",
+                "enablement": "config.isg-cnc.cycleSnippetFormatting == 'multi-line'"
+            },
+            {
+                "command": "isg-cnc.changeCycleSnippetsToMultiLine",
+                "title": "ISG-CNC: Change cycle snippet formatting to multi-line",
+                "enablement": "config.isg-cnc.cycleSnippetFormatting == 'single-line'"
             }
         ],
         "menus": {
@@ -320,6 +340,20 @@
                 {
                     "command": "isg-cnc.addToIgnore",
                     "group": "isg-cnc.ignore@15"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
+                },
+                {
+                    "command": "isg-cnc.changeCycleSnippetsToSingleLine",
+                    "group": "isg-cnc.snippets@1",
+                    "when": "config.isg-cnc.cycleSnippetFormatting == 'multi-line'"
+                },
+                {
+                    "command": "isg-cnc.changeCycleSnippetsToMultiLine",
+                    "group": "isg-cnc.snippets@2",
+                    "when": "config.isg-cnc.cycleSnippetFormatting == 'single-line'"
                 }
             ]
         },

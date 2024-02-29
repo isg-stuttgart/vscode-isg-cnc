@@ -5,7 +5,9 @@ import { WorkDoneProgressServerReporter } from "vscode-languageserver";
  * A position in a text document expressed as zero-based line and character offset.
  */
 export class Position {
+    /** The line number of the position (zero-based). */
     line: number;
+    /** The character offset of the position (zero-based). */
     character: number;
     constructor(line: number, character: number) {
         this.line = line;

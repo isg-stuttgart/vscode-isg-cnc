@@ -2,9 +2,38 @@ import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./
 import * as fs from "fs";
 import * as path from "path";
 
+
+
+// locale for the language server documentation features
 export enum Locale {
     en = "en-US",
     de = "de-DE"
+}
+let locale: Locale = Locale.en;
+/** 
+ * @returns the current {@link Locale} to use for the language server documentation features.
+ */
+export function getLocale(): Locale {
+    return locale;
+}
+
+// path to the documentation website
+let documentationPath = "";
+export function getDocumentationPathWithLocale(): string {
+    return documentationPath + "/" + getLocale() + "/index.html";
+}
+
+// formatting of cycle snippets
+export enum CycleSnippetFormatting {
+    multiLine = "multi-line",
+    singleLine = "single-line"
+}
+let cycleSnippetFormatting: CycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+/**
+ * @returns the current {@link CycleSnippetFormatting} to use for cycle snippets.
+ */
+export function getCycleSnippetFormatting(): CycleSnippetFormatting {
+    return cycleSnippetFormatting;
 }
 
 /**
@@ -19,15 +48,9 @@ let fileAssociations: { [key: string]: string } = {
     "*.plc": "isg-cnc"
 };
 
-let locale: Locale = Locale.en;
-/** 
- * @returns the current {@link Locale} to use for the language server documentation features.
- */
-export function getLocale(): Locale {
-    return locale;
-}
 
-let extensionForCycles:string = ".ecy";
+
+let extensionForCycles: string = ".ecy";
 /**
  * @returns the file extension for cycle calls
  */
@@ -45,15 +68,19 @@ export function cloneFileAssociations(): { [key: string]: string } {
 
 /**
  * Updates the important settings with the setting of the IDE, namely:
- * 
+ * - {@link documentationPath}
  * - {@link fileAssociations}
  * - {@link locale}
  * - {@link extensionForCycles}
+ * - {@link cycleSnippetFormatting}
  *
 */
 export function updateSettings(workspaceConfig: any) {
+    const failedSettings: string[] = [];
+    // update documentation path
+    documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
+    // update file associations
     try {
-        // update file associations
         const newFileAssociations: { [key: string]: string } = workspaceConfig['files']['associations'];
         fileAssociations = {
             "*.nc": "isg-cnc",
@@ -66,10 +93,15 @@ export function updateSettings(workspaceConfig: any) {
         for (const [key, value] of Object.entries(newFileAssociations)) {
             fileAssociations[key] = value;
         }
+    } catch (error) {
+        failedSettings.push("fileAssociations");
+    }
 
-        // update extension for cycles
-        extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
-        // update locale
+    // update extension for cycles
+    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+
+    // update locale
+    try {
         switch (workspaceConfig['isg-cnc']['locale']) {
             case "en-GB":
                 locale = Locale.en;
@@ -78,10 +110,30 @@ export function updateSettings(workspaceConfig: any) {
                 locale = Locale.de;
                 break;
             default:
-                throw new Error("Unsupported locale: " + workspaceConfig['isg-cnc']['locale']);
+                throw new Error("Invalid locale");
         }
-    } catch (e) {
-        throw new Error("Error while updating settings. " + e);
+    } catch (error) {
+        failedSettings.push("locale");
+    }
+
+    // update cycle snippet formatting
+    try {
+        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
+            case "multi-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+                break;
+            case "single-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
+                break;
+            default:
+                throw new Error("Invalid cycleSnippetFormatting");
+        }
+    } catch (error) {
+        failedSettings.push("cycleSnippetFormatting");
+    }
+
+    if (failedSettings.length > 0) {
+        throw new Error("Failed to update settings: " + failedSettings.join(", "));
     }
 }
 

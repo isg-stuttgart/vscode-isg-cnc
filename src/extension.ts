@@ -112,10 +112,10 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
             blowfish.encryptThis(inputUri)
         ),
-        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async() =>
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async () =>
             await alignEqualSigns()
         ),
-        vscode.commands.registerCommand("isg-cnc.AlignComments", async() =>
+        vscode.commands.registerCommand("isg-cnc.AlignComments", async () =>
             await alignComments()
         ),
         //command which is executed when sidebar-Matchitem is clicked
@@ -127,7 +127,14 @@ export function activate(context: vscode.ExtensionContext): void {
         }),
         vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) =>
             changeLanguageMode(inputUri)
-        )
+        ),
+        // commands to switch between multi-line and single-line cycle snippets
+        vscode.commands.registerCommand("isg-cnc.changeCycleSnippetsToSingleLine", async () =>
+            await vscode.workspace.getConfiguration("isg-cnc").update("cycleSnippetFormatting", "single-line", vscode.ConfigurationTarget.Workspace)
+        ),
+        vscode.commands.registerCommand("isg-cnc.changeCycleSnippetsToMultiLine", async () =>
+            await vscode.workspace.getConfiguration("isg-cnc").update("cycleSnippetFormatting", "multi-line", vscode.ConfigurationTarget.Workspace)
+        ),
     );
 
     //sorting of sidebar content

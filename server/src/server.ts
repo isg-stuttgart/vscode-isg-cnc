@@ -14,7 +14,7 @@ import {
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
-import { getCompletions } from './completion';
+import { getCompletions, updateStaticCycleCompletions } from './completion';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -127,9 +127,20 @@ connection.onReferences(async (docPos) => {
 	}
 });
 
-connection.onCompletion(() => {
-	return getCompletions();
+connection.onCompletion((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		return getCompletions(position, textDocument);
+	} catch (error) {
+		console.error("Getting completions failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting completions failed: " + JSON.stringify(error));
+	}
 });
+
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
@@ -166,8 +177,24 @@ connection.onDidChangeConfiguration(async () => {
  * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
+	// if a setting, relevant for cycle settings is changed, update the cycle completions
+	const oldDocuPath = config.getDocumentationPathWithLocale();
+	const oldCycleSnippetFormatting = config.getCycleSnippetFormatting();
+	const oldExtensionForCycles = config.getExtensionForCycles();
+
+	// update settings
 	const workspaceConfig = await connection.workspace.getConfiguration();
 	config.updateSettings(workspaceConfig);
+
+	// if a setting, relevant for cycle settings is changed, update the cycle completions
+	if (
+		oldDocuPath !== config.getDocumentationPathWithLocale() ||
+		oldCycleSnippetFormatting !== config.getCycleSnippetFormatting() ||
+		oldExtensionForCycles !== config.getExtensionForCycles()
+	) {
+		// update cycle completions
+		updateStaticCycleCompletions();
+	}
 }
 
 
