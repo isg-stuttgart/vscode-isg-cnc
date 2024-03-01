@@ -177,7 +177,6 @@ connection.onDidChangeConfiguration(async () => {
  * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
-	// if a setting, relevant for cycle settings is changed, update the cycle completions
 	const oldDocuPath = config.getDocumentationPathWithLocale();
 	const oldCycleSnippetFormatting = config.getCycleSnippetFormatting();
 	const oldExtensionForCycles = config.getExtensionForCycles();
@@ -192,7 +191,6 @@ async function updateConfig() {
 		oldCycleSnippetFormatting !== config.getCycleSnippetFormatting() ||
 		oldExtensionForCycles !== config.getExtensionForCycles()
 	) {
-		// update cycle completions
 		updateStaticCycleCompletions();
 	}
 }
