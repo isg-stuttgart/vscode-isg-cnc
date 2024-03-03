@@ -77,7 +77,7 @@
                 "isg-cnc.extensionForCycles":{
                     "type": "string",
                     "default": "ecy",
-                    "description": "File extension of cycle files, currently used for cycle snippets",
+                    "description": "File extension of cycle files, currently used for cycle snippets.\n Make sure to include the dot, e.g. '.ecy' and not 'ecy'.", 
                     "order": 32
                 },
                 "isg-cnc.cycleSnippetFormatting": {

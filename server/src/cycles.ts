@@ -70,6 +70,20 @@ export class Cycle {
         this.documentationReference = documentationReference;
         this.descriptionDictionary = descriptionDictionary;
         this.parameterList = parameterList;
+
+        // throw error if some required parameters are missing
+        if (!this.name) {
+            throw new Error("Cycle name is missing");
+        }
+        if (!this.media) {
+            throw new Error("Cycle media is missing");
+        }
+        if (!this.descriptionDictionary) {
+            throw new Error("Cycle description is missing");
+        }
+        if (!this.parameterList) {
+            throw new Error("Cycle parameter list is missing");
+        }
     }
 }
 /**
@@ -92,25 +106,55 @@ export class Parameter {
         this.descriptionDictionary = descriptionDictionary;
         this.requirementDictionary = requirementDictionary;
         this.dependencyList = dependencyList;
+
+        // throw error if some required parameters are missing
+        if (!this.name) {
+            throw new Error("Parameter name is missing: " + this.name);
+        }
+        if (!this.media) {
+            throw new Error("Parameter media is missing" + this.name);
+        }
+        if (!this.descriptionDictionary || !this.descriptionDictionary["en-US"] || !this.descriptionDictionary["de-DE"]) {
+            throw new Error("Parameter description is missing" + this.name);
+        }
+        if (!this.requirementDictionary) {
+            throw new Error("Parameter requirement dictionary is missing" + this.name);
+        }
+        if (!this.dependencyList) {
+            throw new Error("Parameter dependency list is missing" + this.name);
+        }
+
     }
+
+
 }
 /**
  * A requirement dictionary object that represents the requirements of a parameter.
  */
 export class RequirementDictionary {
-    min: number;
-    max: number;
-    default: string;
+    min: number | undefined;
+    max: number | undefined;
+    default: string | undefined;
     notNull: boolean;
     required: boolean;
-    constructor(min: number | string, max: number | string, defaultVal: string, notNull: boolean | string, required: boolean | string) {
-        this.min = typeof min === "number" ? min : parseInt(min);
-        this.max = typeof max === "number" ? max : parseInt(max);
-        this.default = defaultVal;
+    constructor(min: number | string | undefined, max: number | string | undefined, defaultVal: string, notNull: boolean | string, required: boolean | string | undefined) {
+        this.min = parseIntOrUndefined(min);
+        this.max = parseIntOrUndefined(max);
+        this.default = defaultVal ? defaultVal : undefined;
         this.notNull = typeof notNull === "boolean" ? notNull : notNull === "true";
         this.required = typeof required === "boolean" ? required : required === "true";
     }
 }
+
+function parseIntOrUndefined(value: string | number | undefined): number | undefined {
+    if (typeof value === "number") {
+        return value;
+    } else {
+        const parsedValue = value === "" ? NaN : Number(value);
+        return isNaN(parsedValue) ? undefined : parsedValue;
+    }
+}
+
 /**
  * A documentation reference object that contains the documentation references of a cycle and its parameters.
  */
@@ -120,6 +164,11 @@ export class DocumentationReference {
     constructor(overview: string, parameter: string) {
         this.overview = overview;
         this.parameter = parameter;
+
+        // throw error if some required parameters are missing
+        if (!this.overview || !this.parameter) {
+            throw new Error("Documentation reference is missing");
+        }
     }
 }
 /**
@@ -131,6 +180,11 @@ export class DescriptionDictionary {
     constructor(en: string, de: string) {
         this.enUS = en;
         this.deDE = de;
+
+        // throw error if some required parameters are missing
+        if (!this.enUS || !this.deDE) {
+            throw new Error("Description dictionary is missing");
+        }
     }
     getDescription(locale: Locale): string {
         return locale === Locale.en ? this.enUS : this.deDE;

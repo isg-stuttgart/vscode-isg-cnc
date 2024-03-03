@@ -20,6 +20,8 @@
       localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
       globalCycleCallName: "globalCycleCallName",
+      cycleParameter: "cycleParameter",
+      cycleParameterAssignment: "cycleParameterAssignment",
 
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
@@ -328,15 +330,19 @@ prg_name_string
   
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
-   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-    (cycle_call_param_multiline/cycle_call_param_line) grayline* "]"){          // brackets can contain a multline or a singleline
-    const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
-    const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let nameLM = content[6][1]                                                  // LightMatch of the cycle name
-    const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-    content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
-    return new Match(type, content, location(), text(), nameLM.text);
-  }
+  "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
+  cycle_params grayline* "]"){          // brackets can contain a multline or a singleline
+  const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
+  const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
+  let nameLM = content[6][1]                                                  // LightMatch of the cycle name
+  const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
+  content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
+  return new Match(type, content, location(), text(), nameLM.text);
+}
+
+cycle_params = content:(cycle_call_param_multiline/cycle_call_param_line) {
+  return new Match(types.cycleParams, content, location(), text(), null) 
+}
 
 cycle_call_param_multiline 
 = content:
@@ -348,10 +354,19 @@ cycle_call_param_line linebreak?){
 }
 
 cycle_call_param_line "cycle_call_param_line"
-= ((line_comment/var/cycle_call_param_line_trash_token))*
+= ((line_comment/paramAssignement/param/var/cycle_call_param_line_trash_token/$whitespace+))*
 
-cycle_call_param_line_trash_token
-= $(!("]"/"\r"/"\n"/"\\"/line_comment/var) .)+
+param = content:("@" $("P"non_neg_integer)){                // one parameter of a cycle
+  return new Match(types.cycleParameter, content, location(), text(), content[1]);
+}
+
+paramAssignement =                                          // one param assignement, meaning a param name followed by a var/string/value
+content:(param grayspaces "=" grayspaces value:(var/string/cycle_call_param_line_trash_token?)){
+  return new Match(types.cycleParameterAssignment, content, location(), text(), content[0].name);
+}
+
+cycle_call_param_line_trash_token                           // trashes non-relevant tokens in cycle call parameters
+= $(!("]"/"\r"/"\n"/"\\"/line_comment/var/whitespace) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{
@@ -428,7 +443,7 @@ integer "integer"                                           // an integer
 = "-"? non_neg_integer
 
 non_neg_integer "non_neg_integer"                           // a non-negative integer
-= digit+
+= $digit+
 
 number "number"                                             // a number
 = integer ("." non_neg_integer)?
