@@ -25,7 +25,8 @@
       globalCycleCallName: "globalCycleCallName",
       cycleParameter: "cycleParameter",
       cycleParameterAssignment: "cycleParameterAssignment",
-
+      cycleParamList: "cycleParamList",
+      
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -448,7 +449,7 @@ function peg$parse(input: string, options?: ParseOptions) {
     return new Match(type, content, location(), text(), nameLM.text);
   };
   const peg$c107 = function(content: any): any {
-    return new Match(types.cycleParams, content, location(), text(), null) 
+    return new Match(types.cycleParamList, content, location(), text(), null) 
   };
   const peg$c108 = function(content: any): any {             
   	return new Match(types.multiline, content, location(), text(), null);

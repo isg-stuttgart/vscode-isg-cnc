@@ -70,14 +70,10 @@ export class ParseResults {
                 });
             }
             // current element has valid content property (Matches saved in SyntaxTree) to traverse recursively
-            if (element.content !== null && element.content !== undefined && Array.isArray(element.content)) {
-                element.content.forEach((child: any) => {
-                    if (child !== null && child !== undefined) {
-                        traverseRecursive(child);
-                    }
-                });
+            if (element.content !== null && element.content !== undefined) {
+                traverseRecursive(element.content);
             }
-            // add to specific array
+            // add to specific array if element is a match of some type
             if (element.type !== null && element.type !== undefined) {
                 switch (element.type) {
                     case MatchType.toolCall:

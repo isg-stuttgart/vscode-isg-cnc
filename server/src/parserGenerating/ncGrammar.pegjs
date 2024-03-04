@@ -22,7 +22,8 @@
       globalCycleCallName: "globalCycleCallName",
       cycleParameter: "cycleParameter",
       cycleParameterAssignment: "cycleParameterAssignment",
-
+      cycleParamList: "cycleParamList",
+      
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -341,7 +342,7 @@ cycle_call "cycle_call"
 }
 
 cycle_params = content:(cycle_call_param_multiline/cycle_call_param_line) {
-  return new Match(types.cycleParams, content, location(), text(), null) 
+  return new Match(types.cycleParamList, content, location(), text(), null) 
 }
 
 cycle_call_param_multiline 

@@ -145,7 +145,10 @@ export enum MatchType {
     localCycleCallName = "localCycleCallName",
     globalCycleCall = "globalCycleCall",
     globalCycleCallName = "globalCycleCallName",
-
+    cycleParameter = "cycleParameter",
+    cycleParameterAssignment = "cycleParameterAssignment",
+    cycleParamList = "cycleParamList",
+    
     controlBlock = "controlBlock",
     gotoBlocknumber = "gotoBlocknumber",
     gotoLabel = "gotoLabel",
