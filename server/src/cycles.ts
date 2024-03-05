@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Locale } from './config';
+import { Locale, getLocale } from './config';
+import { MarkupContent } from 'vscode-languageserver';
 let cycles: Cycle[];
 
 /**
@@ -21,7 +22,7 @@ export function getCycles(): Cycle[] {
  * @returns a {@link Cycle} object 
  */
 function jsonCycleToCycle(cycle: any): Cycle {
-    const parameterList = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter));
+    const parameterList = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
     const documentationReference = cycle.DocumentationReference ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
     const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
     return new Cycle(
@@ -38,7 +39,7 @@ function jsonCycleToCycle(cycle: any): Cycle {
  * @param parameter a parameter object generated from the cycles.json file 
  * @returns a {@link Parameter} object 
  */
-function jsonParameterToParameter(parameter: any): Parameter {
+function jsonParameterToParameter(parameter: any, documentationReference: string | undefined): Parameter {
     const requirementDictionary = new RequirementDictionary(
         parameter.RequirementDictionary.Min,
         parameter.RequirementDictionary.Max,
@@ -51,7 +52,8 @@ function jsonParameterToParameter(parameter: any): Parameter {
         parameter.Media,
         parameter.DescriptionDictionary,
         requirementDictionary,
-        parameter.DependencyList
+        parameter.DependencyList,
+        documentationReference
     );
 }
 
@@ -92,21 +94,24 @@ export class Cycle {
 export class Parameter {
     name: string;
     media: string;
-    descriptionDictionary: { "en-US": string; "de-DE": string; };
+    descriptionDictionary: DescriptionDictionary;
     requirementDictionary: RequirementDictionary;
     dependencyList: string[];
+    documentationReference: string | undefined;
     constructor(
         name: string,
         media: string,
-        descriptionDictionary: { "en-US": string; "de-DE": string; }, requirementDictionary: RequirementDictionary,
-        dependencyList: string[]
+        descriptionDictionary: DescriptionDictionary,
+        requirementDictionary: RequirementDictionary,
+        dependencyList: string[],
+        documentationReference: string | undefined
     ) {
         this.name = name;
         this.media = media;
         this.descriptionDictionary = descriptionDictionary;
         this.requirementDictionary = requirementDictionary;
         this.dependencyList = dependencyList;
-
+        this.documentationReference = documentationReference;
         // throw error if some required parameters are missing
         if (!this.name) {
             throw new Error("Parameter name is missing: " + this.name);
@@ -114,7 +119,7 @@ export class Parameter {
         if (!this.media) {
             throw new Error("Parameter media is missing" + this.name);
         }
-        if (!this.descriptionDictionary || !this.descriptionDictionary["en-US"] || !this.descriptionDictionary["de-DE"]) {
+        if (!this.descriptionDictionary) {
             throw new Error("Parameter description is missing" + this.name);
         }
         if (!this.requirementDictionary) {
@@ -123,11 +128,69 @@ export class Parameter {
         if (!this.dependencyList) {
             throw new Error("Parameter dependency list is missing" + this.name);
         }
-
     }
+    /**
+    * Get a placeholder for the given parameter with following cases from highest to lowest priority:
+    * - Case 1: parameter has min and max with maximum difference of 10 -> use a choice
+    * - Case 2: parameter has min and max but the difference is too big -> show the range as placeholder
+    * - Case 3: parameter has a default value -> use the default value as placeholder
+    * - Case 4: nothing special -> use the lowercase parameter name as placeholder
+    * @param tabstopNumber the number of the tabstop of this parameter
+    * @returns the placeholder for the parameter 
+    */
+    getPlaceholder(tabstopNumber: number): string {
+        const min = this.requirementDictionary.min;
+        const max = this.requirementDictionary.max;
+        const defaultVal = this.requirementDictionary.default;
+        // case 1: parameter has min and max with maximum difference of 10 -> use a choice
+        if (min !== undefined && max !== undefined && (max - min) <= 10) {
+            const choices = [];
+            for (let i = min; i <= max; i++) {
+                choices.push(i.toString());
+            }
+            return "${" + tabstopNumber + "|" + choices.join(",") + "|}";
+        }
+        // case 2: parameter has min and max but the difference is too big -> show the range as placeholder
+        else if (min !== undefined && max !== undefined) {
+            return "${" + tabstopNumber + ":" + min + "-" + max + "}";
+        }
+        // case 3: parameter has a default value -> use the default value as placeholder
+        else if (defaultVal) {
+            return "${" + tabstopNumber + ":" + defaultVal + "}";
+        }
+        // case 4: nothing special -> use the lowercase parameter name as placeholder
+        else {
+            return "${" + tabstopNumber + ":" + this.name.toLowerCase() + "}";
+        }
+    }
+    /**
+     * @returns a markdown string that contains important information about the parameter. Can be used for completion or hover items.
+     */
+    getMarkupDocumentation(): MarkupContent {
+        const min = this.requirementDictionary.min;
+        const max = this.requirementDictionary.max;
+        const defaultVal = this.requirementDictionary.default;
+        const notNull = this.requirementDictionary.notNull;
+        const required = this.requirementDictionary.required;
+        const description = this.descriptionDictionary.getDescription(getLocale());
+        return {
+            kind: "markdown",
+            value:
+                "# " + this.name + "\n" +
+                description + "\n\n" +
 
+                (min ? "Minimal value: " + min + "\n" : "") +
+                (max ? "Maximal value: " + max + "\n" : "") +
+                (defaultVal ? "Default value: " + defaultVal + "\n" : "") +
+                "Not null: " + notNull + "\n" +
+                "Required: " + required + "\n\n" +
 
+                (this.dependencyList ? "Dependencies: " + this.dependencyList.join("\n") : "") + "\n\n" +
+                (this.documentationReference ? "[More information](" + this.documentationReference + ")" : "")
+        };
+    };
 }
+
 /**
  * A requirement dictionary object that represents the requirements of a parameter.
  */
@@ -175,19 +238,19 @@ export class DocumentationReference {
  * A description dictionary object that contains the description of a cycle or parameter in different languages.
  */
 export class DescriptionDictionary {
-    enUS: string;
-    deDE: string;
+    private "en-US": string;
+    private "de-DE": string;
     constructor(en: string, de: string) {
-        this.enUS = en;
-        this.deDE = de;
+        this["en-US"] = en;
+        this["de-DE"] = de;
 
         // throw error if some required parameters are missing
-        if (!this.enUS || !this.deDE) {
+        if (!this["en-US"] || !this["de-DE"]) {
             throw new Error("Description dictionary is missing");
         }
     }
     getDescription(locale: Locale): string {
-        return locale === Locale.en ? this.enUS : this.deDE;
+        return this[locale];
     }
 }
 

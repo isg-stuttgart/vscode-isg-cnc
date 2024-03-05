@@ -11,8 +11,13 @@ export class ParseResults {
     public readonly results: ParseResultContent;
     public readonly syntaxArray: SyntaxArray;
     constructor(text: string) {
-        this.results = ncParser.parse(text) as ParseResultContent;
-        this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+        try {
+            this.results = ncParser.parse(text) as ParseResultContent;
+            this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+        } catch (error) {
+            throw new Error(`Error while parsing file: ${error}`);
+        }
+
     }
 
     /**
