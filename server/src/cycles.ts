@@ -88,6 +88,15 @@ export class Cycle {
             throw new Error("Cycle parameter list is missing");
         }
     }
+    getMarkupDocumentation(): MarkupContent {
+        const docu = getDocumentationPathWithLocale() + "#" + this.documentationReference?.overview;
+        return {
+            kind: "markdown",
+            value:
+                "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n" +
+                (this.documentationReference?.overview ? "[More information](" + docu + ")" : "")
+        };
+    }
 }
 /**
  * A parameter object that represents a parameter of a cycle.

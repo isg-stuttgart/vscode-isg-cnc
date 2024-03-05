@@ -15,6 +15,7 @@ import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions } from './completion';
+import { getHoverInformation } from './hover';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -58,10 +59,11 @@ connection.onInitialize(async (params: InitializeParams) => {
 				},
 				resolveProvider: false,
 				triggerCharacters: ["=", "@", "\\", "[", "]", "(", ")"]
-			}
+			},
+			hoverProvider: true
 		}
 	};
-	console.log("ISG-CNC Language Server initialized" );
+	console.log("ISG-CNC Language Server initialized");
 	return result;
 });
 
@@ -128,6 +130,9 @@ connection.onReferences(async (docPos) => {
 	}
 });
 
+/**
+ * Provides completion items with snippet insertion, based on the current position in the document.
+ */
 connection.onCompletion((docPos) => {
 	try {
 		const textDocument = documents.get(docPos.textDocument.uri);
@@ -139,6 +144,21 @@ connection.onCompletion((docPos) => {
 	} catch (error) {
 		console.error("Getting completions failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting completions failed: " + JSON.stringify(error));
+	}
+});
+
+/** Provides the "Hover" functionality. Returns the hover information fitting to the specified position.*/
+connection.onHover((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		return getHoverInformation(position, textDocument);
+	} catch (error) {
+		console.error("Getting hover information failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
 	}
 });
 

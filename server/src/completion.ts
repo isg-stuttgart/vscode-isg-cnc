@@ -1,9 +1,9 @@
-import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode, MarkupContent } from 'vscode-languageserver';
-import { CycleSnippetFormatting, getCycleSnippetFormatting, getDocumentationPathWithLocale, getExtensionForCycles, getLocale } from './config';
+import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode } from 'vscode-languageserver';
+import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles } from './config';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
 import { Match, MatchType, Position } from './parserClasses';
-import { Cycle, Parameter, getCycles } from './cycles';
+import { Cycle, getCycles } from './cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
 import { ParseResults } from './parsingResults';
 import path = require('path');
@@ -56,7 +56,6 @@ function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdi
  * @returns the completion item for the cycle
  */
 function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFormat: CycleSnippetFormatting): CompletionItem {
-    const locale = getLocale();
     const fileExtension = getExtensionForCycles();
     const sep = snippetFormat === CycleSnippetFormatting.multiLine ? " \\\n\t" : " ";
     const parameters = onlyRequired ? cycle.parameterList.filter(p => p.requirementDictionary.required) : cycle.parameterList;
@@ -76,17 +75,11 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
     snippet += "]";
     preview += counter <= 3 ? "]" : sep + "...]";
 
-    const docu: MarkupContent = {
-        kind: "markdown",
-        value: cycle.descriptionDictionary.getDescription(locale) + "\n\n"
-            + (cycle.documentationReference?.overview ? "[More information](" + getDocumentationPathWithLocale() + "#" + cycle.documentationReference.overview + ")" : "")
-    };
-
     const completionItem: CompletionItem = {
         label: "Cycle: " + cycle.name + " (" + requiredString + " params)",
         kind: CompletionItemKind.Function,
         detail: preview,
-        documentation: docu,
+        documentation: cycle.getMarkupDocumentation(),
         insertTextFormat: InsertTextFormat.Snippet,
         insertTextMode: InsertTextMode.adjustIndentation,
         filterText: preview,
