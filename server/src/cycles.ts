@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Locale, getLocale } from './config';
+import { Locale, getDocumentationPathWithLocale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 let cycles: Cycle[];
 
@@ -47,10 +47,11 @@ function jsonParameterToParameter(parameter: any, documentationReference: string
         parameter.RequirementDictionary.NotNull,
         parameter.RequirementDictionary.Required
     );
+    const descriptionDictionary = new DescriptionDictionary(parameter.DescriptionDictionary["en-US"], parameter.DescriptionDictionary["de-DE"]);
     return new Parameter(
         parameter.Name,
         parameter.Media,
-        parameter.DescriptionDictionary,
+        descriptionDictionary,
         requirementDictionary,
         parameter.DependencyList,
         documentationReference
@@ -172,21 +173,28 @@ export class Parameter {
         const defaultVal = this.requirementDictionary.default;
         const notNull = this.requirementDictionary.notNull;
         const required = this.requirementDictionary.required;
-        const description = this.descriptionDictionary.getDescription(getLocale());
+        let description = "";
+        try {
+            const locale = getLocale();
+            description = this.descriptionDictionary.getDescription(locale);
+        } catch (error) {
+            console.error("Failed to get description for parameter " + this.name + ": " + error);
+        }
+        const docu = getDocumentationPathWithLocale() + "#" + this.documentationReference;
+        const dependencyMarkdownString = this.dependencyList.map(dep => "- " + dep).join("\n");
         return {
             kind: "markdown",
             value:
-                "# " + this.name + "\n" +
-                description + "\n\n" +
+                "### " + this.name + ": " + description + "  \n" +
 
-                (min ? "Minimal value: " + min + "\n" : "") +
-                (max ? "Maximal value: " + max + "\n" : "") +
-                (defaultVal ? "Default value: " + defaultVal + "\n" : "") +
-                "Not null: " + notNull + "\n" +
+                (min !== undefined ? "Minimal value: " + min + "  \n" : "") +
+                (max !== undefined ? "Maximal value: " + max + "  \n" : "") +
+                (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
+                "Not null: " + notNull + "  \n" +
                 "Required: " + required + "\n\n" +
 
-                (this.dependencyList ? "Dependencies: " + this.dependencyList.join("\n") : "") + "\n\n" +
-                (this.documentationReference ? "[More information](" + this.documentationReference + ")" : "")
+                (this.dependencyList ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
+                (this.documentationReference ? "[More information](" + docu + ")" : "")
         };
     };
 }
@@ -240,9 +248,9 @@ export class DocumentationReference {
 export class DescriptionDictionary {
     private "en-US": string;
     private "de-DE": string;
-    constructor(en: string, de: string) {
-        this["en-US"] = en;
-        this["de-DE"] = de;
+    constructor(enUS: string, deDE: string) {
+        this["en-US"] = enUS;
+        this["de-DE"] = deDE;
 
         // throw error if some required parameters are missing
         if (!this["en-US"] || !this["de-DE"]) {
@@ -250,7 +258,11 @@ export class DescriptionDictionary {
         }
     }
     getDescription(locale: Locale): string {
-        return this[locale];
+        if (locale === "en-US") {
+            return this["en-US"];
+        } else {
+            return this["de-DE"];
+        }
     }
 }
 

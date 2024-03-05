@@ -367,7 +367,7 @@ content:(param grayspaces "=" grayspaces value:(var/string/cycle_call_param_line
 }
 
 cycle_call_param_line_trash_token                           // trashes non-relevant tokens in cycle call parameters
-= $(!("]"/"\r"/"\n"/"\\"/line_comment/var/whitespace) .)+
+= $(!("]"/"\r"/"\n"/"\\"/param/paramAssignement/line_comment/var/whitespace) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{

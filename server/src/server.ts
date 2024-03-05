@@ -56,11 +56,12 @@ connection.onInitialize(async (params: InitializeParams) => {
 				completionItem: {
 					labelDetailsSupport: false
 				},
-				resolveProvider: false
+				resolveProvider: false,
+				triggerCharacters: ["=", "@", "\\", "[", "]", "(", ")"]
 			}
 		}
 	};
-	console.log("ISG-CNC Language Server initialized");
+	console.log("ISG-CNC Language Server initialized" );
 	return result;
 });
 

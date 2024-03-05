@@ -3809,11 +3809,17 @@ function peg$parse(input: string, options?: ParseOptions) {
             if (peg$silentFails === 0) { peg$fail(peg$c72); }
           }
           if (s4 as any === peg$FAILED) {
-            s4 = peg$parseline_comment();
+            s4 = peg$parseparam();
             if (s4 as any === peg$FAILED) {
-              s4 = peg$parsevar();
+              s4 = peg$parseparamAssignement();
               if (s4 as any === peg$FAILED) {
-                s4 = peg$parsewhitespace();
+                s4 = peg$parseline_comment();
+                if (s4 as any === peg$FAILED) {
+                  s4 = peg$parsevar();
+                  if (s4 as any === peg$FAILED) {
+                    s4 = peg$parsewhitespace();
+                  }
+                }
               }
             }
           }
@@ -3884,11 +3890,17 @@ function peg$parse(input: string, options?: ParseOptions) {
                 if (peg$silentFails === 0) { peg$fail(peg$c72); }
               }
               if (s4 as any === peg$FAILED) {
-                s4 = peg$parseline_comment();
+                s4 = peg$parseparam();
                 if (s4 as any === peg$FAILED) {
-                  s4 = peg$parsevar();
+                  s4 = peg$parseparamAssignement();
                   if (s4 as any === peg$FAILED) {
-                    s4 = peg$parsewhitespace();
+                    s4 = peg$parseline_comment();
+                    if (s4 as any === peg$FAILED) {
+                      s4 = peg$parsevar();
+                      if (s4 as any === peg$FAILED) {
+                        s4 = peg$parsewhitespace();
+                      }
+                    }
                   }
                 }
               }

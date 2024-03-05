@@ -17,14 +17,14 @@ export function getCompletions(pos: Position, doc: TextDocument): CompletionItem
     // if the position is within the parameterlist of a cycle call, don't suggest cycle snippets but fitting parameters
     const cycle = findPreciseMatchOfTypes(parseResults.results.fileTree, pos, [MatchType.globalCycleCall]);
     if (cycle) {
-        return getCompletionsWithinCycle(pos, cycle);
+        return getCompletionsWithinCycle(pos, doc, cycle);
     }
 
-    return getDynamicCycleCompletion(pos, doc);
+    return getReplaceCompletion(pos, doc, staticCycleCompletions, "L ");
 }
 
-function getDynamicCycleCompletion(pos: Position, doc: TextDocument) {
-    let completions: CompletionItem[] = JSON.parse(JSON.stringify(staticCycleCompletions));
+function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdit: CompletionItem[], startFilter?: string): CompletionItem[] {
+    const completions = JSON.parse(JSON.stringify(completionsToEdit));
     let startCharacter = pos.character - 1;
     while (startCharacter >= 0) {
         const text = doc.getText({
@@ -32,7 +32,7 @@ function getDynamicCycleCompletion(pos: Position, doc: TextDocument) {
             end: { line: pos.line, character: pos.character }
         });
 
-        if (text.toLowerCase().startsWith("l ")) { // saves a lot of checks
+        if (!startFilter || text.toLowerCase().startsWith(startFilter)) { // saves a lot of checks
             for (const completion of completions) {
                 // if the completion starts with the text, adapt it to replace the text
                 if (completion.insertText && completion.insertText.toLowerCase().startsWith(text.toLowerCase())) {
@@ -63,8 +63,8 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
     const requiredString = onlyRequired ? "required" : "all";
 
     // Create the snippet and preview depending on the parameters
-    let snippet = "L Cycle [NAME=" + cycle.name + fileExtension;
-    let preview = "L Cycle [NAME=" + cycle.name + fileExtension;
+    let snippet = "L CYCLE [NAME=" + cycle.name + fileExtension;
+    let preview = "L CYCLE [NAME=" + cycle.name + fileExtension;
     let counter = 1;
     for (const parameter of parameters) {
         snippet += sep + "@" + parameter.name + "=" + parameter.getPlaceholder(counter);
@@ -89,7 +89,7 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
         documentation: docu,
         insertTextFormat: InsertTextFormat.Snippet,
         insertTextMode: InsertTextMode.adjustIndentation,
-        filterText: snippet,
+        filterText: preview,
         insertText: snippet
     };
     return completionItem;
@@ -112,7 +112,7 @@ export function updateStaticCycleCompletions(): void {
 updateStaticCycleCompletions();
 
 
-function getCompletionsWithinCycle(pos: Position, cycleMatch: Match): CompletionItem[] {
+function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch: Match): CompletionItem[] {
     // trim file ending from cycle name
     if (!cycleMatch.name) {
         return [];
@@ -137,7 +137,7 @@ function getCompletionsWithinCycle(pos: Position, cycleMatch: Match): Completion
             filterText: insertText
         });
     }
-    return completions;
+    return getReplaceCompletion(pos, doc, completions, "@");
 }
 
 
