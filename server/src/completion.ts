@@ -8,13 +8,24 @@ import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearc
 import { ParseResults } from './parsingResults';
 import path = require('path');
 
+/**
+ * A list of all cycle completions, independent of the position in the document.
+ * 
+ * This list is updated once on startup and then only when an important setting, namely cycleSnippetFormatting, locale, documentationPath or extensionForCycles is changed.
+ */
 let staticCycleCompletions: CompletionItem[];
 
 
-
+/**
+ * Returns the completions for the given position in the document.
+ * Currently it supports cycle completions and cycle parameter completions.
+ * @param pos the zero-based position in the document
+ * @param doc the document to get the completions for
+ * @returns the completions for the given position 
+ */
 export function getCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
     const parseResults: ParseResults = new ParseResults(doc.getText());
-    // if the position is within the parameterlist of a cycle call, don't suggest cycle snippets but fitting parameters
+    // if the position is within a cycle call, get the completions for the cycle
     const cycle = findPreciseMatchOfTypes(parseResults.results.fileTree, pos, [MatchType.globalCycleCall]);
     if (cycle) {
         return getCompletionsWithinCycle(pos, doc, cycle);
@@ -23,6 +34,14 @@ export function getCompletions(pos: Position, doc: TextDocument): CompletionItem
     return getReplaceCompletion(pos, doc, staticCycleCompletions, "L ");
 }
 
+/**
+ * Converts the given completions to replace completions, replacing longest matching prefix before the insertion position.
+ * @param pos the position in the document 
+ * @param doc the document to get the completions for 
+ * @param completionsToEdit the completions to convert to replace completions 
+ * @param startFilter filters possible prefixes of the completions, e.g. "L " for cycles to only observe prefixes starting with "L " 
+ * @returns the replace-completions for the given position 
+ */
 function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdit: CompletionItem[], startFilter?: string): CompletionItem[] {
     const completions = JSON.parse(JSON.stringify(completionsToEdit));
     let startCharacter = pos.character - 1;
@@ -72,7 +91,7 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
         }
         counter++;
     }
-    snippet += "]";
+    snippet += snippetFormat === CycleSnippetFormatting.multiLine ? sep + "]" : "]";
     preview += counter <= 3 ? "]" : sep + "...]";
 
     const completionItem: CompletionItem = {
@@ -104,7 +123,14 @@ export function updateStaticCycleCompletions(): void {
 // update once on startup
 updateStaticCycleCompletions();
 
-
+/**
+ * Get the completions for the given position which must be within the cycleMatch.
+ * If the position is in the parameter list of a cycle call, it returns the completions for the missing parameters, otherwise it returns an empty list. 
+ * @param pos the position in the document 
+ * @param doc the document to get the completions for 
+ * @param cycleMatch the cycle call match where the current position is in  
+ * @returns the completions for the given position within the cycle call 
+ */
 function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch: Match): CompletionItem[] {
     // trim file ending from cycle name
     if (!cycleMatch.name) {

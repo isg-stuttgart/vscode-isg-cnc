@@ -226,6 +226,11 @@ export class RequirementDictionary {
     }
 }
 
+/**
+ * Parses a string or number to a number or undefined if the value is not a number.  
+ * @param value the value to parse 
+ * @returns the parsed number or undefined if the value is not a number 
+ */
 function parseIntOrUndefined(value: string | number | undefined): number | undefined {
     if (typeof value === "number") {
         return value;
@@ -266,11 +271,15 @@ export class DescriptionDictionary {
             throw new Error("Description dictionary is missing");
         }
     }
+    /**
+     * @param locale the locale to get the description for 
+     * @returns the description for the given locale 
+     */
     getDescription(locale: Locale): string {
-        if (locale === "en-US") {
-            return this["en-US"];
-        } else {
+        if (locale === Locale.de) {
             return this["de-DE"];
+        } else {
+            return this["en-US"];
         }
     }
 }

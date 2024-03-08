@@ -6,8 +6,15 @@ import { Hover } from "vscode-languageserver";
 import { getCycles } from "./cycles";
 import path = require("path");
 
+/**
+ * Returns the hover information for the given position in the document.
+ * Currently it supports cycle call and cycle parameter hover. 
+ * @param position the zero-based position in the document 
+ * @param textDocument the document to get the hover information for 
+ * @returns the hover information item for the given position 
+ */
 export function getHoverInformation(position: Position, textDocument: TextDocument): Hover | null {
-    // check if hovering is within a cycle call
+    // check if hovering is within a cycle call and return the fitting hover information if so
     const parseResults: ParseResults = new ParseResults(textDocument.getText());
     const ast = parseResults.results.fileTree;
     const cycle = findPreciseMatchOfTypes(ast, position, [MatchType.globalCycleCall]);
@@ -15,15 +22,23 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
         return getHoverForCycleCall(position, cycle);
     }
 
+    // no hover information found
     return null;
 }
 
+/**
+ * Returns the hover information for the given position which is within the cycle call.
+ * @param position the zero-based position in the document 
+ * @param cycleMatch the cycle call match containing the position 
+ * @returns the hover information item for the given position, null if no hover information is found 
+ */
 function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | null {
+    // find the cycle object fitting to the name of the cycle call
     if (!cycleMatch.name) { return null; }
     const cycleName = path.parse(cycleMatch.name).name;
     const cycle = getCycles().find(c => c.name === cycleName);
     if (!cycle) { return null; }
-    // if on cycle name, show cycle documentation
+    // find the most precise match being either the cycle name or a parameter
     const cycleSubMatch = findPreciseMatchOfTypes(cycleMatch, position, [MatchType.globalCycleCallName, MatchType.cycleParameter]);
     if (!cycleSubMatch) { return null; }
     // if on cycle name, show cycle documentation
@@ -60,5 +75,6 @@ function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | nu
         } : null;
     }
 
+    // no hover information found
     return null;
 }
