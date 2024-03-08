@@ -113,7 +113,7 @@ function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch:
     const cycleName = path.parse(cycleMatch.name).name;
     const cycle = getCycles().find(c => c.name === cycleName);
     const currentParamList = findPreciseMatchOfTypes(cycleMatch.content, pos, [MatchType.cycleParamList]);
-    if (!cycle) {
+    if (!cycle || currentParamList === null) {
         return [];
     }
     const currentParamMatches = findMatchesWithinPrgTree(currentParamList?.content, [MatchType.cycleParameter], undefined);

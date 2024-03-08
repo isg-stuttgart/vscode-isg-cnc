@@ -202,7 +202,7 @@ export class Parameter {
                 "Not null: " + notNull + "  \n" +
                 "Required: " + required + "\n\n" +
 
-                (this.dependencyList ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
+                (this.dependencyList && this.dependencyList.length > 0 ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
                 (this.documentationReference ? "[More information](" + docu + ")" : "")
         };
     };
