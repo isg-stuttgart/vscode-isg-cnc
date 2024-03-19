@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { createFullAddress, startDocu } from "../../../util/documentation";
+import { createFullAddress, openDocu } from "../../../util/documentation";
 import * as vscode from "vscode";
 suite("Open Documentation Test Suite", () => {
 
@@ -11,7 +11,7 @@ suite("Open Documentation Test Suite", () => {
 
         const docuAddress = createFullAddress();
         assert.strictEqual(docuAddress, "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/en-GB/index.html");
-        startDocu();
+        openDocu();
     });
 
     test("Open Documentation with custom values", async () => {
@@ -21,6 +21,6 @@ suite("Open Documentation Test Suite", () => {
 
         const docuAddress = createFullAddress();
         assert.strictEqual(docuAddress, "customPathToWebsite/de-DE/index.html");
-        startDocu();
+        openDocu();
     });
 });

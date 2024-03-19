@@ -2,11 +2,9 @@ import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./
 import * as fs from "fs";
 import * as path from "path";
 
-
-
 // locale for the language server documentation features
 export enum Locale {
-    en = "en-US",
+    en = "en-GB",
     de = "de-DE"
 }
 let locale: Locale = Locale.en;
@@ -19,6 +17,12 @@ export function getLocale(): Locale {
 
 // path to the documentation website
 let documentationPath = "";
+export function getDocumentationPath(): string {
+    return documentationPath;
+}
+/**
+ * @returns the localed path to the documentation website
+ */
 export function getDocumentationPathWithLocale(): string {
     return documentationPath + "/" + getLocale() + "/index.html";
 }
@@ -47,8 +51,6 @@ let fileAssociations: { [key: string]: string } = {
     "*.sub": "isg-cnc",
     "*.plc": "isg-cnc"
 };
-
-
 
 let extensionForCycles: string = ".ecy";
 /**

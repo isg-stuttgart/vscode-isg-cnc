@@ -14,7 +14,7 @@ import { addToIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
 import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
-import { startDocu } from "./util/documentation";
+import { openDocu, openDocuWithId } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
@@ -60,7 +60,8 @@ export function activate(context: vscode.ExtensionContext): void {
     };
 
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ language: 'isg-cnc' }]
+        documentSelector: [{ language: 'isg-cnc' }],
+        markdown: { isTrusted: true },
     };
 
     // start the cnc language server
@@ -101,7 +102,10 @@ export function activate(context: vscode.ExtensionContext): void {
             addBlocknumbersCommand()
         ),
         vscode.commands.registerCommand("isg-cnc.StartDocu", () =>
-            startDocu()
+            openDocu()
+        ),
+        vscode.commands.registerCommand("isg-cnc.openDocuWithId", (id: string) =>
+            openDocuWithId(id)
         ),
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
             highlightNonAsciiChars()

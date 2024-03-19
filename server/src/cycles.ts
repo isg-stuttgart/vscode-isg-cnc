@@ -1,8 +1,31 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Locale, getDocumentationPathWithLocale, getLocale } from './config';
+import { Locale, getDocumentationPath, getDocumentationPathWithLocale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
+import { URI } from 'vscode-uri';
 let cycles: Cycle[];
+
+/**
+ * This function returns the markup uri to documentation with the given id, hidden behind the shown text "More information".
+ * If the documentation path is not the default path to online doku, 
+ * the uri will be a command uri to open the local documentation at configured path with the given id.
+ * If no id is given, an empty string will be returned.
+ * @returns markup uri to documentation with the given id
+ */
+export function getMarkUpDocUri(id: string | undefined): string {
+    if (!id) {
+        return "";
+    }
+
+    const localedDefaultPath = getDocumentationPathWithLocale();
+    // if not the default path to online doku, interpret as local path and return command uri to open it in browser
+    if (getDocumentationPath() !== "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/") {
+        const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
+        return `[More information](${commandUri.toString()})`;
+    } else {
+        return `[More information](${localedDefaultPath}#${id})`;
+    }
+}
 
 /**
  * @returns a list of cycles generated from the cycles.json file
@@ -89,12 +112,11 @@ export class Cycle {
         }
     }
     getMarkupDocumentation(): MarkupContent {
-        const docu = getDocumentationPathWithLocale() + "#" + this.documentationReference?.overview;
         return {
             kind: "markdown",
             value:
                 "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n" +
-                (this.documentationReference?.overview ? "[More information](" + docu + ")" : "")
+                getMarkUpDocUri(this.documentationReference?.overview)
         };
     }
 }
@@ -184,12 +206,10 @@ export class Parameter {
         const required = this.requirementDictionary.required;
         let description = "";
         try {
-            const locale = getLocale();
-            description = this.descriptionDictionary.getDescription(locale);
+            description = this.descriptionDictionary.getDescription(getLocale());
         } catch (error) {
             console.error("Failed to get description for parameter " + this.name + ": " + error);
         }
-        const docu = getDocumentationPathWithLocale() + "#" + this.documentationReference;
         const dependencyMarkdownString = this.dependencyList.map(dep => "- " + dep).join("\n");
         return {
             kind: "markdown",
@@ -203,7 +223,7 @@ export class Parameter {
                 "Required: " + required + "\n\n" +
 
                 (this.dependencyList && this.dependencyList.length > 0 ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
-                (this.documentationReference ? "[More information](" + docu + ")" : "")
+                getMarkUpDocUri(this.documentationReference)
         };
     };
 }
