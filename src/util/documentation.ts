@@ -18,13 +18,13 @@ export function openDocu(): void {
  * @param id the id of the documentation to open
  */
 export function openDocuWithId(id: string): void {
-    // if the documentation path is not the default, interpret it as local file path and open it in browser
-    if (getDocumentationPath() !== "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/") {
+    // if the documentation does not start with http, interpret it as local file path and open it in browser
+    if (!getDocumentationPath().startsWith("http")) {
         const filePath = path.join(getDocumentationPath(), getLocale(), `${id}.html`);
         const parsedDocuPath = vscode.Uri.file(filePath);
         vscode.env.openExternal(parsedDocuPath);
     } else {
-        // if the documentation path is the default, open the documentation in the default browser
+        // if the documentation path starts with http interpret it as web address and open it in browser
         let docuAddress: string = createFullAddress();
         const parsedDocuPath = vscode.Uri.parse(docuAddress + "#" + id);
         vscode.env.openExternal(parsedDocuPath);

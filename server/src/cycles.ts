@@ -18,8 +18,8 @@ export function getMarkUpDocUri(id: string | undefined): string {
     }
 
     const localedDefaultPath = getDocumentationPathWithLocale();
-    // if not the default path to online doku, interpret as local path and return command uri to open it in browser
-    if (getDocumentationPath() !== "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/") {
+    // if not beginning with "http", interpret the documentation path as local file path and open it in browser via the isg-cnc.openDocuWithId command 
+    if (!getDocumentationPath().startsWith("http")) {
         const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
         return `[More information](${commandUri.toString()})`;
     } else {

@@ -61,7 +61,7 @@
                 "isg-cnc.documentationPath": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
-                    "description": "Path to the ISG documentation. If modified, it is interpreted as local path instead of web address.\nImportant: Address must end with a slash character (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)",
+                    "description": "Path to the ISG documentation. You only need to change this, if you don't have access to the internet.\nIf starting with \"http\", it is interpreted as the root URL (e.g. https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)\nIf not, it is interpreted as the root path of a locally installed documentation (e.g. \"C:\\ISG\\doku\") which should then contain the index.html-file, de-DE-, en-GB-directories and so on.",
                     "order": 20
                 },
                 "isg-cnc.locale": {
@@ -76,7 +76,7 @@
                 },
                 "isg-cnc.extensionForCycles": {
                     "type": "string",
-                    "default": "ecy",
+                    "default": ".ecy",
                     "description": "File extension of cycle files, currently used for cycle snippets.\n Make sure to include the dot, e.g. '.ecy' and not 'ecy'.",
                     "order": 32
                 },
