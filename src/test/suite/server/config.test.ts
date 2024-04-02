@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
 import * as fs from "fs";
-import { cloneFileAssociations, getAllNotIgnoredCncFilePathsInRoot, isCncFile, updateSettings } from "../../../../server/src/config";
+import { cloneFileAssociations, CycleSnippetFormatting, getAllNotIgnoredCncFilePathsInRoot, getCycleSnippetFormatting, getDocumentationPathWithLocale, getExtensionForCycles, isCncFile, updateSettings } from "../../../../server/src/config";
 import * as path from "path";
 import { getPathOfWorkspaceFile, openTestFile } from "../testHelper";
 suite("LS Config Tests", async () => {
@@ -34,7 +34,60 @@ suite("LS Config Tests", async () => {
         }
 
     });
+
+    test("Updating locale and documentation path", async function () {
+        // clear all settings
+        await vscode.workspace.getConfiguration().update("isg-cnc.locale", undefined, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.documentationPath", undefined, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.locale", undefined, vscode.ConfigurationTarget.Global);
+        await vscode.workspace.getConfiguration().update("isg-cnc.documentationPath", undefined, vscode.ConfigurationTarget.Global);
+        // update locale and documentation path
+        await vscode.workspace.getConfiguration().update("isg-cnc.locale", "de-DE", vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.documentationPath", "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getDocumentationPathWithLocale, "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html");
+
+        // change to en-GB
+        await vscode.workspace.getConfiguration().update("isg-cnc.locale", "en-GB", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getDocumentationPathWithLocale, "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/en-GB/index.html");
+
+        // change to de-DE and remove last slash
+        await vscode.workspace.getConfiguration().update("isg-cnc.locale", "de-DE", vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.documentationPath", "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getDocumentationPathWithLocale, "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html");
+
+        // change to complete different path
+        await vscode.workspace.getConfiguration().update("isg-cnc.documentationPath", "https://website.com/", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getDocumentationPathWithLocale, "https://website.com/de-DE/index.html");
+    });
+
+    test("Updating cycle snippet formatting", async function () {
+        // clear all settings 
+        await vscode.workspace.getConfiguration().update("isg-cnc.cycleSnippetFormatting", undefined, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.cycleSnippetFormatting", undefined, vscode.ConfigurationTarget.Global);
+
+        // update cycle snippet formatting
+        await vscode.workspace.getConfiguration().update("isg-cnc.cycleSnippetFormatting", "single-line", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getCycleSnippetFormatting, CycleSnippetFormatting.singleLine);
+        await vscode.workspace.getConfiguration().update("isg-cnc.cycleSnippetFormatting", "multi-line", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getCycleSnippetFormatting, CycleSnippetFormatting.multiLine);
+        await vscode.workspace.getConfiguration().update("isg-cnc.cycleSnippetFormatting", "single-line", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getCycleSnippetFormatting, CycleSnippetFormatting.singleLine);
+    });
+
+    test("Updating extension for cycles", async function () {
+        // clear all settings
+        await vscode.workspace.getConfiguration().update("isg-cnc.extensionForCycles", undefined, vscode.ConfigurationTarget.Workspace);
+        await vscode.workspace.getConfiguration().update("isg-cnc.extensionForCycles", undefined, vscode.ConfigurationTarget.Global);
+        // update extension for cycles
+        await vscode.workspace.getConfiguration().update("isg-cnc.extensionForCycles", ".cyc", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getExtensionForCycles, ".cyc");
+        await vscode.workspace.getConfiguration().update("isg-cnc.extensionForCycles", ".ecy", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getExtensionForCycles, ".ecy");
+        await vscode.workspace.getConfiguration().update("isg-cnc.extensionForCycles", ".cyc", vscode.ConfigurationTarget.Workspace);
+        await waitForFunctionUpdate(getExtensionForCycles, ".cyc");
+    });
 });
+
 async function waitForReset(): Promise<void> {
     const startTime = Date.now();
     while (Object.keys(cloneFileAssociations()).length !== 6 || Object.values(cloneFileAssociations()).some((value) => value !== "isg-cnc")) {
@@ -44,6 +97,7 @@ async function waitForReset(): Promise<void> {
         await new Promise((resolve) => setTimeout(resolve, 10));
     }
 }
+
 async function waitForLanguageIdUpdate(pattern: string, expectedLanguageId: string | undefined): Promise<void> {
     const startTime = Date.now();
     while (cloneFileAssociations()[pattern] !== expectedLanguageId) {
@@ -54,6 +108,16 @@ async function waitForLanguageIdUpdate(pattern: string, expectedLanguageId: stri
         await new Promise((resolve) => setTimeout(resolve, 10));
     }
 }
+
+async function waitForFunctionUpdate(func: () => any, expectedValue: any): Promise<void> {
+    const startTime = Date.now();
+    while (func() !== expectedValue) {
+        if (Date.now() - startTime > 5000) {
+            throw new Error(`Timeout while waiting for function ${func.name} to return ${expectedValue} but returned ${func()}`);
+        }
+    }
+}
+
 function getFilesWithEndings(root: string, endings: string[]): string[] {
     const files: string[] = [];
     const dirEntries = fs.readdirSync(root, { withFileTypes: true });

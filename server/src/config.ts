@@ -17,9 +17,7 @@ export function getLocale(): Locale {
 
 // path to the documentation website
 let documentationPath = "";
-export function getDocumentationPath(): string {
-    return documentationPath;
-}
+
 /**
  * @returns the localed path to the documentation website
  */
@@ -113,7 +111,7 @@ export function updateSettings(workspaceConfig: any) {
                 locale = Locale.de;
                 break;
             default:
-                throw new Error("Invalid locale");
+                throw new Error("Invalid isg-cnc.locale");
         }
     } catch (error) {
         failedSettings.push("locale");
@@ -129,7 +127,7 @@ export function updateSettings(workspaceConfig: any) {
                 cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
                 break;
             default:
-                throw new Error("Invalid cycleSnippetFormatting");
+                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
         }
     } catch (error) {
         failedSettings.push("cycleSnippetFormatting");
