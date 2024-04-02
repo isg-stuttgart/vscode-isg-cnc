@@ -1,42 +1,28 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import { Locale, getDocumentationPath, getDocumentationPathWithLocale, getLocale } from './config';
+import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
+import * as cyclesJson from "../res/cycles.json";
 let cycles: Cycle[];
-
-/**
- * This function returns the markup uri to documentation with the given id, hidden behind the shown text "More information".
- * If the documentation path is not the default path to online doku, 
- * the uri will be a command uri to open the local documentation at configured path with the given id.
- * If no id is given, an empty string will be returned.
- * @returns markup uri to documentation with the given id
- */
-export function getMarkUpDocUri(id: string | undefined): string {
-    if (!id) {
-        return "";
-    }
-
-    const localedDefaultPath = getDocumentationPathWithLocale();
-    // if not beginning with "http", interpret the documentation path as local file path and open it in browser via the isg-cnc.openDocuWithId command 
-    if (!getDocumentationPath().startsWith("http")) {
-        const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
-        return `[More information](${commandUri.toString()})`;
-    } else {
-        return `[More information](${localedDefaultPath}#${id})`;
-    }
-}
 
 /**
  * @returns a list of cycles generated from the cycles.json file
  */
 export function getCycles(): Cycle[] {
     if (!cycles) {
-        const cyclesPath = path.join(__dirname, "..", "res", "cycles.json");
-        const cyclesJson = JSON.parse(fs.readFileSync(cyclesPath, "utf8"));
         cycles = cyclesJson.map((cycle: any) => jsonCycleToCycle(cycle));
     }
     return cycles;
+}
+
+/**
+ * @returns a markdown string that contains a clickable command uri to open the documentation with the given id
+ */
+export function getMarkUpDocUri(id: string | undefined): string {
+    if (!id) {
+        return "";
+    }
+    const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
+    return `[More information](${commandUri.toString()})`;
 }
 
 /**

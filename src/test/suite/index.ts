@@ -28,7 +28,7 @@ export async function run(): Promise<void> {
 
     return new Promise((c, e) => {
 
-        const testFiles = globSync('**/**.test.js', { cwd: testsRoot });
+        const testFiles = globSync('**/**cycles.test.js', { cwd: testsRoot });
 
         // Add files to the test suite
         testFiles.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));

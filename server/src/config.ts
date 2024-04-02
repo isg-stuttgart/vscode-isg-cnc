@@ -24,7 +24,8 @@ export function getDocumentationPath(): string {
  * @returns the localed path to the documentation website
  */
 export function getDocumentationPathWithLocale(): string {
-    return documentationPath + "/" + getLocale() + "/index.html";
+    const leadingSlash = documentationPath.endsWith("/") ? "" : "/";
+    return documentationPath + leadingSlash + getLocale() + "/index.html";
 }
 
 // formatting of cycle snippets
