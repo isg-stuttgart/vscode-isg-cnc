@@ -110,6 +110,8 @@ async function waitForLanguageIdUpdate(pattern: string, expectedLanguageId: stri
 }
 
 async function waitForFunctionUpdate(func: () => any, expectedValue: any): Promise<void> {
+    // update settings manually (TODO: shouldnt be necessary, reason for this must be found)
+    updateSettings(vscode.workspace.getConfiguration());
     const startTime = Date.now();
     while (func() !== expectedValue) {
         if (Date.now() - startTime > 5000) {
