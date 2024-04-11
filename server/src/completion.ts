@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode } from 'vscode-languageserver';
+import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode, Range } from 'vscode-languageserver';
 import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles } from './config';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
@@ -46,12 +46,9 @@ function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdi
     const completions = JSON.parse(JSON.stringify(completionsToEdit));
     let startCharacter = pos.character - 1;
     while (startCharacter >= 0) {
-        const text = doc.getText({
-            start: { line: pos.line, character: startCharacter },
-            end: { line: pos.line, character: pos.character }
-        });
+        const text = doc.getText(Range.create(pos.line, startCharacter, pos.line, pos.character));
 
-        if (!startFilter || text.toLowerCase().startsWith(startFilter)) { // saves a lot of checks
+        if (!startFilter || text.toLowerCase().startsWith(startFilter.toLowerCase())) { // saves a lot of checks
             for (const completion of completions) {
                 // if the completion starts with the text, adapt it to replace the text
                 if (completion.insertText && completion.insertText.toLowerCase().startsWith(text.toLowerCase())) {
@@ -92,7 +89,7 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
         counter++;
     }
     snippet += snippetFormat === CycleSnippetFormatting.multiLine ? sep + "]" : "]";
-    preview += counter <= 3 ? "]" : sep + "...]";
+    preview += counter <= 4 ? "]" : sep + "...]";
 
     const completionItem: CompletionItem = {
         label: "Cycle: " + cycle.name + " (" + requiredString + " params)",

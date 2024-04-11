@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext): void {
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
     let serverModule = context.asAbsolutePath(
-        path.join('server', 'out', 'server.js')
+        path.join('out', 'server', 'src', 'server.js')
     );
 
     // defining lsp options
