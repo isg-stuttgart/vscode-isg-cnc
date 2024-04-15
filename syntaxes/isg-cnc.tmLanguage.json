@@ -404,6 +404,14 @@
                     "name": "keyword.other.hashtagcommand"
                 },
                 {
+                    "match": "#LOCK",
+                    "name": "keyword.other.hashtagcommand"
+                },
+                {
+                    "match": "#UNLOCK",
+                    "name": "keyword.other.hashtagcommand"
+                },
+                {
                     "match": "\\#MACHINE\\s*?*DATA",
                     "name": "keyword.other.hashtagcommand"
                 },
@@ -517,6 +525,10 @@
                 },
                 {
                     "match": "\\#SUPPRESS\\s*?*OFFSETS",
+                    "name": "keyword.other.hashtagcommand"
+                },
+                {
+                    "match": "#START",
                     "name": "keyword.other.hashtagcommand"
                 },
                 {
@@ -777,6 +789,10 @@
                 },
                 {
                     "match": "V\\.CYC\\.[.a-zA-Z0-9_]+",
+                    "name": "variable.language"
+                },
+                {
+                    "match": "V\\.I\\.[.a-zA-Z0-9_]+",
                     "name": "variable.language"
                 },
                 {
