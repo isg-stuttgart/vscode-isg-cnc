@@ -23,7 +23,7 @@ suite("LS fileSystem", () => {
 
     // findFileInRootDir
     test("Find files in root dir without ignorer", () => {
-        assert.deepStrictEqual(findFileInRootDir(workspacePath, "test.nc").sort(), [
+        assert.deepStrictEqual(findFileInRootDir(workspacePath, "test.nc", undefined, true).sort(), [
             getPathOfWorkspaceFile("test.nc"),
             getPathOfWorkspaceFile("languageFolder/test.nc"),
             getPathOfWorkspaceFile("languageFolder/nestedFolder/test.nc/test.nc"),
@@ -32,7 +32,7 @@ suite("LS fileSystem", () => {
     });
     test("Find files in root dir with ignorer", () => {
         try {
-            assert.deepStrictEqual(findFileInRootDir(workspacePath, "test.nc", createWorkspaceIgnorer(exampleIgnoreFile)).sort(), [
+            assert.deepStrictEqual(findFileInRootDir(workspacePath, "test.nc", createWorkspaceIgnorer(exampleIgnoreFile), true).sort(), [
                 getPathOfWorkspaceFile("test.nc"),
             ].sort());
         } finally {

@@ -216,6 +216,11 @@
                 "command": "isg-cnc.changeCycleSnippetsToMultiLine",
                 "title": "ISG-CNC: Change cycle snippet formatting to multi-line",
                 "enablement": "config.isg-cnc.cycleSnippetFormatting == 'single-line'"
+            },
+            {
+                "command": "isg-cnc.jumpIntoFileAtOffset",
+                "title": "ISG-CNC: Jump into file (selection 1) to offset (selection 2)",
+                "enablement": "editorHasSelection"
             }
         ],
         "menus": {
@@ -306,8 +311,12 @@
                     "group": "isg-cnc.offset@1"
                 },
                 {
-                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "command": "isg-cnc.jumpIntoFileAtOffset",
                     "group": "isg-cnc.offset@2"
+                },
+                {
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "group": "isg-cnc.offset@3"
                 },
                 {
                     "command": "isg-cnc.FindNextTFS",
@@ -417,6 +426,10 @@
                 "key": "ctrl+i ctrl+e",
                 "command": "isg-cnc.AlignEqualSigns",
                 "when": "editorTextFocus"
+            },
+            {
+                "key": "ctrl+i ctrl+j",
+                "command": "isg-cnc.jumpIntoFileAtOffset"
             }
         ],
         "languages": [

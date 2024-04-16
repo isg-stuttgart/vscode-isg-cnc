@@ -1,13 +1,57 @@
 import * as vscode from 'vscode';
 import { isNumeric } from './util';
 import { updateCurrentOffsetStatusBarItem } from './statusbar';
+import { findFileInRootDir } from '../../server/src/fileSystem';
+import * as path from 'path';
+export async function jumpIntoFileAtOffset() {
+    // get current selection and validate if there are at least two selections
+    const activeTextEditor = vscode.window.activeTextEditor;
+    const document = activeTextEditor?.document;
+    // no active document found
+    if (!activeTextEditor || !document) {
+        vscode.window.showErrorMessage("No active document found.");
+        return;
+    }
+    const selections = activeTextEditor.selections;
+    // not enough selections
+    if (selections.length < 2) {
+        vscode.window.showErrorMessage("This commands needs at least two selections. The first selection should contain the file name/path and the second selection should contain the offset.");
+        return;
+    }
+    const file = document.getText(selections[0]).trim();
+    const normalizedFilePath = path.normalize(file);
+    const offset = document.getText(selections[1]).trim();
+    // second selection is not a number
+    if (!isNumeric(parseInt(offset))) {
+        vscode.window.showErrorMessage("The offset must be a number.");
+        return;
+    }
+    let uri: vscode.Uri | undefined = undefined;
+    // get uri based on file path/name
+    if (path.isAbsolute(normalizedFilePath)) {
+        uri = vscode.Uri.file(normalizedFilePath);
+    } else {
+        // interpret selection as file name and search for it in the workspace
+        const fittingFiles = vscode.workspace.workspaceFolders?.map(folder =>
+            findFileInRootDir(folder.uri.fsPath, normalizedFilePath, undefined, false)
+        ).flat();
+        uri = (fittingFiles?.length && fittingFiles.length > 0) ? vscode.Uri.file(fittingFiles[0]) : undefined;
+    }
+    if (!uri) {
+        return vscode.window.showErrorMessage("No fitting file found.");
+    }
+    // open doc with uri and set cursor to offset
+    const doc = await vscode.workspace.openTextDocument(uri);
+    await vscode.window.showTextDocument(doc);
+    setCursorPosition(parseInt(offset));
+}
 /**
  * Opens a infobox with current fileoffset and max fileoffset.
  */
 export function showCursorFileOffsetInfobox() {
-    const { activeTextEditor } = vscode.window;
+    const activeTextEditor = vscode.window.activeTextEditor;
     if (activeTextEditor) {
-        const { document } = activeTextEditor;
+        const document = activeTextEditor.document;
         if (document) {
             const maxOffset = document.offsetAt(
                 new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)
@@ -28,9 +72,9 @@ export function showCursorFileOffsetInfobox() {
 export function getCurrentFileOffset(): number {
     // get current file offset position of the caret
     let offset = 0;
-    const { activeTextEditor } = vscode.window;
+    const activeTextEditor = vscode.window.activeTextEditor;
     if (activeTextEditor) {
-        const { document } = activeTextEditor;
+        const document = activeTextEditor.document;
         if (document) {
             offset = document.offsetAt(activeTextEditor.selection.active);
         }
