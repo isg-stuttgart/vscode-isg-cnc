@@ -3,31 +3,29 @@ import { isNumeric } from './util';
 import { updateCurrentOffsetStatusBarItem } from './statusbar';
 import { findFileInRootDir } from '../../server/src/fileSystem';
 import * as path from 'path';
+
+/**
+ * Jump into the file specified by absolute path or file name within the first selection.
+ * If a second selection is found and contains an integer, the cursor will be set to this offset.
+ */
 export async function jumpIntoFileAtOffset() {
     // get current selection and validate if there are at least two selections
     const activeTextEditor = vscode.window.activeTextEditor;
     const document = activeTextEditor?.document;
     // no active document found
     if (!activeTextEditor || !document) {
-        vscode.window.showErrorMessage("No active document found.");
-        return;
+        return vscode.window.showErrorMessage("No active document found.");
     }
     const selections = activeTextEditor.selections;
     // not enough selections
-    if (selections.length < 2) {
-        vscode.window.showErrorMessage("This commands needs at least two selections. The first selection should contain the file name/path and the second selection should contain the offset.");
-        return;
+    if (selections.length < 1) {
+        return vscode.window.showErrorMessage("The first selection must contain the absolute file path or name.");
     }
+
+    // get uri based on file path/name
     const file = document.getText(selections[0]).trim();
     const normalizedFilePath = path.normalize(file);
-    const offset = document.getText(selections[1]).trim();
-    // second selection is not a number
-    if (!isNumeric(parseInt(offset))) {
-        vscode.window.showErrorMessage("The offset must be a number.");
-        return;
-    }
     let uri: vscode.Uri | undefined = undefined;
-    // get uri based on file path/name
     if (path.isAbsolute(normalizedFilePath)) {
         uri = vscode.Uri.file(normalizedFilePath);
     } else {
@@ -40,10 +38,19 @@ export async function jumpIntoFileAtOffset() {
     if (!uri) {
         return vscode.window.showErrorMessage("No fitting file found.");
     }
+
+    // get offset if valid second selection is found
+    const offsetText = document.getText(selections[1]).trim();
+    let offset: number = 0;
+    // second selection is not a number
+    if (isNumeric(parseInt(offsetText))) {
+        offset = parseInt(offsetText);
+    }
+
     // open doc with uri and set cursor to offset
     const doc = await vscode.workspace.openTextDocument(uri);
     await vscode.window.showTextDocument(doc);
-    setCursorPosition(parseInt(offset));
+    setCursorPosition(offset);
 }
 /**
  * Opens a infobox with current fileoffset and max fileoffset.

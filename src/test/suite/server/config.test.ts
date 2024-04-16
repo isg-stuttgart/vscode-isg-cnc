@@ -32,7 +32,6 @@ suite("LS Config Tests", async () => {
             await vscode.workspace.getConfiguration().update("files.associations", oldWorkspaceConfigAssociations, vscode.ConfigurationTarget.Workspace);
             await vscode.workspace.getConfiguration().update("files.associations", oldGlobalConfigAssociations, vscode.ConfigurationTarget.Global);
         }
-
     });
 
     test("Updating locale and documentation path", async function () {
