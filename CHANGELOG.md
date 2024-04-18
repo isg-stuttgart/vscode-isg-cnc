@@ -13,6 +13,8 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+### Added
+- Syntax highlighting for `#START`, `#LOCK`and `#UNLOCK` commands and `V.I.`-Variables [Issue #151](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/151)
 
 ## [V1.0.0]
 
