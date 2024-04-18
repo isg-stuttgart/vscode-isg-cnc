@@ -106,8 +106,8 @@ file "file"
 {
   if(!mainPrg){
     mainPrg=file[2]?file[2]:null;
-    return file;
   }
+  return file;
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
@@ -133,7 +133,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(block/linebreak))+                                         // the body is a list of comments and blocks
+(block/linebreak/.))+                                       // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
 = content:(

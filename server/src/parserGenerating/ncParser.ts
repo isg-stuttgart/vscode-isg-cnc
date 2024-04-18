@@ -283,8 +283,8 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c5 = function(file: any): any {
     if(!mainPrg){
       mainPrg=file[2]?file[2]:null;
-      return file;
     }
+    return file;
   };
   const peg$c6 = peg$otherExpectation("subprogram");
   const peg$c7 = "%L";
@@ -1060,6 +1060,15 @@ function peg$parse(input: string, options?: ParseOptions) {
       s3 = peg$parseblock();
       if (s3 as any === peg$FAILED) {
         s3 = peg$parselinebreak();
+        if (s3 as any === peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s3 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c2); }
+          }
+        }
       }
       if (s3 as any !== peg$FAILED) {
         s2 = [s2, s3];
@@ -1157,6 +1166,15 @@ function peg$parse(input: string, options?: ParseOptions) {
           s3 = peg$parseblock();
           if (s3 as any === peg$FAILED) {
             s3 = peg$parselinebreak();
+            if (s3 as any === peg$FAILED) {
+              if (input.length > peg$currPos) {
+                s3 = input.charAt(peg$currPos);
+                peg$currPos++;
+              } else {
+                s3 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c2); }
+              }
+            }
           }
           if (s3 as any !== peg$FAILED) {
             s2 = [s2, s3];
