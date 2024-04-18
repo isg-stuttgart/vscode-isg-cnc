@@ -17,12 +17,12 @@ export function getCycles(): Cycle[] {
 /**
  * @returns a markdown string that contains a clickable command uri to open the documentation with the given id
  */
-export function getMarkUpDocUri(id: string | undefined): string {
+export function getCommandUriToOpenDocu(id: string | undefined): string {
     if (!id) {
         return "";
     }
     const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
-    return `[More information](${commandUri.toString()})`;
+    return commandUri.toString();
 }
 
 /**
@@ -101,8 +101,10 @@ export class Cycle {
         return {
             kind: "markdown",
             value:
-                "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n" +
-                getMarkUpDocUri(this.documentationReference?.overview)
+                "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n\n" +
+                "Parameter:  \n" +
+                this.parameterList.map(param => param.getShortDescriptionLine()).join("\n") + "  \n\n" +
+                `[More Information](${getCommandUriToOpenDocu(this.documentationReference?.overview)})`
         };
     }
 }
@@ -209,9 +211,18 @@ export class Parameter {
                 "Required: " + required + "\n\n" +
 
                 (this.dependencyList && this.dependencyList.length > 0 ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
-                getMarkUpDocUri(this.documentationReference)
+                `[More Information](${getCommandUriToOpenDocu(this.documentationReference)})`
         };
     };
+    /**
+     * @returns a short description line for the parameter. Is used within the cycle markdown documentaiton.
+     */
+    getShortDescriptionLine(): string {
+        const id = this.documentationReference;
+        const nameMarkdown = id ? `[${this.name}](${getCommandUriToOpenDocu(id)})` : this.name;
+        const description = this.descriptionDictionary.getDescription(getLocale());
+        return "- " + nameMarkdown + ": " + description;
+    }
 }
 
 /**
