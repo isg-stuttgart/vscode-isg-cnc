@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { isNumeric } from './util';
 import { updateCurrentOffsetStatusBarItem } from './statusbar';
-import { findFileInRootDir } from '../../server/src/fileSystem';
+import { WorkspaceIgnorer, findFileInRootDir } from '../../server/src/fileSystem';
 import * as path from 'path';
 
 /**
@@ -23,18 +23,8 @@ export async function jumpIntoFileAtOffset() {
     }
 
     // get uri based on file path/name
-    const file = document.getText(selections[0]).trim();
-    const normalizedFilePath = path.normalize(file);
-    let uri: vscode.Uri | undefined = undefined;
-    if (path.isAbsolute(normalizedFilePath)) {
-        uri = vscode.Uri.file(normalizedFilePath);
-    } else {
-        // interpret selection as file name and search for it in the workspace
-        const fittingFiles = vscode.workspace.workspaceFolders?.map(folder =>
-            findFileInRootDir(folder.uri.fsPath, normalizedFilePath, undefined, false)
-        ).flat();
-        uri = (fittingFiles?.length && fittingFiles.length > 0) ? vscode.Uri.file(fittingFiles[0]) : undefined;
-    }
+    const fileNameOrPath = document.getText(selections[0]).trim();
+    let uri: vscode.Uri | undefined = await findMatchingFileUri(fileNameOrPath);
     if (!uri) {
         return vscode.window.showErrorMessage("No fitting file found.");
     }
@@ -52,6 +42,39 @@ export async function jumpIntoFileAtOffset() {
     await vscode.window.showTextDocument(doc);
     setCursorPosition(offset);
 }
+
+/**
+ * Finds a file uri based on the given file name or path.  
+ * If the given string is an absolute path, the uri will be created from it.  
+ * If not, the string will be interpreted as file name and searched in the workspace while skipping files specified in the .isg-cnc-ignore file.  
+ * If multiple files are found, the user will be asked to select one.  
+ * @param fileNameOrPath 
+ * @returns the uri of the found file or undefined if no fitting file was found 
+ */
+async function findMatchingFileUri(fileNameOrPath: string): Promise<vscode.Uri | undefined> {
+    const normalizedFilePath = path.normalize(fileNameOrPath);
+    let uri: vscode.Uri | undefined = undefined;
+    if (path.isAbsolute(normalizedFilePath)) {
+        uri = vscode.Uri.file(normalizedFilePath);
+    } else {
+        // interpret selection as file name and search for it in the workspace
+        const fittingFiles = vscode.workspace.workspaceFolders?.map(folder => {
+            const ignorer = new WorkspaceIgnorer(folder.uri.fsPath);
+            return findFileInRootDir(folder.uri.fsPath, fileNameOrPath, ignorer, true);
+        }).flat();
+
+        // get wished file from user
+        if (fittingFiles?.length === 1) {
+            uri = vscode.Uri.file(fittingFiles[0]);
+        } else if (fittingFiles && fittingFiles.length > 1) {
+            // when multiple files found, ask user to select file
+            const selectedFile = await vscode.window.showQuickPick(fittingFiles, { placeHolder: "Select file to jump into." });
+            uri = selectedFile ? vscode.Uri.file(selectedFile) : undefined;
+        }
+    }
+    return uri;
+}
+
 /**
  * Opens a infobox with current fileoffset and max fileoffset.
  */
