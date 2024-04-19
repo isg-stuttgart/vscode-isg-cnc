@@ -45,9 +45,13 @@ export async function addToIgnore(inputUri: vscode.Uri): Promise<void> {
     let isAlreadyIgnored: boolean = false;
     if (relativeFilePathToIgnore === "/*") {
         // check if any line of the ignore files contains the pattern /* (ignore all files)
-        isAlreadyIgnored = ignoreFileContent.split(os.EOL).some(line => line === "/*");
+        isAlreadyIgnored = ignoreFileContent.split(os.EOL).some(line => line.trim() === "/*");
     } else {
         isAlreadyIgnored = ignorer.ignores(relativeFilePathToIgnore);
+        // add leading slash to the relative path if it is not already there to match the ignore file syntax
+        if (!relativeFilePathToIgnore.startsWith("/")) {
+            relativeFilePathToIgnore = "/" + relativeFilePathToIgnore;
+        }
     }
     if (isAlreadyIgnored) {
         vscode.window.showInformationMessage("ISG-CNC: Path " + relativeFilePathToIgnore + " is already ignored.");
