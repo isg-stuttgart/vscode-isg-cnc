@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { Cycle, DescriptionDictionary, DocumentationReference, getCycles, getMarkUpDocUri, Parameter, RequirementDictionary } from "../../../../server/src/cycles";
+import { Cycle, DescriptionDictionary, DocumentationReference, getCycles, getCommandUriToOpenDocu, Parameter, RequirementDictionary } from "../../../../server/src/cycles";
 import { Locale } from "../../../../server/src/config";
 
 suite("LS cycles", () => {
@@ -9,8 +9,8 @@ suite("LS cycles", () => {
     });
 
     test("getMarkUpDocUri()", async function () {
-        assert.strictEqual(getMarkUpDocUri(undefined), "");
-        assert.strictEqual(getMarkUpDocUri("12345"), `[More information](command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify(["12345"]))})`);
+        assert.strictEqual(getCommandUriToOpenDocu(undefined), "");
+        assert.strictEqual(getCommandUriToOpenDocu("12345"), `command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify(["12345"]))}`);
     });
 
     test("Cycle Constructor", function () {
@@ -44,7 +44,7 @@ suite("LS cycles", () => {
         const requirementDic2 = new RequirementDictionary(0, 100, "default", false, false);
         const requirementDic3 = new RequirementDictionary(undefined, 100, "default", false, false);
         const requirementDic4 = new RequirementDictionary(0, undefined, "", false, false);
-        
+
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic1, [], "docuId").getPlaceholder(1), "${1|0,1,2,3,4,5,6,7,8,9,10|}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId").getPlaceholder(1), "${1:0-100}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic3, [], "docuId").getPlaceholder(1), "${1:default}");
