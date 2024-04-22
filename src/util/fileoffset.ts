@@ -35,6 +35,8 @@ export async function jumpIntoFileAtOffset() {
     // if second selection is a number jump to offset
     if (isNumeric(parseInt(offsetText))) {
         offset = parseInt(offsetText);
+    } else if (selections.length > 1) {
+        vscode.window.showWarningMessage("The second selection could not be interpreted as offset. Jumping to start of file.");
     }
 
     // open doc with uri and set cursor to offset

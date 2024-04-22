@@ -8,61 +8,61 @@
 "use strict";
 
 
-const types = {
-  toolCall: "toolCall",
-  mainPrg: "mainPrg",
-  localSubPrg: "localSubPrg",
+	 const types = {
+      toolCall: "toolCall",
+      mainPrg: "mainPrg",
+      localSubPrg: "localSubPrg",
 
-  // prg calls
-  localPrgCall: "localPrgCall",
-  localPrgCallName: "localPrgCallName",
-  localPrgDefinitionName: "localPrgDefinitionName",
-  globalPrgCall: "globalPrgCall",
-  globalPrgCallName: "globalPrgCallName",
-  localCycleCall: "localCycleCall",
-  localCycleCallName: "localCycleCallName",
-  globalCycleCall: "globalCycleCall",
-  globalCycleCallName: "globalCycleCallName",
-  cycleParameter: "cycleParameter",
-  cycleParameterAssignment: "cycleParameterAssignment",
-  cycleParamList: "cycleParamList",
-
-  controlBlock: "controlBlock",
-  gotoBlocknumber: "gotoBlocknumber",
-  gotoLabel: "gotoLabel",
-  label: "label",
-  multiline: "multiline",
-  trash: "trash",
-  skipBlock: "skipBlock",
-  blockNumber: "blockNumber",
-  blockNumberLabel: "blockNumberLabel",
-  varDeclaration: "varDeclaration",
-  variable: "variable",
-  comment: "comment",
-}
-class LightMatch {
-  location;
-  text;
-  constructor(location, text) {
-    this.location = location;
-    this.text = text;
+      // prg calls
+      localPrgCall: "localPrgCall",
+      localPrgCallName: "localPrgCallName",
+      localPrgDefinitionName: "localPrgDefinitionName",
+      globalPrgCall: "globalPrgCall",
+      globalPrgCallName: "globalPrgCallName",
+      localCycleCall: "localCycleCall",
+      localCycleCallName: "localCycleCallName",
+      globalCycleCall: "globalCycleCall",
+      globalCycleCallName: "globalCycleCallName",
+      cycleParameter: "cycleParameter",
+      cycleParameterAssignment: "cycleParameterAssignment",
+      cycleParamList: "cycleParamList",
+      
+      controlBlock: "controlBlock",
+      gotoBlocknumber: "gotoBlocknumber",
+      gotoLabel: "gotoLabel",
+      label: "label",
+      multiline: "multiline",
+      trash: "trash",
+      skipBlock: "skipBlock",
+      blockNumber: "blockNumber",
+      blockNumberLabel: "blockNumberLabel",
+      varDeclaration: "varDeclaration",
+      variable:"variable",
+      comment: "comment",
   }
+ class LightMatch {
+    location;
+    text;
+    constructor(location, text) {
+        this.location = location;
+        this.text = text;
+    }
 }
-class Match {                                             // holds information about a relevant match
-  type;                                                 // the type of the match e.g. prgCall
-  name;
-  location;                                             // the location of the match
-  content;                                              // the syntax tree of this match
-  text;
-  isMatch = true;
-  constructor(type, content, location, text, name) {
-    this.type = type;
-    this.content = content;
-    this.location = location;
-    this.text = text;
-    this.name = name;
-  }
-}
+  class Match {                                             // holds information about a relevant match
+      type;                                                 // the type of the match e.g. prgCall
+      name;
+      location;                                             // the location of the match
+      content;                                              // the syntax tree of this match
+      text;
+      isMatch = true;
+      constructor(type, content, location, text, name) {
+        this.type = type;
+        this.content = content;
+        this.location = location;
+        this.text = text;
+        this.name = name;
+      }
+    }
 
 
 export interface FilePosition {
@@ -83,7 +83,7 @@ export interface LiteralExpectation {
   ignoreCase: boolean;
 }
 
-export interface ClassParts extends Array<string | ClassParts> { }
+export interface ClassParts extends Array<string | ClassParts> {}
 
 export interface ClassExpectation {
   type: "class";
@@ -126,13 +126,13 @@ export class PeggySyntaxError extends Error {
     function literalEscape(s: string): string {
       return s
         .replace(/\\/g, "\\\\")
-        .replace(/"/g, "\\\"")
+        .replace(/"/g,  "\\\"")
         .replace(/\0/g, "\\0")
         .replace(/\t/g, "\\t")
         .replace(/\n/g, "\\n")
         .replace(/\r/g, "\\r")
-        .replace(/[\x00-\x0F]/g, (ch) => "\\x0" + hex(ch))
-        .replace(/[\x10-\x1F\x7F-\x9F]/g, (ch) => "\\x" + hex(ch));
+        .replace(/[\x00-\x0F]/g,            (ch) => "\\x0" + hex(ch) )
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, (ch) => "\\x"  + hex(ch) );
     }
 
     function classEscape(s: string): string {
@@ -140,13 +140,13 @@ export class PeggySyntaxError extends Error {
         .replace(/\\/g, "\\\\")
         .replace(/\]/g, "\\]")
         .replace(/\^/g, "\\^")
-        .replace(/-/g, "\\-")
+        .replace(/-/g,  "\\-")
         .replace(/\0/g, "\\0")
         .replace(/\t/g, "\\t")
         .replace(/\n/g, "\\n")
         .replace(/\r/g, "\\r")
-        .replace(/[\x00-\x0F]/g, (ch) => "\\x0" + hex(ch))
-        .replace(/[\x10-\x1F\x7F-\x9F]/g, (ch) => "\\x" + hex(ch));
+        .replace(/[\x00-\x0F]/g,            (ch) => "\\x0" + hex(ch) )
+        .replace(/[\x10-\x1F\x7F-\x9F]/g, (ch) => "\\x"  + hex(ch) );
     }
 
     function describeExpectation(expectation: Expectation) {
@@ -267,48 +267,48 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$FAILED: Readonly<any> = {};
   const peg$source = options.grammarSource;
 
-  const peg$startRuleFunctions: { [id: string]: any } = { start: peg$parsestart };
+  const peg$startRuleFunctions: {[id: string]: any} = { start: peg$parsestart };
   let peg$startRuleFunction: () => any = peg$parsestart;
 
-  const peg$c0 = function (fileTree: any): any {
-    return { fileTree: fileTree, numberableLinesUnsorted: numberableLinesUnsorted, mainPrg: mainPrg } // return the syntax information
+  const peg$c0 = function(fileTree: any): any {
+    return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
   };
   const peg$c1 = peg$otherExpectation("anyTrash");
   const peg$c2 = peg$anyExpectation();
-  const peg$c3 = function (char: any): any {
+  const peg$c3 = function(char: any): any {
     checkTimeout();
     return char
   };
   const peg$c4 = peg$otherExpectation("file");
-  const peg$c5 = function (file: any): any {
-    if (!mainPrg) {
-      mainPrg = file[2] ? file[2] : null;
+  const peg$c5 = function(file: any): any {
+    if(!mainPrg){
+      mainPrg=file[2]?file[2]:null;
     }
     return file;
   };
   const peg$c6 = peg$otherExpectation("subprogram");
   const peg$c7 = "%L";
   const peg$c8 = peg$literalExpectation("%L", false);
-  const peg$c9 = function (content: any): any {                // each subprogram requires a title and a body
-    return new Match(types.localSubPrg, content, location(), text(), content[2].name);
+  const peg$c9 = function(content: any): any {                // each subprogram requires a title and a body
+   return new Match(types.localSubPrg, content, location(), text(), content[2].name);
   };
   const peg$c10 = peg$otherExpectation("subprogram_name");
-  const peg$c11 = function (): any {
+  const peg$c11 = function(): any {
     return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
   };
   const peg$c12 = peg$otherExpectation("mainprogram");
   const peg$c13 = "%";
   const peg$c14 = peg$literalExpectation("%", false);
-  const peg$c15 = function (definition: any, content: any): any {
+  const peg$c15 = function(definition: any, content: any): any {
     let name = null
-    if (definition && definition[2]) {
+    if(definition && definition[2]){
       name = definition[2]
     }
     return new Match(types.mainPrg, content, location(), text(), name)
   };
   const peg$c16 = peg$otherExpectation("body");
   const peg$c17 = peg$otherExpectation("block");
-  const peg$c18 = function (content: any): any {
+  const peg$c18 = function(content: any): any {
     checkTimeout();
     return content;
   };
@@ -317,19 +317,19 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c21 = peg$literalExpectation("/", false);
   const peg$c22 = "10";
   const peg$c23 = peg$literalExpectation("10", false);
-  const peg$c24 = function (content: any): any {
-    return new Match(types.skipBlock, content, location(), text(), null);
+  const peg$c24 = function(content: any): any {
+      return new Match(types.skipBlock, content, location(), text(), null);
   };
   const peg$c25 = peg$otherExpectation("block_body");
-  const peg$c26 = function (content: any): any {                                          // default block, i.e., G01 X12 Y23
-    // if text is not only whitespace, then add line to numberableLinesUnsorted
-    if (text().trim().length > 0) {
+  const peg$c26 = function(content: any): any {                                          // default block, i.e., G01 X12 Y23
+  // if text is not only whitespace, then add line to numberableLinesUnsorted
+    if(text().trim().length>0){
       numberableLinesUnsorted.add(location().start.line);
     }
-    return content;
+  	return content;
   };
   const peg$c27 = peg$otherExpectation("control_block");
-  const peg$c28 = function (content: any): any {
+  const peg$c28 = function(content: any): any {
     numberableLinesUnsorted.add(location().start.line);
     numberableLinesUnsorted.add(location().end.line);
     return content;
@@ -339,15 +339,15 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c31 = peg$literalExpectation("$ENDIF", false);
   const peg$c32 = "$IF";
   const peg$c33 = peg$literalExpectation("$IF", false);
-  const peg$c34 = function (content: any): any {
+  const peg$c34 = function(content: any): any {
     numberableLinesUnsorted.add(location().start.line);
     return new Match(types.controlBlock, content, location(), text(), null);
   };
   const peg$c35 = "$ELSEIF";
   const peg$c36 = peg$literalExpectation("$ELSEIF", false);
-  const peg$c37 = function (content: any): any {
+  const peg$c37 = function(content: any): any {
     numberableLinesUnsorted.add(location().start.line);
-    return new Match(types.controlBlock, content, location(), text(), null);
+  	return new Match(types.controlBlock, content, location(), text(), null);
   };
   const peg$c38 = "$ELSE";
   const peg$c39 = peg$literalExpectation("$ELSE", false);
@@ -356,8 +356,8 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c42 = peg$literalExpectation("$GOTO", false);
   const peg$c43 = "N";
   const peg$c44 = peg$literalExpectation("N", false);
-  const peg$c45 = function (id: any): any {
-    return new Match(types.gotoBlocknumber, null, location(), text(), id)
+  const peg$c45 = function(id: any): any {
+      return new Match(types.gotoBlocknumber, null, location(), text(), id)
   };
   const peg$c46 = "[";
   const peg$c47 = peg$literalExpectation("[", false);
@@ -365,7 +365,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c49 = peg$classExpectation(["]"], true, false);
   const peg$c50 = "]";
   const peg$c51 = peg$literalExpectation("]", false);
-  const peg$c52 = function (name: any): any {
+  const peg$c52 = function(name: any): any {
     const id = name.toLowerCase()
     return new Match(types.gotoLabel, null, location(), text(), id)
   };
@@ -379,7 +379,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c60 = peg$literalExpectation("#ENDVAR", false);
   const peg$c61 = ":";
   const peg$c62 = peg$literalExpectation(":", false);
-  const peg$c63 = function (id: any): any {
+  const peg$c63 = function(id: any): any {
     numberableLinesUnsorted.add(location().start.line);
     return new Match(types.varDeclaration, null, location(), text(), id)
   };
@@ -389,89 +389,89 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c67 = peg$literalExpectation("=", false);
   const peg$c68 = peg$otherExpectation("default_block");
   const peg$c69 = peg$otherExpectation("multiline_default_block");
-  const peg$c70 = function (content: any): any {                                                          // consume the last block, so the first not extended by "\"
-    return new Match(types.multiline, content, location(), null, null);
+  const peg$c70 = function(content: any): any {                                                          // consume the last block, so the first not extended by "\"
+  	return new Match(types.multiline, content, location(), null, null);
   };
   const peg$c71 = "\\";
   const peg$c72 = peg$literalExpectation("\\", false);
-  const peg$c73 = function (): any { return "trash: " + text() };
+  const peg$c73 = function(): any {return "trash: " + text()};
   const peg$c74 = peg$otherExpectation("parameter");
   const peg$c75 = "@P";
   const peg$c76 = peg$literalExpectation("@P", false);
   const peg$c77 = peg$otherExpectation("parameter_trash_token");
-  const peg$c78 = function (id: any): any {
+  const peg$c78 = function(id: any): any {
     return new Match(types.variable, id, location(), text(), id.name);
   };
   const peg$c79 = peg$otherExpectation("command");
   const peg$c80 = /^[A-Z]/;
   const peg$c81 = peg$classExpectation([["A", "Z"]], false, false);
   const peg$c82 = peg$otherExpectation("n_command");
-  const peg$c83 = function (id: any, colon: any): any {
-    const type = colon ? types.blockNumberLabel : types.blockNumber
+  const peg$c83 = function(id: any, colon: any): any {
+    const type = colon?types.blockNumberLabel:types.blockNumber
     return new Match(type, null, location(), text(), id)
   };
   const peg$c84 = peg$otherExpectation("t_command");
   const peg$c85 = "T";
   const peg$c86 = peg$literalExpectation("T", false);
-  const peg$c87 = function (): any {
-    return new Match(types.toolCall, null, location(), text(), text());
+  const peg$c87 = function(): any {
+      return new Match(types.toolCall, null, location(), text(), text());
   };
   const peg$c88 = peg$otherExpectation("prg_call");
   const peg$c89 = peg$otherExpectation("local_subprg_call");
   const peg$c90 = "LL";
   const peg$c91 = peg$literalExpectation("LL", false);
-  const peg$c92 = function (name: any): any {
-    const nameMatch = new Match(types.localPrgCallName, null, name.location, name.text, name.text)
-    return new Match(types.localPrgCall, [nameMatch], location(), text(), name.text);
+  const peg$c92 = function(name: any): any {
+  	const nameMatch = new Match(types.localPrgCallName, null, name.location, name.text, name.text)
+  	return new Match(types.localPrgCall, [nameMatch] , location(), text(), name.text);
   };
   const peg$c93 = peg$otherExpectation("global_subprg_call");
   const peg$c94 = "L";
   const peg$c95 = peg$literalExpectation("L", false);
-  const peg$c96 = function (name: any): any {
-    const nameMatch = new Match(types.globalPrgCallName, null, name.location, name.text, name.text)
-    return new Match(types.globalPrgCall, [nameMatch], location(), text(), name.text);
+  const peg$c96 = function(name: any): any {
+      const nameMatch = new Match(types.globalPrgCallName, null, name.location, name.text, name.text)
+  	return new Match(types.globalPrgCall, [nameMatch], location(), text(), name.text);
   };
-  const peg$c97 = function (name: any): any { return new LightMatch(location(), name) };
+  const peg$c97 = function(name: any): any {return new LightMatch(location(), name)};
   const peg$c98 = "\"";
   const peg$c99 = peg$literalExpectation("\"", false);
-  const peg$c100 = function (name: any): any { return name };
+  const peg$c100 = function(name: any): any {return name};
   const peg$c101 = peg$otherExpectation("cycle_call");
   const peg$c102 = "CYCLE";
   const peg$c103 = peg$literalExpectation("CYCLE", false);
   const peg$c104 = "NAME";
   const peg$c105 = peg$literalExpectation("NAME", false);
-  const peg$c106 = function (content: any): any {          // brackets can contain a multline or a singleline
-    const type = content[0] === "LL" ? types.localCycleCall : types.globalCycleCall
-    const nameType = content[0] === "LL" ? types.localCycleCallName : types.globalCycleCallName
+  const peg$c106 = function(content: any): any {          // brackets can contain a multline or a singleline
+    const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
+    const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
     let nameLM = content[6][1]                                                  // LightMatch of the cycle name
     const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
     content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
     return new Match(type, content, location(), text(), nameLM.text);
   };
-  const peg$c107 = function (content: any): any {
-    return new Match(types.cycleParamList, content, location(), text(), null)
+  const peg$c107 = function(content: any): any {
+    return new Match(types.cycleParamList, content, location(), text(), null) 
   };
-  const peg$c108 = function (content: any): any {
-    return new Match(types.multiline, content, location(), text(), null);
+  const peg$c108 = function(content: any): any {             
+  	return new Match(types.multiline, content, location(), text(), null);
   };
   const peg$c109 = peg$otherExpectation("cycle_call_param_line");
   const peg$c110 = "@";
   const peg$c111 = peg$literalExpectation("@", false);
   const peg$c112 = "P";
   const peg$c113 = peg$literalExpectation("P", false);
-  const peg$c114 = function (content: any): any {                // one parameter of a cycle
+  const peg$c114 = function(content: any): any {                // one parameter of a cycle
     return new Match(types.cycleParameter, content, location(), text(), content[1]);
   };
-  const peg$c115 = function (content: any): any {
+  const peg$c115 = function(content: any): any {
     return new Match(types.cycleParameterAssignment, content, location(), text(), content[0].name);
   };
   const peg$c116 = "\r";
   const peg$c117 = peg$literalExpectation("\r", false);
   const peg$c118 = "\n";
   const peg$c119 = peg$literalExpectation("\n", false);
-  const peg$c120 = function (name: any): any {
+  const peg$c120 = function(name: any): any {
     const id = name.toLowerCase()                             // labels are not case sensitive
-    return new Match(types.label, null, location(), text(), id)
+    return new Match(types.label, null, location(), text(), id) 
   };
   const peg$c121 = "BOOLEAN";
   const peg$c122 = peg$literalExpectation("BOOLEAN", false);
@@ -509,8 +509,8 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c154 = peg$literalExpectation("S", false);
   const peg$c155 = "CYC";
   const peg$c156 = peg$literalExpectation("CYC", false);
-  const peg$c157 = function (): any {
-    return new Match(types.variable, text(), location(), text(), text())
+  const peg$c157 = function(): any {
+    return new Match(types.variable, text(), location(), text(), text()) 
   };
   const peg$c158 = peg$otherExpectation("grayspace");
   const peg$c159 = peg$otherExpectation("grayspaces");
@@ -526,7 +526,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c169 = peg$literalExpectation(")", false);
   const peg$c170 = /^[^\r\n]/;
   const peg$c171 = peg$classExpectation(["\r", "\n"], true, false);
-  const peg$c172 = function (): any { return new Match(types.comment, null, location(), text(), null) };
+  const peg$c172 = function(): any { return new Match(types.comment, null, location(), text(), null)};
   const peg$c173 = peg$otherExpectation("semicolon_comment");
   const peg$c174 = ";";
   const peg$c175 = peg$literalExpectation(";", false);
@@ -541,7 +541,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   const peg$c184 = /^[\t ]/;
   const peg$c185 = peg$classExpectation(["\t", " "], false, false);
   const peg$c186 = peg$otherExpectation("whitespaces");
-  const peg$c187 = function (): any { return text() };
+  const peg$c187 = function(): any {return text()};
   const peg$c188 = peg$otherExpectation("linebreak");
   const peg$c189 = "\r\n";
   const peg$c190 = peg$literalExpectation("\r\n", false);
@@ -5343,17 +5343,17 @@ function peg$parse(input: string, options?: ParseOptions) {
   }
 
 
-  const numberableLinesUnsorted = new Set();
-  let mainPrg = null;
+    const numberableLinesUnsorted = new Set();
+    let mainPrg = null;
 
-  // Save start time and cancel and throw error when parsing needs more than 10 seconds
-  const startTime = Date.now();
-  const timeOutMsg = "\n 'Parsing took longer than 5 seconds.' \n";
-  function checkTimeout() {
-    if (Date.now() - startTime > 5000) {
-      throw new Error(timeOutMsg);
+    // Save start time and cancel and throw error when parsing needs more than 10 seconds
+    const startTime = Date.now();
+    const timeOutMsg = "\n 'Parsing took longer than 5 seconds.' \n";
+    function checkTimeout() {
+      if(Date.now() - startTime > 5000){
+        throw new Error(timeOutMsg);
+      }
     }
-  }
 
 
   peg$result = peg$startRuleFunction();
