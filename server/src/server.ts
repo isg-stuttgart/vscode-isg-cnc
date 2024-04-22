@@ -14,6 +14,8 @@ import {
 import * as parser from './parserGlue';
 import { Position } from './parserClasses';
 import * as config from './config';
+import { getCompletions, updateStaticCycleCompletions } from './completion';
+import { getHoverInformation } from './hover';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -50,7 +52,15 @@ connection.onInitialize(async (params: InitializeParams) => {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			definitionProvider: true,
-			referencesProvider: true
+			referencesProvider: true,
+			completionProvider: {
+				completionItem: {
+					labelDetailsSupport: false
+				},
+				resolveProvider: false,
+				triggerCharacters: ["=", "@", "\\", "[", "]", "(", ")"]
+			},
+			hoverProvider: true
 		}
 	};
 	console.log("ISG-CNC Language Server initialized");
@@ -120,6 +130,39 @@ connection.onReferences(async (docPos) => {
 	}
 });
 
+/**
+ * Provides completion items with snippet insertion, based on the current position in the document.
+ */
+connection.onCompletion((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		return getCompletions(position, textDocument);
+	} catch (error) {
+		console.error("Getting completions failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting completions failed: " + JSON.stringify(error));
+	}
+});
+
+/** Provides the "Hover" functionality. Returns the hover information fitting to the specified position.*/
+connection.onHover((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		return getHoverInformation(position, textDocument);
+	} catch (error) {
+		console.error("Getting hover information failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
+	}
+});
+
+
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
@@ -155,8 +198,22 @@ connection.onDidChangeConfiguration(async () => {
  * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
+	const oldDocuPath = config.getDocumentationPathWithLocale();
+	const oldCycleSnippetFormatting = config.getCycleSnippetFormatting();
+	const oldExtensionForCycles = config.getExtensionForCycles();
+
+	// update settings
 	const workspaceConfig = await connection.workspace.getConfiguration();
 	config.updateSettings(workspaceConfig);
+
+	// if a setting, relevant for cycle settings is changed, update the cycle completions
+	if (
+		oldDocuPath !== config.getDocumentationPathWithLocale() ||
+		oldCycleSnippetFormatting !== config.getCycleSnippetFormatting() ||
+		oldExtensionForCycles !== config.getExtensionForCycles()
+	) {
+		updateStaticCycleCompletions();
+	}
 }
 
 

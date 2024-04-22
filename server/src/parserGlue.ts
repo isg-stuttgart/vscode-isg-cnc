@@ -1,7 +1,7 @@
 import { pathToFileURL } from "node:url";
 import { Match, Position, FileRange, IncrementableProgress } from "./parserClasses";
 import {
-    findPreciseMatch,
+    findPreciseMatchOfTypes,
     findFirstMatchWithinPrg,
     findMatchRangesWithinPrgTree,
     findMatchRangesWithinPath,
@@ -55,7 +55,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         return definitions;
     }
 
-    const match = findPreciseMatch(ast, position);
+    const match = findPreciseMatchOfTypes(ast, position);
     if (!match || !match.name) {
         return [];
     }
@@ -144,7 +144,7 @@ export async function getReferences(fileContent: string, position: Position, uri
         return stringRanges;
     }
 
-    const match = findPreciseMatch(parseResult.results.fileTree, position);
+    const match = findPreciseMatchOfTypes(parseResult.results.fileTree, position);
     if (!match || !match.name) {
         return [];
     }

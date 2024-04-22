@@ -41,28 +41,7 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "main": "./out/src/extension.js",
-    "activationEvents": [
-        "onLanguage:isg-cnc",
-        "onView:cnc-show-filecontent",
-        "onCommand:isg-cnc.EncryptThis",
-        "onCommand:isg-cnc.EncryptAnyFile",
-        "onCommand:isg-cnc.FindAllToolCalls",
-        "onCommand:isg-cnc.GoToPosition",
-        "onCommand:isg-cnc.ShowCursorFileOffsetInfobox",
-        "onCommand:isg-cnc.FindNextTFS",
-        "onCommand:isg-cnc.RemoveAllBlocknumbers",
-        "onCommand:isg-cnc.AddBlocknumbers",
-        "onCommand:isg-cnc.StartDocu",
-        "onCommand:isg-cnc.FindNonAsciiCharacters",
-        "onCommand:isg-cnc.addToIgnore",
-        "onCommand:isg-cnc.changeLanguageMode",
-        "onCommand:isg-cnc.sortLineByLineOn",
-        "onCommand:isg-cnc.sortLineByLineSelected",
-        "onCommand:isg-cnc.sortGroupedOn",
-        "onCommand:isg-cnc.sortGroupedSelected",
-        "onCommand:isg-cnc.AlignEqualSigns",
-        "onCommand:isg-cnc.AlignComments"
-    ],
+    "activationEvents": [],
     "contributes": {
         "configurationDefaults": {
             "[isg-cnc]": {
@@ -82,7 +61,7 @@
                 "isg-cnc.documentationPath": {
                     "type": "string",
                     "default": "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/",
-                    "description": "Path to the ISG documentation. Important: Address must end with a slash character (example:https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)",
+                    "description": "Path to the ISG documentation. You only need to change this, if you don't have access to the internet.\nIf starting with \"http\", it is interpreted as the root URL (e.g. https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/)\nIf not, it is interpreted as the root path of a locally installed documentation (e.g. \"C:\\ISG\\doku\") which should then contain the index.html-file, de-DE-, en-GB-directories and so on.",
                     "order": 20
                 },
                 "isg-cnc.locale": {
@@ -94,6 +73,22 @@
                     ],
                     "description": "Choose the documentation language",
                     "order": 30
+                },
+                "isg-cnc.extensionForCycles": {
+                    "type": "string",
+                    "default": ".ecy",
+                    "description": "File extension of cycle files, currently used for cycle snippets.\n Make sure to include the dot, e.g. '.ecy' and not 'ecy'.",
+                    "order": 32
+                },
+                "isg-cnc.cycleSnippetFormatting": {
+                    "type": "string",
+                    "default": "multi-line",
+                    "enum": [
+                        "multi-line",
+                        "single-line"
+                    ],
+                    "description": "Choose if cycle snippets should have their parameters in one line or in multiple lines",
+                    "order": 33
                 },
                 "isg-cnc.includeCommentsInNumbering": {
                     "type": "boolean",
@@ -211,6 +206,16 @@
                 "command": "isg-cnc.changeLanguageMode",
                 "title": "Change Language Mode (provided by ISG-CNC)",
                 "enablement": "isFileSystemResource"
+            },
+            {
+                "command": "isg-cnc.changeCycleSnippetsToSingleLine",
+                "title": "ISG-CNC: Change cycle snippet formatting to single-line",
+                "enablement": "config.isg-cnc.cycleSnippetFormatting == 'multi-line'"
+            },
+            {
+                "command": "isg-cnc.changeCycleSnippetsToMultiLine",
+                "title": "ISG-CNC: Change cycle snippet formatting to multi-line",
+                "enablement": "config.isg-cnc.cycleSnippetFormatting == 'single-line'"
             }
         ],
         "menus": {
@@ -335,6 +340,20 @@
                 {
                     "command": "isg-cnc.addToIgnore",
                     "group": "isg-cnc.ignore@15"
+                },
+                {
+                    "command": "isg-cnc.changeLanguageMode",
+                    "group": "isg-general@1"
+                },
+                {
+                    "command": "isg-cnc.changeCycleSnippetsToSingleLine",
+                    "group": "isg-cnc.snippets@1",
+                    "when": "config.isg-cnc.cycleSnippetFormatting == 'multi-line'"
+                },
+                {
+                    "command": "isg-cnc.changeCycleSnippetsToMultiLine",
+                    "group": "isg-cnc.snippets@2",
+                    "when": "config.isg-cnc.cycleSnippetFormatting == 'single-line'"
                 }
             ]
         },
@@ -524,12 +543,14 @@
         "peggy": "^2.0.1",
         "ts-pegjs": "^2.2.1",
         "typedoc": "^0.22.18",
-        "typescript": "^4.4.3",
-        "vscode-languageserver": "^9.0.1"
+        "typescript": "^4.4.3"
     },
     "dependencies": {
         "ignore": "^5.2.4",
         "minimatch": "^9.0.3",
-        "vscode-languageclient": "^9.0.1"
+        "vscode-languageclient": "^9.0.1",
+        "vscode-uri": "^3.0.8",
+        "vscode-languageserver": "^9.0.1",
+        "vscode-languageserver-textdocument": "^1.0.11"
     }
 }

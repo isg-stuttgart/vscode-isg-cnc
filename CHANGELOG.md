@@ -14,6 +14,9 @@ Types of changes:
 
 ## [Unreleased]
 ### Added
+- Snippet-Completion for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
+- Hover-Information for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
+- Command to switch between single and multi line cycle call snippets [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
 - Syntax highlighting for `#START`, `#LOCK`and `#UNLOCK` commands and `V.I.`-Variables [Issue #151](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/151)
 
 ## [V1.0.0]

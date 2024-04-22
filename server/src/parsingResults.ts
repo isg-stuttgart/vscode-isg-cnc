@@ -11,8 +11,13 @@ export class ParseResults {
     public readonly results: ParseResultContent;
     public readonly syntaxArray: SyntaxArray;
     constructor(text: string) {
-        this.results = ncParser.parse(text) as ParseResultContent;
-        this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+        try {
+            this.results = ncParser.parse(text) as ParseResultContent;
+            this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+        } catch (error) {
+            throw new Error(`Error while parsing file: ${error}`);
+        }
+
     }
 
     /**
@@ -70,14 +75,10 @@ export class ParseResults {
                 });
             }
             // current element has valid content property (Matches saved in SyntaxTree) to traverse recursively
-            if (element.content !== null && element.content !== undefined && Array.isArray(element.content)) {
-                element.content.forEach((child: any) => {
-                    if (child !== null && child !== undefined) {
-                        traverseRecursive(child);
-                    }
-                });
+            if (element.content !== null && element.content !== undefined) {
+                traverseRecursive(element.content);
             }
-            // add to specific array
+            // add to specific array if element is a match of some type
             if (element.type !== null && element.type !== undefined) {
                 switch (element.type) {
                     case MatchType.toolCall:

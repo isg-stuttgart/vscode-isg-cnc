@@ -14,7 +14,7 @@ import { addToIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
 import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
-import { startDocu } from "./util/documentation";
+import { openDocu, openDocuWithId } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
 import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext): void {
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
     let serverModule = context.asAbsolutePath(
-        path.join('server', 'out', 'server.js')
+        path.join('out', 'server', 'src', 'server.js')
     );
 
     // defining lsp options
@@ -60,7 +60,8 @@ export function activate(context: vscode.ExtensionContext): void {
     };
 
     const clientOptions: LanguageClientOptions = {
-        documentSelector: [{ language: 'isg-cnc' }]
+        documentSelector: [{ language: 'isg-cnc' }],
+        markdown: { isTrusted: true },
     };
 
     // start the cnc language server
@@ -101,7 +102,10 @@ export function activate(context: vscode.ExtensionContext): void {
             addBlocknumbersCommand()
         ),
         vscode.commands.registerCommand("isg-cnc.StartDocu", () =>
-            startDocu()
+            openDocu()
+        ),
+        vscode.commands.registerCommand("isg-cnc.openDocuWithId", (id: string) =>
+            openDocuWithId(id)
         ),
         vscode.commands.registerCommand("isg-cnc.FindNonAsciiCharacters", () =>
             highlightNonAsciiChars()
@@ -112,10 +116,10 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand("isg-cnc.EncryptThis", (inputUri) =>
             blowfish.encryptThis(inputUri)
         ),
-        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async() =>
+        vscode.commands.registerCommand("isg-cnc.AlignEqualSigns", async () =>
             await alignEqualSigns()
         ),
-        vscode.commands.registerCommand("isg-cnc.AlignComments", async() =>
+        vscode.commands.registerCommand("isg-cnc.AlignComments", async () =>
             await alignComments()
         ),
         //command which is executed when sidebar-Matchitem is clicked
@@ -127,7 +131,14 @@ export function activate(context: vscode.ExtensionContext): void {
         }),
         vscode.commands.registerCommand("isg-cnc.changeLanguageMode", (inputUri) =>
             changeLanguageMode(inputUri)
-        )
+        ),
+        // commands to switch between multi-line and single-line cycle snippets
+        vscode.commands.registerCommand("isg-cnc.changeCycleSnippetsToSingleLine", async () =>
+            await vscode.workspace.getConfiguration("isg-cnc").update("cycleSnippetFormatting", "single-line", vscode.ConfigurationTarget.Workspace)
+        ),
+        vscode.commands.registerCommand("isg-cnc.changeCycleSnippetsToMultiLine", async () =>
+            await vscode.workspace.getConfiguration("isg-cnc").update("cycleSnippetFormatting", "multi-line", vscode.ConfigurationTarget.Workspace)
+        ),
     );
 
     //sorting of sidebar content

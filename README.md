@@ -29,6 +29,7 @@ Visual Studio Code V1.73.1 or higher
 
 ## Features
   ### Editing
+  - Snippets and Hover information for ISG Cycle Calls and their parameters
   - Code completion
   - Code formatting
   - Add and remove blocknumbers

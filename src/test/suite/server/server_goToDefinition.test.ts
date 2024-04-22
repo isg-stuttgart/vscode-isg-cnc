@@ -1,10 +1,9 @@
 import * as assert from 'assert';
-import { getPathOfWorkspaceFile } from "../testHelper";
 import * as vscode from "vscode";
 import path = require('path');
 import * as fs from "fs";
 import * as OS from "os";
-import { VSCodeLocationMock,assertSameLocations } from '../testHelper';
+import { getPathOfWorkspaceFile, VSCodeLocationMock, assertSameLocations } from '../testHelper';
 const testFilePath = getPathOfWorkspaceFile("testWithEverything.nc");
 const testFileUri = vscode.Uri.file(testFilePath);
 suite('Go To Definition', () => {
@@ -122,7 +121,7 @@ suite('Go To Definition', () => {
             new vscode.Position(115, 12)
         ) as vscode.Location[];
         const expectedDefinitions = [
-            new VSCodeLocationMock(testFilePath, 122, 0 , 122, 9)
+            new VSCodeLocationMock(testFilePath, 122, 0, 122, 9)
         ];
         assertSameLocations(actualDefinitions, expectedDefinitions);
     });
@@ -134,7 +133,7 @@ suite('Go To Definition', () => {
             new vscode.Position(111, 29)
         ) as vscode.Location[];
         const expectedDefinitions = [
-            new VSCodeLocationMock(testFilePath, 109, 0 , 109, 4)
+            new VSCodeLocationMock(testFilePath, 109, 0, 109, 4)
         ];
         assertSameLocations(actualDefinitions, expectedDefinitions);
     });

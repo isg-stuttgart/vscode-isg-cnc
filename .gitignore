@@ -8,5 +8,7 @@ test_and_info/
 *.7z
 *.tgz
 docs/book/
-.vscode/settings.json
+*.vscode/settings.json
 src/test/res/tmp.nc
+src/test/res/.vscode
+

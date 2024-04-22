@@ -20,7 +20,10 @@
       localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
       globalCycleCallName: "globalCycleCallName",
-
+      cycleParameter: "cycleParameter",
+      cycleParameterAssignment: "cycleParameterAssignment",
+      cycleParamList: "cycleParamList",
+      
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -103,8 +106,8 @@ file "file"
 {
   if(!mainPrg){
     mainPrg=file[2]?file[2]:null;
-    return file;
   }
+  return file;
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
@@ -130,7 +133,7 @@ mainprogram "mainprogram"                                   // the main program
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(block/linebreak))+                                         // the body is a list of comments and blocks
+(block/linebreak/.))+                                       // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
 = content:(
@@ -328,15 +331,19 @@ prg_name_string
   
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
-   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-    (cycle_call_param_multiline/cycle_call_param_line) grayline* "]"){          // brackets can contain a multline or a singleline
-    const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
-    const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let nameLM = content[6][1]                                                  // LightMatch of the cycle name
-    const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-    content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
-    return new Match(type, content, location(), text(), nameLM.text);
-  }
+  "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
+  cycle_params grayline* "]"){          // brackets can contain a multline or a singleline
+  const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
+  const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
+  let nameLM = content[6][1]                                                  // LightMatch of the cycle name
+  const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
+  content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
+  return new Match(type, content, location(), text(), nameLM.text);
+}
+
+cycle_params = content:(cycle_call_param_multiline/cycle_call_param_line) {
+  return new Match(types.cycleParamList, content, location(), text(), null) 
+}
 
 cycle_call_param_multiline 
 = content:
@@ -348,10 +355,19 @@ cycle_call_param_line linebreak?){
 }
 
 cycle_call_param_line "cycle_call_param_line"
-= ((line_comment/var/cycle_call_param_line_trash_token))*
+= ((line_comment/paramAssignement/param/var/cycle_call_param_line_trash_token/$whitespace+))*
 
-cycle_call_param_line_trash_token
-= $(!("]"/"\r"/"\n"/"\\"/line_comment/var) .)+
+param = content:("@" $("P"non_neg_integer)){                // one parameter of a cycle
+  return new Match(types.cycleParameter, content, location(), text(), content[1]);
+}
+
+paramAssignement =                                          // one param assignement, meaning a param name followed by a var/string/value
+content:(param grayspaces "=" grayspaces value:(var/string/cycle_call_param_line_trash_token?)){
+  return new Match(types.cycleParameterAssignment, content, location(), text(), content[0].name);
+}
+
+cycle_call_param_line_trash_token                           // trashes non-relevant tokens in cycle call parameters
+= $(!("]"/"\r"/"\n"/"\\"/param/paramAssignement/line_comment/var/whitespace) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{
@@ -428,7 +444,7 @@ integer "integer"                                           // an integer
 = "-"? non_neg_integer
 
 non_neg_integer "non_neg_integer"                           // a non-negative integer
-= digit+
+= $digit+
 
 number "number"                                             // a number
 = integer ("." non_neg_integer)?
