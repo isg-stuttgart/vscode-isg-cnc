@@ -6,10 +6,10 @@
         "activityBarBadge.background": "#007acc",
         "editor.background": "#1e1e1e",
         "editor.foreground": "#d4d4d4",
-        "editor.inactiveSelectionBackground": "#3a3d41",
+        "editor.inactiveSelectionBackground": "#3a3d4163",
         "editor.selectionHighlightBackground": "#add6ff26",
-        "editorIndentGuide.activeBackground": "#707070",
-        "editorIndentGuide.background": "#404040",
+        "editorIndentGuide.activeBackground1": "#707070",
+        "editorIndentGuide.background1": "#404040",
         "input.placeholderForeground": "#a6a6a6",
         "list.dropBackground": "#383b3d",
         "menu.background": "#252526",
@@ -108,21 +108,21 @@
             }
         },
         {
-            "scope" : "variable.parameter",
+            "scope": "variable.parameter",
             "settings": {
                 "foreground": "#e523ff",
                 "fontStyle": ""
             }
         },
         {
-            "scope" : "variable.language",
+            "scope": "variable.language",
             "settings": {
                 "foreground": "#e523ff",
                 "fontStyle": ""
             }
         },
         {
-            "scope" : "string.quoted.double",
+            "scope": "string.quoted.double",
             "settings": {
                 "foreground": "#96712d",
                 "fontStyle": ""
