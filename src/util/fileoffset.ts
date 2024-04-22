@@ -32,7 +32,7 @@ export async function jumpIntoFileAtOffset() {
     // get offset if valid second selection is found
     const offsetText = document.getText(selections[1]).trim();
     let offset: number = 0;
-    // second selection is not a number
+    // if second selection is a number jump to offset
     if (isNumeric(parseInt(offsetText))) {
         offset = parseInt(offsetText);
     }
