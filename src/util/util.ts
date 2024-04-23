@@ -3,7 +3,7 @@
  * Returns true or false.
  *
  * @param {*} n
- * @returns
+ * @returns if the value is numeric
  */
 export function isNumeric(n: number) {
     return !isNaN(n) && isFinite(n);

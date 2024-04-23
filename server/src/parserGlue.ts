@@ -84,7 +84,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
         } else {
             defPaths = [];
             for (const rootPath of rootPaths) {
-                defPaths.push(...findFileInRootDir(rootPath, match.name, new WorkspaceIgnorer(rootPath)));
+                defPaths.push(...findFileInRootDir(rootPath, match.name, new WorkspaceIgnorer(rootPath), true));
             }
         }
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found

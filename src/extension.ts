@@ -20,6 +20,7 @@ import { findAllToolCalls, findNextTFS } from "./util/findTFS";
 import { changeLanguageMode } from "./util/config";
 import { alignComments, alignEqualSigns } from "./util/aligning";
 import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
+import { jumpIntoFileAtOffset } from "./util/fileoffset";
 //NC-file sidebar tree provider
 export let fileContentProvider: fileContentTree.FileContentProvider;
 // package.json information
@@ -121,6 +122,9 @@ export function activate(context: vscode.ExtensionContext): void {
         ),
         vscode.commands.registerCommand("isg-cnc.AlignComments", async () =>
             await alignComments()
+        ),
+        vscode.commands.registerCommand("isg-cnc.jumpIntoFileAtOffset", async () =>
+            await jumpIntoFileAtOffset()
         ),
         //command which is executed when sidebar-Matchitem is clicked
         vscode.commands.registerCommand("matchItem.selected", async (item: fileContentTree.MatchItem) =>

@@ -45,7 +45,7 @@ export function findMostSpecificGlobPattern(path: string, patterns: string[]): s
  * @param ignorer optional ignorer to ignore files/directories, defaults to empty ignorer which ignores nothing
  * @returns the paths to the found files 
  */
-export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer | undefined = undefined): string[] {
+export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer | undefined = undefined, needsToBeCNCFile: boolean = false): string[] {
     let paths: string[] = [];
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
@@ -56,8 +56,8 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
         }
         if (entry.isDirectory()) {
             //search in subdirectory
-            paths.push(...findFileInRootDir(entryPath, fileName, ignorer));
-        } else if (entry.isFile() && entry.name === fileName && isCncFile(entryPath)) {
+            paths.push(...findFileInRootDir(entryPath, fileName, ignorer, needsToBeCNCFile));
+        } else if (entry.isFile() && entry.name === fileName && (!needsToBeCNCFile || isCncFile(entryPath))) {
             //file found
             const normPath = normalizePath(entryPath);
             paths.push(normPath);

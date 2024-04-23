@@ -47,6 +47,7 @@ Visual Studio Code V1.73.1 or higher
   - Show and jump to fileoffset
   - Open documentation in browser
   - Sidebar to show important code fragments (currently: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
+  - Command to jump into a file by selecting it's name or absolute path and an optional offset 
 
   ### Additionals
   - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)

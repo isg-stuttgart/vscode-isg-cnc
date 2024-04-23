@@ -17,7 +17,7 @@ suite("Command to add file/folder to ignore file", function () {
 
             let currentExpectedText = "# Adding files/directories to this file will prevent the ISG-CNC extension from searching for references/definitions in these files/directories." + os.EOL +
                 "# This does not affect other features of the ISG-CNC extension." + os.EOL +
-                "# The ignore syntax is equivalent to the .gitignore syntax. See https://git-scm.com/docs/gitignore for more information." + os.EOL + os.EOL + "test.nc";
+                "# The ignore syntax is equivalent to the .gitignore syntax. See https://git-scm.com/docs/gitignore for more information." + os.EOL + os.EOL + "/test.nc";
             // read ignore file with vscode api
             let currentActualText = (await vscode.workspace.openTextDocument(ignorePath)).getText();
 
@@ -31,7 +31,7 @@ suite("Command to add file/folder to ignore file", function () {
             // add folder to ignore file
             const folderUri = vscode.Uri.file(getPathOfWorkspaceFile(path.join("languageFolder", "nestedFolder")));
             await vscode.commands.executeCommand("isg-cnc.addToIgnore", folderUri);
-            currentExpectedText += os.EOL + "languageFolder/nestedFolder";
+            currentExpectedText += os.EOL + "/languageFolder/nestedFolder";
             currentActualText = (await vscode.workspace.openTextDocument(ignorePath)).getText();
             assert.strictEqual(currentActualText, currentExpectedText);
 
@@ -45,6 +45,11 @@ suite("Command to add file/folder to ignore file", function () {
             const workspaceFolderUri = vscode.Uri.file(getPathOfWorkspaceFile(""));
             await vscode.commands.executeCommand("isg-cnc.addToIgnore", workspaceFolderUri);
             currentExpectedText += os.EOL + "/*";
+            currentActualText = (await vscode.workspace.openTextDocument(ignorePath)).getText();
+            assert.strictEqual(currentActualText, currentExpectedText);
+
+            // add the whole workspace folder again (should not change anything)
+            await vscode.commands.executeCommand("isg-cnc.addToIgnore", workspaceFolderUri);
             currentActualText = (await vscode.workspace.openTextDocument(ignorePath)).getText();
             assert.strictEqual(currentActualText, currentExpectedText);
         } finally {
