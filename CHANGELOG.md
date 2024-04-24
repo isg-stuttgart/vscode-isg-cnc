@@ -13,6 +13,13 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+
+### Added
+
+### Fixed
+
+## [V1.1.0]
+
 ### Added
 - Snippet-Completion for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
 - Hover-Information for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
@@ -371,6 +378,7 @@ Types of changes:
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V1.1.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.0.0...V1.1.0
 [V1.0.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.6...V1.0.0
 [V0.4.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.5...V0.4.6
 [V0.4.5]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.4...V0.4.5

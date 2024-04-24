@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
