@@ -228,8 +228,15 @@ export class Parameter {
                 (max !== undefined ? "Max: " + max + "  \n" : "") +
                 (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
                 (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
+                "## Requirements:  \n" +
+                (min !== undefined ? "Min: " + min + "  \n" : "") +
+                (max !== undefined ? "Max: " + max + "  \n" : "") +
+                (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
+                (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
                 (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
                 "Not null: " + notNull + "  \n" +
+                "Required: " + required + "  \n" +
+                "Type: " + this.requirementDictionary.type + "  \n" +
                 "Required: " + required + "  \n" +
                 "Type: " + this.requirementDictionary.type + "  \n" +
 
@@ -273,6 +280,8 @@ export class RequirementDictionary {
     ) {
         this.min = parseIntOrUndefined(min);
         this.max = parseIntOrUndefined(max);
+        this.min2 = parseIntOrUndefined(min2);
+        this.max2 = parseIntOrUndefined(max2);
         this.min2 = parseIntOrUndefined(min2);
         this.max2 = parseIntOrUndefined(max2);
         this.default = defaultVal ? defaultVal : undefined;
