@@ -52,6 +52,8 @@ function jsonParameterToParameter(parameter: any, documentationReference: string
     const requirementDictionary = new RequirementDictionary(
         parameter.RequirementDictionary.Min,
         parameter.RequirementDictionary.Max,
+        parameter.RequirementDictionary.Min2,
+        parameter.RequirementDictionary.Max2,
         parameter.RequirementDictionary.Default,
         parameter.RequirementDictionary.NotNull,
         parameter.RequirementDictionary.Required,
@@ -158,8 +160,17 @@ export class Parameter {
     getPlaceholder(tabstopNumber: number): string {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
+        const min2 = this.requirementDictionary.min2;
+        const max2 = this.requirementDictionary.max2;
         const defaultVal = this.requirementDictionary.default;
-        // case 1: parameter has min and max with maximum difference of 10 -> use a choice
+        let amountOfValues = Infinity;
+        if (min !== undefined && max !== undefined) {
+            amountOfValues = max - min + 1;
+        }
+        if (min2 !== undefined && max2 !== undefined) {
+            amountOfValues += max2 - min2 + 1;
+        }
+        // case 1: parameter has a maximum of 10 possible values -> use a choice
         if (min !== undefined && max !== undefined && (max - min) <= 10) {
             const choices = [];
             for (let i = min; i <= max; i++) {
@@ -186,6 +197,8 @@ export class Parameter {
     getMarkupDocumentation(): MarkupContent {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
+        const min2 = this.requirementDictionary.min2;
+        const max2 = this.requirementDictionary.max2; 
         const defaultVal = this.requirementDictionary.default;
         const notNull = this.requirementDictionary.notZero;
         const required = this.requirementDictionary.required;
@@ -203,11 +216,15 @@ export class Parameter {
             value:
                 "### " + this.name + ": " + description + "  \n" +
 
-                (min !== undefined ? "Minimal value: " + min + "  \n" : "") +
-                (max !== undefined ? "Maximal value: " + max + "  \n" : "") +
+                "## Requirements:  \n" +
+                (min !== undefined ? "Min: " + min + "  \n" : "") +
+                (max !== undefined ? "Max: " + max + "  \n" : "") +
+                (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
+                (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
                 (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
                 "Not null: " + notNull + "  \n" +
-                "Required: " + required +
+                "Required: " + required + "  \n" +
+                "Type: " + this.requirementDictionary.type + "  \n" +
 
                 (this.dependencyList && this.dependencyList.length > 0 ? "\n\nDependencies:  \n" + dependencyMarkdownString : "") +
 
@@ -231,6 +248,8 @@ export class Parameter {
 export class RequirementDictionary {
     min: number | undefined;
     max: number | undefined;
+    min2: number | undefined;
+    max2: number | undefined;
     notZero: boolean;
     default: string | undefined;
     required: boolean;
@@ -238,6 +257,8 @@ export class RequirementDictionary {
     constructor(
         min: number | string | undefined,
         max: number | string | undefined,
+        min2: number | string | undefined,
+        max2: number | string | undefined,
         defaultVal: string,
         notNull: boolean | string,
         required: boolean | string | undefined,
@@ -245,6 +266,8 @@ export class RequirementDictionary {
     ) {
         this.min = parseIntOrUndefined(min);
         this.max = parseIntOrUndefined(max);
+        this.min2 = parseIntOrUndefined(min2);
+        this.max2 = parseIntOrUndefined(max2);
         this.default = defaultVal ? defaultVal : undefined;
         this.notZero = typeof notNull === "boolean" ? notNull : notNull === "true";
         this.required = typeof required === "boolean" ? required : required === "true";
