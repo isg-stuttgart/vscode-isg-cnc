@@ -44,7 +44,7 @@ function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | nu
     // if on cycle name, show cycle documentation
     if (cycleSubMatch.type === MatchType.globalCycleCallName) {
         return {
-            contents: cycle.getMarkupDocumentation(),
+            contents: cycle.getMarkupDocumentation(false),
             range: {
                 start: {
                     line: cycleSubMatch.location.start.line - 1,

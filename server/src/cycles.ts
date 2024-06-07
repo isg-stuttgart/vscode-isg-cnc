@@ -97,15 +97,23 @@ export class Cycle {
             throw new Error("Cycle parameter list is missing");
         }
     }
-    getMarkupDocumentation(): MarkupContent {
+    getMarkupDocumentation(onlyRequired: boolean): MarkupContent {
         // if the documentation reference is missing, don't add a link to the documentation
         const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n[More Information](${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
+        let parameterTitle: string;
+        if (this.parameterList.length > 0) {
+            parameterTitle = onlyRequired ? "Required Parameters:  \n" : "Parameters:  \n";
+        } else {
+            parameterTitle = "";
+        }
         return {
             kind: "markdown",
             value:
                 "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n\n" +
-                (this.parameterList.length > 0 ? "Parameter:  \n" : "") +
-                this.parameterList.map(param => param.getShortDescriptionLine()).join("\n") +
+                parameterTitle +
+                this.parameterList
+                    .filter(param => !onlyRequired || param.requirementDictionary.required)
+                    .map(param => param.getShortDescriptionLine()).join("\n") +
                 infoLink
         };
     }
@@ -228,15 +236,8 @@ export class Parameter {
                 (max !== undefined ? "Max: " + max + "  \n" : "") +
                 (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
                 (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
-                "## Requirements:  \n" +
-                (min !== undefined ? "Min: " + min + "  \n" : "") +
-                (max !== undefined ? "Max: " + max + "  \n" : "") +
-                (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
-                (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
                 (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
                 "Not null: " + notNull + "  \n" +
-                "Required: " + required + "  \n" +
-                "Type: " + this.requirementDictionary.type + "  \n" +
                 "Required: " + required + "  \n" +
                 "Type: " + this.requirementDictionary.type + "  \n" +
 
