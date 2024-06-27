@@ -16,6 +16,7 @@ import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions } from './completion';
 import { getHoverInformation } from './hover';
+import { getFormatting } from './format';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -60,7 +61,9 @@ connection.onInitialize(async (params: InitializeParams) => {
 				resolveProvider: false,
 				triggerCharacters: ["=", "@", "\\", "[", "]", "(", ")"]
 			},
-			hoverProvider: true
+			hoverProvider: true,
+			documentFormattingProvider: true,
+			documentRangeFormattingProvider: true
 		}
 	};
 	console.log("ISG-CNC Language Server initialized");
@@ -161,6 +164,41 @@ connection.onHover((docPos) => {
 		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
 	}
 });
+
+/** Provides the "Document Formatting" functionality. Returns text edits which must be applied to format. */
+connection.onDocumentFormatting((docFormatParams) => {
+	if (!config.getEnableFormatter()) {
+		return [];
+	}
+	try {
+		const textDocument = documents.get(docFormatParams.textDocument.uri);
+		if (!textDocument) {
+			throw new Error("Document not found: " + docFormatParams.textDocument.uri);
+		}
+		return getFormatting(textDocument, docFormatParams.options, undefined);
+	} catch (error) {
+		console.error("Formatting failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Formatting failed: " + JSON.stringify(error));
+	}
+});
+
+/** Provides the "Document Range Formatting" functionality. Returns text edits which must be applied to format the specified range. */
+connection.onDocumentRangeFormatting((docRangeFormatParams) => {
+	if (!config.getEnableFormatter()) {
+		return [];
+	}
+	try {
+		const textDocument = documents.get(docRangeFormatParams.textDocument.uri);
+		if (!textDocument) {
+			throw new Error("Document not found: " + docRangeFormatParams.textDocument.uri);
+		}
+		return getFormatting(textDocument, docRangeFormatParams.options, docRangeFormatParams.range);
+	} catch (error) {
+		console.error("Range formatting failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Range formatting failed: " + JSON.stringify(error));
+	}
+});
+
 
 
 // Make the text document manager listen on the connection

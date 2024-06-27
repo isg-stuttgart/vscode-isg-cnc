@@ -9,7 +9,6 @@ import {
 } from 'vscode-languageclient/node';
 import * as fileContentTree from "./util/fileContentTree";
 import * as blowfish from "./util/encryption/encryption";
-import * as formatter from "./util/formatter";
 import { addToIgnore } from "./util/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
 import * as fileoffset from "./util/fileoffset";
@@ -72,9 +71,6 @@ export function activate(context: vscode.ExtensionContext): void {
     } catch (error) {
         console.error(error);
     }
-
-    // code formatter
-    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider());
 
     //NC-file sidebar tree provider
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);

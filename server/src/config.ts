@@ -39,6 +39,14 @@ export function getCycleSnippetFormatting(): CycleSnippetFormatting {
     return cycleSnippetFormatting;
 }
 
+let enableFormatter: boolean = true;
+/**
+ * @returns whether the formatter is enabled
+ */
+export function getEnableFormatter(): boolean {
+    return enableFormatter;
+}
+
 /**
  * Object mapping file extensions to languages. Used to determine if a file is a cnc file.
  */
@@ -132,7 +140,7 @@ export function updateSettings(workspaceConfig: any) {
     } catch (error) {
         failedSettings.push("cycleSnippetFormatting");
     }
-
+    enableFormatter = workspaceConfig['isg-cnc']['enableFormatter'];
     if (failedSettings.length > 0) {
         throw new Error("Failed to update settings: " + failedSettings.join(", "));
     }
