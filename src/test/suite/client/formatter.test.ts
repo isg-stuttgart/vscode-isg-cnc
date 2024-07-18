@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { getPathOfWorkspaceFile, assertApplyingCommandToFile } from "../testHelper";
-import { } from "../../../util/formatter";
 
 suite("Formatter Test", () => {
     const unformattedName = "formatter_test_unformatted.nc";
@@ -24,6 +23,7 @@ async function formatDocument(path: string) {
     const formattingOptions = {
         tabSize: 2,
         insertSpaces: true,
+        detectIndentation: false
     };
 
     const textEdits = await vscode.commands.executeCommand<vscode.TextEdit[]>(

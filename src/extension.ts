@@ -61,7 +61,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ language: 'isg-cnc' }],
-        markdown: { isTrusted: true },
+        markdown: { isTrusted: true }
     };
 
     // start the cnc language server

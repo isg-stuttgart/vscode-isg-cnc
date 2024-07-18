@@ -15,7 +15,8 @@
 			"outFiles": [
 				"${workspaceFolder}/out/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}"
+			"preLaunchTask": "${defaultBuildTask}",
+			"autoAttachChildProcesses": true
 		},
 		{
 			"type": "node",
@@ -41,7 +42,8 @@
 			"outFiles": [
 				"${workspaceFolder}/out/src/test/**/*.js"
 			],
-			"preLaunchTask": "${defaultBuildTask}"
+			"preLaunchTask": "${defaultBuildTask}",
+			"autoAttachChildProcesses": true
 		}
 	]
 }

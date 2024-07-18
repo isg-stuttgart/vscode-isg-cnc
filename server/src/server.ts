@@ -63,7 +63,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 			},
 			hoverProvider: true,
 			documentFormattingProvider: true,
-			documentRangeFormattingProvider: true
+			documentRangeFormattingProvider: true,
 		}
 	};
 	console.log("ISG-CNC Language Server initialized");

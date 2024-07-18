@@ -19,7 +19,6 @@ const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
 export function getFormatting(document: TextDocument, options: FormattingOptions, range: Range | undefined): TextEdit[] {
     const textEdits: TextEdit[] = [];
     const tabSize: number = options.tabSize;
-
     let currentLine: string = "";
     let newLine: string = "";
     let saveBlockNumber: string = "";
@@ -175,7 +174,7 @@ export function getFormatting(document: TextDocument, options: FormattingOptions
                 Position.create(lineNumber, 0),
                 Position.create(lineNumber, lines[lineNumber].length));
             const line = lines[lineNumber];
-            newLine = prependWhiteSpace(line, tabSize);
+            newLine = prependWhiteSpace(line, tabSize).trimEnd();
             textEdits.push(TextEdit.replace(lineRange, newLine));
         }
     });
