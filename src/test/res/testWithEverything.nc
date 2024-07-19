@@ -1,5 +1,6 @@
 ; IMPORTANT: Try to always add new stuff at the end of the file to avoid breaking existing tests
-
+(Das hier ist ein Kommentar über UP1)
+   
 %L UP1           (1. lokales Unterprogramm)
 
 N0 N1.....
@@ -7,7 +8,6 @@ N0 N1.....
 N2: .....
 
 N9 M17           (M17 kann auch entfallen)
-
 %L UP2           (2. lokales Unterprogramm)
 
 N11 G15 T23
@@ -17,7 +17,7 @@ N12 .....
 N19 M29          (M29 kann auch entfallen)
 
 %MAIN            (Hauptprogramm)
-
+L testWithEverything.nc
 L subPrograms.nc \
   G33 G23 \
   G15 T23 \

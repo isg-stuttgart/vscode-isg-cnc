@@ -155,7 +155,12 @@ connection.onHover((docPos) => {
 			return null;
 		}
 		const position: Position = docPos.position;
-		return getHoverInformation(position, textDocument);
+		const openDocs = new Map<string, TextDocument>();
+		const allDocs = documents.all();
+		for (const doc of allDocs) {
+			openDocs.set(doc.uri, doc);
+		}
+		return getHoverInformation(position, textDocument, getRootPaths(), openDocs);
 	} catch (error) {
 		console.error("Getting hover information failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));

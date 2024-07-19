@@ -10,14 +10,14 @@ const testFileUri = vscode.Uri.file(testFilePath);
 suite('LS Hover Information', () => {
     test('Hover Information for cycle call name', async () => {
         const doc = await vscode.workspace.openTextDocument(testFileUri);
-        const hover = getHoverInformation({ line: 1, character: 17 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, doc.getText()));
+        const hover = getHoverInformation({ line: 1, character: 17 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, doc.getText()), null);
         assert.ok(hover !== undefined && hover !== null);
         assert.ok(getHoverContent(hover).includes("SysCalibToolSettingProbe"));
     });
 
     test('Hover Information for cycle parameter (both single-line and multi-line)', async () => {
-        const hoverMulti = getHoverInformation({ line: 2, character: 4 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, (await vscode.workspace.openTextDocument(testFileUri)).getText()));
-        const hoverSingle = getHoverInformation({ line: 8, character: 45 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, (await vscode.workspace.openTextDocument(testFileUri)).getText()));
+        const hoverMulti = getHoverInformation({ line: 2, character: 4 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, (await vscode.workspace.openTextDocument(testFileUri)).getText()), null);
+        const hoverSingle = getHoverInformation({ line: 8, character: 45 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, (await vscode.workspace.openTextDocument(testFileUri)).getText()), null);
         assert.ok(hoverMulti !== undefined && hoverMulti !== null);
         assert.ok(hoverSingle !== undefined && hoverSingle !== null);
         assert.ok(getHoverContent(hoverMulti).includes("P6"));
