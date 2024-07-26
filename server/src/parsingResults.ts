@@ -10,10 +10,12 @@ import * as ncParser from "./parserGenerating/ncParser";
 export class ParseResults {
     public readonly results: ParseResultContent;
     public readonly syntaxArray: SyntaxArray;
+    public readonly plainText: string;
     constructor(text: string) {
         try {
             this.results = ncParser.parse(text) as ParseResultContent;
             this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+            this.plainText = text;
         } catch (error) {
             throw new Error(`Error while parsing file: ${error}`);
         }

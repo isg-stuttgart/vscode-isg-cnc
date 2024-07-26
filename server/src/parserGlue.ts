@@ -17,34 +17,28 @@ import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
 import { ParseResults } from "./parsingResults";
 
 /**
- * Returns the definition location of the selected position
- * @param fileContent The file as String 
+ * Returns the definition ranges of the selected position.
+ * @param parseResults The file as String 
  * @param position The selected position
  * @param uri The file uri
  * @param rootPaths The root paths of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(fileContent: string, position: Position, uri: string, rootPaths: string[] | null): FileRange[] {
+export function getDefinition(parseResults: ParseResults, position: Position, uri: string, rootPaths: string[] | null): { definitionRanges: FileRange[], uriToParsedDocs: Map<string, ParseResults> } {
     let defMatch: Match | null = null;
-    let definitions: FileRange[] = [];
+    const definitions: FileRange[] = [];
+    const parsedDocs: Map<string, ParseResults> = new Map();
+    parsedDocs.set(uri, parseResults);
 
-    // parse the file content and search for the selected position
-    let parseResult: ParseResults;
-    try {
-        parseResult = new ParseResults(fileContent);
-    } catch (error) {
-        throw new Error(`Error parsing file ${uri}: ${error}`);
-    }
-    const ast: any[] = parseResult.results.fileTree;
-
+    const ast: any[] = parseResults.results.fileTree;
     // if the location is within comments, return empty array
-    if (isWithinMatches(parseResult.syntaxArray.comments, position)) {
-        return [];
+    if (isWithinMatches(parseResults.syntaxArray.comments, position)) {
+        return { definitionRanges: [], uriToParsedDocs: parsedDocs };
     }
 
     /*If the location is on a variable, search for it's definition via the parser. 
     This is an extra case because of an incomplete parser which doesn't recognize all variable-references properly. */
-    const surroundingVar = getSurroundingVar(fileContent, position);
+    const surroundingVar = getSurroundingVar(parseResults.plainText, position);
     if (surroundingVar) {
         const varMatch = findFirstMatchWithinPrg(ast, MatchType.varDeclaration, surroundingVar);
         if (varMatch && varMatch.location) {
@@ -52,23 +46,23 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             const end: Position = new Position(varMatch.location.end.line - 1, varMatch.location.end.column - 1);
             definitions.push(new FileRange(uri, start, end));
         }
-        return definitions;
+        return { definitionRanges: definitions, uriToParsedDocs: parsedDocs };
     }
 
     const match = findPreciseMatchOfTypes(ast, position);
     if (!match || !match.name) {
-        return [];
+        return { definitionRanges: [], uriToParsedDocs: parsedDocs };
     }
 
     const { defType, local } = getDefType(match);
     if (defType === null) {
-        return [];
+        return { definitionRanges: [], uriToParsedDocs: parsedDocs };
     }
 
     if (local) {
         defMatch = findFirstMatchWithinPrg(ast, defType, match.name);
         if (!defMatch || !defMatch.location) {
-            return [];
+            return { definitionRanges: [], uriToParsedDocs: parsedDocs };
         }
         const start: Position = new Position(defMatch.location.start.line - 1, defMatch.location.start.column - 1);
         const end: Position = new Position(defMatch.location.end.line - 1, defMatch.location.end.column - 1);
@@ -93,7 +87,9 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             const defFileContent = fs.readFileSync(path, "utf8");
             let mainPrg;
             try {
-                mainPrg = new ParseResults(defFileContent).results.mainPrg;
+                const parseResults = new ParseResults(defFileContent);
+                parsedDocs.set(uri, parseResults);
+                mainPrg = parseResults.results.mainPrg;
             } catch (error) {
                 throw new Error(`Error parsing file ${uri}: ${error}`);
             }
@@ -110,7 +106,7 @@ export function getDefinition(fileContent: string, position: Position, uri: stri
             definitions.push(new FileRange(uri, range.start, range.end));
         }
     }
-    return definitions;
+    return { definitionRanges: definitions, uriToParsedDocs: parsedDocs };
 }
 
 /**

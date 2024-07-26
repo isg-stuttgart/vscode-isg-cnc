@@ -411,19 +411,18 @@ line_comment "line_comment"                                 // a line comment is
 / semicolon_comment                                         // after semicolon
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
-= $("(" [^)\r\n]* ")" 
-/ "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
-{ return new Match(types.comment, null, location(), text(), null)}
+= "(" content:$([^)\r\n]*) ")"? 
+{ return new Match(types.comment, content, location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
-= ";" [^\r\n]*
-{ return new Match(types.comment, null, location(), text(), null)}
+= ";" content:$([^\r\n]*)
+{ return new Match(types.comment, content, location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
 = "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
-  (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
+  content:$((!("#COMMENT" whitespace+ "END") .)*)                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-{ return new Match(types.comment, null, location(), text(), null)}
+{ return new Match(types.comment, content, location(), text(), null)}
 
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]

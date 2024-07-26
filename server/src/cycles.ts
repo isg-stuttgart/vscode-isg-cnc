@@ -2,6 +2,7 @@ import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 import * as cyclesJson from "../res/cycles.json";
+import * as path from "path";
 let cycles: Cycle[];
 
 /**
@@ -12,6 +13,12 @@ export function getCycles(): Cycle[] {
         cycles = cyclesJson.map((cycle: any) => jsonCycleToCycle(cycle));
     }
     return cycles;
+}
+
+export function getISGCycleByName(name: string): Cycle | null {
+    const cycleName = path.parse(name).name;
+    const cycle = getCycles().find(c => c.name === cycleName);
+    return cycle ? cycle : null;
 }
 
 /**

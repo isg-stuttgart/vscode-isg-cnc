@@ -16,6 +16,7 @@ import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions } from './completion';
 import { getHoverInformation } from './hover';
+import { ParseResults } from './parsingResults';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -100,7 +101,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));

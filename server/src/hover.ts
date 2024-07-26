@@ -3,10 +3,11 @@ import { Match, MatchType, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
 import { ParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
-import { getCycles } from "./cycles";
+import { Cycle, getCycles, getISGCycleByName } from "./cycles";
 import path = require("path");
 import { getDefinition } from "./parserGlue";
 import fs = require("fs");
+import { getDocByUri } from "./fileSystem";
 /**
  * Returns the hover information for the given position in the document.
  * Currently it supports cycle call and cycle parameter hover. 
@@ -15,25 +16,33 @@ import fs = require("fs");
  * @returns the hover information item for the given position 
  */
 export function getHoverInformation(position: Position, textDocument: TextDocument, rootPaths: string[] | null, openDocs: Map<string, TextDocument>): Hover | null {
-    // check if hovering is within a cycle call and return the fitting hover information if so
+    // parse to check which type of hover information is needed
+    // supported types are cycle call, cycle parameter, subprogram call
     const parseResults: ParseResults = new ParseResults(textDocument.getText());
     const ast = parseResults.results.fileTree;
+    const match = findPreciseMatchOfTypes(ast, position, [
+        MatchType.globalCycleCall,
+        MatchType.localCycleCall,
+        MatchType.globalPrgCall,
+        MatchType.localPrgCall
+    ]);
+    // if no match found, no hover information can be provided
+    if (!match) { return null; }
 
-    //cycle call
-    const cycle = findPreciseMatchOfTypes(ast, position, [MatchType.globalCycleCall]);
-    if (cycle) {
-        return getHoverForCycleCall(position, cycle);
+    // cycle call of known isg cycle -> we can provide hover information via json file
+    if (match?.type === MatchType.globalCycleCall && match.name && getISGCycleByName(match.name)) {
+        return getHoverForCycleCall(position, match);
     }
 
-
-    const subProgramCall = findPreciseMatchOfTypes(ast, position, [MatchType.localPrgCall, MatchType.globalPrgCall]);
-    if (subProgramCall) {
-        return getHoverForSubProgramCall(textDocument, position, subProgramCall, rootPaths, openDocs, parseResults);
+    // cycle call with no known isg cycle or program call
+    else if ([MatchType.globalCycleCall, MatchType.localCycleCall, MatchType.globalPrgCall, MatchType.localPrgCall].includes(match.type)) {
+        return getHoverForSubProgramCall(textDocument, position, match, rootPaths, openDocs, parseResults);
     }
 
     // no hover information found
     return null;
 }
+
 
 /**
  * Returns the hover information for the given position which is within the cycle call.
@@ -87,9 +96,11 @@ function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | nu
     // no hover information found
     return null;
 }
-function getHoverForSubProgramCall(textDocument: TextDocument, position: Position, subProgramCall: Match, rootPaths: string[] | null, openDocs: Map<string, TextDocument>, parseResults: ParseResults): Hover | null {
-    const definitions = getDefinition(textDocument.getText(), position, textDocument.uri, rootPaths);
 
+
+function getHoverForSubProgramCall(textDocument: TextDocument, position: Position, subProgramCall: Match, rootPaths: string[] | null, openDocs: Map<string, TextDocument>, parseResults: ParseResults): Hover | null {
+    const definitionResults = getDefinition(parseResults, position, textDocument.uri, rootPaths);
+    const definitions = definitionResults.definitionRanges;
     // if no definition found, return null
     if (definitions.length === 0) {
         return null;
@@ -97,24 +108,33 @@ function getHoverForSubProgramCall(textDocument: TextDocument, position: Positio
 
     // if multiple definitions found use the first one
     const def = definitions[0];
-    let defDoc = openDocs.get(def.uri);
-    // if no fitting open document found, read from fs
-    if (!defDoc) {
-        const defContent = fs.readFileSync(new URL(def.uri), "utf8");
-        defDoc = TextDocument.create(def.uri, "prg", 0, defContent);
+    const defDoc = getDocByUri(def.uri, openDocs);
+
+    // basic hover content containing the name of the subprogram/cycle call and a link to the definition
+    let hoverContent = `**${subProgramCall.name}**\n\n[${def.uri}](file://${def.uri})`;
+
+    // if the definition is in the same document, use the file tree of the current parse results
+    let fileTree;
+    if (textDocument.uri === def.uri) {
+        fileTree = parseResults.results.fileTree;
     }
+    // else the definition is in another document which has been already parsed while searching for the definition, use the file tree of the parsed document
+    else {
+        fileTree = definitionResults.uriToParsedDocs.get(def.uri)!.results.fileTree;
+    }
+    if (!fileTree) {
+        throw new Error("No file tree found for definition of subprogram/cycle call " + subProgramCall.name);
+    }
+
+    
     // find the first position within defDoc before def that is not a whitespace (including newline/tab characters)
     let offset = defDoc.offsetAt(def.range.start) - 1;
     while (offset >= 0 && /\s/.test(defDoc.getText(Range.create(defDoc.positionAt(offset), defDoc.positionAt(offset + 1))))) {
         offset--;
     }
 
-
-    let hoverContent = `**${subProgramCall.name}**\n\n[${def.uri}](file://${def.uri})`;
-    const fileTree = textDocument.uri === def.uri ? parseResults.results.fileTree : new ParseResults(defDoc.getText()).results.fileTree;
-
+    // if a comment is present before the definition, add it to the hover content
     if (offset >= 0) {
-        // check if a comment is present before the definition
         const commentMatch = findPreciseMatchOfTypes(fileTree, defDoc.positionAt(offset), [MatchType.comment]);
         if (commentMatch) {
             hoverContent += `\n\n${commentMatch.text}`;

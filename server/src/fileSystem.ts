@@ -3,6 +3,7 @@ import * as fs from "fs";
 import ignore, { Ignore } from "ignore";
 import { isCncFile } from "./config";
 import { minimatch } from 'minimatch';
+import { TextDocument } from "vscode-languageserver-textdocument";
 /**
  * Finds the most specific glob pattern which matches the given path. "Most specific" is estimated by the depth (count of /) of the pattern.
  * @param path the path to find the most specific glob pattern for. 
@@ -83,6 +84,22 @@ export function normalizePath(filePath: string): string {
     const normalizedPath = path.normalize(combinedPath);
     return normalizedPath;
 }
+
+/**
+ * Returns the content of the document with the given uri. If the document is not open within the openDocs map, the content is read from the file system and a new TextDocument is created.
+ * @param uri the uri of the document
+ * @param openDocs the map of open documents 
+ * @returns the document with the given uri 
+ */
+export function getDocByUri(uri: string, openDocs: Map<string, TextDocument>): TextDocument {
+    let doc = openDocs.get(uri);
+    if (!doc) {
+        const defContent = fs.readFileSync(new URL(uri), "utf8");
+        doc = TextDocument.create(uri, "prg", 0, defContent);
+    }
+    return doc;
+}
+
 
 /**
  * A ignorer specific to a workspace. It ignores files/directories which are specified in a .isg-cnc-ignore file in the workspace root directory.
