@@ -102,7 +102,7 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:(subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 {
   if(!mainPrg){
     mainPrg=file[2]?file[2]:null;
