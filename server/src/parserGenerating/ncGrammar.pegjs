@@ -6,7 +6,6 @@
 
 {{
 	 const types = {
-      toolCall: "toolCall",
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
 
@@ -24,6 +23,8 @@
       cycleParameterAssignment: "cycleParameterAssignment",
       cycleParamList: "cycleParamList",
       
+      // other
+      toolCall: "toolCall",
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -36,7 +37,14 @@
       varDeclaration: "varDeclaration",
       variable:"variable",
       comment: "comment",
-  }
+      prgDoc: "prgDoc",
+      
+      // doc keywords
+      paramDoc: "paramDoc",
+      returnDoc: "returnDoc",
+      throwsDoc: "throwsDoc",
+  };
+  
  class LightMatch {
     location;
     text;
@@ -89,7 +97,7 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:(file/anyTrash)*                                        
+= fileTree:(grayline/file/anyTrash)*                                        
 {
   return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
 }
@@ -102,7 +110,7 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:(subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:(subprogram* mainprogram subprogram*)                // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 {
   if(!mainPrg){
     mainPrg=file[2]?file[2]:null;
@@ -111,7 +119,7 @@ file "file"
 }
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= content:("%L" $whitespace+ subprogram_name body){                // each subprogram requires a title and a body
+= content:("%L" $whitespace+ subprogram_name body){         // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), content[2].name);
 }
 
@@ -332,12 +340,12 @@ prg_name_string
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-  cycle_params grayline* "]"){          // brackets can contain a multline or a singleline
+  cycle_params grayline* "]"){                              // brackets can contain a multline or a singleline
   const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
   const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-  let nameLM = content[6][1]                                                  // LightMatch of the cycle name
+  let nameLM = content[6][1]                                // LightMatch of the cycle name
   const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-  content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
+  content[6][1] = nameMatch                                 // replace nameLightMatch with nameMatch  
   return new Match(type, content, location(), text(), nameLM.text);
 }
 
@@ -419,6 +427,9 @@ semicolon_comment "semicolon_comment"                       // a line comment af
 { return new Match(types.comment, content, location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
+= program_doc_block_comment/normal_block_comment
+
+normal_block_comment "normal_block_comment"
 = "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
   content:$((!("#COMMENT" whitespace+ "END") .)*)                      // consume while current pointer is not on "COMMENT END"
   ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
@@ -452,7 +463,7 @@ number "number"                                             // a number
 name "name"                                                 // a name/identifier consisting of alphabetical Characters, "_" and "."
 = $[_a-zA-Z0-9.]+
 
-digit "digit" = $[0-9]                                       // a digit
+digit "digit" = $[0-9]                                      // a digit
 
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]
@@ -464,3 +475,47 @@ string "string"                                             // a string
 line_end
 = non_linebreak* linebreak?
 {return text()}
+
+
+
+//----------------------------------------------------------
+//
+//  Rules for Program Docs
+//
+//----------------------------------------------------------
+program_doc_block_comment "program_doc_block_comment"
+= "#COMMENT" whitespace+ "BEGIN" whitespace+ "PROGRAM"      // consume #COMMENT BEGIN PROGRAM
+  content: program_doc_block_comment_body
+  "#COMMENT" whitespace+ "END"                           // consume #COMMENT END
+{ return new Match(types.prgDoc, content, location(), text(), null)}
+
+program_doc_block_comment_body "program_doc_block_comment_body"
+= (
+program_doc_block_comment_body_keyword_line
+/ $((!program_doc_block_comment_body_special_case .)+)
+)*
+  
+program_doc_block_comment_body_special_case "program_doc_block_comment_body_special_case"
+= program_doc_block_comment_body_keyword_line
+/ $("#COMMENT" whitespace+ "END")
+
+program_doc_block_comment_body_keyword_line "program_doc_block_comment_body_keyword_line"
+= "@" keyword:("param") whitespace* name:name? whitespace* ("-" whitespace*)? 
+rest:$((!(program_doc_block_comment_body_special_case/markdownLinebreak) .)*)
+markdownLinebreak?
+{ 
+  let type;
+  switch (keyword) {
+    case "param":
+      type = types.paramDoc;
+      break;
+  
+    default:
+      type = undefined;
+      break;
+  }
+  return new Match(type, rest.trim(), location(), text(), name)
+}
+
+markdownLinebreak "markdownLinebreak" 
+= $(linebreak whitespaces linebreak (linebreak/whitespace)*)  // consume markdown linebreak plus trailing whitespaces/linebreaks

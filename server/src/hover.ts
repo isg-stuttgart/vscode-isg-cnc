@@ -1,13 +1,13 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Match, MatchType, Position } from "./parserClasses";
+import { isMatch, Match, MatchType, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
 import { ParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
-import { Cycle, getCycles, getISGCycleByName } from "./cycles";
+import { getCycles, getISGCycleByName } from "./cycles";
 import path = require("path");
 import { getDefinition } from "./parserGlue";
-import fs = require("fs");
 import { getDocByUri } from "./fileSystem";
+import { getLocale, Locale } from "./config";
 /**
  * Returns the hover information for the given position in the document.
  * Currently it supports cycle call and cycle parameter hover. 
@@ -31,7 +31,7 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
 
     // cycle call of known isg cycle -> we can provide hover information via json file
     if (match?.type === MatchType.globalCycleCall && match.name && getISGCycleByName(match.name)) {
-        return getHoverForCycleCall(position, match);
+        return getHoverForISGCycleCall(position, match);
     }
 
     // cycle call with no known isg cycle or program call
@@ -50,7 +50,7 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
  * @param cycleMatch the cycle call match containing the position 
  * @returns the hover information item for the given position, null if no hover information is found 
  */
-function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | null {
+function getHoverForISGCycleCall(position: Position, cycleMatch: Match): Hover | null {
     // find the cycle object fitting to the name of the cycle call
     if (!cycleMatch.name) { return null; }
     const cycleName = path.parse(cycleMatch.name).name;
@@ -97,7 +97,16 @@ function getHoverForCycleCall(position: Position, cycleMatch: Match): Hover | nu
     return null;
 }
 
-
+/**
+ * Returns the hover information for the given position which is within the subprogram/cycle call which can not be found in the cycles.json file.
+ * @param textDocument the document to get the hover information for
+ * @param position the zero-based position in the document 
+ * @param subProgramCall the subprogram/cycle call match containing the position 
+ * @param rootPaths the root paths of the workspace 
+ * @param openDocs the open documents of the workspace 
+ * @param parseResults the parse results of the document
+ * @returns the hover information item for the given position, null if no hover information is found
+ */
 function getHoverForSubProgramCall(textDocument: TextDocument, position: Position, subProgramCall: Match, rootPaths: string[] | null, openDocs: Map<string, TextDocument>, parseResults: ParseResults): Hover | null {
     const definitionResults = getDefinition(parseResults, position, textDocument.uri, rootPaths);
     const definitions = definitionResults.definitionRanges;
@@ -110,8 +119,9 @@ function getHoverForSubProgramCall(textDocument: TextDocument, position: Positio
     const def = definitions[0];
     const defDoc = getDocByUri(def.uri, openDocs);
 
-    // basic hover content containing the name of the subprogram/cycle call and a link to the definition
-    let hoverContent = `**${subProgramCall.name}**\n\n[${def.uri}](file://${def.uri})`;
+    // basic hover content containing the name and if it is a local/global subprogram/cycle call
+    const callType = getCallTypeString(subProgramCall);
+    let hoverContent = `**${subProgramCall.name}** ${callType}\n\n`;
 
     // if the definition is in the same document, use the file tree of the current parse results
     let fileTree;
@@ -126,7 +136,7 @@ function getHoverForSubProgramCall(textDocument: TextDocument, position: Positio
         throw new Error("No file tree found for definition of subprogram/cycle call " + subProgramCall.name);
     }
 
-    
+
     // find the first position within defDoc before def that is not a whitespace (including newline/tab characters)
     let offset = defDoc.offsetAt(def.range.start) - 1;
     while (offset >= 0 && /\s/.test(defDoc.getText(Range.create(defDoc.positionAt(offset), defDoc.positionAt(offset + 1))))) {
@@ -135,12 +145,15 @@ function getHoverForSubProgramCall(textDocument: TextDocument, position: Positio
 
     // if a comment is present before the definition, add it to the hover content
     if (offset >= 0) {
-        const commentMatch = findPreciseMatchOfTypes(fileTree, defDoc.positionAt(offset), [MatchType.comment]);
+        const commentMatch = findPreciseMatchOfTypes(fileTree, defDoc.positionAt(offset), [MatchType.prgDoc]);
+
         if (commentMatch) {
-            hoverContent += `\n\n${commentMatch.text}`;
+            hoverContent += `\n\n${getMarkdownDocumentationOfPrgDoc(commentMatch)}`;
         }
     }
 
+    // add a link to the definition
+    hoverContent += `[${def.uri}](${def.uri})`;
     return {
         contents: {
             kind: "markdown",
@@ -157,5 +170,53 @@ function getHoverForSubProgramCall(textDocument: TextDocument, position: Positio
             }
         }
     };
+}
+
+/**
+ * @param subProgramCall  the match to get the call type string for
+ * @returns the call type string in the current locale or empty string if match is not a subprogram/cycle call 
+ */
+function getCallTypeString(subProgramCall: Match) {
+    let callType = "";
+    const isEnglish = getLocale() === Locale.en;
+    switch (subProgramCall.type) {
+        case MatchType.globalCycleCall:
+            callType = isEnglish ? "(Global Cycle Call)" : "(Globaler Zyklusaufruf)";
+            break;
+        case MatchType.localCycleCall:
+            callType = isEnglish ? "(Local Cycle Call)" : "(Lokaler Zyklusaufruf)";
+            break;
+        case MatchType.globalPrgCall:
+            callType = isEnglish ? "(Global Subprogram Call)" : "(Globaler Unterprogrammaufruf)";
+            break;
+        case MatchType.localPrgCall:
+            callType = isEnglish ? "(Local Subprogram Call)" : "(Lokaler Unterprogrammaufruf)";
+            break;
+    }
+    return callType;
+}
+
+/**
+ * @param commentMatch the prgDoc match to get the documentation for 
+ * @returns the markdown documentation of the prgDoc match 
+ */
+function getMarkdownDocumentationOfPrgDoc(commentMatch: Match): string {
+    let markdown = "";
+    for (const contentItem of commentMatch.content) {
+        if (isMatch(contentItem)) {// contentItem is a special comment like a @param or @return
+            const matchTypeString = contentItem.type.slice(0, -3); // remove "Doc" suffix
+            const nameString = contentItem.name ? ` \`\`\`${contentItem.name}\`\`\` ` : "";
+            const infoText = contentItem.content ? ` — ${contentItem.content}` : "";
+            markdown += `*@${matchTypeString}*${nameString}${infoText}`;
+        }
+        else if (typeof contentItem === "string") { // contentItem is a simple comment
+            markdown += `${contentItem}`;
+        }
+        else { // otherwise skip
+            continue;
+        }
+        markdown += "\n\n";
+    }
+    return markdown;
 }
 

@@ -4,7 +4,7 @@ import { Match } from "./parserClasses";
 /**
  * Returns the according definition-type to a given match and if the definition has
  * to be searched locally or globally
- * @param match 
+ * @param match the match to get the definition type for 
  * @returns \{ defType: string | null, local: boolean } an object containing the definition type and a boolean indicating if the definition has to be searched locally or globally
  */
 export function getDefType(match: Match): { defType: MatchType | null, local: boolean } {

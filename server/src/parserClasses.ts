@@ -66,7 +66,7 @@ export interface Match {
 }
 
 /** Returns if a given object is a Match and so can be converted to such*/
-export function hasMatchProperties(obj: any): boolean {
+export function isMatch(obj: any): obj is Match {
     const exampleMatch = {
         type: null,
         content: null,
@@ -131,7 +131,6 @@ export class IncrementableProgress {
  */
 
 export enum MatchType {
-    toolCall = "toolCall",
     mainPrg = "mainPrg",
     localSubPrg = "localSubPrg",
 
@@ -148,7 +147,9 @@ export enum MatchType {
     cycleParameter = "cycleParameter",
     cycleParameterAssignment = "cycleParameterAssignment",
     cycleParamList = "cycleParamList",
-    
+
+    // other
+    toolCall = "toolCall",
     controlBlock = "controlBlock",
     gotoBlocknumber = "gotoBlocknumber",
     gotoLabel = "gotoLabel",
@@ -160,5 +161,11 @@ export enum MatchType {
     blockNumberLabel = "blockNumberLabel",
     varDeclaration = "varDeclaration",
     variable = "variable",
-    comment = "comment"
+    comment = "comment",
+    prgDoc = "prgDoc",
+
+    // doc keywords
+    paramDoc = "paramDoc",
+    returnDoc = "returnDoc",
+    throwsDoc = "throwsDoc",
 };
