@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import * as parser from './parserGlue';
+import * as parser from './getDefinitionAndReferences';
 import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions } from './completion';
@@ -101,7 +101,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths()).definitionRanges;
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
@@ -156,11 +156,7 @@ connection.onHover((docPos) => {
 			return null;
 		}
 		const position: Position = docPos.position;
-		const openDocs = new Map<string, TextDocument>();
-		const allDocs = documents.all();
-		for (const doc of allDocs) {
-			openDocs.set(doc.uri, doc);
-		}
+		const openDocs = getOpenDocs();
 		return getHoverInformation(position, textDocument, getRootPaths(), openDocs);
 	} catch (error) {
 		console.error("Getting hover information failed: " + JSON.stringify(error));
@@ -168,6 +164,14 @@ connection.onHover((docPos) => {
 	}
 });
 
+function getOpenDocs(): Map<string, TextDocument> {
+	const openDocs = new Map<string, TextDocument>();
+	const allDocs = documents.all();
+	for (const doc of allDocs) {
+		openDocs.set(doc.uri, doc);
+	}
+	return openDocs;
+}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

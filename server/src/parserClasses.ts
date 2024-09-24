@@ -39,7 +39,7 @@ export class FileRange {
 export interface ParseResultContent {
     fileTree: Array<any>;
     numberableLinesUnsorted: Set<number>;
-    mainPrg: Match | null;
+    mainPrgLoc: peggy.LocationRange | null;
 }
 
 /**
@@ -133,6 +133,7 @@ export class IncrementableProgress {
 export enum MatchType {
     mainPrg = "mainPrg",
     localSubPrg = "localSubPrg",
+    mainPrgName = "mainPrgName",
 
     // prg calls
     localPrgCall = "localPrgCall",
@@ -162,10 +163,6 @@ export enum MatchType {
     varDeclaration = "varDeclaration",
     variable = "variable",
     comment = "comment",
-    prgDoc = "prgDoc",
-
-    // doc keywords
-    paramDoc = "paramDoc",
-    returnDoc = "returnDoc",
-    throwsDoc = "throwsDoc",
+    lineComment = "lineComment",
+    docComment = "docComment"
 };

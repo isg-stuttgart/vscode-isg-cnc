@@ -15,16 +15,18 @@ import { getDefType, getRefTypes } from "./matchTypes";
 import { MatchType } from "./parserClasses";
 import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
 import { ParseResults } from "./parsingResults";
+import { LocationRange } from "peggy";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 /**
- * Returns the definition ranges of the selected position.
+ * Returns the definition ranges of the selected position. Currently supports variables, local/global prg/cycle calls and GOTO-Jumps.
  * @param parseResults The file as String 
  * @param position The selected position
  * @param uri The file uri
  * @param rootPaths The root paths of the workspace
  * @returns An object containing uri and range of the definition or null when no definition found
  */
-export function getDefinition(parseResults: ParseResults, position: Position, uri: string, rootPaths: string[] | null): { definitionRanges: FileRange[], uriToParsedDocs: Map<string, ParseResults> } {
+export function getDefinition(parseResults: ParseResults, position: Position, uri: string, rootPaths: string[] | null, openDocs: Map<string, TextDocument>): { definitionRanges: FileRange[], uriToParsedDocs: Map<string, ParseResults> } {
     let defMatch: Match | null = null;
     const definitions: FileRange[] = [];
     const parsedDocs: Map<string, ParseResults> = new Map();
@@ -84,12 +86,12 @@ export function getDefinition(parseResults: ParseResults, position: Position, ur
         // find the mainPrg range in the found files and jump to file beginning if no mainPrg found
         for (const path of defPaths) {
             const uri = pathToFileURL(path).toString();
-            const defFileContent = fs.readFileSync(path, "utf8");
-            let mainPrg;
+            const defFileContent = openDocs.get(uri)?.getText() ?? fs.readFileSync(path, "utf8");
+            let mainPrgLoc: LocationRange | null = null;
             try {
                 const parseResults = new ParseResults(defFileContent);
                 parsedDocs.set(uri, parseResults);
-                mainPrg = parseResults.results.mainPrg;
+                mainPrgLoc = parseResults.results.mainPrgLoc;
             } catch (error) {
                 throw new Error(`Error parsing file ${uri}: ${error}`);
             }
@@ -97,10 +99,10 @@ export function getDefinition(parseResults: ParseResults, position: Position, ur
                 start: new Position(0, 0),
                 end: new Position(0, 0)
             };
-            if (mainPrg && mainPrg.location) {
+            if (mainPrgLoc) {
                 range = {
-                    start: new Position(mainPrg.location.start.line - 1, mainPrg.location.start.column - 1),
-                    end: new Position(mainPrg.location.end.line - 1, mainPrg.location.end.column - 1)
+                    start: new Position(mainPrgLoc.start.line - 1, mainPrgLoc.start.column - 1),
+                    end: new Position(mainPrgLoc.end.line - 1, mainPrgLoc.end.column - 1)
                 };
             }
             definitions.push(new FileRange(uri, range.start, range.end));

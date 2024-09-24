@@ -8,6 +8,7 @@
 	 const types = {
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
+      mainPrgName: "mainPrgName",
 
       // prg calls
       localPrgCall: "localPrgCall",
@@ -37,12 +38,10 @@
       varDeclaration: "varDeclaration",
       variable:"variable",
       comment: "comment",
-      prgDoc: "prgDoc",
+      lineComment : "lineComment",
+      docComment: "docComment",
       
-      // doc keywords
-      paramDoc: "paramDoc",
-      returnDoc: "returnDoc",
-      throwsDoc: "throwsDoc",
+      // matches ending with Doc are interpreted as items within a docComment (see end of file)
   };
   
  class LightMatch {
@@ -78,7 +77,7 @@
 
 {
   const numberableLinesUnsorted = new Set();
-  let mainPrg = null;
+  let mainPrgLoc = null; // range of mainPrg as peggy location
 
   // Save start time and cancel and throw error when parsing needs more than 10 seconds
   const startTime = Date.now();
@@ -97,9 +96,9 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:(grayline/file/anyTrash)*                                        
+= fileTree:(file/grayline/anyTrash)*                                        
 {
-  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
+  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
 }
 
 anyTrash "anyTrash"                                         // any trash which is not a file, only needed for cancellation after timeout
@@ -110,13 +109,7 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:(subprogram* mainprogram subprogram*)                // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
-{
-  if(!mainPrg){
-    mainPrg=file[2]?file[2]:null;
-  }
-  return file;
-}
+= file:((grayline? subprogram)* grayline? mainprogram grayline? (grayline? subprogram)*)                // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
 = content:("%L" $whitespace+ subprogram_name body){         // each subprogram requires a title and a body
@@ -130,15 +123,22 @@ subprogram_name "subprogram_name"                           // a subprogram name
 }
 
 mainprogram "mainprogram"                                   // the main program
-= definition:("%" whitespaces $name?)? content:body         // for a main program, the title is optional
+= content:(("%" whitespaces mainPrgName?)? body)         // for a main program, the title is optional
 {
   let name = null
-  if(definition && definition[2]){
-    name = definition[2]
+  if(content[0] && content[0][2]){
+    name = content[0][2].name
   }
+  // save range of mainPrg
+  mainPrgLoc=location()
   return new Match(types.mainPrg, content, location(), text(), name)
 };
 
+mainPrgName "mainPrgName" 
+= name
+{
+  return new Match(types.mainPrgName, text(), location(), text(), text());
+}
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
 (block/linebreak/.))+                                       // the body is a list of comments and blocks
@@ -420,11 +420,11 @@ line_comment "line_comment"                                 // a line comment is
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
 = "(" content:$([^)\r\n]*) ")"? 
-{ return new Match(types.comment, content, location(), text(), null)}
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
 = ";" content:$([^\r\n]*)
-{ return new Match(types.comment, content, location(), text(), null)}
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
 = program_doc_block_comment/normal_block_comment
@@ -484,10 +484,10 @@ line_end
 //
 //----------------------------------------------------------
 program_doc_block_comment "program_doc_block_comment"
-= "#COMMENT" whitespace+ "BEGIN" whitespace+ "PROGRAM"      // consume #COMMENT BEGIN PROGRAM
+= "#COMMENT" whitespace+ "BEGIN" whitespace+ "DOC"          // consume #COMMENT BEGIN PROGRAM
   content: program_doc_block_comment_body
-  "#COMMENT" whitespace+ "END"                           // consume #COMMENT END
-{ return new Match(types.prgDoc, content, location(), text(), null)}
+  comment_end                                               // consume #COMMENT END
+{ return new Match(types.docComment, content, location(), text(), null)}
 
 program_doc_block_comment_body "program_doc_block_comment_body"
 = (
@@ -497,25 +497,20 @@ program_doc_block_comment_body_keyword_line
   
 program_doc_block_comment_body_special_case "program_doc_block_comment_body_special_case"
 = program_doc_block_comment_body_keyword_line
-/ $("#COMMENT" whitespace+ "END")
+/ $comment_end
 
 program_doc_block_comment_body_keyword_line "program_doc_block_comment_body_keyword_line"
-= "@" keyword:("param") whitespace* name:name? whitespace* ("-" whitespace*)? 
+= "@" keyword:$(!(whitespace/comment_end) .)* whitespace* 
+name:name? whitespace* ("-" whitespace*)? 
 rest:$((!(program_doc_block_comment_body_special_case/markdownLinebreak) .)*)
 markdownLinebreak?
 { 
-  let type;
-  switch (keyword) {
-    case "param":
-      type = types.paramDoc;
-      break;
-  
-    default:
-      type = undefined;
-      break;
-  }
+  const type = keyword += "Doc";
   return new Match(type, rest.trim(), location(), text(), name)
 }
+
+comment_end "comment_end"
+= "#COMMENT" whitespace+ "END"
 
 markdownLinebreak "markdownLinebreak" 
 = $(linebreak whitespaces linebreak (linebreak/whitespace)*)  // consume markdown linebreak plus trailing whitespaces/linebreaks

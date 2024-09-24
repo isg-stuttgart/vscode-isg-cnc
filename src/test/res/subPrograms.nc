@@ -13,9 +13,7 @@ N11 .....
 N12 .....
 
 N19 M29          (M29 kann auch entfallen)
-#COMMENT BEGIN
-  Dies ist das Hauptprogramm
-#COMMENT END
+
 %MAIN            (Hauptprogramm)
 
 L subPrograms.nc

@@ -109,6 +109,7 @@ export class ParseResults {
                         blockNumbers.push(element);
                         break;
                     case MatchType.comment:
+                    case MatchType.lineComment:
                         comments.push(element);
                         break;
                 }
