@@ -95,7 +95,7 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
         label: "Cycle: " + cycle.name + " (" + requiredString + " params)",
         kind: CompletionItemKind.Function,
         detail: preview,
-        documentation: cycle.getMarkupDocumentation(),
+        documentation: cycle.getMarkupDocumentation(onlyRequired),
         insertTextFormat: InsertTextFormat.Snippet,
         insertTextMode: InsertTextMode.adjustIndentation,
         filterText: preview,

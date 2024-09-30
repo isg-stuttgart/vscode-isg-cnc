@@ -23,8 +23,8 @@ suite('LS Snippet Completion', () => {
         const sysCalibBacklash1Required = sysCalibBacklash1Completions.find(c => c.label.toString().includes("required"));
         assertAllStringsIncludeAndNotIncludes(
             getStringsOfAttributes([sysCalibBacklash1Required?.detail, sysCalibBacklash1Required?.filterText, sysCalibBacklash1Required?.insertText]),
-            ["L CYCLE [NAME=SysCalibBacklash1"],
-            ["@P2", "@P33", "@P64"]
+            ["L CYCLE [NAME=SysCalibBacklash1.cyc @P2="],
+            ["@P33", "@P64"]
         );
         // test Completion for all parameters
         const sysCalibBacklash1All = sysCalibBacklash1Completions.find(c => c.label.toString().includes("all"));

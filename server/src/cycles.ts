@@ -2,6 +2,12 @@ import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 import * as cyclesJson from "../res/cycles.json";
+
+/**
+ * If the amount of values for a parameter is below this limit, a choice snippet is used for the placeholder. Else the range is shown.
+ */
+const rangeLimitForChoiceSnippet = 50;
+
 let cycles: Cycle[];
 
 /**
@@ -31,7 +37,14 @@ export function getCommandUriToOpenDocu(id: string | undefined): string {
  * @returns a {@link Cycle} object 
  */
 function jsonCycleToCycle(cycle: any): Cycle {
-    const parameterList = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
+    const parameterList: Array<Parameter> = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
+    // sort params by name
+    parameterList.sort((a: Parameter, b: Parameter) => {
+        const numA = parseInt(a.name.replace(/\D/g, ''), 10);
+        const numB = parseInt(b.name.replace(/\D/g, ''), 10);
+        return numA - numB;
+    });
+
     const documentationReference = cycle.DocumentationReference ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
     const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
     return new Cycle(
@@ -52,9 +65,12 @@ function jsonParameterToParameter(parameter: any, documentationReference: string
     const requirementDictionary = new RequirementDictionary(
         parameter.RequirementDictionary.Min,
         parameter.RequirementDictionary.Max,
+        parameter.RequirementDictionary.Min2,
+        parameter.RequirementDictionary.Max2,
         parameter.RequirementDictionary.Default,
         parameter.RequirementDictionary.NotNull,
-        parameter.RequirementDictionary.Required
+        parameter.RequirementDictionary.Required,
+        parameter.RequirementDictionary.Type
     );
     const descriptionDictionary = new DescriptionDictionary(parameter.DescriptionDictionary["en-US"], parameter.DescriptionDictionary["de-DE"]);
     return new Parameter(
@@ -72,11 +88,11 @@ function jsonParameterToParameter(parameter: any, documentationReference: string
  */
 export class Cycle {
     name: string;
-    media: string;
+    media: string | undefined;
     documentationReference: DocumentationReference | undefined;
     descriptionDictionary: DescriptionDictionary;
     parameterList: Parameter[];
-    constructor(name: string, media: string, documentationReference: DocumentationReference | undefined, descriptionDictionary: DescriptionDictionary, parameterList: Parameter[]) {
+    constructor(name: string, media: string | undefined, documentationReference: DocumentationReference | undefined, descriptionDictionary: DescriptionDictionary, parameterList: Parameter[]) {
         this.name = name;
         this.media = media;
         this.documentationReference = documentationReference;
@@ -87,9 +103,6 @@ export class Cycle {
         if (!this.name) {
             throw new Error("Cycle name is missing");
         }
-        if (!this.media) {
-            throw new Error("Cycle media is missing");
-        }
         if (!this.descriptionDictionary) {
             throw new Error("Cycle description is missing");
         }
@@ -97,14 +110,24 @@ export class Cycle {
             throw new Error("Cycle parameter list is missing");
         }
     }
-    getMarkupDocumentation(): MarkupContent {
+    getMarkupDocumentation(onlyRequired: boolean): MarkupContent {
+        // if the documentation reference is missing, don't add a link to the documentation
+        const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n[More Information](${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
+        let parameterTitle: string;
+        if (this.parameterList.length > 0) {
+            parameterTitle = onlyRequired ? "Required Parameters:  \n" : "Parameters:  \n";
+        } else {
+            parameterTitle = "";
+        }
         return {
             kind: "markdown",
             value:
                 "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n\n" +
-                "Parameter:  \n" +
-                this.parameterList.map(param => param.getShortDescriptionLine()).join("\n") + "  \n\n" +
-                `[More Information](${getCommandUriToOpenDocu(this.documentationReference?.overview)})`
+                parameterTitle +
+                this.parameterList
+                    .filter(param => !onlyRequired || param.requirementDictionary.required)
+                    .map(param => param.getShortDescriptionLine()).join("\n") +
+                infoLink
         };
     }
 }
@@ -113,14 +136,14 @@ export class Cycle {
  */
 export class Parameter {
     name: string;
-    media: string;
+    media: string | undefined;
     descriptionDictionary: DescriptionDictionary;
     requirementDictionary: RequirementDictionary;
     dependencyList: string[];
     documentationReference: string | undefined;
     constructor(
         name: string,
-        media: string,
+        media: string | undefined,
         descriptionDictionary: DescriptionDictionary,
         requirementDictionary: RequirementDictionary,
         dependencyList: string[],
@@ -135,9 +158,6 @@ export class Parameter {
         // throw error if some required parameters are missing
         if (!this.name) {
             throw new Error("Parameter name is missing: " + this.name);
-        }
-        if (!this.media) {
-            throw new Error("Parameter media is missing" + this.name);
         }
         if (!this.descriptionDictionary) {
             throw new Error("Parameter description is missing" + this.name);
@@ -161,12 +181,28 @@ export class Parameter {
     getPlaceholder(tabstopNumber: number): string {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
+        const min2 = this.requirementDictionary.min2;
+        const max2 = this.requirementDictionary.max2;
         const defaultVal = this.requirementDictionary.default;
-        // case 1: parameter has min and max with maximum difference of 10 -> use a choice
-        if (min !== undefined && max !== undefined && (max - min) <= 10) {
+        let amountOfValues = Infinity;
+        if (min !== undefined && max !== undefined) {
+            amountOfValues = max - min + 1;
+        }
+        if (min2 !== undefined && max2 !== undefined) {
+            amountOfValues += max2 - min2 + 1;
+        }
+        // case 1: parameter has one/two ranges with a maximum difference of 50 -> use a choice
+        if (amountOfValues <= rangeLimitForChoiceSnippet) {
             const choices = [];
-            for (let i = min; i <= max; i++) {
-                choices.push(i.toString());
+            if (min !== undefined && max !== undefined) {
+                for (let i = min; i <= max; i++) {
+                    choices.push(i.toString());
+                }
+            }
+            if (min2 !== undefined && max2 !== undefined) {
+                for (let i = min2; i <= max2; i++) {
+                    choices.push(i.toString());
+                }
             }
             return "${" + tabstopNumber + "|" + choices.join(",") + "|}";
         }
@@ -189,8 +225,10 @@ export class Parameter {
     getMarkupDocumentation(): MarkupContent {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
+        const min2 = this.requirementDictionary.min2;
+        const max2 = this.requirementDictionary.max2;
         const defaultVal = this.requirementDictionary.default;
-        const notNull = this.requirementDictionary.notNull;
+        const notNull = this.requirementDictionary.notZero;
         const required = this.requirementDictionary.required;
         let description = "";
         try {
@@ -199,19 +237,26 @@ export class Parameter {
             console.error("Failed to get description for parameter " + this.name + ": " + error);
         }
         const dependencyMarkdownString = this.dependencyList.map(dep => "- " + dep).join("\n");
+        // if the documentation reference is missing, don't add a link to the documentation
+        const infoLink = this.documentationReference ? `  \n\n[More Information](${getCommandUriToOpenDocu(this.documentationReference)})` : "";
         return {
             kind: "markdown",
             value:
                 "### " + this.name + ": " + description + "  \n" +
 
-                (min !== undefined ? "Minimal value: " + min + "  \n" : "") +
-                (max !== undefined ? "Maximal value: " + max + "  \n" : "") +
+                "## Requirements:  \n" +
+                (min !== undefined ? "Min: " + min + "  \n" : "") +
+                (max !== undefined ? "Max: " + max + "  \n" : "") +
+                (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
+                (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
                 (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
                 "Not null: " + notNull + "  \n" +
-                "Required: " + required + "\n\n" +
+                "Required: " + required + "  \n" +
+                "Type: " + this.requirementDictionary.type + "  \n" +
 
-                (this.dependencyList && this.dependencyList.length > 0 ? "Dependencies:  \n" + dependencyMarkdownString + "\n\n" : "") +
-                `[More Information](${getCommandUriToOpenDocu(this.documentationReference)})`
+                (this.dependencyList && this.dependencyList.length > 0 ? "\n\nDependencies:  \n" + dependencyMarkdownString : "") +
+
+                infoLink
         };
     };
     /**
@@ -231,15 +276,36 @@ export class Parameter {
 export class RequirementDictionary {
     min: number | undefined;
     max: number | undefined;
+    min2: number | undefined;
+    max2: number | undefined;
+    notZero: boolean;
     default: string | undefined;
-    notNull: boolean;
     required: boolean;
-    constructor(min: number | string | undefined, max: number | string | undefined, defaultVal: string, notNull: boolean | string, required: boolean | string | undefined) {
+    type: string;
+    constructor(
+        min: number | string | undefined,
+        max: number | string | undefined,
+        min2: number | string | undefined,
+        max2: number | string | undefined,
+        defaultVal: string,
+        notNull: boolean | string,
+        required: boolean | string | undefined,
+        type: string
+    ) {
         this.min = parseIntOrUndefined(min);
         this.max = parseIntOrUndefined(max);
+        this.min2 = parseIntOrUndefined(min2);
+        this.max2 = parseIntOrUndefined(max2);
+        this.min2 = parseIntOrUndefined(min2);
+        this.max2 = parseIntOrUndefined(max2);
         this.default = defaultVal ? defaultVal : undefined;
-        this.notNull = typeof notNull === "boolean" ? notNull : notNull === "true";
+        this.notZero = typeof notNull === "boolean" ? notNull : notNull === "true";
         this.required = typeof required === "boolean" ? required : required === "true";
+        this.type = type;
+
+        if (this.type === undefined) {
+            throw new Error("Type is missing");
+        }
     }
 }
 
@@ -251,9 +317,25 @@ export class RequirementDictionary {
 function parseIntOrUndefined(value: string | number | undefined): number | undefined {
     if (typeof value === "number") {
         return value;
-    } else {
-        const parsedValue = value === "" ? NaN : Number(value);
-        return isNaN(parsedValue) ? undefined : parsedValue;
+    }
+    // if empty string or undefined, return undefined
+    else if (!value) {
+        return undefined;
+    }
+    // if "Inf" or "-Inf" return infinity or -infinity
+    else if (value === "Inf") {
+        return Infinity;
+    }
+    else if (value === "-Inf") {
+        return -Infinity;
+    }
+    // else parse the value to a number and throw an error if it is not a number
+    else {
+        const parsedValue = parseInt(value);
+        if (isNaN(parsedValue)) {
+            throw new Error("Value is not a number: " + value);
+        }
+        return parsedValue;
     }
 }
 
@@ -293,11 +375,11 @@ export class DescriptionDictionary {
      * @returns the description for the given locale 
      */
     getDescription(locale: Locale): string {
-        if (locale === Locale.de) {
-            return this["de-DE"];
-        } else {
-            return this["en-US"];
+        let description: string = (locale === Locale.de ? this["de-DE"] : this["en-US"]);
+        if (!description || description === "-") {
+            return "";
         }
+        return description;
     }
 }
 
