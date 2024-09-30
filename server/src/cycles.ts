@@ -2,6 +2,12 @@ import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 import * as cyclesJson from "../res/cycles.json";
+
+/**
+ * If the amount of values for a parameter is below this limit, a choice snippet is used for the placeholder. Else the range is shown.
+ */
+const rangeLimitForChoiceSnippet = 50;
+
 let cycles: Cycle[];
 
 /**
@@ -31,7 +37,14 @@ export function getCommandUriToOpenDocu(id: string | undefined): string {
  * @returns a {@link Cycle} object 
  */
 function jsonCycleToCycle(cycle: any): Cycle {
-    const parameterList = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
+    const parameterList: Array<Parameter> = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
+    // sort params by name
+    parameterList.sort((a: Parameter, b: Parameter) => {
+        const numA = parseInt(a.name.replace(/\D/g, ''), 10);
+        const numB = parseInt(b.name.replace(/\D/g, ''), 10);
+        return numA - numB;
+    });
+
     const documentationReference = cycle.DocumentationReference ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
     const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
     return new Cycle(
@@ -179,7 +192,7 @@ export class Parameter {
             amountOfValues += max2 - min2 + 1;
         }
         // case 1: parameter has one/two ranges with a maximum difference of 50 -> use a choice
-        if (amountOfValues <= 50) {
+        if (amountOfValues <= rangeLimitForChoiceSnippet) {
             const choices = [];
             if (min !== undefined && max !== undefined) {
                 for (let i = min; i <= max; i++) {
