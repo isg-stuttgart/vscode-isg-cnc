@@ -2,11 +2,12 @@ import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode, R
 import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles } from './config';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
-import { Match, MatchType, Position } from './parserClasses';
+import { Match, Position } from './parserClasses';
 import { Cycle, getCycles } from './cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
 import { ParseResults } from './parsingResults';
 import path = require('path');
+import { MatchType } from './matchTypes';
 
 /**
  * A list of all cycle completions, independent of the position in the document.

@@ -1,5 +1,43 @@
-import { MatchType } from "./parserClasses";
 import { Match } from "./parserClasses";
+/**
+ * The different types a match returned by the peggy parser for ISG-CNC files can have.
+ */
+
+export enum MatchType {
+    mainPrg = "mainPrg",
+    localSubPrg = "localSubPrg",
+    mainPrgName = "mainPrgName",
+
+    // prg calls
+    localPrgCall = "localPrgCall",
+    localPrgCallName = "localPrgCallName",
+    localPrgDefinitionName = "localPrgDefinitionName",
+    globalPrgCall = "globalPrgCall",
+    globalPrgCallName = "globalPrgCallName",
+    localCycleCall = "localCycleCall",
+    localCycleCallName = "localCycleCallName",
+    globalCycleCall = "globalCycleCall",
+    globalCycleCallName = "globalCycleCallName",
+    cycleParameter = "cycleParameter",
+    cycleParameterAssignment = "cycleParameterAssignment",
+    cycleParamList = "cycleParamList",
+
+    // other
+    toolCall = "toolCall",
+    controlBlock = "controlBlock",
+    gotoBlocknumber = "gotoBlocknumber",
+    gotoLabel = "gotoLabel",
+    label = "label",
+    multiline = "multiline",
+    trash = "trash",
+    skipBlock = "skipBlock",
+    blockNumber = "blockNumber",
+    blockNumberLabel = "blockNumberLabel",
+    varDeclaration = "varDeclaration",
+    variable = "variable",
+    lineComment = "lineComment",
+    blockComment = "blockComment"
+};
 
 /**
  * Returns the according definition-type to a given match and if the definition has

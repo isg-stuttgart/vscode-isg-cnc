@@ -4,8 +4,8 @@ import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./pa
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
-import { MatchType } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
+import { MatchType } from "./matchTypes";
 
 /**
 * Recursively find the first match of the given type and name within the tree

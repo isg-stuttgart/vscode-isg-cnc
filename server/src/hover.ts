@@ -1,5 +1,5 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { isMatch, Match, MatchType, Position } from "./parserClasses";
+import { isMatch, Match, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
 import { ParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
@@ -9,6 +9,7 @@ import { getDefinition } from "./getDefinitionAndReferences";
 import { getDocByUri } from "./fileSystem";
 import { getLocale, Locale } from "./config";
 import { getSurroundingVar } from "./stringSearching";
+import { MatchType } from "./matchTypes";
 /**
  * Returns the hover information for the given position in the document.
  * Currently it supports cycle call and cycle parameter hover. 
@@ -45,7 +46,8 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
 
     // basic hover content containing the name and what hover type it is
     const callType = getHoverTypeString(match);
-    let hoverContent = `**${match.name}** ${callType}\n\n`;
+    const name = [MatchType.blockNumberLabel, MatchType.gotoBlocknumber].includes(match.type) ? "N" + match.name : match.name;
+    let hoverContent = `**${name}** ${callType}\n\n`;
     let commentOffset = -1;
     let defDocument = textDocument;
     let defTree = ast;
@@ -57,7 +59,7 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
         if (!varDefResults) { return null; }
         // look 1. for a docComment before the variable declaration
         commentOffset = findFirstNonWhitespaceOffsetBefore(varDefResults.defDoc, varDefResults.defFileRange.range.start);
-        const commentMatch = findPreciseMatchOfTypes(varDefResults.defParseResults.results.fileTree, varDefResults.defDoc.positionAt(commentOffset), [MatchType.docComment]);
+        const commentMatch = findPreciseMatchOfTypes(varDefResults.defParseResults.results.fileTree, varDefResults.defDoc.positionAt(commentOffset), [MatchType.blockComment]);
         if (commentMatch) {
             hoverContent += getMarkdownDocumentationOfPrgDoc(commentMatch);
         } else {
@@ -108,9 +110,9 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
     }
 
 
-    // try to resolve a docComment at found offset
+    // try to resolve a blockComment at found offset
     if (commentOffset >= 0) {
-        const commentMatch = findPreciseMatchOfTypes(defTree, defDocument.positionAt(commentOffset), [MatchType.docComment]);
+        const commentMatch = findPreciseMatchOfTypes(defTree, defDocument.positionAt(commentOffset), [MatchType.blockComment]);
         if (commentMatch) {
             hoverContent += getMarkdownDocumentationOfPrgDoc(commentMatch);
         }
