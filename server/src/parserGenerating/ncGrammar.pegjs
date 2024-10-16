@@ -108,21 +108,22 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:((grayline? subprogram)* grayline? mainprogram grayline? (grayline? subprogram)*)                // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+// each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:((grayline? subprogram)* grayline? mainprogram grayline? (grayline? subprogram)*)                
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= content:("%L" $whitespace+ subprogram_name body){         // each subprogram requires a title and a body
+= content:("%L" $whitespace+ subprogram_name linebreak? body){ // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), content[2].name);
 }
 
 subprogram_name "subprogram_name"                           // a subprogram name
-= name
+= prgName
 {
   return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
 }
 
 mainprogram "mainprogram"                                   // the main program
-= content:(("%" whitespaces mainPrgName?)? body)         // for a main program, the title is optional
+= content:(("%" whitespaces mainPrgName?)? body)            // for a main program, the title is optional
 {
   let name = null
   if(content[0] && content[0][2]){
@@ -134,10 +135,14 @@ mainprogram "mainprogram"                                   // the main program
 };
 
 mainPrgName "mainPrgName" 
-= name
+= prgName
 {
   return new Match(types.mainPrgName, text(), location(), text(), text());
 }
+
+prgName "prgName"                                           // a program name
+= $(!comment non_linebreak)*
+
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
 (block/linebreak/.))+                                       // the body is a list of comments and blocks
