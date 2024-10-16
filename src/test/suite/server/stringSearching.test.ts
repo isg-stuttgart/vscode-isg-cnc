@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import * as fs from "fs";
-import { MatchType, Position } from "../../../../server/src/parserClasses";
+import { Position } from "../../../../server/src/parserClasses";
+import { MatchType } from "../../../../server/src/matchTypes";
 import { compareLocations, findLocalStringRanges, getSurroundingVar, isWithinMatches } from "../../../../server/src/stringSearching";
 import { LocationMock, LocationRangeMock, MatchMock, getPathOfWorkspaceFile } from "../testHelper";
 
@@ -32,9 +33,9 @@ suite('LS stringSearching', () => {
 
     test('isWithinMatches', () => {
         const matchMocks = [
-            new MatchMock(MatchType.comment, "comment1", new LocationRangeMock(null, new LocationMock(1, 1), new LocationMock(1, 10))),
-            new MatchMock(MatchType.comment, "comment2", new LocationRangeMock(null, new LocationMock(4, 23), new LocationMock(4, 30))),
-            new MatchMock(MatchType.comment, "comment3", new LocationRangeMock(null, new LocationMock(13, 24), new LocationMock(13, 12))),
+            new MatchMock(MatchType.blockComment, "comment1", new LocationRangeMock(null, new LocationMock(1, 1), new LocationMock(1, 10))),
+            new MatchMock(MatchType.blockComment, "comment2", new LocationRangeMock(null, new LocationMock(4, 23), new LocationMock(4, 30))),
+            new MatchMock(MatchType.blockComment, "comment3", new LocationRangeMock(null, new LocationMock(13, 24), new LocationMock(13, 12))),
             new MatchMock(MatchType.blockNumber, "comment4", new LocationRangeMock(null, new LocationMock(15, 1), new LocationMock(15, 10))),
         ];
         assert.strictEqual(isWithinMatches(matchMocks, new Position(0, 0)), true);

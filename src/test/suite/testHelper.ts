@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { Match } from '../../../server/src/parserClasses';
 import * as peggy from 'peggy';
-import { MatchType } from '../../../server/src/parserClasses';
+import { MatchType } from '../../../server/src/matchTypes';
 
 export async function openTestFileForLS(fileName: string): Promise<vscode.TextDocument> {
     const doc = await openTestFile(fileName);

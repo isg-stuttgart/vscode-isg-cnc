@@ -1,5 +1,5 @@
+import { MatchType } from "./matchTypes";
 import { Match, ParseResultContent } from "./parserClasses";
-import { MatchType } from "./parserClasses";
 import * as ncParser from "./parserGenerating/ncParser";
 
 /**
@@ -108,8 +108,8 @@ export class ParseResults {
                     case MatchType.blockNumberLabel:
                         blockNumbers.push(element);
                         break;
-                    case MatchType.comment:
                     case MatchType.lineComment:
+                    case MatchType.blockComment:
                         comments.push(element);
                         break;
                 }

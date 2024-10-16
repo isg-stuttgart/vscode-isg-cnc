@@ -67,7 +67,7 @@ suite('Go To Definition', () => {
         const calledProgram1Uri = vscode.Uri.file(getPathOfWorkspaceFile(path.join("multiRoot1", "calledProgram.nc")));
         const calledProgram2Uri = vscode.Uri.file(getPathOfWorkspaceFile(path.join("multiRoot2", "calledProgram.nc")));
         const expectedDefinitions = [
-            new VSCodeLocationMock(calledProgram1Uri.fsPath, 0, 0, 3, 0),
+            new VSCodeLocationMock(calledProgram1Uri.fsPath, 1, 0, 3, 0),
             new VSCodeLocationMock(calledProgram2Uri.fsPath, 18, 0, 73, 0)
         ];
         const actualDefinitions1: vscode.Location[] = await vscode.commands.executeCommand(

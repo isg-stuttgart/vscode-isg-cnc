@@ -58,7 +58,7 @@ Visual Studio Code V1.73.1 or higher
 ### Sub Program Comments
 You can define doc comments for your subprograms, cycles, Goto-Labels, Goto-Blocknumber, variables like this:
 ```nc
-#COMMENT BEGIN DOC 
+#COMMENT BEGIN
   Some description
   @param parameterOne - Description of parameterOne
   @return returnName Description of returnName  
@@ -71,14 +71,14 @@ The result will look like this:
 ![Subprogram Hover](docs\images\subProgramComment.png)
 
 Note the following:
-- Doc comment must start with `#COMMENT BEGIN DOC` and end with `#COMMENT END`
+- Doc comment must start with `#COMMENT BEGIN` and end with `#COMMENT END`
+- Exception: For variables the priority of the doc comment is 1. doc-comment in front of its declaration and 2. a line comment behind it
 - Content of the doc comment can be written your similar to [TypeDoc](https://typedoc.org/guides/doccomments/) comments
 - Content will be rendered as markdown
-- No restriction for used tags but recommend standardised tags like `@param`, `@return` and `@throws`
+- No restriction for used tags but we recommend standardised tags like `@param`, `@return` and `@throws`
 - Doc comment for a not explicitly declared main program must be before any non-white-space character in the file
 - Comment will be shown in the hover information of according declarations and the corresponding calls (or the GOTO Statement) 
-- For variables the priority of the doc comment is 1. doc-comment in front of its declaration and 2. a line comment behind
-- The "-" between a tag's name and its description is optional and will make no difference in the markdown rendering
+- The `-` between a tag's name and its description is optional and will make no difference in the markdown rendering
 
 ## License
 

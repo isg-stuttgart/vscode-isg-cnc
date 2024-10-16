@@ -37,9 +37,8 @@
       blockNumberLabel: "blockNumberLabel",
       varDeclaration: "varDeclaration",
       variable:"variable",
-      comment: "comment",
       lineComment : "lineComment",
-      docComment: "docComment",
+      blockComment: "blockComment",
       
       // matches ending with Doc are interpreted as items within a docComment (see end of file)
   };
@@ -427,13 +426,7 @@ semicolon_comment "semicolon_comment"                       // a line comment af
 { return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
-= program_doc_block_comment/normal_block_comment
-
-normal_block_comment "normal_block_comment"
-= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
-  content:$((!("#COMMENT" whitespace+ "END") .)*)                      // consume while current pointer is not on "COMMENT END"
-  ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-{ return new Match(types.comment, content, location(), text(), null)}
+= program_doc_block_comment
 
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
@@ -484,10 +477,10 @@ line_end
 //
 //----------------------------------------------------------
 program_doc_block_comment "program_doc_block_comment"
-= "#COMMENT" whitespace+ "BEGIN" whitespace+ "DOC"          // consume #COMMENT BEGIN PROGRAM
+= "#COMMENT" whitespace+ "BEGIN" whitespace*                // consume #COMMENT BEGIN PROGRAM
   content: program_doc_block_comment_body
   comment_end                                               // consume #COMMENT END
-{ return new Match(types.docComment, content, location(), text(), null)}
+{ return new Match(types.blockComment, content, location(), text(), null)}
 
 program_doc_block_comment_body "program_doc_block_comment_body"
 = (

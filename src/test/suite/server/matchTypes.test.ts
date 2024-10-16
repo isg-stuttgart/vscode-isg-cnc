@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { getDefType, getRefTypes } from "../../../../server/src/matchTypes";
-import { MatchType } from "../../../../server/src/parserClasses";
+import { MatchType } from "../../../../server/src/matchTypes";
 import { MatchMock } from "../testHelper";
 
 suite("LS matchTypes", () => {
@@ -16,7 +16,7 @@ suite("LS matchTypes", () => {
         //variables
         assert.deepStrictEqual(getDefType(new MatchMock(MatchType.variable)), { defType: MatchType.varDeclaration, local: true });
         // default
-        assert.deepStrictEqual(getDefType(new MatchMock(MatchType.comment)), { defType: null, local: true });
+        assert.deepStrictEqual(getDefType(new MatchMock(MatchType.blockComment)), { defType: null, local: true });
     });
 
     test("getRefTypes", () => {
@@ -43,7 +43,7 @@ suite("LS matchTypes", () => {
         assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.varDeclaration)), expectedVariableRefTypes);
         // default
         const expectedDefaultRefTypes = { refTypes: [], local: true };
-        assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.comment)), expectedDefaultRefTypes);
+        assert.deepStrictEqual(getRefTypesSorted(new MatchMock(MatchType.blockComment)), expectedDefaultRefTypes);
     });
 });
 
