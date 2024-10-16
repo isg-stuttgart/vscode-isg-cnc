@@ -147,7 +147,7 @@ block "block"                                               // an NC block
   $whitespace+
 / grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
 / skipped_block
-/block_body
+/ block_body
 ){
   checkTimeout();
   return content;
@@ -162,6 +162,7 @@ block_body "block_body"
 = content:(
  n_command?                                                 // each block can be numbered by an n_command
 ( control_block                                             // a control block, i.e., $IF, $FOR etc.
+/ multiline_default_block
 / plaintext_block                                           // some plaintext command, i.e., #MSG SAVE
 / default_block)){                                          // default block, i.e., G01 X12 Y23
 // if text is not only whitespace, then add line to numberableLinesUnsorted
@@ -228,7 +229,7 @@ gotoLabel                                                   // goto statement to
 plaintext_block "plaintext_block"                           // a block containing #-commands, plaintext command
 = grayspaces 
 ( var_block
-/ $("#" non_linebreak*))
+/ $("#" trash*))
 
 var_block "var_block"                                       // a block of variable declarations
 = content:("#VAR" 
@@ -256,33 +257,31 @@ initialization
 endvar_line
 = (!"#ENDVAR" non_linebreak)* "#ENDVAR"
 
-default_block "default_block"                               // a default block containing "normal" NC-commands
-= (multiline_default_block 
-/ default_line)
-
 multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
 = content:(
  multiline_line+
- default_line?                                             
+ default_block?                                             
 ){                                                          // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
 
 multiline_line
-= default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
+= default_block? "\\" grayspaces linebreak                    // at least one line which is extended by \
 
-default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= ((grayspace                                               
+default_block                                                // line with any whitespaces, paren-comment, program call and commands
+= (whitespace+
+/ comment                                             
 / prg_call
 / var
 / command
 / parameter
-/ label)+)
-/ trash_line                                                // collected trashing
+/ label
+/ trash)+
+linebreak?
 
 
-trash_line                                                  // lines which cannot be matched by other rules at the moment
-= ((!stop_trashing .)+ linebreak?/linebreak)                         
+trash                                                       // tokens which cannot be matched by other rules at the moment
+= ((!stop_trashing .)+)                         
 {return "trash: " + text()}
 
 parameter "parameter"
@@ -403,10 +402,10 @@ grayspace "grayspace"                                       // grayspace, a gene
 / comment
 
 grayspaces "grayspaces"
-= grayspace*
+= ($whitespace+/comment)*
 
 grayline "grayline"
-= (whitespace/comment)* linebreak
+= grayspaces linebreak
 / (whitespace/comment)+
 
 comment "comment"                                           // comments are either:
