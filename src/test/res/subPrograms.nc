@@ -1,4 +1,4 @@
-%L UP1           (1. lokales Unterprogramm)
+%L UP1  awd         (1. lokales Unterprogramm)
 
 N1 .....
 

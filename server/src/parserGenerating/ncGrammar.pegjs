@@ -149,8 +149,8 @@ body "body"                                                 // the body of a (su
 
 block "block"                                               // an NC block
 = content:(
-  $whitespace+
-/ grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+  grayspace+                                                // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+/ linebreak
 / skipped_block
 / block_body
 ){
@@ -169,7 +169,8 @@ block_body "block_body"
 ( control_block                                             // a control block, i.e., $IF, $FOR etc.
 / multiline_default_block
 / plaintext_block                                           // some plaintext command, i.e., #MSG SAVE
-/ default_block)){                                          // default block, i.e., G01 X12 Y23
+/ default_block)
+linebreak?){                                          // default block, i.e., G01 X12 Y23
 // if text is not only whitespace, then add line to numberableLinesUnsorted
   if(text().trim().length>0){
     numberableLinesUnsorted.add(location().start.line);
@@ -191,21 +192,21 @@ if_block "if_block"                                         // an if block
   grayspaces "$ENDIF" grayspaces                            // ends when closed by $ENDIF which does not close inner block                                         
     
 if_block_for_indentation
-= content:(grayspaces "$IF" line_end                        // begins with $IF line
+= content:(grayspaces "$IF"                        // begins with $IF line
   if_block_content){
   numberableLinesUnsorted.add(location().start.line);
   return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 elseif_block
-= content:(grayspaces ("$ELSEIF" line_end                   // begins with $ELSEIF line
+= content:(grayspaces ("$ELSEIF"                   // begins with $ELSEIF line
    if_block_content)){
   numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 else_block
-= grayspaces  content:("$ELSE" line_end                     // begins with $ELSEIF line
+= grayspaces  content:("$ELSE"                     // begins with $ELSEIF line
    if_block_content){
   numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
@@ -262,16 +263,16 @@ initialization
 endvar_line
 = (!"#ENDVAR" non_linebreak)* "#ENDVAR"
 
-multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
+multiline_default_block "multiline_default_block"            // a default block over multiple lines, extended by "\" 
 = content:(
  multiline_line+
  default_block?                                             
-){                                                          // consume the last block, so the first not extended by "\"
+){                                                           // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
 
 multiline_line
-= default_block? "\\" grayspaces linebreak                    // at least one line which is extended by \
+= default_block? "\\" grayspaces linebreak                   // at least one line which is extended by \
 
 default_block                                                // line with any whitespaces, paren-comment, program call and commands
 = (whitespace+
@@ -468,12 +469,6 @@ non_delimiter "non_delimiter"                               // a non-delimiter
 string "string"                                             // a string
 = "\"" [^\"]* "\""
 {return text()}
-
-line_end
-= non_linebreak* linebreak?
-{return text()}
-
-
 
 //----------------------------------------------------------
 //
