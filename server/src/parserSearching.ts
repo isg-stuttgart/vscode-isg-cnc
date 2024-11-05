@@ -45,7 +45,6 @@ export function findFirstMatchWithinPrg(tree: any, defType: MatchType, name: str
 * If no specific types are given, all types are considered, so the most precise match is found.
 * @param tree the current subtree to search in
 * @param position the position where the match should be found
-* awdaw
 * @param matchTypes the possible types of matches to search for, defaults to all types
 * @returns the most precise match if existing, otherwise null
 */
