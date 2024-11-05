@@ -6,9 +6,9 @@
 
 {{
 	 const types = {
-      toolCall: "toolCall",
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
+      mainPrgName: "mainPrgName",
 
       // prg calls
       localPrgCall: "localPrgCall",
@@ -24,6 +24,8 @@
       cycleParameterAssignment: "cycleParameterAssignment",
       cycleParamList: "cycleParamList",
       
+      // other
+      toolCall: "toolCall",
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -35,8 +37,12 @@
       blockNumberLabel: "blockNumberLabel",
       varDeclaration: "varDeclaration",
       variable:"variable",
-      comment: "comment",
-  }
+      lineComment : "lineComment",
+      blockComment: "blockComment",
+      
+      // matches ending with Doc are interpreted as items within a docComment (see end of file)
+  };
+  
  class LightMatch {
     location;
     text;
@@ -70,7 +76,7 @@
 
 {
   const numberableLinesUnsorted = new Set();
-  let mainPrg = null;
+  let mainPrgLoc = null; // range of mainPrg as peggy location
 
   // Save start time and cancel and throw error when parsing needs more than 10 seconds
   const startTime = Date.now();
@@ -89,9 +95,9 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:(file/anyTrash)*                                        
+= fileTree:(file/grayline/anyTrash)*                                        
 {
-  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
+  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
 }
 
 anyTrash "anyTrash"                                         // any trash which is not a file, only needed for cancellation after timeout
@@ -102,16 +108,10 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
-{
-  if(!mainPrg){
-    mainPrg=file[2]?file[2]:null;
-  }
-  return file;
-}
+= file:((grayline? subprogram)* grayline? mainprogram grayline? (grayline? subprogram)*)                // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= content:("%L" $whitespace+ subprogram_name body){                // each subprogram requires a title and a body
+= content:("%L" $whitespace+ subprogram_name body){         // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), content[2].name);
 }
 
@@ -122,15 +122,22 @@ subprogram_name "subprogram_name"                           // a subprogram name
 }
 
 mainprogram "mainprogram"                                   // the main program
-= definition:("%" whitespaces $name?)? content:body         // for a main program, the title is optional
+= content:(("%" whitespaces mainPrgName?)? body)         // for a main program, the title is optional
 {
   let name = null
-  if(definition && definition[2]){
-    name = definition[2]
+  if(content[0] && content[0][2]){
+    name = content[0][2].name
   }
+  // save range of mainPrg
+  mainPrgLoc=location()
   return new Match(types.mainPrg, content, location(), text(), name)
 };
 
+mainPrgName "mainPrgName" 
+= name
+{
+  return new Match(types.mainPrgName, text(), location(), text(), text());
+}
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
 (block/linebreak/.))+                                       // the body is a list of comments and blocks
@@ -332,12 +339,12 @@ prg_name_string
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-  cycle_params grayline* "]"){          // brackets can contain a multline or a singleline
+  cycle_params grayline* "]"){                              // brackets can contain a multline or a singleline
   const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
   const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-  let nameLM = content[6][1]                                                  // LightMatch of the cycle name
+  let nameLM = content[6][1]                                // LightMatch of the cycle name
   const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-  content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
+  content[6][1] = nameMatch                                 // replace nameLightMatch with nameMatch  
   return new Match(type, content, location(), text(), nameLM.text);
 }
 
@@ -411,19 +418,15 @@ line_comment "line_comment"                                 // a line comment is
 / semicolon_comment                                         // after semicolon
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
-= $("(" [^)\r\n]* ")" 
-/ "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
-{ return new Match(types.comment, null, location(), text(), null)}
+= "(" content:$([^)\r\n]*) ")"? 
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
-= ";" [^\r\n]*
-{ return new Match(types.comment, null, location(), text(), null)}
+= ";" content:$([^\r\n]*)
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
-= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
-  (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
-  ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-{ return new Match(types.comment, null, location(), text(), null)}
+= program_doc_block_comment
 
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
@@ -453,7 +456,7 @@ number "number"                                             // a number
 name "name"                                                 // a name/identifier consisting of alphabetical Characters, "_" and "."
 = $[_a-zA-Z0-9.]+
 
-digit "digit" = $[0-9]                                       // a digit
+digit "digit" = $[0-9]                                      // a digit
 
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]
@@ -465,3 +468,42 @@ string "string"                                             // a string
 line_end
 = non_linebreak* linebreak?
 {return text()}
+
+
+
+//----------------------------------------------------------
+//
+//  Rules for Program Docs
+//
+//----------------------------------------------------------
+program_doc_block_comment "program_doc_block_comment"
+= "#COMMENT" whitespace+ "BEGIN" whitespace*                // consume #COMMENT BEGIN PROGRAM
+  content: program_doc_block_comment_body
+  comment_end                                               // consume #COMMENT END
+{ return new Match(types.blockComment, content, location(), text(), null)}
+
+program_doc_block_comment_body "program_doc_block_comment_body"
+= (
+program_doc_block_comment_body_keyword_line
+/ $((!program_doc_block_comment_body_special_case .)+)
+)*
+  
+program_doc_block_comment_body_special_case "program_doc_block_comment_body_special_case"
+= program_doc_block_comment_body_keyword_line
+/ $comment_end
+
+program_doc_block_comment_body_keyword_line "program_doc_block_comment_body_keyword_line"
+= "@" keyword:$(!(whitespace/comment_end) .)* whitespace* 
+name:name? whitespace* ("-" whitespace*)? 
+rest:$((!(program_doc_block_comment_body_special_case/markdownLinebreak) .)*)
+markdownLinebreak?
+{ 
+  const type = keyword += "Doc";
+  return new Match(type, rest.trim(), location(), text(), name)
+}
+
+comment_end "comment_end"
+= "#COMMENT" whitespace+ "END"
+
+markdownLinebreak "markdownLinebreak" 
+= $(linebreak whitespaces linebreak (linebreak/whitespace)*)  // consume markdown linebreak plus trailing whitespaces/linebreaks

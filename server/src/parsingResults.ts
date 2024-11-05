@@ -1,5 +1,5 @@
+import { MatchType } from "./matchTypes";
 import { Match, ParseResultContent } from "./parserClasses";
-import { MatchType } from "./parserClasses";
 import * as ncParser from "./parserGenerating/ncParser";
 
 /**
@@ -10,10 +10,12 @@ import * as ncParser from "./parserGenerating/ncParser";
 export class ParseResults {
     public readonly results: ParseResultContent;
     public readonly syntaxArray: SyntaxArray;
+    public readonly plainText: string;
     constructor(text: string) {
         try {
             this.results = ncParser.parse(text) as ParseResultContent;
             this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+            this.plainText = text;
         } catch (error) {
             throw new Error(`Error while parsing file: ${error}`);
         }
@@ -106,7 +108,8 @@ export class ParseResults {
                     case MatchType.blockNumberLabel:
                         blockNumbers.push(element);
                         break;
-                    case MatchType.comment:
+                    case MatchType.lineComment:
+                    case MatchType.blockComment:
                         comments.push(element);
                         break;
                 }

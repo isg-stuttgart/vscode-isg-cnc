@@ -2,6 +2,7 @@ import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
 import * as cyclesJson from "../res/cycles.json";
+import * as path from "path";
 
 /**
  * If the amount of values for a parameter is below this limit, a choice snippet is used for the placeholder. Else the range is shown.
@@ -18,6 +19,12 @@ export function getCycles(): Cycle[] {
         cycles = cyclesJson.map((cycle: any) => jsonCycleToCycle(cycle));
     }
     return cycles;
+}
+
+export function getISGCycleByName(name: string): Cycle | null {
+    const cycleName = path.parse(name).name;
+    const cycle = getCycles().find(c => c.name === cycleName);
+    return cycle ? cycle : null;
 }
 
 /**

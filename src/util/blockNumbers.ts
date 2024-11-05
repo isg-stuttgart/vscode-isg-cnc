@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { digitCount, isNumeric } from "./util";
 import { ParseResults } from "../../server/src/parsingResults";
-import { Match, MatchType } from "../../server/src/parserClasses";
+import { Match } from "../../server/src/parserClasses";
+import { MatchType } from "../../server/src/matchTypes";
 import { getIncludeCommentsInNumbering } from "./config";
 
 // Blocknumber regex
@@ -219,13 +220,13 @@ export async function addBlockNumbers(start: number, step: number) {
                 } else if (includeComments && commentLines.includes(ln)) {
                     // if parser did not give blocknumber but comments are included and this is a comment line which starts with blocknumber regex, replace it
                     const blockNumberMatch = line.text.match(/^\s*N[0-9]*/);
-                    if(blockNumberMatch?.index!==undefined){
+                    if (blockNumberMatch?.index !== undefined) {
                         const range = new vscode.Range(
                             new vscode.Position(ln, blockNumberMatch.index),
                             new vscode.Position(ln, blockNumberMatch.index + blockNumberMatch[0].length)
                         );
                         textEdits.push(vscode.TextEdit.replace(range, blockNumberString));
-                    }else{
+                    } else {
                         insert = true;
                     }
                 } else {

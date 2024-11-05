@@ -11,11 +11,12 @@ import { fileURLToPath } from 'node:url';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import * as parser from './parserGlue';
+import * as parser from './getDefinitionAndReferences';
 import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions } from './completion';
 import { getHoverInformation } from './hover';
+import { ParseResults } from './parsingResults';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -100,7 +101,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
@@ -155,13 +156,22 @@ connection.onHover((docPos) => {
 			return null;
 		}
 		const position: Position = docPos.position;
-		return getHoverInformation(position, textDocument);
+		const openDocs = getOpenDocs();
+		return getHoverInformation(position, textDocument, getRootPaths(), openDocs);
 	} catch (error) {
 		console.error("Getting hover information failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
 	}
 });
 
+function getOpenDocs(): Map<string, TextDocument> {
+	const openDocs = new Map<string, TextDocument>();
+	const allDocs = documents.all();
+	for (const doc of allDocs) {
+		openDocs.set(doc.uri, doc);
+	}
+	return openDocs;
+}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

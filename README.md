@@ -27,7 +27,7 @@ Visual Studio Code V1.73.1 or higher
   - Direct link to the [german programming manual](https://www.isg-stuttgart.de/kernel-html5/de-DE/index.html#414992651)
   - Direct link to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 
-## Features
+## Feature Listing
   ### Editing
   - Snippets and Hover information for ISG Cycle Calls and their parameters
   - Code completion
@@ -48,10 +48,37 @@ Visual Studio Code V1.73.1 or higher
   - Open documentation in browser
   - Sidebar to show important code fragments (currently: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
   - Command to jump into a file by selecting it's name or absolute path and an optional offset 
+  - Hover information for self-defined calls of subprograms/cycles based on [program-doc-comments](#sub-program-comments)
 
   ### Additionals
   - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)
   - Encrypt files by key
+
+## Feature Details
+### Sub Program Comments
+You can define doc comments for your subprograms, cycles, Goto-Labels, Goto-Blocknumber, variables like this:
+```nc
+#COMMENT BEGIN
+  Some description
+  @param parameterOne - Description of parameterOne
+  @return returnName Description of returnName  
+  **Some bold description between**
+  @throws ErrorName Description of ErrorName
+#COMMENT END
+%L UP1...
+```
+The result will look like this:
+![Subprogram Hover](docs\images\subProgramComment.png)
+
+Note the following:
+- Doc comment must start with `#COMMENT BEGIN` and end with `#COMMENT END`
+- Exception: For variables the priority of the doc comment is 1. doc-comment in front of its declaration and 2. a line comment behind it
+- Content of the doc comment can be written your similar to [TypeDoc](https://typedoc.org/guides/doccomments/) comments
+- Content will be rendered as markdown
+- No restriction for used tags but we recommend standardised tags like `@param`, `@return` and `@throws`
+- Doc comment for a not explicitly declared main program must be before any non-white-space character in the file
+- Comment will be shown in the hover information of according declarations and the corresponding calls (or the GOTO Statement) 
+- The `-` between a tag's name and its description is optional and will make no difference in the markdown rendering
 
 ## License
 

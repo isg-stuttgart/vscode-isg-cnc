@@ -4,7 +4,8 @@ import { getPathOfWorkspaceFile } from "../testHelper";
 import { ParseResults } from "../../../../server/src/parsingResults";
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { FileRange, Match, MatchType, Position } from "../../../../server/src/parserClasses";
+import { FileRange, Match, Position } from "../../../../server/src/parserClasses";
+import { MatchType } from "../../../../server/src/matchTypes";
 const subProgramsNc = fs.readFileSync(getPathOfWorkspaceFile("subPrograms.nc"), "utf8");
 const subProgramsNcAst = new ParseResults(subProgramsNc).results.fileTree;
 suite('LS parserSearching.findFirstMatchWithinPrg', () => {

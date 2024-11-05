@@ -1,11 +1,11 @@
 import * as fs from "fs";
 import path = require("path");
-import { Match, Position, FileRange, IncrementableProgress, hasMatchProperties } from "./parserClasses";
+import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./parserClasses";
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
-import { MatchType } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
+import { MatchType } from "./matchTypes";
 
 /**
 * Recursively find the first match of the given type and name within the tree
@@ -27,7 +27,7 @@ export function findFirstMatchWithinPrg(tree: any, defType: MatchType, name: str
     }
 
     // when element is a Match (Subtree)
-    if (tree && hasMatchProperties(tree)) {
+    if (tree && isMatch(tree)) {
         const match = tree as Match;
         // if correct defType and name we found the definition
         if (match.type === defType && match.name === name) {
@@ -61,7 +61,7 @@ export function findPreciseMatchOfTypes(tree: any, position: Position, matchType
     }
 
     // when element is a Match (Subtree) try to search more precise, if not possible we found our match
-    if (tree && hasMatchProperties(tree)) {
+    if (tree && isMatch(tree)) {
         const match = tree as Match;
         if (!match.location) {
             return null;
@@ -100,7 +100,7 @@ export function findMatchesWithinPrgTree(tree: any, types: string[], name?: stri
     }
 
     // if element is a Match
-    if (tree && hasMatchProperties(tree)) {
+    if (tree && isMatch(tree)) {
         const match = tree as Match;
 
         const globalCall = types.includes(MatchType.globalCycleCallName) || types.includes(MatchType.globalPrgCallName);
