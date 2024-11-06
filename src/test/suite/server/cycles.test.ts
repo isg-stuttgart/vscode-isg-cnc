@@ -34,12 +34,12 @@ suite("LS cycles", () => {
         const descriptionDic = new DescriptionDictionary("de-DE descirption", "en-US description");
         const requirementDic = new RequirementDictionary(0, 5,  undefined,undefined,"", false, false, "integer");
         // assert error if parameter is lacking
-        assert.throws(() => new Parameter(<string><unknown>undefined, "media", descriptionDic, requirementDic, [], "docuId"));
-        assert.throws(() => new Parameter("12345", "media", <DescriptionDictionary><unknown>undefined, requirementDic, [], "docuId"));
-        assert.throws(() => new Parameter("12345", "media", descriptionDic, <RequirementDictionary><unknown>undefined, [], "docuId"));
-        assert.throws(() => new Parameter("12345", "media", descriptionDic, requirementDic, <string[]><unknown>undefined, "docuId"));
+        assert.throws(() => new Parameter(<string><unknown>undefined, "media", descriptionDic, requirementDic, [], "docuId",undefined));
+        assert.throws(() => new Parameter("12345", "media", <DescriptionDictionary><unknown>undefined, requirementDic, [], "docuId",undefined));
+        assert.throws(() => new Parameter("12345", "media", descriptionDic, <RequirementDictionary><unknown>undefined, [], "docuId",undefined));
+        assert.throws(() => new Parameter("12345", "media", descriptionDic, requirementDic, <string[]><unknown>undefined, "docuId",undefined));
         // documentationReference may be undefined
-        new Parameter("12345", "media", descriptionDic, requirementDic, [], undefined);
+        new Parameter("12345", "media", descriptionDic, requirementDic, [], undefined,undefined);
     });
 
     test("Parameter.getPlaceholder()", function () {
@@ -49,10 +49,10 @@ suite("LS cycles", () => {
         const requirementDic3 = new RequirementDictionary(undefined, 100, undefined,undefined, "default", false, false, "integer");
         const requirementDic4 = new RequirementDictionary(0, undefined, undefined,undefined, "", false, false, "integer");
 
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic1, [], "docuId").getPlaceholder(1), "${1|0,1,2,3,4,5,6,7,8,9,10|}");
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId").getPlaceholder(1), "${1:0-100}");
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic3, [], "docuId").getPlaceholder(1), "${1:default}");
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic4, [], "docuId").getPlaceholder(1), "${1:pname}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic1, [], "docuId",undefined).getPlaceholder(1), "${1|0,1,2,3,4,5,6,7,8,9,10|}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId",undefined).getPlaceholder(1), "${1:0-100}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic3, [], "docuId",undefined).getPlaceholder(1), "${1:default}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic4, [], "docuId",undefined).getPlaceholder(1), "${1:pname}");
     });
 
     test("DocumentationReference Constructor", function () {
