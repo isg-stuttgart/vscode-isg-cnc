@@ -52,7 +52,7 @@ function jsonCycleToCycle(cycle: any): Cycle {
         return numA - numB;
     });
 
-    const documentationReference = cycle.DocumentationReference ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
+    const documentationReference = (cycle.DocumentationReference && cycle.DocumentationReference.Overview && cycle.DocumentationReference.Parameter) ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
     const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
     return new Cycle(
         cycle.Name,
