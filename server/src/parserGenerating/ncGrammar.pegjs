@@ -75,6 +75,7 @@
 //----------------------------------------------------------
 
 {
+  const blockNumberingUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
   const numberableLinesUnsorted = new Set();
   let mainPrgLoc = null; // range of mainPrg as peggy location
 
@@ -97,6 +98,10 @@
 start                                                       // start rule
 = fileTree:(file/grayline/anyTrash)*                                        
 {
+  // remove block numbers from numberableLinesUnsorted
+  blockNumberingUnsorted.forEach(blockNumber => {
+    numberableLinesUnsorted.delete(blockNumber);
+  });
   return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
 }
 
@@ -117,9 +122,9 @@ subprogram "subprogram"                                     // a subprogram and/
 }
 
 subprogram_name "subprogram_name"                           // a subprogram name
-= prgName
+= name:prgName
 {
-  return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
+  return new Match(types.localPrgDefinitionName, text(), location(), text(), name);
 }
 
 mainprogram "mainprogram"                                   // the main program
@@ -135,13 +140,16 @@ mainprogram "mainprogram"                                   // the main program
 };
 
 mainPrgName "mainPrgName" 
-= prgName
+= name:prgName
 {
-  return new Match(types.mainPrgName, text(), location(), text(), text());
+  return new Match(types.mainPrgName, text(), location(), text(), name);
 }
 
 prgName "prgName"                                           // a program name
-= $(!comment non_linebreak)*
+= $(!comment non_linebreak)*{
+  blockNumberingUnsorted.add(location().start.line);
+  return text().trim();
+}
 
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
