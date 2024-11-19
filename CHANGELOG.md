@@ -16,6 +16,7 @@ Types of changes:
 
 ### Added
 - Hover information for calls of self-defined subrograms/cycles based on program comments above their definition [Issue #155](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/155)
+- Updated cycles.json and some german translations for Hovering and Snippets [Issue #160](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/160)
 
 ### Fixed
 - Fix add blocknumbers bug for adding block number in front of program name line and in some multilines.  [Issue #158](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/158)
