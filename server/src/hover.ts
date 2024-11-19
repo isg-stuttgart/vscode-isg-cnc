@@ -165,7 +165,10 @@ function findFirstNonWhitespaceOffsetAfter(defDoc: TextDocument, position: Posit
  * @returns the first offset which is not a whitespace going backwards from the given position (not included) in the document 
  */
 function findFirstNonWhitespaceOffsetBefore(defDoc: TextDocument, position: Position): number {
-    let offset = defDoc.offsetAt(position) - 1;
+    // start at the start of the line, which avoids n-numbers between comment and definition to block the search
+    // this can be done because #COMMENT END is always at the end of the line
+    const newPos = new Position(position.line, 0);
+    let offset = defDoc.offsetAt(newPos) - 1;
     while (offset >= 0 && /\s/.test(defDoc.getText(Range.create(defDoc.positionAt(offset), defDoc.positionAt(offset + 1)))) && offset < defDoc.getText().length) {
         offset--;
     }
@@ -190,7 +193,7 @@ function getHoverForISGCycleCall(position: Position, cycleMatch: Match): Hover |
     // if on cycle name, show cycle documentation
     if (cycleSubMatch.type === MatchType.globalCycleCallName) {
         return {
-            contents: cycle.getMarkupDocumentation(),
+            contents: cycle.getMarkupDocumentation(false),
             range: {
                 start: {
                     line: cycleSubMatch.location.start.line - 1,
