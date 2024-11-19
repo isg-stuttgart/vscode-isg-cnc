@@ -75,7 +75,7 @@
 //----------------------------------------------------------
 
 {
-  const blockNumberingUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
+  const blockedBlockNumbersUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
   const numberableLinesUnsorted = new Set();
   let mainPrgLoc = null; // range of mainPrg as peggy location
 
@@ -99,7 +99,7 @@ start                                                       // start rule
 = fileTree:(file/grayline/anyTrash)*                                        
 {
   // remove block numbers from numberableLinesUnsorted
-  blockNumberingUnsorted.forEach(blockNumber => {
+  blockedBlockNumbersUnsorted.forEach(blockNumber => {
     numberableLinesUnsorted.delete(blockNumber);
   });
   return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
@@ -147,7 +147,7 @@ mainPrgName "mainPrgName"
 
 prgName "prgName"                                           // a program name
 = $(!comment non_linebreak)*{
-  blockNumberingUnsorted.add(location().start.line);
+  blockedBlockNumbersUnsorted.add(location().start.line);
   return text().trim();
 }
 
