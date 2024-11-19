@@ -18,6 +18,7 @@ Types of changes:
 - Hover information for calls of self-defined subrograms/cycles based on program comments above their definition [Issue #155](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/155)
 
 ### Fixed
+- Fix blocknumber bug  [Issue #158](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/158)
 
 ## [V1.1.0]
 
