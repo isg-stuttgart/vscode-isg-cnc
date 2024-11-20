@@ -56,16 +56,22 @@ suite("Block Numbers Commands Tests", () => {
             await vscode.commands.executeCommand("isg-cnc.RemoveAllBlocknumbers");
         });
     });
+    test("Add Blocknumbers to former bug file 1", async () => {
+        await vscode.workspace.getConfiguration().update("isg-cnc.includeCommentsInNumbering", false);
+        await assertApplyingCommandToFile("blockNumberBug1.nc", "blockNumberBug1.nc", async () => {
+            await addBlockNumbers(10, 10);
+        });
+    });
 });
 
 // Helper function to insert a new line with the string "new Line" between the first and second lines of the file
 async function insertNewLineInOpenedFile() {
     const editor = vscode.window.activeTextEditor;
-    if(editor){
+    if (editor) {
         await editor.edit(editBuilder => {
-            editBuilder.insert(new vscode.Position(1,0), "new Line" + OS.EOL);
+            editBuilder.insert(new vscode.Position(1, 0), "new Line" + OS.EOL);
         });
-    }else{
+    } else {
         throw new Error("No opened editor to add a line");
     }
 }
