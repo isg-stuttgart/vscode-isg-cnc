@@ -5,6 +5,7 @@ All notable changes to the "vscode-isg-cnc" extension will be documented in this
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 Types of changes:
+
 - Added for new features.
 - Changed for changes in existing functionality.
 - Deprecated for soon-to-be removed features.
@@ -15,14 +16,18 @@ Types of changes:
 ## [Unreleased]
 
 ### Added
+
 - Hover information for calls of self-defined subrograms/cycles based on program comments above their definition [Issue #155](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/155)
+- Update CNC-cycles hovering and snippets informations. [Issue #160](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/160)
 
 ### Fixed
+
 - Fix add blocknumbers bug for adding block number in front of program name line and in some multilines.  [Issue #158](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/158)
 
 ## [V1.1.0]
 
 ### Added
+
 - Snippet-Completion for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
 - Hover-Information for ISG-Cycle-Calls and their parameters [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
 - Command to switch between single and multi line cycle call snippets [Issue #91](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/91)
@@ -32,71 +37,86 @@ Types of changes:
 ## [V1.0.0]
 
 ### Added
+
 - Mocha tests for the client and server side of the extension [Issue #137](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/137)
 - Possibility to define if adding blocknumbers should include numbering of comments
 - Command to align line comments in a selected range [Issue # 138](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/138)
 
 ### Fixed
+
 - Different fixes/improvements on adding/removing blocknumbers regarding comments, blocknumber labels and other special cases
 - Fixes/Improvments on references/definitions for variables
 
 ### Removed
+
 - Removed the decrypt command because of new security EU-guidelines
   
 ## [V0.4.6]
 
 ### Fixed
+
 - Correction of npm dependencies because language server crash at startup.
 
 ## [V0.4.5]
 
 ### Added
+
 - Command to change the language mode of a selected file or directory. This can be found in the context menu of the explorer (not in the ISG Command Submenu). [Issue #132](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/132)
+
 ### Fixed
+
 - Language server now properly checks for the file association by glob patterns instead of only be able to handle file extensions[Issue #132](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/132)
 
 ## [V0.4.4]
 
 ### Added
+
 - Language icon for "isg-cnc", "isg-list" and "isg-cnc-cycle-error"
 - Multi-root-workspace support for language server features (Go To Definition and Go To References) [Issue #117](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/117)
 - .isg-cnc-ignore to ignore paths (files/directories) while searching for references/definitions
 
 ### Fixed
+
 - V.CYC variables have not been included in the grammar for self defined local variables but now are [Issue #119](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/119)
 - Cancel file parsing when taking too long. Show Progress of Referencing Searching to User. Skip non CNC-associated files while searching references.
 [Issue #124](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/124)
 - Use String-based (instead parser-based) search for variables. This is needed because of an incomplete grammar. [Issue #120](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/120)
 
 ## [V0.4.3]
+
 ### Added
+
 - Adding "Go To Definition" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #90](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/90)
 - Adding "Go To References" feature for program calls, goto-statements and self-defined variables (last one only rudimentary) [Issue #108](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/108)
 
 ### Fixed
+
 - Sidebar showed some wrong information because of grammar bugs [Issue #104](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/104)
 - Sidebar uses the name of the called programs instead of the whole calling-string for higlighting and grouping [Issue #114](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/114)
 
 ## [V0.4.2]
 
 ### Added
+
 - Align equal signs in selected range via command [Issue #29](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/29)
 - Formatting by default VSCode standard, old command for beautifying was removed [Issue #99](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/99)
 
 ### Fixed
-- Fix/Improve "Add Blocknumbers" especially for skip lines [Issue #76](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/76)
-- Sidebar works for all files which vscode associates with CNC language, not only typical endings [Issue #92](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/92) 
 
+- Fix/Improve "Add Blocknumbers" especially for skip lines [Issue #76](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/76)
+- Sidebar works for all files which vscode associates with CNC language, not only typical endings [Issue #92](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/92)
 
 ## [V0.4.0]
 
 ### Added
+
 - Added region folding [Pull #73](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/73)
 - "Format Code" command now indents multilines
 - Autogenerate github pages at push to main branch
 - Filter option to either show grouped or line-by-line sorting of matches in sidebar [Pull #79](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/79)
 
 ### Fixed
+
 - Sidebar cuts off all matches over 500 to prevent performance issues [Pull #74](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/74)
 - Reinclude fixed docu feature [Issue #58](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/58)
 - Add toLowerCase for nc file detection

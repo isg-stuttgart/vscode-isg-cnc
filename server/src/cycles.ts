@@ -44,24 +44,28 @@ export function getCommandUriToOpenDocu(id: string | undefined): string {
  * @returns a {@link Cycle} object 
  */
 function jsonCycleToCycle(cycle: any): Cycle {
-    const parameterList: Array<Parameter> = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
-    // sort params by name
-    parameterList.sort((a: Parameter, b: Parameter) => {
-        const numA = parseInt(a.name.replace(/\D/g, ''), 10);
-        const numB = parseInt(b.name.replace(/\D/g, ''), 10);
-        return numA - numB;
-    });
+    try {
+        const parameterList: Array<Parameter> = cycle.ParameterList.map((parameter: any) => jsonParameterToParameter(parameter, cycle.DocumentationReference?.Parameter));
+        // sort params by name
+        parameterList.sort((a: Parameter, b: Parameter) => {
+            const numA = parseInt(a.name.replace(/\D/g, ''), 10);
+            const numB = parseInt(b.name.replace(/\D/g, ''), 10);
+            return numA - numB;
+        });
 
-    const documentationReference = cycle.DocumentationReference ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
-    const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
-    return new Cycle(
-        cycle.Name,
-        cycle.Media,
-        documentationReference,
-        descriptionDictionary,
-        parameterList
-    );
+        const documentationReference = (cycle.DocumentationReference && cycle.DocumentationReference.Overview && cycle.DocumentationReference.Parameter) ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
+        const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
 
+        return new Cycle(
+            cycle.Name,
+            cycle.Media,
+            documentationReference,
+            descriptionDictionary,
+            parameterList
+        );
+    } catch (error) {
+        throw new Error("Failed to parse cycle " + cycle.Name + ": \n" + error);
+    }
 }
 /**
  * Transforms a parameter object from the cycles.json file to a {@link Parameter} object. 
@@ -69,25 +73,32 @@ function jsonCycleToCycle(cycle: any): Cycle {
  * @returns a {@link Parameter} object 
  */
 function jsonParameterToParameter(parameter: any, documentationReference: string | undefined): Parameter {
-    const requirementDictionary = new RequirementDictionary(
-        parameter.RequirementDictionary.Min,
-        parameter.RequirementDictionary.Max,
-        parameter.RequirementDictionary.Min2,
-        parameter.RequirementDictionary.Max2,
-        parameter.RequirementDictionary.Default,
-        parameter.RequirementDictionary.NotNull,
-        parameter.RequirementDictionary.Required,
-        parameter.RequirementDictionary.Type
-    );
-    const descriptionDictionary = new DescriptionDictionary(parameter.DescriptionDictionary["en-US"], parameter.DescriptionDictionary["de-DE"]);
-    return new Parameter(
-        parameter.Name,
-        parameter.Media,
-        descriptionDictionary,
-        requirementDictionary,
-        parameter.DependencyList,
-        documentationReference
-    );
+    try {
+        const requirementDictionary = new RequirementDictionary(
+            parameter.RequirementDictionary.Min,
+            parameter.RequirementDictionary.Max,
+            parameter.RequirementDictionary.Min2,
+            parameter.RequirementDictionary.Max2,
+            parameter.RequirementDictionary.Default,
+            parameter.RequirementDictionary.NotZero,
+            parameter.RequirementDictionary.Required,
+            parameter.RequirementDictionary.Type
+        );
+        const descriptionDictionary = new DescriptionDictionary(parameter.DescriptionDictionary["en-US"], parameter.DescriptionDictionary["de-DE"]);
+        const enumValues: EnumValue[] | undefined = parameter.EnumValues ? parameter.EnumValues.map((enumValueJson: any) => new EnumValue(enumValueJson)) : undefined;
+
+        return new Parameter(
+            parameter.Name,
+            parameter.Media,
+            descriptionDictionary,
+            requirementDictionary,
+            parameter.DependencyList,
+            documentationReference,
+            enumValues
+        );
+    } catch (error) {
+        throw new Error("Failed to parse parameter " + parameter.Name + ": \n" + error);
+    }
 }
 
 /**
@@ -119,10 +130,12 @@ export class Cycle {
     }
     getMarkupDocumentation(onlyRequired: boolean): MarkupContent {
         // if the documentation reference is missing, don't add a link to the documentation
-        const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n[More Information](${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
+        const moreInfo = getLocale() === Locale.de ? "[Mehr Informationen]" : "[More Information]";
+        const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n${moreInfo}(${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
         let parameterTitle: string;
+        const locale = getLocale();
         if (this.parameterList.length > 0) {
-            parameterTitle = onlyRequired ? "Required Parameters:  \n" : "Parameters:  \n";
+            parameterTitle = onlyRequired ? (locale === Locale.de ? "### Erforderliche Parameter:  \n" : "### Required Parameters:  \n") : (locale === Locale.de ? "### Parameter:  \n" : "### Parameters:  \n");
         } else {
             parameterTitle = "";
         }
@@ -148,13 +161,15 @@ export class Parameter {
     requirementDictionary: RequirementDictionary;
     dependencyList: string[];
     documentationReference: string | undefined;
+    enumValues: EnumValue[] | undefined;
     constructor(
         name: string,
         media: string | undefined,
         descriptionDictionary: DescriptionDictionary,
         requirementDictionary: RequirementDictionary,
         dependencyList: string[],
-        documentationReference: string | undefined
+        documentationReference: string | undefined,
+        enumValues: EnumValue[] | undefined
     ) {
         this.name = name;
         this.media = media;
@@ -162,6 +177,7 @@ export class Parameter {
         this.requirementDictionary = requirementDictionary;
         this.dependencyList = dependencyList;
         this.documentationReference = documentationReference;
+        this.enumValues = enumValues;
         // throw error if some required parameters are missing
         if (!this.name) {
             throw new Error("Parameter name is missing: " + this.name);
@@ -176,6 +192,7 @@ export class Parameter {
             throw new Error("Parameter dependency list is missing" + this.name);
         }
     }
+
     /**
     * Get a placeholder for the given parameter with following cases from highest to lowest priority:
     * - Case 1: parameter has min and max with maximum difference of 10 -> use a choice
@@ -235,37 +252,64 @@ export class Parameter {
         const min2 = this.requirementDictionary.min2;
         const max2 = this.requirementDictionary.max2;
         const defaultVal = this.requirementDictionary.default;
-        const notNull = this.requirementDictionary.notZero;
+        const notZero = this.requirementDictionary.notZero;
         const required = this.requirementDictionary.required;
+        const locale = getLocale();
         let description = "";
         try {
-            description = this.descriptionDictionary.getDescription(getLocale());
+            description = this.descriptionDictionary.getDescription(locale);
         } catch (error) {
             console.error("Failed to get description for parameter " + this.name + ": " + error);
         }
-        const dependencyMarkdownString = this.dependencyList.map(dep => "- " + dep).join("\n");
+        let dependencyMarkdownString = "";
+        if (this.dependencyList && this.dependencyList.length > 0) {
+            dependencyMarkdownString = getLocale() === Locale.de ? "### Abhängigkeiten:  \n" : "### Dependencies:  \n";
+            dependencyMarkdownString += this.dependencyList.map(dependency => {
+                return "- " + dependency;
+            }).join("\n") + "\n\n";
+        }
         // if the documentation reference is missing, don't add a link to the documentation
-        const infoLink = this.documentationReference ? `  \n\n[More Information](${getCommandUriToOpenDocu(this.documentationReference)})` : "";
+        const moreInfo = locale === Locale.de ? "[Mehr Informationen]" : "[More Information]";
+        const infoLink = this.documentationReference ? `  \n\n${moreInfo}(${getCommandUriToOpenDocu(this.documentationReference)})` : "";
+
+        const markdownString = "## " + this.name + ": " + description + "  \n" +
+            this.getEnumValuesMarkdown() +
+            (locale === Locale.de ? "### Anforderungen:  \n" : "### Requirements:  \n") +
+            (min !== undefined ? "Min: " + min + "  \n" : "") +
+            (max !== undefined ? "Max: " + max + "  \n" : "") +
+            (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
+            (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
+            (defaultVal !== undefined ? (locale === Locale.de ? "Standardwert: " : "Default Value: ") + defaultVal + "  \n" : "") +
+            (locale === Locale.de ? ("Null erlaubt: " + (notZero ? "Nein" : "Ja") + "  \n") : ("Zero allowed: " + (notZero ? "No" : "Yes") + "  \n")) +
+            (locale === Locale.de ? ("Erforderlich: " + (required ? "Ja" : "Nein") + "  \n") : ("Required: " + (required ? "Yes" : "No") + "  \n")) +
+            (locale === Locale.de ? "Typ" : "Type") + ": " + this.requirementDictionary.type + "  \n" +
+
+            dependencyMarkdownString +
+
+        infoLink;
         return {
             kind: "markdown",
-            value:
-                "### " + this.name + ": " + description + "  \n" +
+            value: markdownString
 
-                "## Requirements:  \n" +
-                (min !== undefined ? "Min: " + min + "  \n" : "") +
-                (max !== undefined ? "Max: " + max + "  \n" : "") +
-                (min2 !== undefined ? "Min2: " + min2 + "  \n" : "") +
-                (max2 !== undefined ? "Max2: " + max2 + "  \n" : "") +
-                (defaultVal !== undefined ? "Default value: " + defaultVal + "  \n" : "") +
-                "Not null: " + notNull + "  \n" +
-                "Required: " + required + "  \n" +
-                "Type: " + this.requirementDictionary.type + "  \n" +
-
-                (this.dependencyList && this.dependencyList.length > 0 ? "\n\nDependencies:  \n" + dependencyMarkdownString : "") +
-
-                infoLink
         };
-    };
+    }
+
+    /**
+     * @returns a markdown string that contains the enum values of the parameter with their descriptions.
+     * If the parameter has no enum values, an empty string is returned.
+     */
+    getEnumValuesMarkdown(): string {
+        if (!this.enumValues || this.enumValues.length === 0) {
+            return "";
+        }
+        const locale = getLocale();
+        return (locale === Locale.de ? "### Mögliche Werte:  \n" : "### Possible Values:  \n") +
+            this.enumValues.map(enumValue => {
+                return "- " + enumValue.value + ": " + enumValue.description.getDescription(locale);
+            }).join("\n")
+            + "\n\n";
+    }
+    ;
     /**
      * @returns a short description line for the parameter. Is used within the cycle markdown documentaiton.
      */
@@ -295,7 +339,7 @@ export class RequirementDictionary {
         min2: number | string | undefined,
         max2: number | string | undefined,
         defaultVal: string,
-        notNull: boolean | string,
+        notZero: boolean | string,
         required: boolean | string | undefined,
         type: string
     ) {
@@ -306,7 +350,7 @@ export class RequirementDictionary {
         this.min2 = parseIntOrUndefined(min2);
         this.max2 = parseIntOrUndefined(max2);
         this.default = defaultVal ? defaultVal : undefined;
-        this.notZero = typeof notNull === "boolean" ? notNull : notNull === "true";
+        this.notZero = typeof notZero === "boolean" ? notZero : notZero === "true";
         this.required = typeof required === "boolean" ? required : required === "true";
         this.type = type;
 
@@ -390,4 +434,19 @@ export class DescriptionDictionary {
     }
 }
 
+export class EnumValue {
+    value: number;
+    description: DescriptionDictionary;
+    constructor(enumValueJson: any) {
+        // if the value is missing or not an integer, throw an error
+        if (enumValueJson.Value === undefined || typeof enumValueJson.Value !== "number") {
+            throw new Error("Enum value is missing or not a number");
+        }
+        if (!enumValueJson.Desc) {
+            throw new Error("Enum value description is missing");
+        }
+        this.value = enumValueJson.Value;
+        this.description = new DescriptionDictionary(enumValueJson.Desc["en-US"], enumValueJson.Desc["de-DE"]);
+    }
+}
 
