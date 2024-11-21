@@ -90,8 +90,8 @@ suite('LS ParseResults', () => {
         assert.strictEqual(syntaxArray.multilines[0].type, MatchType.multiline);
         assert.strictEqual(syntaxArray.multilines[0].location.start.line, 21);
         assert.strictEqual(syntaxArray.multilines[0].location.start.column, 1);
-        assert.strictEqual(syntaxArray.multilines[0].location.end.line, 24);
-        assert.strictEqual(syntaxArray.multilines[0].location.end.column, 10);
+        assert.strictEqual(syntaxArray.multilines[0].location.end.line, 25);
+        assert.strictEqual(syntaxArray.multilines[0].location.end.column, 1);
 
         // example for skipBlock
         assert.strictEqual(syntaxArray.skipBlocks[0].type, MatchType.skipBlock);
