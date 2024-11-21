@@ -215,8 +215,13 @@ export class Parameter {
         if (min2 !== undefined && max2 !== undefined) {
             amountOfValues += max2 - min2 + 1;
         }
-        // case 1: parameter has one/two ranges with a maximum difference of 50 -> use a choice
-        if (amountOfValues <= rangeLimitForChoiceSnippet) {
+        // case 1 parameter has defined enum values -> use a choice
+        if (this.enumValues && this.enumValues.length > 0) {
+            const choices = this.enumValues.map(enumValue => enumValue.value.toString());
+            return "${" + tabstopNumber + "|" + choices.join(",") + "|}";
+        }
+        // case 2: parameter has one/two ranges with a maximum difference of 50 -> use a choice
+        else if (amountOfValues <= rangeLimitForChoiceSnippet) {
             const choices = [];
             if (min !== undefined && max !== undefined) {
                 for (let i = min; i <= max; i++) {
@@ -230,15 +235,15 @@ export class Parameter {
             }
             return "${" + tabstopNumber + "|" + choices.join(",") + "|}";
         }
-        // case 2: parameter has min and max but the difference is too big -> show the range as placeholder
+        // case 3: parameter has min and max but the difference is too big -> show the range as placeholder
         else if (min !== undefined && max !== undefined) {
             return "${" + tabstopNumber + ":" + min + "-" + max + "}";
         }
-        // case 3: parameter has a default value -> use the default value as placeholder
+        // case 4: parameter has a default value -> use the default value as placeholder
         else if (defaultVal) {
             return "${" + tabstopNumber + ":" + defaultVal + "}";
         }
-        // case 4: nothing special -> use the lowercase parameter name as placeholder
+        // case 5: nothing special -> use the lowercase parameter name as placeholder
         else {
             return "${" + tabstopNumber + ":" + this.name.toLowerCase() + "}";
         }
