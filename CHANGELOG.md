@@ -15,6 +15,8 @@ Types of changes:
 
 ## [Unreleased]
 
+## [V1.2.0]
+
 ### Added
 
 - Hover information for calls of self-defined subrograms/cycles based on program comments above their definition [Issue #155](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/155)
@@ -400,6 +402,7 @@ Types of changes:
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V1.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.1.0...V1.2.0
 [V1.1.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.0.0...V1.1.0
 [V1.0.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.6...V1.0.0
 [V0.4.6]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.5...V0.4.6
