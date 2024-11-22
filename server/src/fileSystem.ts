@@ -3,6 +3,7 @@ import * as fs from "fs";
 import ignore, { Ignore } from "ignore";
 import { isCncFile } from "./config";
 import { minimatch } from 'minimatch';
+import { TextDocument } from "vscode-languageserver-textdocument";
 /**
  * Finds the most specific glob pattern which matches the given path. "Most specific" is estimated by the depth (count of /) of the pattern.
  * @param path the path to find the most specific glob pattern for. 
@@ -45,7 +46,7 @@ export function findMostSpecificGlobPattern(path: string, patterns: string[]): s
  * @param ignorer optional ignorer to ignore files/directories, defaults to empty ignorer which ignores nothing
  * @returns the paths to the found files 
  */
-export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer | undefined = undefined): string[] {
+export function findFileInRootDir(rootPath: string, fileName: string, ignorer: WorkspaceIgnorer | undefined = undefined, needsToBeCNCFile: boolean = false): string[] {
     let paths: string[] = [];
     const dirEntries = fs.readdirSync(rootPath, { withFileTypes: true });
     for (const entry of dirEntries) {
@@ -56,8 +57,8 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
         }
         if (entry.isDirectory()) {
             //search in subdirectory
-            paths.push(...findFileInRootDir(entryPath, fileName, ignorer));
-        } else if (entry.isFile() && entry.name === fileName && isCncFile(entryPath)) {
+            paths.push(...findFileInRootDir(entryPath, fileName, ignorer, needsToBeCNCFile));
+        } else if (entry.isFile() && entry.name === fileName && (!needsToBeCNCFile || isCncFile(entryPath))) {
             //file found
             const normPath = normalizePath(entryPath);
             paths.push(normPath);
@@ -83,6 +84,22 @@ export function normalizePath(filePath: string): string {
     const normalizedPath = path.normalize(combinedPath);
     return normalizedPath;
 }
+
+/**
+ * Returns the content of the document with the given uri. If the document is not open within the openDocs map, the content is read from the file system and a new TextDocument is created.
+ * @param uri the uri of the document
+ * @param openDocs the map of open documents 
+ * @returns the document with the given uri 
+ */
+export function getDocByUri(uri: string, openDocs: Map<string, TextDocument>): TextDocument {
+    let doc = openDocs.get(uri);
+    if (!doc) {
+        const defContent = fs.readFileSync(new URL(uri), "utf8");
+        doc = TextDocument.create(uri, "prg", 0, defContent);
+    }
+    return doc;
+}
+
 
 /**
  * A ignorer specific to a workspace. It ignores files/directories which are specified in a .isg-cnc-ignore file in the workspace root directory.

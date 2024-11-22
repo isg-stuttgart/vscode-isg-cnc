@@ -6,9 +6,9 @@
 
 {{
 	 const types = {
-      toolCall: "toolCall",
       mainPrg: "mainPrg",
       localSubPrg: "localSubPrg",
+      mainPrgName: "mainPrgName",
 
       // prg calls
       localPrgCall: "localPrgCall",
@@ -20,7 +20,12 @@
       localCycleCallName: "localCycleCallName",
       globalCycleCall: "globalCycleCall",
       globalCycleCallName: "globalCycleCallName",
-
+      cycleParameter: "cycleParameter",
+      cycleParameterAssignment: "cycleParameterAssignment",
+      cycleParamList: "cycleParamList",
+      
+      // other
+      toolCall: "toolCall",
       controlBlock: "controlBlock",
       gotoBlocknumber: "gotoBlocknumber",
       gotoLabel: "gotoLabel",
@@ -32,8 +37,12 @@
       blockNumberLabel: "blockNumberLabel",
       varDeclaration: "varDeclaration",
       variable:"variable",
-      comment: "comment",
-  }
+      lineComment : "lineComment",
+      blockComment: "blockComment",
+      
+      // matches ending with Doc are interpreted as items within a docComment (see end of file)
+  };
+  
  class LightMatch {
     location;
     text;
@@ -66,8 +75,9 @@
 //----------------------------------------------------------
 
 {
+  const blockedBlockNumbersUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
   const numberableLinesUnsorted = new Set();
-  let mainPrg = null;
+  let mainPrgLoc = null; // range of mainPrg as peggy location
 
   // Save start time and cancel and throw error when parsing needs more than 10 seconds
   const startTime = Date.now();
@@ -86,9 +96,13 @@
 //----------------------------------------------------------
 
 start                                                       // start rule
-= fileTree:(file/anyTrash)*                                        
+= fileTree:(file/grayline/anyTrash)*                                        
 {
-  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrg:mainPrg} // return the syntax information
+  // remove block numbers from numberableLinesUnsorted
+  blockedBlockNumbersUnsorted.forEach(blockNumber => {
+    numberableLinesUnsorted.delete(blockNumber);
+  });
+  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
 }
 
 anyTrash "anyTrash"                                         // any trash which is not a file, only needed for cancellation after timeout
@@ -99,45 +113,54 @@ anyTrash "anyTrash"                                         // any trash which i
 }
 
 file "file"
-= file:(grayline* subprogram* mainprogram subprogram*)      // each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
-{
-  if(!mainPrg){
-    mainPrg=file[2]?file[2]:null;
-    return file;
-  }
-}
+// each file is a list of programs, also consume lines which cannot be matched otherwise, guarantee that file is parsed succesfully
+= file:((grayline? subprogram)* grayline? mainprogram grayline? (grayline? subprogram)*)                
 
 subprogram "subprogram"                                     // a subprogram and/or cycle
-= content:("%L" $whitespace+ subprogram_name body){                // each subprogram requires a title and a body
+= content:("%L" $whitespace+ subprogram_name linebreak? body){ // each subprogram requires a title and a body
  return new Match(types.localSubPrg, content, location(), text(), content[2].name);
 }
 
 subprogram_name "subprogram_name"                           // a subprogram name
-= name
+= name:prgName
 {
-  return new Match(types.localPrgDefinitionName, text(), location(), text(), text());
+  return new Match(types.localPrgDefinitionName, text(), location(), text(), name);
 }
 
 mainprogram "mainprogram"                                   // the main program
-= definition:("%" whitespaces $name?)? content:body         // for a main program, the title is optional
+= content:(("%" whitespaces mainPrgName?)? body)            // for a main program, the title is optional
 {
   let name = null
-  if(definition && definition[2]){
-    name = definition[2]
+  if(content[0] && content[0][2]){
+    name = content[0][2].name
   }
+  // save range of mainPrg
+  mainPrgLoc=location()
   return new Match(types.mainPrg, content, location(), text(), name)
 };
 
+mainPrgName "mainPrgName" 
+= name:prgName
+{
+  return new Match(types.mainPrgName, text(), location(), text(), name);
+}
+
+prgName "prgName"                                           // a program name
+= $(!comment non_linebreak)*{
+  blockedBlockNumbersUnsorted.add(location().start.line);
+  return text().trim();
+}
+
 body "body"                                                 // the body of a (sub-) program
 = (!(("%L" whitespace+ name)/("%" whitespaces name?))       // end body when new program part reached
-(block/linebreak))+                                         // the body is a list of comments and blocks
+(block/linebreak/.))+                                       // the body is a list of comments and blocks
 
 block "block"                                               // an NC block
 = content:(
-  $whitespace+
-/ grayspace                                                 // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+  grayspace+                                                // comment/whitespace. This is also included in block_body->default_block but needed here to keep only-comment-lines out of numberableLinesUnsorted
+/ linebreak
 / skipped_block
-/block_body
+/ block_body
 ){
   checkTimeout();
   return content;
@@ -152,8 +175,10 @@ block_body "block_body"
 = content:(
  n_command?                                                 // each block can be numbered by an n_command
 ( control_block                                             // a control block, i.e., $IF, $FOR etc.
+/ multiline_default_block
 / plaintext_block                                           // some plaintext command, i.e., #MSG SAVE
-/ default_block)){                                          // default block, i.e., G01 X12 Y23
+/ default_block)
+linebreak?){                                          // default block, i.e., G01 X12 Y23
 // if text is not only whitespace, then add line to numberableLinesUnsorted
   if(text().trim().length>0){
     numberableLinesUnsorted.add(location().start.line);
@@ -175,21 +200,21 @@ if_block "if_block"                                         // an if block
   grayspaces "$ENDIF" grayspaces                            // ends when closed by $ENDIF which does not close inner block                                         
     
 if_block_for_indentation
-= content:(grayspaces "$IF" line_end                        // begins with $IF line
+= content:(grayspaces "$IF"                        // begins with $IF line
   if_block_content){
   numberableLinesUnsorted.add(location().start.line);
   return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 elseif_block
-= content:(grayspaces ("$ELSEIF" line_end                   // begins with $ELSEIF line
+= content:(grayspaces ("$ELSEIF"                   // begins with $ELSEIF line
    if_block_content)){
   numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
 }
 
 else_block
-= grayspaces  content:("$ELSE" line_end                     // begins with $ELSEIF line
+= grayspaces  content:("$ELSE"                     // begins with $ELSEIF line
    if_block_content){
   numberableLinesUnsorted.add(location().start.line);
 	return new Match(types.controlBlock, content, location(), text(), null);
@@ -218,7 +243,7 @@ gotoLabel                                                   // goto statement to
 plaintext_block "plaintext_block"                           // a block containing #-commands, plaintext command
 = grayspaces 
 ( var_block
-/ $("#" non_linebreak*))
+/ $("#" trash*))
 
 var_block "var_block"                                       // a block of variable declarations
 = content:("#VAR" 
@@ -246,33 +271,31 @@ initialization
 endvar_line
 = (!"#ENDVAR" non_linebreak)* "#ENDVAR"
 
-default_block "default_block"                               // a default block containing "normal" NC-commands
-= (multiline_default_block 
-/ default_line)
-
-multiline_default_block "multiline_default_block"           // a default block over multiple lines, extended by "\" 
+multiline_default_block "multiline_default_block"            // a default block over multiple lines, extended by "\" 
 = content:(
  multiline_line+
- default_line?                                             
-){                                                          // consume the last block, so the first not extended by "\"
+ default_block?                                             
+){                                                           // consume the last block, so the first not extended by "\"
 	return new Match(types.multiline, content, location(), null, null);
 }
 
 multiline_line
-= default_line "\\" grayspaces linebreak                    // at least one line which is extended by \
+= default_block? "\\" grayspaces linebreak                   // at least one line which is extended by \
 
-default_line                                                // line with any whitespaces, paren-comment, program call and commands
-= ((grayspace                                               
+default_block                                                // line with any whitespaces, paren-comment, program call and commands
+= (whitespace+
+/ comment                                             
 / prg_call
 / var
 / command
 / parameter
-/ label)+)
-/ trash_line                                                // collected trashing
+/ label
+/ trash)+
+linebreak?
 
 
-trash_line                                                  // lines which cannot be matched by other rules at the moment
-= ((!stop_trashing .)+ linebreak?/linebreak)                         
+trash                                                       // tokens which cannot be matched by other rules at the moment
+= ((!stop_trashing .)+)                         
 {return "trash: " + text()}
 
 parameter "parameter"
@@ -328,15 +351,19 @@ prg_name_string
   
 cycle_call "cycle_call"
 = content:(("LL"/"L") gap "CYCLE" grayspaces
-   "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
-    (cycle_call_param_multiline/cycle_call_param_line) grayline* "]"){          // brackets can contain a multline or a singleline
-    const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
-    const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
-    let nameLM = content[6][1]                                                  // LightMatch of the cycle name
-    const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
-    content[6][1] = nameMatch                                                   // replace nameLightMatch with nameMatch  
-    return new Match(type, content, location(), text(), nameLM.text);
-  }
+  "[" grayspaces ($("NAME" grayspaces "=" grayspaces) prg_name)
+  cycle_params grayline* "]"){                              // brackets can contain a multline or a singleline
+  const type = content[0]==="LL"?types.localCycleCall:types.globalCycleCall
+  const nameType = content[0]==="LL"?types.localCycleCallName:types.globalCycleCallName
+  let nameLM = content[6][1]                                // LightMatch of the cycle name
+  const nameMatch = new Match(nameType, null, nameLM.location, nameLM.text, nameLM.text)
+  content[6][1] = nameMatch                                 // replace nameLightMatch with nameMatch  
+  return new Match(type, content, location(), text(), nameLM.text);
+}
+
+cycle_params = content:(cycle_call_param_multiline/cycle_call_param_line) {
+  return new Match(types.cycleParamList, content, location(), text(), null) 
+}
 
 cycle_call_param_multiline 
 = content:
@@ -348,10 +375,19 @@ cycle_call_param_line linebreak?){
 }
 
 cycle_call_param_line "cycle_call_param_line"
-= ((line_comment/var/cycle_call_param_line_trash_token))*
+= ((line_comment/paramAssignement/param/var/cycle_call_param_line_trash_token/$whitespace+))*
 
-cycle_call_param_line_trash_token
-= $(!("]"/"\r"/"\n"/"\\"/line_comment/var) .)+
+param = content:("@" $("P"non_neg_integer)){                // one parameter of a cycle
+  return new Match(types.cycleParameter, content, location(), text(), content[1]);
+}
+
+paramAssignement =                                          // one param assignement, meaning a param name followed by a var/string/value
+content:(param grayspaces "=" grayspaces value:(var/string/cycle_call_param_line_trash_token?)){
+  return new Match(types.cycleParameterAssignment, content, location(), text(), content[0].name);
+}
+
+cycle_call_param_line_trash_token                           // trashes non-relevant tokens in cycle call parameters
+= $(!("]"/"\r"/"\n"/"\\"/param/paramAssignement/line_comment/var/whitespace) .)+
 
 label                                                       // a label to which you can jump by goto statement
 = "[" name:$([^\]]*) "]"{
@@ -380,10 +416,10 @@ grayspace "grayspace"                                       // grayspace, a gene
 / comment
 
 grayspaces "grayspaces"
-= grayspace*
+= ($whitespace+/comment)*
 
 grayline "grayline"
-= (whitespace/comment)* linebreak
+= grayspaces linebreak
 / (whitespace/comment)+
 
 comment "comment"                                           // comments are either:
@@ -395,19 +431,15 @@ line_comment "line_comment"                                 // a line comment is
 / semicolon_comment                                         // after semicolon
 
 paren_comment "paren_comment"                               // a line comment with parenthesis
-= $("(" [^)\r\n]* ")" 
-/ "(" [^\r\n]*)                                             // if only opened, then same behaviour as ;-comment
-{ return new Match(types.comment, null, location(), text(), null)}
+= "(" content:$([^)\r\n]*) ")"? 
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 semicolon_comment "semicolon_comment"                       // a line comment after a semicolon
-= ";" [^\r\n]*
-{ return new Match(types.comment, null, location(), text(), null)}
+= ";" content:$([^\r\n]*)
+{ return new Match(types.lineComment, content.trim(), location(), text(), null)}
 
 block_comment "block_comment"                               // a block comment
-= "#COMMENT" whitespace+ "BEGIN"                            // consume #COMMENT BEGIN
-  (!("#COMMENT" whitespace+ "END") .)*                      // consume while current pointer is not on "COMMENT END"
-  ("#COMMENT" whitespace+ "END")                            // consume #COMMENT END
-{ return new Match(types.comment, null, location(), text(), null)}
+= program_doc_block_comment
 
 whitespace "whitespace"                                     // a whitespace, without linebreak
 = [\t ]
@@ -428,7 +460,7 @@ integer "integer"                                           // an integer
 = "-"? non_neg_integer
 
 non_neg_integer "non_neg_integer"                           // a non-negative integer
-= digit+
+= $digit+
 
 number "number"                                             // a number
 = integer ("." non_neg_integer)?
@@ -437,7 +469,7 @@ number "number"                                             // a number
 name "name"                                                 // a name/identifier consisting of alphabetical Characters, "_" and "."
 = $[_a-zA-Z0-9.]+
 
-digit "digit" = $[0-9]                                       // a digit
+digit "digit" = $[0-9]                                      // a digit
 
 non_delimiter "non_delimiter"                               // a non-delimiter
 = [^\t ();"\[\],#$\n\r]
@@ -446,6 +478,39 @@ string "string"                                             // a string
 = "\"" [^\"]* "\""
 {return text()}
 
-line_end
-= non_linebreak* linebreak?
-{return text()}
+//----------------------------------------------------------
+//
+//  Rules for Program Docs
+//
+//----------------------------------------------------------
+program_doc_block_comment "program_doc_block_comment"
+= "#COMMENT" whitespace+ "BEGIN" whitespace*                // consume #COMMENT BEGIN PROGRAM
+  content: program_doc_block_comment_body
+  comment_end                                               // consume #COMMENT END
+{ return new Match(types.blockComment, content, location(), text(), null)}
+
+program_doc_block_comment_body "program_doc_block_comment_body"
+= (
+program_doc_block_comment_body_keyword_line
+/ $((!program_doc_block_comment_body_special_case .)+)
+)*
+  
+program_doc_block_comment_body_special_case "program_doc_block_comment_body_special_case"
+= program_doc_block_comment_body_keyword_line
+/ $comment_end
+
+program_doc_block_comment_body_keyword_line "program_doc_block_comment_body_keyword_line"
+= "@" keyword:$(!(whitespace/comment_end) .)* whitespace* 
+name:name? whitespace* ("-" whitespace*)? 
+rest:$((!(program_doc_block_comment_body_special_case/markdownLinebreak) .)*)
+markdownLinebreak?
+{ 
+  const type = keyword += "Doc";
+  return new Match(type, rest.trim(), location(), text(), name)
+}
+
+comment_end "comment_end"
+= "#COMMENT" whitespace+ "END"
+
+markdownLinebreak "markdownLinebreak" 
+= $(linebreak whitespaces linebreak (linebreak/whitespace)*)  // consume markdown linebreak plus trailing whitespaces/linebreaks

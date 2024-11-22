@@ -1,5 +1,5 @@
-import { Match } from 'server/src/parserClasses';
-import { ParseResults  } from '../../server/src/parsingResults';
+import { Match } from '../../server/src/parserClasses';
+import { ParseResults } from '../../server/src/parsingResults';
 import * as vscode from 'vscode';
 
 /**
@@ -47,7 +47,7 @@ export async function alignComments(): Promise<void> {
                 const startCol = comment.location.start.line === 1 ? comment.location.start.column + selection.start.character : comment.location.start.column;
                 const paddingLength = maxStartCol - startCol;
                 // add the padding at the startColumn of the comment
-                textEdits.push(vscode.TextEdit.insert(new vscode.Position(line.lineNumber, startCol-1), ' '.repeat(paddingLength)));
+                textEdits.push(vscode.TextEdit.insert(new vscode.Position(line.lineNumber, startCol - 1), ' '.repeat(paddingLength)));
             });
 
             // write back edits

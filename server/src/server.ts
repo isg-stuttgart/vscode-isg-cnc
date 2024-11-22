@@ -11,9 +11,12 @@ import { fileURLToPath } from 'node:url';
 import {
 	TextDocument
 } from 'vscode-languageserver-textdocument';
-import * as parser from './parserGlue';
+import * as parser from './getDefinitionAndReferences';
 import { Position } from './parserClasses';
 import * as config from './config';
+import { getCompletions, updateStaticCycleCompletions } from './completion';
+import { getHoverInformation } from './hover';
+import { ParseResults } from './parsingResults';
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 const connection = createConnection(ProposedFeatures.all);
@@ -50,7 +53,15 @@ connection.onInitialize(async (params: InitializeParams) => {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			definitionProvider: true,
-			referencesProvider: true
+			referencesProvider: true,
+			completionProvider: {
+				completionItem: {
+					labelDetailsSupport: false
+				},
+				resolveProvider: false,
+				triggerCharacters: ["=", "@", "\\", "[", "]", "(", ")"]
+			},
+			hoverProvider: true
 		}
 	};
 	console.log("ISG-CNC Language Server initialized");
@@ -90,7 +101,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(text, position, docPos.textDocument.uri, getRootPaths());
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
@@ -119,6 +130,48 @@ connection.onReferences(async (docPos) => {
 		connection.window.showErrorMessage("Getting references failed: " + JSON.stringify(error));
 	}
 });
+
+/**
+ * Provides completion items with snippet insertion, based on the current position in the document.
+ */
+connection.onCompletion((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		return getCompletions(position, textDocument);
+	} catch (error) {
+		console.error("Getting completions failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting completions failed: " + JSON.stringify(error));
+	}
+});
+
+/** Provides the "Hover" functionality. Returns the hover information fitting to the specified position.*/
+connection.onHover((docPos) => {
+	try {
+		const textDocument = documents.get(docPos.textDocument.uri);
+		if (!textDocument) {
+			return null;
+		}
+		const position: Position = docPos.position;
+		const openDocs = getOpenDocs();
+		return getHoverInformation(position, textDocument, getRootPaths(), openDocs);
+	} catch (error) {
+		console.error("Getting hover information failed: " + JSON.stringify(error));
+		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
+	}
+});
+
+function getOpenDocs(): Map<string, TextDocument> {
+	const openDocs = new Map<string, TextDocument>();
+	const allDocs = documents.all();
+	for (const doc of allDocs) {
+		openDocs.set(doc.uri, doc);
+	}
+	return openDocs;
+}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
@@ -155,8 +208,22 @@ connection.onDidChangeConfiguration(async () => {
  * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
+	const oldDocuPath = config.getDocumentationPathWithLocale();
+	const oldCycleSnippetFormatting = config.getCycleSnippetFormatting();
+	const oldExtensionForCycles = config.getExtensionForCycles();
+
+	// update settings
 	const workspaceConfig = await connection.workspace.getConfiguration();
 	config.updateSettings(workspaceConfig);
+
+	// if a setting, relevant for cycle settings is changed, update the cycle completions
+	if (
+		oldDocuPath !== config.getDocumentationPathWithLocale() ||
+		oldCycleSnippetFormatting !== config.getCycleSnippetFormatting() ||
+		oldExtensionForCycles !== config.getExtensionForCycles()
+	) {
+		updateStaticCycleCompletions();
+	}
 }
 
 

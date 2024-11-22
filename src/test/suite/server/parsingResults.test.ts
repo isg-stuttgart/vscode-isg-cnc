@@ -2,7 +2,7 @@ import { ParseResults } from "../../../../server/src/parsingResults";
 import * as assert from 'assert';
 import { getPathOfWorkspaceFile } from "../testHelper";
 import * as fs from "fs";
-import { MatchType } from "../../../../server/src/parserClasses";
+import { MatchType } from "../../../../server/src/matchTypes";
 const usedFilePath = getPathOfWorkspaceFile("parsingResults_test.nc");
 const fileContent = fs.readFileSync(usedFilePath, "utf8");
 const results = new ParseResults(fileContent);
@@ -90,8 +90,8 @@ suite('LS ParseResults', () => {
         assert.strictEqual(syntaxArray.multilines[0].type, MatchType.multiline);
         assert.strictEqual(syntaxArray.multilines[0].location.start.line, 21);
         assert.strictEqual(syntaxArray.multilines[0].location.start.column, 1);
-        assert.strictEqual(syntaxArray.multilines[0].location.end.line, 24);
-        assert.strictEqual(syntaxArray.multilines[0].location.end.column, 10);
+        assert.strictEqual(syntaxArray.multilines[0].location.end.line, 25);
+        assert.strictEqual(syntaxArray.multilines[0].location.end.column, 1);
 
         // example for skipBlock
         assert.strictEqual(syntaxArray.skipBlocks[0].type, MatchType.skipBlock);
@@ -109,21 +109,21 @@ suite('LS ParseResults', () => {
         assert.strictEqual(syntaxArray.blockNumbers[0].location.end.column, 3);
 
         // example for comment (semicolon)
-        assert.strictEqual(syntaxArray.comments[0].type, MatchType.comment);
+        assert.strictEqual(syntaxArray.comments[0].type, MatchType.lineComment);
         assert.strictEqual(syntaxArray.comments[0].location.start.line, 1);
         assert.strictEqual(syntaxArray.comments[0].location.start.column, 1);
         assert.strictEqual(syntaxArray.comments[0].location.end.line, 1);
         assert.strictEqual(syntaxArray.comments[0].location.end.column, 97);
 
         // example for comment (bracket)
-        assert.strictEqual(syntaxArray.comments[1].type, MatchType.comment);
+        assert.strictEqual(syntaxArray.comments[1].type, MatchType.lineComment);
         assert.strictEqual(syntaxArray.comments[1].location.start.line, 3);
         assert.strictEqual(syntaxArray.comments[1].location.start.column, 18);
         assert.strictEqual(syntaxArray.comments[1].location.end.line, 3);
         assert.strictEqual(syntaxArray.comments[1].location.end.column, 44);
 
         // example for comment (block)
-        assert.strictEqual(syntaxArray.comments[8].type, MatchType.comment);
+        assert.strictEqual(syntaxArray.comments[8].type, MatchType.blockComment);
         assert.strictEqual(syntaxArray.comments[8].location.start.line, 38);
         assert.strictEqual(syntaxArray.comments[8].location.start.column, 1);
         assert.strictEqual(syntaxArray.comments[8].location.end.line, 41);

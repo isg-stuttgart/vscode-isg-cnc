@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { Match } from '../../../server/src/parserClasses';
 import * as peggy from 'peggy';
-import { MatchType } from '../../../server/src/parserClasses';
+import { MatchType } from '../../../server/src/matchTypes';
 
 export async function openTestFileForLS(fileName: string): Promise<vscode.TextDocument> {
     const doc = await openTestFile(fileName);
@@ -65,7 +65,7 @@ export async function assertApplyingCommandToFile(fileName: string, expectedName
     await editor.edit(editBuilder => {
         editBuilder.replace(new vscode.Range(0, 0, tmpDoc.lineCount, 0), oldText);
     });
-    
+
 
     //execute passed command
     await command();
@@ -150,4 +150,3 @@ export class VSCodeLocationMock {
         this.range = new vscode.Range(startLine, startColumn, endLine, endColumn);
     }
 }
-

@@ -1,10 +1,11 @@
 import * as fs from "fs";
-import { findFirstMatchWithinPrg, findMatchRangesWithinPrgTree, findMatchesWithinPrgTree, findPreciseMatch } from "../../../../server/src/parserSearching";
+import { findFirstMatchWithinPrg, findMatchRangesWithinPrgTree, findMatchesWithinPrgTree, findPreciseMatchOfTypes } from "../../../../server/src/parserSearching";
 import { getPathOfWorkspaceFile } from "../testHelper";
 import { ParseResults } from "../../../../server/src/parsingResults";
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { FileRange, Match, MatchType, Position } from "../../../../server/src/parserClasses";
+import { FileRange, Match, Position } from "../../../../server/src/parserClasses";
+import { MatchType } from "../../../../server/src/matchTypes";
 const subProgramsNc = fs.readFileSync(getPathOfWorkspaceFile("subPrograms.nc"), "utf8");
 const subProgramsNcAst = new ParseResults(subProgramsNc).results.fileTree;
 suite('LS parserSearching.findFirstMatchWithinPrg', () => {
@@ -29,18 +30,27 @@ suite('LS parserSearching.findFirstMatchWithinPrg', () => {
 
 suite('LS parserSearching.findPreciseMatch', () => {
     test('Top Level', () => {
-        const res1 = findPreciseMatch(subProgramsNcAst, new Position(0, 0));
-        assertIsPrgUP1(res1);
+        const res1AllTypes = findPreciseMatchOfTypes(subProgramsNcAst, new Position(0, 0));
+        assertIsPrgUP1(res1AllTypes);
+        const res1CorrectType = findPreciseMatchOfTypes(subProgramsNcAst, new Position(0, 0), [MatchType.localSubPrg]);
+        assertIsPrgUP1(res1CorrectType);
+        const res1WrongType = findPreciseMatchOfTypes(subProgramsNcAst, new Position(0, 0), [MatchType.blockNumber]);
+        assert.strictEqual(res1WrongType, null);
 
-        const res2 = findPreciseMatch(subProgramsNcAst, new Position(12, 0));
-        assertIsBlockNumber12(res2);
+        const res2AllTypes = findPreciseMatchOfTypes(subProgramsNcAst, new Position(12, 0));
+        assertIsBlockNumber12(res2AllTypes);
+        const res2CorrectType = findPreciseMatchOfTypes(subProgramsNcAst, new Position(12, 0), [MatchType.blockNumber]);
+        assertIsBlockNumber12(res2CorrectType);
+
+        const resWrongType = findPreciseMatchOfTypes(subProgramsNcAst, new Position(6, 0), [MatchType.localSubPrg]);
+        assertIsPrgUP1(resWrongType);
     });
 
     test('Nested Level', () => {
-        const res1 = findPreciseMatch(subProgramsNcAst, new Position(23, 10));
+        const res1 = findPreciseMatchOfTypes(subProgramsNcAst, new Position(23, 10));
         assertIsPrgCallNameUP1(res1);
 
-        const res2 = findPreciseMatch(subProgramsNcAst, new Position(10, 5));
+        const res2 = findPreciseMatchOfTypes(subProgramsNcAst, new Position(10, 5), [MatchType.localSubPrg]);
         assert.strictEqual(res2?.name, "UP2");
         assert.strictEqual(res2?.type, MatchType.localSubPrg);
         assert.deepStrictEqual(res2?.location.start, {
@@ -56,7 +66,7 @@ suite('LS parserSearching.findPreciseMatch', () => {
     });
 
     test('Not Found', () => {
-        const res1 = findPreciseMatch(subProgramsNcAst, new Position(100, 100));
+        const res1 = findPreciseMatchOfTypes(subProgramsNcAst, new Position(100, 100));
         assert.strictEqual(res1, null);
     });
 });

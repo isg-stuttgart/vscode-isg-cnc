@@ -1,5 +1,5 @@
+import { MatchType } from "./matchTypes";
 import { Match, ParseResultContent } from "./parserClasses";
-import { MatchType } from "./parserClasses";
 import * as ncParser from "./parserGenerating/ncParser";
 
 /**
@@ -10,9 +10,16 @@ import * as ncParser from "./parserGenerating/ncParser";
 export class ParseResults {
     public readonly results: ParseResultContent;
     public readonly syntaxArray: SyntaxArray;
+    public readonly plainText: string;
     constructor(text: string) {
-        this.results = ncParser.parse(text) as ParseResultContent;
-        this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+        try {
+            this.results = ncParser.parse(text) as ParseResultContent;
+            this.syntaxArray = this.getSyntaxArrayByTree(this.results.fileTree);
+            this.plainText = text;
+        } catch (error) {
+            throw new Error(`Error while parsing file: ${error}`);
+        }
+
     }
 
     /**
@@ -70,14 +77,10 @@ export class ParseResults {
                 });
             }
             // current element has valid content property (Matches saved in SyntaxTree) to traverse recursively
-            if (element.content !== null && element.content !== undefined && Array.isArray(element.content)) {
-                element.content.forEach((child: any) => {
-                    if (child !== null && child !== undefined) {
-                        traverseRecursive(child);
-                    }
-                });
+            if (element.content !== null && element.content !== undefined) {
+                traverseRecursive(element.content);
             }
-            // add to specific array
+            // add to specific array if element is a match of some type
             if (element.type !== null && element.type !== undefined) {
                 switch (element.type) {
                     case MatchType.toolCall:
@@ -105,7 +108,8 @@ export class ParseResults {
                     case MatchType.blockNumberLabel:
                         blockNumbers.push(element);
                         break;
-                    case MatchType.comment:
+                    case MatchType.lineComment:
+                    case MatchType.blockComment:
                         comments.push(element);
                         break;
                 }
