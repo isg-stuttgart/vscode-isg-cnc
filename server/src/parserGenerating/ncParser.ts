@@ -278,7 +278,7 @@ function peg$parse(input: string, options?: ParseOptions) {
 
   const peg$c0 = function(fileTree: any): any {
     // remove block numbers from numberableLinesUnsorted
-    blockNumberingUnsorted.forEach(blockNumber => {
+    blockedBlockNumbersUnsorted.forEach(blockNumber => {
       numberableLinesUnsorted.delete(blockNumber);
     });
     return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
@@ -318,7 +318,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   };
   const peg$c17 = peg$otherExpectation("prgName");
   const peg$c18 = function(): any {
-    blockNumberingUnsorted.add(location().start.line);
+    blockedBlockNumbersUnsorted.add(location().start.line);
     return text().trim();
   };
   const peg$c19 = peg$otherExpectation("body");
@@ -5914,7 +5914,7 @@ function peg$parse(input: string, options?: ParseOptions) {
   }
 
 
-    const blockNumberingUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
+    const blockedBlockNumbersUnsorted = new Set();                 // these will be removed from numberableLinesUnsorted
     const numberableLinesUnsorted = new Set();
     let mainPrgLoc = null; // range of mainPrg as peggy location
 
