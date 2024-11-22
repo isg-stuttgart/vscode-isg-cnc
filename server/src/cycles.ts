@@ -61,7 +61,10 @@ function jsonCycleToCycle(cycle: any): Cycle {
             cycle.Media,
             documentationReference,
             descriptionDictionary,
-            parameterList
+            parameterList,
+            cycle.License,
+            cycle.SubCycles,
+            cycle.Version
         );
     } catch (error) {
         throw new Error("Failed to parse cycle " + cycle.Name + ": \n" + error);
@@ -110,12 +113,18 @@ export class Cycle {
     documentationReference: DocumentationReference | undefined;
     descriptionDictionary: DescriptionDictionary;
     parameterList: Parameter[];
-    constructor(name: string, media: string | undefined, documentationReference: DocumentationReference | undefined, descriptionDictionary: DescriptionDictionary, parameterList: Parameter[]) {
+    license: string;
+    subcycles: string[];
+    version: string;
+    constructor(name: string, media: string | undefined, documentationReference: DocumentationReference | undefined, descriptionDictionary: DescriptionDictionary, parameterList: Parameter[], license: string, subcycles: string[], version: string) {
         this.name = name;
         this.media = media;
         this.documentationReference = documentationReference;
         this.descriptionDictionary = descriptionDictionary;
         this.parameterList = parameterList;
+        this.license = license;
+        this.subcycles = subcycles;
+        this.version = version;
 
         // throw error if some required parameters are missing
         if (!this.name) {
@@ -127,11 +136,22 @@ export class Cycle {
         if (!this.parameterList) {
             throw new Error("Cycle parameter list is missing");
         }
+        if (!this.license) {
+            throw new Error("Cycle license is missing");
+        }
+        if (!Array.isArray(this.subcycles)) {
+            throw new Error("Subcycles is not an array");
+        }
+        if (!this.version) {
+            throw new Error("Cycle version is missing");
+        }
     }
     getMarkupDocumentation(onlyRequired: boolean): MarkupContent {
         // if the documentation reference is missing, don't add a link to the documentation
         const moreInfo = getLocale() === Locale.de ? "[Mehr Informationen]" : "[More Information]";
         const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n${moreInfo}(${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
+        const subCycleTitle = (getLocale() === Locale.de ? "### Unterzyklen:  \n" : "### Subcycles:  \n");
+        const subcycleString: string = this.subcycles.length > 0 ? subCycleTitle + this.subcycles.map(subcycle => "- " + subcycle).join("\n") + "\n\n" : "";
         let parameterTitle: string;
         const locale = getLocale();
         if (this.parameterList.length > 0) {
@@ -143,10 +163,15 @@ export class Cycle {
             kind: "markdown",
             value:
                 "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n\n" +
+
                 parameterTitle +
                 this.parameterList
                     .filter(param => !onlyRequired || param.requirementDictionary.required)
                     .map(param => param.getShortDescriptionLine()).join("\n") +
+                "\n\n" +
+                (locale === Locale.de ? "### Lizenz:  \n" : "### License:  \n") + this.license + "  \n" +
+                (locale === Locale.de ? "### Version:  \n" : "### Version:  \n") + this.version + "  \n" +
+                subcycleString +
                 infoLink
         };
     }
@@ -291,7 +316,7 @@ export class Parameter {
 
             dependencyMarkdownString +
 
-        infoLink;
+            infoLink;
         return {
             kind: "markdown",
             value: markdownString
@@ -454,4 +479,3 @@ export class EnumValue {
         this.description = new DescriptionDictionary(enumValueJson.Desc["en-US"], enumValueJson.Desc["de-DE"]);
     }
 }
-
