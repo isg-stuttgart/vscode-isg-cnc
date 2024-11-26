@@ -68,7 +68,7 @@ You can define doc comments for your subprograms, cycles, Goto-Labels, Goto-Bloc
 %L UP1...
 ```
 The result will look like this:
-![Subprogram Hover](docs\images\subProgramComment.png)
+![Subprogram Hover](docs/images/subProgramComment.png)
 
 Note the following:
 - Doc comment must start with `#COMMENT BEGIN` and end with `#COMMENT END`
