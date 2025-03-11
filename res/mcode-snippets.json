@@ -40,6 +40,9 @@
         "scope": "isg-cnc"
     },
     "M05": {
+        "body": [
+            "M05"
+        ],
         "description": "M05 Stop spindle",
         "prefix": "M05",
         "scope": "isg-cnc"

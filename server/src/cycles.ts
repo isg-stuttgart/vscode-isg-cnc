@@ -1,7 +1,7 @@
 import { Locale, getLocale } from './config';
 import { MarkupContent } from 'vscode-languageserver';
 import { URI } from 'vscode-uri';
-import * as cyclesJson from "../res/cycles.json";
+import * as cyclesJson from "../../res/cycles.json";
 import * as path from "path";
 
 /**

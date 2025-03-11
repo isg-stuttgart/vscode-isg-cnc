@@ -451,7 +451,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-cnc-language-configuration.json"
+                "configuration": ".res/isg-cnc-language-configuration.json"
             },
             {
                 "id": "isg-list",
@@ -466,7 +466,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-list-language-configuration.json"
+                "configuration": "./res/isg-list-language-configuration.json"
             },
             {
                 "id": "isg-cnc-cycle-error",
@@ -484,38 +484,38 @@
             {
                 "language": "isg-cnc",
                 "scopeName": "source.isg-cnc",
-                "path": "./syntaxes/isg-cnc.tmLanguage.json"
+                "path": "./res/isg-cnc.tmLanguage.json"
             },
             {
                 "language": "isg-list",
                 "scopeName": "source.isg-list",
-                "path": "./syntaxes/isg-list.tmLanguage.json"
+                "path": "./res/isg-list.tmLanguage.json"
             }
         ],
         "snippets": [
             {
                 "language": "isg-cnc",
-                "path": "./snippets/dollar-snippets.json"
+                "path": "./res/dollar-snippets.json"
             },
             {
                 "language": "isg-cnc",
-                "path": "./snippets/gcode-snippets.json"
+                "path": "./res/gcode-snippets.json"
             },
             {
                 "language": "isg-cnc",
-                "path": "./snippets/general-snippets.json"
+                "path": "./res/general-snippets.json"
             },
             {
                 "language": "isg-cnc",
-                "path": "./snippets/hashtag-snippets.json"
+                "path": "./res/hashtag-snippets.json"
             },
             {
                 "language": "isg-cnc",
-                "path": "./snippets/mcode-snippets.json"
+                "path": "./res/mcode-snippets.json"
             },
             {
                 "language": "isg-cnc-cycle-error",
-                "path": "./snippets/cnc-cycles-error-definition-snippets.json"
+                "path": "./res/cnc-cycles-error-definition-snippets.json"
             }
         ],
         "themes": [
