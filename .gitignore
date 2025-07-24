@@ -12,3 +12,4 @@ docs/book/
 src/test/res/tmp.nc
 src/test/res/.vscode
 src/test/res/.isg-cnc-ignore
+extension-resources-output
