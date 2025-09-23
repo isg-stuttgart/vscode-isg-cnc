@@ -9,7 +9,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G00",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G00\n\nGeradeninterpolation im Eilgang",
@@ -29,7 +28,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G01",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G01\n\nGeradeninterpolation",
@@ -49,7 +47,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G02",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G02\n\nKreis im Uhrzeigersinn (cw)",
@@ -69,7 +66,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G03",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G03\n\nKreis im Gegenuhrzeigersinn (ccw)",
@@ -89,7 +85,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G02 Z.. K..",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G02 Z.. K..\n\nHelikalinterpolation (cw)",
@@ -109,7 +104,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G03 Z.. K..",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G03 Z.. K..\n\nHelikalinterpolation (ccw)",
@@ -129,7 +123,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G04 ${1|P,X,S|}${2:[Dwell]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G04\n\nVerweilzeit",
@@ -149,7 +142,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G05",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G05\n\nTangentiale An/Abwahl der WRK",
@@ -169,7 +161,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G08",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G08\n\nBeschleunigung am Satzanfang",
@@ -189,7 +180,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G09",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G09\n\nVerzögerung am Satzende",
@@ -209,7 +199,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G10",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G10\n\nVorschub der WRK: konstant",
@@ -229,7 +218,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G11",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G11\n\nVorschub der WRK: angepasst",
@@ -249,7 +237,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G12",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G12\n\nAbwahl Eckenverzögerung",
@@ -269,7 +256,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G13",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G13\n\nAnwahl Eckenverzögerung",
@@ -289,7 +275,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G17",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G17\n\nX-Y-Ebene",
@@ -309,7 +294,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G18",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G18\n\nZ-X-Ebene",
@@ -329,7 +313,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G19",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G19\n\nY-Z-Ebene",
@@ -349,7 +332,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G20",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G20\n\nAbwahl der Spiegelung",
@@ -369,7 +351,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G21",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G21\n\nSpiegeln der programmierten Wege an der Y-Achse",
@@ -389,7 +370,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G22",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G22\n\nSpiegeln der programmierten Wege an der X-Achse",
@@ -409,7 +389,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G23",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G23\n\nÜberlagerung von G21 und G22",
@@ -429,7 +408,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G25",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G25\n\nGeradenübergänge bei der WRK",
@@ -449,7 +427,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G26",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G26\n\nKreisübergänge bei der WRK",
@@ -469,7 +446,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G33",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G33\n\nGewindeschneiden, gleichbleibende Steigung",
@@ -504,7 +480,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G40",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G40\n\nWRK/SRK Abwahl",
@@ -539,7 +514,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G41",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G41\n\nWRK/SRK links der Kontur",
@@ -574,7 +548,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G42",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G42\n\nWRK/SRK rechts der Kontur",
@@ -594,7 +567,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G51 X${1:[Diameter]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G51\n\nAnwahl Durchmesserprogrammierung",
@@ -614,7 +586,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G52",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G52\n\nAbwahl Durchmesserprogrammierung",
@@ -634,7 +605,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G53",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G53\n\nAbwahl der Nullpunktverschiebung",
@@ -654,7 +624,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G${1|54,55,56,57,58,59|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G54 - G59\n\nAnwahl der Nullpunktverschiebungen",
@@ -679,7 +648,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G60",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G60\n\nGenauhalt",
@@ -699,7 +667,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G61",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G61\n\nPolynomüberschleifen",
@@ -719,7 +686,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G63 Z${1:[ZPos]} F${2:[Feed]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G63\n\nGewindebohren",
@@ -739,7 +705,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G66",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G66\n\nTaktsynchronisierung am Satzende",
@@ -759,7 +724,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G68",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G68\n\nAnwahl Konturrotation",
@@ -779,7 +743,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G69",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G69\n\nAbwahl Konturrotation",
@@ -799,7 +762,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G70",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G70\n\nEingaben in Zoll (Inch)",
@@ -819,7 +781,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G71",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G71\n\nEingaben metrisch",
@@ -861,7 +822,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G74 X${1|1,2,3|} Y${2|1,2,3|} Z${3|1,2,3|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G74\n\nReferenzpunktfahrt",
@@ -881,7 +841,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G${1|80,81,82,83,84,85,86,87,88,89|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G80 - G89\n\nImplizite Unterprogrammaufrufe",
@@ -910,7 +869,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G90",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G90\n\nMaßsysteme, Absolutmaß",
@@ -930,7 +888,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G91",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G91\n\nMaßsysteme, Kettenmaß(alle Angaben relativ)",
@@ -950,7 +907,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G92",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G92\n\nBezugspunktverschiebung",
@@ -970,7 +926,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G93",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G93\n\nUmschalten F-Wort auf Bearbeitungszeit in Sekunden",
@@ -990,7 +945,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G94",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G94\n\nUmschalten F-Wort auf Vorschubgeschwindigkeit pro Minute",
@@ -1025,7 +979,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G95",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G95\n\nUmdrehungsvorschub",
@@ -1045,7 +998,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G96",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G96\n\nUmschalten S-Wort auf konstante Schnittgeschwindigkeit",
@@ -1065,7 +1017,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G97",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G97\n\nUmschalten S-Wort auf Spindeldrehzahl",
@@ -1085,7 +1036,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G98",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G98\n\nNegativen Softwareendschalter setzen",
@@ -1105,7 +1055,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G99",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G99\n\nPositiven Softwareendschalter setzen",
@@ -1154,7 +1103,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G100",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G100\n\nMessfunktionen",
@@ -1174,7 +1122,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G101",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G101\n\nMessoffset in Verschiebung einrechnen",
@@ -1194,7 +1141,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G102",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G102\n\nMessoffset aus Verschiebung rückrechnen",
@@ -1214,7 +1160,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G106",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G106\n\nMessfahrt mit Fahren bis Zielpunkt (Typ 3)",
@@ -1234,7 +1179,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G107",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G107\n\nAbwahl satzübergreifendes Kantenstoßen",
@@ -1254,7 +1198,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G108",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G108\n\nKantenstoßen",
@@ -1274,7 +1217,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G112",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G112\n\nGetriebeschalten",
@@ -1294,7 +1236,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G115",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G115\n\nAusschalten von Look-Ahead Funktionalität",
@@ -1314,7 +1255,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G116",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G116\n\nAusschalten der Berechnung der Satzübergangsgeschwindigkeit",
@@ -1334,7 +1274,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G117",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G117\n\nEinschalten der kompletten Look-Ahead Funktionalität",
@@ -1354,7 +1293,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G127",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G127\n\nGewichtung der Maximalgeschwindigkeit, achsspezifisch",
@@ -1374,7 +1312,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G128",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G128\n\nGewichtung der Maximalgeschwindigkeit, achsgruppenspezifisch",
@@ -1394,7 +1331,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G129",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G129\n\nGewichtung der Eilganggeschwindigkeit",
@@ -1414,7 +1350,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G130",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G130\n\nBeschleunigungsgewichtung, achsspezifisch",
@@ -1434,7 +1369,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G131",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G131\n\nBeschleunigungsgewichtung G01/G02/G03, achsgruppenspezifisch",
@@ -1454,7 +1388,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G132",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G132\n\nRampenzeitgewichtung, achsspezifisch",
@@ -1474,7 +1407,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G133",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G133\n\nRampenzeitgewichtung G01/G02/G03, achsgruppenspezifisch",
@@ -1494,7 +1426,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G134",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G134\n\nGeometrische Rampenzeitgewichtung, achsgruppenspezifisch",
@@ -1529,7 +1460,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G135",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G135\n\nAnwahl der Vorsteuerung",
@@ -1564,7 +1494,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G136",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G136\n\nAngabe der Gewichtung der Vorsteuerung",
@@ -1599,7 +1528,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G137",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G137\n\nAbwahl der Vorsteuerung",
@@ -1634,7 +1562,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G138",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G138\n\nDirekte An-/Abwahl der WRK",
@@ -1683,7 +1610,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G139",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G139\n\nIndirekte An-/Abwahl der WRK",
@@ -1703,7 +1629,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G140",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G140\n\nAbwahl Konturausblendung",
@@ -1723,7 +1648,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G141",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G141\n\nAnwahl Konturausblendung",
@@ -1758,7 +1682,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G150",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G150\n\nAbwahl Spline-Interpolation",
@@ -1778,7 +1701,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G151",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G151\n\nAnwahl Spline-Interpolation",
@@ -1798,7 +1720,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G159",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G159\n\nErweiterte Nullpunktverschiebung",
@@ -1818,7 +1739,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G160",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G160\n\nNullpunktverschiebungen achsspezifisch freigeben/verriegeln",
@@ -1838,7 +1758,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G161",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G161\n\nMittelpunktsangabe bei Kreisdefinition, absolut",
@@ -1858,7 +1777,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G162",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G162\n\nMittelpunktsangabe bei Kreisdefinition relativ (Grundzustand)",
@@ -1878,7 +1796,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G163",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G163\n\nAnwahl der Radiusprogrammierung",
@@ -1898,7 +1815,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G164",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G164\n\nAbwahl Kreismittelpunktskorrektur",
@@ -1918,7 +1834,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G165",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G165\n\nAnwahl Kreismittelpunktskorrektur",
@@ -1938,7 +1853,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G166",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G166\n\nOverride 100%",
@@ -1973,7 +1887,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G167",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G167\n\nSpindeloverride 100%",
@@ -1993,7 +1906,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G193",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G193\n\nWegbezogene Vorschubinterpolation",
@@ -2013,7 +1925,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G194",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G194\n\nUmschalten F-Wort auf Gewichtung der maximalen Vorschubgeschwindigkeit",
@@ -2033,7 +1944,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G196",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G196\n\nMaximale Spindeldrehzahl bei G96",
@@ -2053,7 +1963,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G200",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G200\n\nAnwahl Handbetrieb ohne parallele Interpolation",
@@ -2073,7 +1982,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G201",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G201\n\nAnwahl Handbetrieb mit paralleler Interpolation",
@@ -2093,7 +2001,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G202",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G202\n\nAbwahl Handbetrieb mit paralleler Interpolation",
@@ -2113,7 +2020,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G230",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G230\n\nBeschleunigungsgewichtung G00, achsspezifisch",
@@ -2133,7 +2039,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G231",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G231\n\nBeschleunigungsgewichtung G00, achsgruppenspezifisch",
@@ -2153,7 +2058,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G233",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G233\n\nRampenzeitgewichtung G00, achsgruppenspezifisch",
@@ -2188,7 +2092,6 @@
     ],
     "kind": "Snippet",
     "completionText": "G236",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G236\n\nDirekte An-/Abwahl der WRK auf die Bahn",
@@ -2208,7 +2111,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G237",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G237\n\nLotrechte An-/Abwahl der WRK",
@@ -2228,7 +2130,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G238",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G238\n\nInneneckanwahl der WRK",
@@ -2248,7 +2149,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G239",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G239\n\nDirekte An-/Abwahl der WRK ohne Satz",
@@ -2268,7 +2168,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G260",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G260\n\nAbwahl Polynomüberschleifen",
@@ -2288,7 +2187,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G261",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G261\n\nAnwahl Polynomüberschleifen (am Satzende)",
@@ -2308,7 +2206,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G293",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G293\n\nZeitbezogene Vorschubinterpolation",
@@ -2328,7 +2225,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G301",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G301\n\nEinfügen von Fasen",
@@ -2348,7 +2244,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G302",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G302\n\nEinfügen von Radien",
@@ -2368,7 +2263,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G303",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G303\n\nKreisbogen im Raum",
@@ -2388,7 +2282,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G310",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G310\n\nMessen mit Unterbrechung und Sprung (G310) (Typ 5, 6)",
@@ -2408,7 +2301,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G331",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G331\n\nGewindebohren mit Angabe der Steigung",
@@ -2428,7 +2320,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G332",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G332\n\nGewindebohren Rückzug mit Angabe der Steigung",
@@ -2448,7 +2339,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G333",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G333\n\nBeschleunigungsgewichtung bei Feedhold, achsspezifisch",
@@ -2468,7 +2358,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G334",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G334\n\nBeschleunigungsgewichtung bei Feedhold, achsgruppenspezifisch",
@@ -2488,7 +2377,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G338",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G338\n\nRampenzeitgewichtung bei Feedhold, achsspezifisch",
@@ -2508,7 +2396,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G339",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G339\n\nRampenzeitgewichtung bei Feedhold, achsgruppenspezifisch",
@@ -2528,7 +2415,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G351",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G351\n\nSpiegelung mit Achsangabe",
@@ -2548,7 +2434,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G359",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G359\n\nAbwahl Genauhalt",
@@ -2568,7 +2453,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G360",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G360\n\nAnwahl Genauhalt",
@@ -2588,7 +2472,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G${1|800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G800 - G819\n\nImplizite Unterprogrammaufrufe (zusätzlich)",
@@ -2627,7 +2510,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G900",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G900\n\nVerzögerung am Satzende",
@@ -2647,7 +2529,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "G901",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### G901\n\nVerzögerung nach Satzende",
@@ -2667,7 +2548,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$BREAK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $BREAK\n\nBREAK- Anweisung",
@@ -2687,7 +2567,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$CONTINUE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $CONTINUE\n\nCONTINUE- Anweisung",
@@ -2707,7 +2586,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$DO\n\t${0}\n\\$ENDDO ${1:[Options]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $DO\n\nDO- Schleife",
@@ -2727,7 +2605,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ENDDO",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ENDDO\n\nDO- Schleife",
@@ -2747,7 +2624,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$REPEAT\n\t${0}\n\\$UNTIL ${1:[Options]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $REPEAT\n\nREPEAT- Schleife",
@@ -2767,7 +2643,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$UNTIL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $UNTIL\n\nREPEAT- Schleife",
@@ -2787,7 +2662,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$FOR P${1:[Counting Variable]} = ${2:[Start value]}, ${3:[End value]}, ${4:[counting increment]}\n\t${0}\n\\$ENDFOR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $FOR\n\nFOR- Schleife",
@@ -2807,7 +2681,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ENDFOR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ENDFOR\n\nFOR- Schleife",
@@ -2827,7 +2700,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$GOTO",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $GOTO\n\nGOTO- Anweisung",
@@ -2847,7 +2719,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$IF ${1:[Options]}\n\t${0}\n\\$ENDIF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $IF\n\nIF- ELSE- Verzweigung",
@@ -2867,7 +2738,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ELSE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ELSE\n\nIF- ELSE- Verzweigung",
@@ -2887,7 +2757,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ELSEIF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ELSEIF\n\nIF- ELSE- Verzweigung",
@@ -2907,7 +2776,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ENDIF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ENDIF\n\nIF- ELSE- Verzweigung",
@@ -2927,7 +2795,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$IF ${1:[Options]}\n\t${2}\n\\$ELSE\n\t${0}\n\\$ENDIF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $IFELSE\n\nIF- ELSE- Verzweigung",
@@ -2947,7 +2814,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$SWITCH ${1:[Options]}\n\t\\$CASE ${2}\n\t\t${0}\n\t\t\\$BREAK\n\t\\$DEFAULT\n\\$ENDSWITCH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $SWITCH\n\nSprungverteiler",
@@ -2967,7 +2833,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$CASE ${2}\n\t\t${0}\n\t\\$BREAK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $CASE\n\nSprungverteiler",
@@ -2987,7 +2852,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$DEFAULT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $DEFAULT\n\nSprungverteiler",
@@ -3007,7 +2871,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ENDSWITCH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ENDSWITCH\n\nSprungverteiler",
@@ -3027,7 +2890,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$WHILE ${1:[Options]}\n\t${0}\n\\$ENDWHILE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $WHILE\n\nWHILE- Schleife",
@@ -3047,7 +2909,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\\$ENDWHILE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### $ENDWHILE\n\nWHILE- Schleife",
@@ -3067,7 +2928,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M00",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M00\n\nProgrammierter Halt",
@@ -3087,7 +2947,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M01",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M01\n\nWahlweiser Halt",
@@ -3107,7 +2966,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M02",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M02\n\nProgrammende",
@@ -3142,7 +3000,6 @@
     ],
     "kind": "Snippet",
     "completionText": "M03",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M03\n\nSpindeldrehung cw",
@@ -3177,7 +3034,6 @@
     ],
     "kind": "Snippet",
     "completionText": "M04",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M04\n\nSpindeldrehung ccw",
@@ -3212,7 +3068,6 @@
     ],
     "kind": "Snippet",
     "completionText": "M05",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M05\n\nSpindel stoppen",
@@ -3232,7 +3087,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M06 T${1:[Tool Number]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M06\n\nAufruf eines Werkzeugwechselprogramms",
@@ -3252,7 +3106,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M17 S.POS=${1:[Angle]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M17\n\nUnterprogrammende",
@@ -3287,7 +3140,6 @@
     ],
     "kind": "Snippet",
     "completionText": "M19 S.POS=${1:[Angle]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M19\n\nSpindel positionieren",
@@ -3307,7 +3159,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M29",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M29\n\nUnterprogrammende",
@@ -3327,7 +3178,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M30",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M30\n\nProgrammende",
@@ -3347,14 +3197,18 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "M${1|40,41,42,43,44,45|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M40 - 45\n\nAnwahl der Spindelgetriebestufen",
       "en-GB": "### M40 - 45\n\nSelecting spindle gear stages"
     },
     "hoverTrigger": [
-      "M40 - 45"
+      "M40",
+      "M41",
+      "M42",
+      "M43",
+      "M44",
+      "M45"
     ]
   },
   {
@@ -3367,7 +3221,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "D",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### D\n\nWerkzeuggeometriekorrektur (Werkzeugkorrekturdaten)",
@@ -3387,7 +3240,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "E",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### E\n\nVorschubgeschwindigkeit am Satzende",
@@ -3407,7 +3259,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "F",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### F\n\nVorschubgeschwindigkeit im Satz",
@@ -3442,7 +3293,6 @@
     ],
     "kind": "Snippet",
     "completionText": "M/H",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M/H\n\nAnwenderspezifische Technofunktionen (M/H)",
@@ -3462,7 +3312,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "L",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### L\n\nGlobale Unterprogramme",
@@ -3482,7 +3331,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "LL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### LL\n\nLokale Unterprogramme",
@@ -3501,15 +3349,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "L , LL CYCLE",
-    "range": "___RANGE___",
+    "completionText": "${1|L,LL|} Cycle",
     "filterText": null,
     "hoverText": {
       "de-DE": "### L , LL CYCLE\n\nZyklen als globale oder lokale Unterprogramme",
       "en-GB": "### L , LL CYCLE\n\nCycles as global or local subroutines"
     },
     "hoverTrigger": [
-      "L , LL CYCLE"
+      "L CYCLE",
+      "LL CYCLE"
     ]
   },
   {
@@ -3522,7 +3370,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "L SEQUENCE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### L SEQUENCE\n\nAufruf von Satzfolgen",
@@ -3542,7 +3389,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "N",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### N\n\nSatznummer",
@@ -3562,7 +3408,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "P",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### P\n\nParameter und Parameterrechnung",
@@ -3582,7 +3427,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "R",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### R\n\nRadiusprogrammierung",
@@ -3617,7 +3461,6 @@
     ],
     "kind": "Snippet",
     "completionText": "S",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### S\n\nSpindeldrehzahl",
@@ -3652,7 +3495,6 @@
     ],
     "kind": "Snippet",
     "completionText": "S.POS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### S.POS\n\nSpindel positionieren",
@@ -3672,7 +3514,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "S.OFFSET",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### S.OFFSET\n\nGewindeversatzwinkel bei mehrgängigen Gewinden",
@@ -3692,7 +3533,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "T",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### T\n\nWerkzeugplatzanwahl",
@@ -3720,7 +3560,6 @@
     ],
     "kind": "Snippet",
     "completionText": "/",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### /\n\nAusblenden von Sätzen",
@@ -3740,7 +3579,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "\"...\"",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### \"...\"\n\nMakroprogrammierung",
@@ -3759,15 +3597,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#ACS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#ACS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ACS ON/OFF\n\nDefinition/ Aktivierung eines Aufspannlagenkorrektur-KS",
       "en-GB": "### #ACS ON/OFF\n\nDefining/activating a clamping position compensation coordinate system"
     },
     "hoverTrigger": [
-      "#ACS ON/OFF"
+      "#ACS ON",
+      "#ACS OFF"
     ]
   },
   {
@@ -3780,7 +3618,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#ADD",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ADD\n\nZusatzinformation am Satzende",
@@ -3800,7 +3637,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AKIMA STARTVECTOR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AKIMA STARTVECTOR\n\nDefinition Starttangente",
@@ -3820,7 +3656,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AKIMA ENDVECTOR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AKIMA ENDVECTOR\n\nDefinition Zieltangente",
@@ -3840,7 +3675,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AKIMA TRANS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AKIMA TRANS\n\nÜbergangsart Splinekurve - Bewegungssatz",
@@ -3860,7 +3694,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#ANG",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ANG\n\nKonturzugprogrammierung",
@@ -3880,7 +3713,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AX DEF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX DEF\n\nDefinition einer Achskonfiguration (erweiterte Syntax)",
@@ -3900,7 +3732,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AX DEF DEFAULT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX DEF DEFAULT\n\nLaden der Defaultachskonfiguration (erweiterte Syntax)",
@@ -3934,15 +3765,16 @@
       }
     ],
     "kind": "Snippet",
-    "completionText": "#AX LINK ON/OFF/OFF ALL",
-    "range": "___RANGE___",
+    "completionText": "#AX LINK ${1|ON,OFF,OFF|} ALL",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX LINK ON/OFF/OFF ALL\n\nProgrammierung von Achskopplungen",
       "en-GB": "### #AX LINK ON/OFF/OFF ALL\n\nProgramming axis couplings"
     },
     "hoverTrigger": [
-      "#AX LINK ON/OFF/OFF ALL"
+      "#AX LINK ON ALL",
+      "#AX LINK OFF ALL",
+      "#AX LINK OFF ALL"
     ]
   },
   {
@@ -3954,15 +3786,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#AX LOCK/UNLOCK ALL",
-    "range": "___RANGE___",
+    "completionText": "#AX ${1|LOCK,UNLOCK|} ALL",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX LOCK/UNLOCK ALL\n\nSperren einer Achsbewegung bei PTP",
       "en-GB": "### #AX LOCK/UNLOCK ALL\n\nLocking an axis motion during PTP"
     },
     "hoverTrigger": [
-      "#AX LOCK/UNLOCK ALL"
+      "#AX LOCK ALL",
+      "#AX UNLOCK ALL"
     ]
   },
   {
@@ -3975,7 +3807,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AX REQUEST",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX REQUEST\n\nAnfordern von Achsen (erweiterte Syntax)",
@@ -3995,7 +3826,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AX RELEASE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX RELEASE\n\nAbgeben von Achsen (erweiterte Syntax)",
@@ -4015,7 +3845,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#AX RELEASE ALL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX RELEASE ALL\n\nAbgeben aller Achsen (erweiterte Syntax)",
@@ -4035,7 +3864,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#BACKWARD STORAGE CLEAR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #BACKWARD STORAGE CLEAR\n\nRückwärtsfahrspeicher löschen",
@@ -4055,7 +3883,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#BCS DEF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #BCS DEF\n\nDefinition und Speicherung eines BCS",
@@ -4074,15 +3901,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#BCS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#BCS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #BCS ON/OFF\n\nDefinition, Speicherung und Aktivierung eines BCS",
       "en-GB": "### #BCS ON/OFF\n\nDefining, storing and activating a BCS"
     },
     "hoverTrigger": [
-      "#BCS ON/OFF"
+      "#BCS ON",
+      "#BCS OFF"
     ]
   },
   {
@@ -4094,15 +3921,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#BLOCKSEARCH LOCKED/|||RELEASED",
-    "range": "___RANGE___",
+    "completionText": "#BLOCKSEARCH ${1|LOCKED,|||RELEASED|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #BLOCKSEARCH LOCKED/|||RELEASED\n\nSperren von Programmbereichen für den Satzvorlauf",
       "en-GB": "### #BLOCKSEARCH LOCKED/|||RELEASED\n\nLocking program areas for block search"
     },
     "hoverTrigger": [
-      "#BLOCKSEARCH LOCKED/|||RELEASED"
+      "#BLOCKSEARCH LOCKED",
+      "#BLOCKSEARCH |||RELEASED"
     ]
   },
   {
@@ -4114,15 +3941,16 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CACHE LOAD/CLEAR/ALL",
-    "range": "___RANGE___",
+    "completionText": "#CACHE ${1|LOAD,CLEAR,ALL|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CACHE LOAD/CLEAR/ALL\n\nNC-Programme in lokalen Speicher laden",
       "en-GB": "### #CACHE LOAD/CLEAR/ALL\n\nLoading NC programs to local cache"
     },
     "hoverTrigger": [
-      "#CACHE LOAD/CLEAR/ALL"
+      "#CACHE LOAD",
+      "#CACHE CLEAR",
+      "#CACHE ALL"
     ]
   },
   {
@@ -4135,7 +3963,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CALL AX",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CALL AX\n\nAnfordern von Achsen",
@@ -4155,7 +3982,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CAX",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CAX\n\nAnfordern der Spindelachse für C-Achsbearbeitung",
@@ -4175,7 +4001,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CAX OFF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CAX OFF\n\nAbgabe der C-Achse an die Spindel",
@@ -4194,15 +4019,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CAXTRACK ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#CAXTRACK ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CAXTRACK ON/OFF\n\nAutomatische Achsnachführung",
       "en-GB": "### #CAXTRACK ON/OFF\n\nAutomatic axis tracking"
     },
     "hoverTrigger": [
-      "#CAXTRACK ON/OFF"
+      "#CAXTRACK ON",
+      "#CAXTRACK OFF"
     ]
   },
   {
@@ -4230,7 +4055,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#CHANNEL INIT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CHANNEL INIT\n\nKanal mit aktuellen Soll-/Istpositionen initialisieren",
@@ -4249,15 +4073,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CHANNEL INTERFACE ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#CHANNEL INTERFACE ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CHANNEL INTERFACE ON/OFF\n\nDynamisches CS über Kanalinterface",
       "en-GB": "### #CHANNEL INTERFACE ON/OFF\n\nDynamic CS via channel interface"
     },
     "hoverTrigger": [
-      "#CHANNEL INTERFACE ON/OFF"
+      "#CHANNEL INTERFACE ON",
+      "#CHANNEL INTERFACE OFF"
     ]
   },
   {
@@ -4285,7 +4109,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#CHANNEL SET",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CHANNEL SET\n\nSetzen funktionsspezifischer Parameter im Kanal",
@@ -4305,7 +4128,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CHF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CHF\n\nEinfügen von Fasen und Radien: Fasenlänge",
@@ -4325,7 +4147,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CHR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CHR\n\nEinfügen von Fasen und Radien: Fasenbreite",
@@ -4345,7 +4166,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CLEAR CONFIG",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CLEAR CONFIG\n\nLöschen einer gesicherten Konfiguration",
@@ -4365,7 +4185,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#COMMAND WR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #COMMAND WR\n\nNicht synchronisiertes Schreiben von SERCOS-Kommandos",
@@ -4385,7 +4204,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#COMMAND WR SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #COMMAND WR SYN\n\nSynchronisiertes Schreiben von SERCOS-Kommandos",
@@ -4405,7 +4223,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#COMMAND WAIT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #COMMAND WAIT\n\nNicht synchronisiertes Warten auf SERCOS-Kommandos",
@@ -4425,7 +4242,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#COMMAND WAIT SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #COMMAND WAIT SYN\n\nSynchronisiertes Warten auf SERCOS-Kommandos",
@@ -4445,14 +4261,14 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#COMMENT BEGIN\n\t${0}\n#COMMENT END",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #COMMENT BEGIN/END\n\nSatzübergreifender Kommentar",
       "en-GB": "### #COMMENT BEGIN/END\n\nCross-block comments"
     },
     "hoverTrigger": [
-      "#COMMENT BEGIN/END"
+      "#COMMENT BEGIN",
+      "#COMMENT END"
     ]
   },
   {
@@ -4480,7 +4296,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#CONTOUR MODE [${1:ACC_MAX=$2} ${3:ACC_MIN=$4} ${5:CHECK_JERK=$6} ${7:CONST_VEL=$8} ${9:DEV=$10} ${11:DIST_MASTER=$12} ${13:DIST_SOFT=$14} ${15:DIST_WEIGHT=$16} ${17:DIST=$18} ${19:INTER_ACTION=$20} ${21:MAX_ANGLE=$22} ${23:PATH_DEV=$24} ${25:PATH_DIST=$26} ${27:POST_ACTION=$28} ${29:POST_DIST=$30} ${31:POS=$32} ${33:PRE_ACTION=$34} ${35:PRE_DIST=$36} ${37:PTP=$38} ${39:RAMP_TIME=$40} ${41:RELEVANT_PATH=$42} ${43:RELEVANT_TRACK=$44} ${45:REMAIN_PART=$46} ${47:TRACK_DEV=$48} ${49:TRACK_DIST=$50}]",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CONTOUR MODE\n\nÜberschleifen",
@@ -4499,15 +4314,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CONTROL AREA BEGIN/END",
-    "range": "___RANGE___",
+    "completionText": "#CONTROL AREA ${1|BEGIN,END|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CONTROL AREA BEGIN/END\n\nDefinition eines Kontrollbereichs",
       "en-GB": "### #CONTROL AREA BEGIN/END\n\nDefining a control area"
     },
     "hoverTrigger": [
-      "#CONTROL AREA BEGIN/END"
+      "#CONTROL AREA BEGIN",
+      "#CONTROL AREA END"
     ]
   },
   {
@@ -4519,15 +4334,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CONTROL AREA ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#CONTROL AREA ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CONTROL AREA ON/OFF\n\nAn-/ Abwahl eines Kontrollbereichs",
       "en-GB": "### #CONTROL AREA ON/OFF\n\nSelecting/deselecting control area"
     },
     "hoverTrigger": [
-      "#CONTROL AREA ON/OFF"
+      "#CONTROL AREA ON",
+      "#CONTROL AREA OFF"
     ]
   },
   {
@@ -4540,7 +4355,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CONTROL AREA CLEAR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CONTROL AREA CLEAR\n\nLöschen eines Kontrollbereichs",
@@ -4560,7 +4374,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CORNER PARAM",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CORNER PARAM\n\nParametrierung der Eckenverzögerung",
@@ -4580,7 +4393,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CS DEF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS DEF\n\nDefinition und Speicherung eines CS",
@@ -4599,15 +4411,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#CS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS ON/OFF\n\nDefinition, Speicherung und Aktivierung eines CS",
       "en-GB": "### #CS ON/OFF\n\nDefining, storing and activating a CS"
     },
     "hoverTrigger": [
-      "#CS ON/OFF"
+      "#CS ON",
+      "#CS OFF"
     ]
   },
   {
@@ -4619,15 +4431,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CS MODE ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#CS MODE ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS MODE ON/OFF\n\nÄnderung der Drehreihenfolge der CS-Achsen",
       "en-GB": "### #CS MODE ON/OFF\n\nChanging the rotation sequence of CS axes"
     },
     "hoverTrigger": [
-      "#CS MODE ON/OFF"
+      "#CS MODE ON",
+      "#CS MODE OFF"
     ]
   },
   {
@@ -4639,15 +4451,17 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CS ADD/SELECT/SET/ DEL",
-    "range": "___RANGE___",
+    "completionText": "#CS ${1|ADD,SELECT,SET,|} DEL",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS ADD/SELECT/SET/ DEL\n\nErweiterte Programmierung von Koordinatensystemen",
       "en-GB": "### #CS ADD/SELECT/SET/ DEL\n\nExtended programming of coordinate systems"
     },
     "hoverTrigger": [
-      "#CS ADD/SELECT/SET/ DEL"
+      "#CS ADD DEL",
+      "#CS SELECT DEL",
+      "#CS SET DEL",
+      "#CS  DEL"
     ]
   },
   {
@@ -4660,7 +4474,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CS TRACK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS TRACK\n\nNachführen eines Koordinatensystems",
@@ -4680,7 +4493,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CS SHIFT Z",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS SHIFT Z\n\nVerschieben eines Koordinatensystems",
@@ -4715,7 +4527,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#CYL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CYL\n\nMantelflächenbearbeitung",
@@ -4735,7 +4546,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CYL 2ROT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CYL 2ROT\n\nMantelflächenbearbeitung mit 2 rotatorischen Achsen",
@@ -4770,7 +4580,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#CYL OFF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CYL OFF\n\nMantelflächenbearbeitung",
@@ -4790,7 +4599,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CYL ORI LATERAL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CYL ORI LATERAL\n\n5/6 achsige Rundrohrbearbeitung",
@@ -4810,7 +4618,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#CYL ORI PROFILE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CYL ORI PROFILE\n\n5/6 achsige Profilrohrbearbeitung",
@@ -4830,7 +4637,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DELETE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DELETE\n\nLöschen eigendefinierter Variablen oder Parameter",
@@ -4850,7 +4656,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DEL DIST2GO",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DEL DIST2GO\n\nRestweg verwerfen",
@@ -4870,7 +4675,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DISABLE MODAL CYCLE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DISABLE MODAL CYCLE\n\nAbwahl eines modalen Zyklus",
@@ -4889,15 +4693,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#DIST CTRL ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#DIST CTRL ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DIST CTRL ON/OFF\n\nAn-/ Abwahl 3D-Abstandsregelung",
       "en-GB": "### #DIST CTRL ON/OFF\n\nSelecting/deselecting 3D distance control"
     },
     "hoverTrigger": [
-      "#DIST CTRL ON/OFF"
+      "#DIST CTRL ON",
+      "#DIST CTRL OFF"
     ]
   },
   {
@@ -4909,15 +4713,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#DIST TO GO BEGIN/END",
-    "range": "___RANGE___",
+    "completionText": "#DIST TO GO ${1|BEGIN,END|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DIST TO GO BEGIN/END\n\nRestweganzeige in einem Programmabschnitt",
       "en-GB": "### #DIST TO GO BEGIN/END\n\nDistance to go display in a program section"
     },
     "hoverTrigger": [
-      "#DIST TO GO BEGIN/END"
+      "#DIST TO GO BEGIN",
+      "#DIST TO GO END"
     ]
   },
   {
@@ -4930,14 +4734,15 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DISTANCE PROG START ${1|ON,OFF,CLEAR|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DISTANCE PROG START ON/OFF/ CLEAR\n\nZurückgelegter Fahrweg ab Programmstart",
       "en-GB": "### #DISTANCE PROG START ON/OFF/ CLEAR\n\nCovered distance from program start"
     },
     "hoverTrigger": [
-      "#DISTANCE PROG START ON/OFF/ CLEAR"
+      "#DISTANCE PROG START ON CLEAR",
+      "#DISTANCE PROG START OFF CLEAR",
+      "#DISTANCE PROG START  CLEAR"
     ]
   },
   {
@@ -4950,7 +4755,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DRIVE WR SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DRIVE WR SYN\n\nSchalten von Antriebsfunktionen: Synchrones Schreiben",
@@ -4970,7 +4774,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#DRIVE WAIT SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DRIVE WAIT SYN\n\nSchalten von Antriebsfunktionen: Synchrones Warten auf Quittierung",
@@ -4989,15 +4792,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#DYNAMIC WEIGHT ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#DYNAMIC WEIGHT ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #DYNAMIC WEIGHT ON/OFF\n\nAn-/ Abwahl der Dynamikgewichtung",
       "en-GB": "### #DYNAMIC WEIGHT ON/OFF\n\nSelecting/deselecting dynamic weighting"
     },
     "hoverTrigger": [
-      "#DYNAMIC WEIGHT ON/OFF"
+      "#DYNAMIC WEIGHT ON",
+      "#DYNAMIC WEIGHT OFF"
     ]
   },
   {
@@ -5009,15 +4812,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#ECS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#ECS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ECS ON/OFF\n\nAn-/ Abwahl Effektor-Koordinatensystem",
       "en-GB": "### #ECS ON/OFF\n\nSelecting/deselecting effector coordinate system"
     },
     "hoverTrigger": [
-      "#ECS ON/OFF"
+      "#ECS ON",
+      "#ECS OFF"
     ]
   },
   {
@@ -5029,15 +4832,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#EDGE MACHINING ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#EDGE MACHINING ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #EDGE MACHINING ON/OFF\n\nAn-/ Abwahl Eckenbearbeitung",
       "en-GB": "### #EDGE MACHINING ON/OFF\n\nSelecting/deselecting edge machining"
     },
     "hoverTrigger": [
-      "#EDGE MACHINING ON/OFF"
+      "#EDGE MACHINING ON",
+      "#EDGE MACHINING OFF"
     ]
   },
   {
@@ -5049,15 +4852,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#EDM ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#EDM ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #EDM ON/OFF\n\nUmschalten Auflösung externe Geschwindigkeitsschnittstelle",
       "en-GB": "### #EDM ON/OFF\n\nSwitching over resolution of external velocity interface"
     },
     "hoverTrigger": [
-      "#EDM ON/OFF"
+      "#EDM ON",
+      "#EDM OFF"
     ]
   },
   {
@@ -5070,7 +4873,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#ENABLE AX LINK|||#DISABLE AX LINK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ENABLE AX LINK|||#DISABLE AX LINK\n\nAn-/ Abwahl von Achskopplungen",
@@ -5090,7 +4892,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#ERROR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ERROR\n\nBenutzerdefinierte Fehlerausgabe",
@@ -5110,7 +4911,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#EXPL SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #EXPL SYN\n\nExplizite Synchronisierung",
@@ -5130,7 +4930,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#EXPORT VE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #EXPORT VE\n\nExport von V.E.-Variablen in Strukturen für eine SPS Integration",
@@ -5149,15 +4948,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#EXTCOMP ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#EXTCOMP ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #EXTCOMP ON/OFF\n\nAn-/Abwahl externer Kompensation",
       "en-GB": "### #EXTCOMP ON/OFF\n\nSelecting/deselecting external compensation"
     },
     "hoverTrigger": [
-      "#EXTCOMP ON/OFF"
+      "#EXTCOMP ON",
+      "#EXTCOMP OFF"
     ]
   },
   {
@@ -5170,7 +4969,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FACE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FACE\n\nAnwahl Stirnflächenbearbeitung",
@@ -5190,7 +4988,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FACE 2ROT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FACE 2ROT\n\nAnwahl Stirnflächenbearbeitung mit 2 rotatorischen Achsen",
@@ -5210,7 +5007,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FACE OFF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FACE OFF\n\nAbwahl Stirnflächenbearbeitung",
@@ -5230,7 +5026,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FF\n\nGewichtung des externen Vorschubes",
@@ -5250,7 +5045,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FGROUP",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FGROUP\n\nDefinition einer Vorschubgruppe",
@@ -5270,7 +5064,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FGROUP ROT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FGROUP ROT\n\nVorschubberechnung mit Rundachse",
@@ -5290,7 +5083,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FGROUP WAXIS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FGROUP WAXIS\n\nSchwächste Achse als Vorschubachse",
@@ -5310,7 +5102,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FILE NAME",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FILE NAME\n\nDefinition von Dateinamen",
@@ -5330,7 +5121,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FILE RENAME",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FILE RENAME\n\nUmbenennen einer Datei",
@@ -5350,7 +5140,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FILE DELETE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FILE DELETE\n\nLöschen einer Datei",
@@ -5370,7 +5159,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FILE EXIST",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FILE EXIST\n\nPrüfen der Existenz einer Datei",
@@ -5389,15 +5177,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#FILTER ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#FILTER ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FILTER ON/OFF\n\nAn-/Abwahl FIR-Filter und Parametrierung",
       "en-GB": "### #FILTER ON/OFF\n\nSelecting/deselecting FIR filters and parameterisation"
     },
     "hoverTrigger": [
-      "#FILTER ON/OFF"
+      "#FILTER ON",
+      "#FILTER OFF"
     ]
   },
   {
@@ -5410,7 +5198,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FLUSH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FLUSH\n\nNC-Kanal leeren mit unterbrochener Bewegung",
@@ -5430,7 +5217,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FLUSH CONTINUE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FLUSH CONTINUE\n\nNC-Kanal leeren mit kontinuierlicher Bewegung",
@@ -5450,7 +5236,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FLUSH WAIT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FLUSH WAIT\n\nSynchronisierung von Decodierung und Interpolation",
@@ -5470,7 +5255,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#FRC",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FRC\n\nEinfügen von Fasen und Radien: Vorschub im Fasen- oder Kreissegment",
@@ -5489,15 +5273,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#FREE TOOL CHANGE ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#FREE TOOL CHANGE ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #FREE TOOL CHANGE ON/OFF\n\nWerkzeugwechsel bei aktivem Synchronbetrieb",
       "en-GB": "### #FREE TOOL CHANGE ON/OFF\n\nTool change with active synchronous mode"
     },
     "hoverTrigger": [
-      "#FREE TOOL CHANGE ON/OFF"
+      "#FREE TOOL CHANGE ON",
+      "#FREE TOOL CHANGE OFF"
     ]
   },
   {
@@ -5510,7 +5294,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GANTRY OFF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GANTRY OFF\n\nLösen einer Gantryverbindung",
@@ -5530,7 +5313,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GANTRY OFF ALL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GANTRY OFF ALL\n\nLösen aller Gantryverbindungen",
@@ -5550,7 +5332,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GANTRY ON",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GANTRY ON\n\nWiederherstellen einer Gantryverbindung",
@@ -5570,7 +5351,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GANTRY ON ALL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GANTRY ON ALL\n\nWiederherstellen aller Gantryverbindungen",
@@ -5589,15 +5369,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#GEAR LINK ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#GEAR LINK ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GEAR LINK ON/OFF\n\nAn-/Abwahl lagereglerbasierte Achskopplungen und Parametrierung",
       "en-GB": "### #GEAR LINK ON/OFF\n\nSelecting/deselecting position controller-based axis couplings and parameterisation"
     },
     "hoverTrigger": [
-      "#GEAR LINK ON/OFF"
+      "#GEAR LINK ON",
+      "#GEAR LINK OFF"
     ]
   },
   {
@@ -5610,7 +5390,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GET CMDPOS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GET CMDPOS\n\nAnfordern und Speichern aktueller Sollpositionen von Achsen",
@@ -5630,7 +5409,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GET ACTPOS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GET ACTPOS\n\nAnfordern und Speichern aktueller Istpositionen von Achsen",
@@ -5650,7 +5428,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GET MANUAL OFFSETS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GET MANUAL OFFSETS\n\nAnfordern und Speichern aktueller Handbetrieboffsets",
@@ -5670,7 +5447,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#GET WCS POSLIMIT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #GET WCS POSLIMIT\n\nHilfsfunktion zur Berechnung der Bewegungsgrenzen im Werkstückkoordinatensystem",
@@ -5690,7 +5466,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#HANDWHEEL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #HANDWHEEL\n\nHandradparameter setzen",
@@ -5731,15 +5506,15 @@
       }
     ],
     "kind": "Snippet",
-    "completionText": "#HSC ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#HSC ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #HSC ON/OFF\n\nÜberschleifen bei kurzen Sätzen",
       "en-GB": "### #HSC ON/OFF\n\nContouring with short blocks"
     },
     "hoverTrigger": [
-      "#HSC ON/OFF"
+      "#HSC ON",
+      "#HSC OFF"
     ]
   },
   {
@@ -5752,7 +5527,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#IDENT WR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #IDENT WR\n\nNicht synchronisiertes Schreiben von SERCOS-Parametern",
@@ -5772,7 +5546,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#IDENT WR SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #IDENT WR SYN\n\nSynchronisiertes Schreiben von SERCOS-Parametern",
@@ -5792,7 +5565,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#IDENT RD",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #IDENT RD\n\nNicht synchronisiertes Lesen von SERCOS-Parametern",
@@ -5812,7 +5584,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#INIT MACRO TAB",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #INIT MACRO TAB\n\nInitialisierung der Makro-Tabelle",
@@ -5832,7 +5603,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#INIT V.E.xx",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #INIT V.E.xx\n\nInitialisierung von V.E.-Variablen",
@@ -5852,7 +5622,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#JOG CONT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #JOG CONT\n\nParametrierung kontinuierlicher Jogbetrieb",
@@ -5872,7 +5641,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#JOG INCR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #JOG INCR\n\nParametrierung schrittweiser Jogbetrieb",
@@ -5892,7 +5660,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#KIN ID",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #KIN ID\n\nAnwahl der Maschinenkinematik",
@@ -5912,7 +5679,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#KIN DATA",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #KIN DATA\n\nModifizieren von Kinematikeigenschaften",
@@ -5931,15 +5697,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#KIN TCP DEF/DELETE",
-    "range": "___RANGE___",
+    "completionText": "#KIN TCP ${1|DEF,DELETE|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #KIN TCP DEF/DELETE\n\nDefinition und Löschen der TCP-Position bei Kinematiken",
       "en-GB": "### #KIN TCP DEF/DELETE\n\nDefining and deleting the TCP position with kinematics"
     },
     "hoverTrigger": [
-      "#KIN TCP DEF/DELETE"
+      "#KIN TCP DEF",
+      "#KIN TCP DELETE"
     ]
   },
   {
@@ -5952,7 +5718,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#LAH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LAH\n\nEinstellungen für den Look-Ahead",
@@ -5972,7 +5737,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#LOAD CONFIG",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LOAD CONFIG\n\nLaden bzw. Wiederherstellen einer gesicherten Konfiguration",
@@ -5992,7 +5756,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#LOCK/UNLOCK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LOCK/UNLOCK\n\nJobmanager – Sperren konkurrierender Auftraggeber",
@@ -6012,7 +5775,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#LIMIT REFRESH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LIMIT REFRESH\n\nAktualisierung aller Kinematikparameter der TCP-Kinematik",
@@ -6031,15 +5793,16 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#LIMIT LOAD ON/OFF/DEF",
-    "range": "___RANGE___",
+    "completionText": "#LIMIT LOAD ${1|ON,OFF,DEF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LIMIT LOAD ON/OFF/DEF\n\nDefinition und Aktivierung von Lastmodellen",
       "en-GB": "### #LIMIT LOAD ON/OFF/DEF\n\nDefining and activating load models"
     },
     "hoverTrigger": [
-      "#LIMIT LOAD ON/OFF/DEF"
+      "#LIMIT LOAD ON",
+      "#LIMIT LOAD OFF",
+      "#LIMIT LOAD DEF"
     ]
   },
   {
@@ -6052,7 +5815,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MACHINE DATA",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MACHINE DATA\n\nSchreiben von Maschinendaten",
@@ -6072,7 +5834,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MAIN SPINDLE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MAIN SPINDLE\n\nWechsel der Hauptspindel",
@@ -6092,7 +5853,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MANUAL LIMITS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MANUAL LIMITS\n\nVorgabe der Offsetgrenzen im Handbetrieb",
@@ -6111,15 +5871,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#MCS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#MCS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MCS ON/OFF\n\nTemporärer Übergang in das Maschinenkoordinatensystem",
       "en-GB": "### #MCS ON/OFF\n\nTemporary transition to the machine coordinate system"
     },
     "hoverTrigger": [
-      "#MCS ON/OFF"
+      "#MCS ON",
+      "#MCS OFF"
     ]
   },
   {
@@ -6132,7 +5892,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MCS TO WCS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MCS TO WCS\n\nAbbildung Maschinenkoordinaten in Werkstückkoordinaten",
@@ -6152,7 +5911,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MEAS MODE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MEAS MODE\n\nUmschalten des Messtyps",
@@ -6172,7 +5930,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MEAS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MEAS\n\nErweiterte Programmierung von Messoptionen",
@@ -6192,7 +5949,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MEAS DEFAULT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MEAS DEFAULT\n\nErweiterte Messoptionen zurücksetzen",
@@ -6212,7 +5968,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MEAS PREPARE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MEAS PREPARE\n\nVorbereiten einer Messfahrt",
@@ -6232,7 +5987,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MSG",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MSG\n\nSenden einer Meldung aus dem NC-Programm",
@@ -6252,7 +6006,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MSG INFO",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MSG INFO\n\nSenden einer Meldung mit zusätzlichen Informationen für den Empfänger",
@@ -6272,7 +6025,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#MSG SAVE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #MSG SAVE\n\nSchreiben einer Meldung in eine Datei",
@@ -6291,15 +6043,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#NIBBLE ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#NIBBLE ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #NIBBLE ON/OFF\n\nAn-/ Abwahl Nibbeln",
       "en-GB": "### #NIBBLE ON/OFF\n\nSelecting/deselecting nibbling"
     },
     "hoverTrigger": [
-      "#NIBBLE ON/OFF"
+      "#NIBBLE ON",
+      "#NIBBLE OFF"
     ]
   },
   {
@@ -6311,15 +6063,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#OPTIONAL EXECUTION ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#OPTIONAL EXECUTION ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #OPTIONAL EXECUTION ON/OFF\n\nAusblenden von Programmsequenzen beim Vorwärts-/Rückwärtsfahrbetrieb",
       "en-GB": "### #OPTIONAL EXECUTION ON/OFF\n\nSkipping program sequences during forward/backward motion"
     },
     "hoverTrigger": [
-      "#OPTIONAL EXECUTION ON/OFF"
+      "#OPTIONAL EXECUTION ON",
+      "#OPTIONAL EXECUTION OFF"
     ]
   },
   {
@@ -6347,7 +6099,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#ORI MODE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ORI MODE\n\nOrientierungsprogrammierung",
@@ -6366,15 +6117,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#OTC ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#OTC ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #OTC ON/OFF\n\nOnline Werkzeugkompensation",
       "en-GB": "### #OTC ON/OFF\n\nOnline tool compensation"
     },
     "hoverTrigger": [
-      "#OTC ON/OFF"
+      "#OTC ON",
+      "#OTC OFF"
     ]
   },
   {
@@ -6387,7 +6138,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#OVERRIDE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #OVERRIDE\n\nProgrammierbarer Bahnoverride",
@@ -6407,7 +6157,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#PSET",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PSET\n\nAnwahl der Istwertverschiebung",
@@ -6427,7 +6176,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#PRESET",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PRESET\n\nAbwahl der Istwertverschiebung",
@@ -6446,15 +6194,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#PTP ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#PTP ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PTP ON/OFF\n\nAn-/Abwahl einer Positionierbewegung ohne Ausgleichsbewegung",
       "en-GB": "### #PTP ON/OFF\n\nSelecting/deselecting positioning without compensation motion"
     },
     "hoverTrigger": [
-      "#PTP ON/OFF"
+      "#PTP ON",
+      "#PTP OFF"
     ]
   },
   {
@@ -6466,15 +6214,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#PUNCH ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#PUNCH ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PUNCH ON/OFF\n\nAn-/ Abwahl Stanzen",
       "en-GB": "### #PUNCH ON/OFF\n\nSelecting/deselecting punching"
     },
     "hoverTrigger": [
-      "#PUNCH ON/OFF"
+      "#PUNCH ON",
+      "#PUNCH OFF"
     ]
   },
   {
@@ -6487,7 +6235,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#PUT AX",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PUT AX\n\nAbgeben von Achsen",
@@ -6507,7 +6254,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#PUT AX ALL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #PUT AX ALL\n\nAbgeben aller Achsen",
@@ -6527,7 +6273,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#RETAIN CYCLE CHANGES",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #RETAIN CYCLE CHANGES\n\nÜbernahme von Änderungen im Zyklus in nächsthöhere Programmebene",
@@ -6547,7 +6292,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#RND",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #RND\n\nEinfügen von Fasen und Radien: Radius definieren",
@@ -6566,15 +6310,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#ROTATION ON / OFF",
-    "range": "___RANGE___",
+    "completionText": "#ROTATION ON ${1|,|} OFF",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ROTATION ON / OFF\n\nAn-/ Abwahl Konturrotation",
       "en-GB": "### #ROTATION ON/OFF\n\nSelect/deselect contour rotation"
     },
     "hoverTrigger": [
-      "#ROTATION ON / OFF"
+      "#ROTATION ON  OFF",
+      "#ROTATION ON  OFF"
     ]
   },
   {
@@ -6587,7 +6331,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#RT CYCLE${1|​, DELETE, END|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #RT CYCLE\n\nDefinition des Echtzeit-Zyklus im NC-Programm",
@@ -6607,7 +6350,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SAVE CONFIG",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SAVE CONFIG\n\nSichern der aktuellen Konfiguration",
@@ -6626,15 +6368,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#SCALE ON / OFF",
-    "range": "___RANGE___",
+    "completionText": "#SCALE ON ${1|,|} OFF",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SCALE ON / OFF\n\nVergrößern/ Verkleinern von Konturen",
       "en-GB": "### #SCALE ON / OFF\n\nEnlarging and reducing contours"
     },
     "hoverTrigger": [
-      "#SCALE ON / OFF"
+      "#SCALE ON  OFF",
+      "#SCALE ON  OFF"
     ]
   },
   {
@@ -6646,15 +6388,16 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#SEGMENTATION ON/OFF/ALL",
-    "range": "___RANGE___",
+    "completionText": "#SEGMENTATION ${1|ON,OFF,ALL|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SEGMENTATION ON/OFF/ALL\n\nAn-/ Abwahl Segmentierung von Linear- und Zirkularsätzen",
       "en-GB": "### #SEGMENTATION ON/OFF/ALL\n\nSelecting/deselecting segmentation of linear and circular blocks"
     },
     "hoverTrigger": [
-      "#SEGMENTATION ON/OFF/ALL"
+      "#SEGMENTATION ON",
+      "#SEGMENTATION OFF",
+      "#SEGMENTATION ALL"
     ]
   },
   {
@@ -6667,7 +6410,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SET AX",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SET AX\n\nDefinition einer Achskonfiguration",
@@ -6687,7 +6429,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SET AX LINK",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SET AX LINK\n\nProgrammierung von Achskopplungen",
@@ -6707,7 +6448,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SIGNAL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SIGNAL\n\nSenden von Signalen",
@@ -6727,7 +6467,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SIGNAL REMOVE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SIGNAL REMOVE\n\nLöschen von Broadcast-Signalen",
@@ -6747,7 +6486,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SIGNAL READ",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SIGNAL READ\n\nLesen von Signalen ohne Warten",
@@ -6767,7 +6505,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SINGLE STEP",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SINGLE STEP\n\nSperren von Programmbereichen für den Einzelschrittbetrieb",
@@ -6787,7 +6524,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SLOPE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SLOPE\n\nParametrierung des Beschleunigungsprofils",
@@ -6807,7 +6543,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SLOPE DEFAULT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SLOPE DEFAULT\n\nGrundeinstellung des Beschleunigungsprofils",
@@ -6842,7 +6577,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#SPLINE ON",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SPLINE ON\n\nSplineinterpolation anwählen",
@@ -6877,7 +6611,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#SPLINE OFF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SPLINE OFF\n\nSplineinterpolation abwählen",
@@ -6897,7 +6630,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SPLINE TYPE AKIMA",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SPLINE TYPE AKIMA\n\nAnwahl Akima-Spline",
@@ -6917,7 +6649,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SPLINE TYPE BSPLINE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SPLINE TYPE BSPLINE\n\nAnwahl B-Spline",
@@ -6937,7 +6668,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#STOP REVERSIBLE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #STOP REVERSIBLE\n\nDefinition von Stopmarken beim Vorwärts-/Rückwärtsfahren",
@@ -6956,15 +6686,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#STROKE DEF BEGIN/END",
-    "range": "___RANGE___",
+    "completionText": "#STROKE DEF ${1|BEGIN,END|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #STROKE DEF BEGIN/END\n\nDefinition der Hubbewegung für Stanzen/Nibbeln",
       "en-GB": "### #STROKE DEF BEGIN/END\n\nDefining stroke motion for punching/nibbling"
     },
     "hoverTrigger": [
-      "#STROKE DEF BEGIN/END"
+      "#STROKE DEF BEGIN",
+      "#STROKE DEF END"
     ]
   },
   {
@@ -6977,7 +6707,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#SUPPRESS OFFSETS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SUPPRESS OFFSETS\n\nUnterdrückung von Verschiebungen",
@@ -6996,15 +6725,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#SYNC IN/ OUT",
-    "range": "___RANGE___",
+    "completionText": "#SYNC ${1|IN,|} OUT",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SYNC IN/ OUT\n\nAuf-/ Aussynchronisieren mit der Funktionalität „Conveyor Tracking“",
       "en-GB": "### #SYNC IN/ OUT\n\nSynchronising/desynchronising with the “Conveyor Tracking” functionality"
     },
     "hoverTrigger": [
-      "#SYNC IN/ OUT"
+      "#SYNC IN OUT",
+      "#SYNC  OUT"
     ]
   },
   {
@@ -7017,7 +6746,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TANGFEED",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TANGFEED\n\nMindestradius für tangentiale Vorschubanpassung",
@@ -7037,7 +6765,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TIME",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TIME\n\nVerweilzeit",
@@ -7057,7 +6784,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TIMER ${1|START,STOPP,CLEAR,READ,SYN,ID|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TIMER\n\nZeitmessung",
@@ -7077,7 +6803,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TLAX",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TLAX\n\nFreie Zuordnung der Werkzeuglängenkorrektur in einer Achse",
@@ -7097,7 +6822,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TLAX DEFAULT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TLAX DEFAULT\n\nZuordnung der Werkzeuglängenkorrektur in der 3. Hauptachse",
@@ -7116,15 +6840,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TLC ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TLC ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TLC ON/OFF\n\nAn-/Abwahl der Werkzeuglängenkompensation",
       "en-GB": "### #TLC ON/OFF\n\nSelecting/deselecting tool length compensation"
     },
     "hoverTrigger": [
-      "#TLC ON/OFF"
+      "#TLC ON",
+      "#TLC OFF"
     ]
   },
   {
@@ -7137,7 +6861,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL DATA",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL DATA\n\nAnfordern von Werkzeugdaten",
@@ -7156,15 +6879,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TOOL LIFE READ/REMOVE",
-    "range": "___RANGE___",
+    "completionText": "#TOOL LIFE ${1|READ,REMOVE|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL LIFE READ/REMOVE\n\nLesen/Löschen der Standgrößen",
       "en-GB": "### #TOOL LIFE READ/REMOVE\n\nReading/removing tool life data"
     },
     "hoverTrigger": [
-      "#TOOL LIFE READ/REMOVE"
+      "#TOOL LIFE READ",
+      "#TOOL LIFE REMOVE"
     ]
   },
   {
@@ -7177,7 +6900,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL LIFE DEF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL LIFE DEF\n\nSetzen von Standgrößen",
@@ -7197,7 +6919,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL ORI CS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL ORI CS\n\nWerkzeug ausrichten",
@@ -7217,7 +6938,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL PREP",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL PREP\n\nVorbereiten eines Werkzeugwechsels",
@@ -7237,7 +6957,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL REFRESH",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TOOL REFRESH\n\nWerkzeugdaten auffrischen",
@@ -7256,15 +6975,16 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TRACK CS ABS/ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TRACK CS ${1|ABS,ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRACK CS ABS/ON/OFF\n\nDynamischem CS nachfolgen",
       "en-GB": "### #TRACK CS ABS/ON/OFF\n\nTracking dynamic CS"
     },
     "hoverTrigger": [
-      "#TRACK CS ABS/ON/OFF"
+      "#TRACK CS ABS",
+      "#TRACK CS ON",
+      "#TRACK CS OFF"
     ]
   },
   {
@@ -7276,15 +6996,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TRAFO ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TRAFO ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRAFO ON/OFF\n\nAn-/Abwahl einer kinematischen Transformation",
       "en-GB": "### #TRAFO ON/OFF\n\nSelecting/deselecting a kinematic transformation"
     },
     "hoverTrigger": [
-      "#TRAFO ON/OFF"
+      "#TRAFO ON",
+      "#TRAFO OFF"
     ]
   },
   {
@@ -7297,7 +7017,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TRAFO PCS ID",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRAFO PCS ID\n\nAnwahl der PCS-Transformation",
@@ -7316,15 +7035,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TRAFO PCS ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TRAFO PCS ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRAFO PCS ON/OFF\n\nAn-/Abwahl einer Transformation von Programmierkoordinaten",
       "en-GB": "### #TRAFO PCS ON / OFF\n\nSelecting/deselected a transformation of programming coordinates"
     },
     "hoverTrigger": [
-      "#TRAFO PCS ON/OFF"
+      "#TRAFO PCS ON",
+      "#TRAFO PCS OFF"
     ]
   },
   {
@@ -7337,7 +7056,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TRAFO STACK DEF",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRAFO STACK DEF\n\nDefinition eines Transformationsstacks",
@@ -7356,15 +7074,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TRAFO STACK ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TRAFO STACK ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRAFO STACK ON/OFF\n\nAn-/Abwahl eines Transformationsstacks",
       "en-GB": "### #TRAFO STACK ON/OFF\n\nSelecting/deselecting a transformation stack"
     },
     "hoverTrigger": [
-      "#TRAFO STACK ON/OFF"
+      "#TRAFO STACK ON",
+      "#TRAFO STACK OFF"
     ]
   },
   {
@@ -7377,7 +7095,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TRANSFORM",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRANSFORM\n\nUmrechnen von Positionen zwischen Koordinatensystemen",
@@ -7396,15 +7113,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#TRANSVELMIN ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#TRANSVELMIN ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRANSVELMIN ON/OFF\n\nAn-/Abwahl einer minimalen Satzübergangsgeschwindigkeit",
       "en-GB": "### #TRANSVELMIN ON/OFF\n\nSelecting/deselecting minimum block transition velocity"
     },
     "hoverTrigger": [
-      "#TRANSVELMIN ON/OFF"
+      "#TRANSVELMIN ON",
+      "#TRANSVELMIN OFF"
     ]
   },
   {
@@ -7417,7 +7134,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TRC [${1:CONV_CIR_TO_LIN=$2} ${3:KERF_MASKING=$4} ${5:REVERSE=$6} ${7:IGNORE_CONT_DAMAGE=$8} ${9:REMOVE_MASKED_BLOCKS=$10} ${11:EXT_ANGLE_BLOCK_INTERSECTION=$12} ${13:SUPPRESS_TRC=$14} ${15:INVERSE=$16} ${17:MULTI_PATH_RADIUS=$18} ${19:GEN_CIR_BLOCK_IN_CORNER=$20} ${21:ONLINE_BY_VECTOR=$22} ${23:ONLINE=$24} ${25:MCCOM_ID=$26} ${27:PERPENDICULAR_RADIUS_CHANGE=$28} ${29:STRETCH_FACTOR=$30} ${31:TAPERLINK=$32} ${33:DYNAMIC_VARIATION_MAX_OFFSET=$34}]",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TRC\n\nProgrammierbare Zusatzoptionen der WRK",
@@ -7437,7 +7153,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TURN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #TURN\n\nEinstellungen für Drehfunktionen",
@@ -7472,7 +7187,6 @@
     ],
     "kind": "Snippet",
     "completionText": "#VAR\n\t${0}\n#ENDVAR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #VAR...#ENDVAR\n\nDeklarationsblock für eigendefinierte Variablen oder Parameter",
@@ -7492,14 +7206,14 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#VECTOR LIMIT ${1|ON,OFF,ACC,DEC,VEL,ALL,JERK,RAPID,FEED|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #VECTOR LIMIT ON/OFF\n\nAnpassung der Bahndynamikgrenzwerte",
       "en-GB": "### #VECTOR LIMIT ON/OFF\n\nAdapting path dynamic limit values"
     },
     "hoverTrigger": [
-      "#VECTOR LIMIT ON/OFF"
+      "#VECTOR LIMIT ON",
+      "#VECTOR LIMIT OFF"
     ]
   },
   {
@@ -7512,7 +7226,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#VIB GUARD",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #VIB GUARD\n\nAnwenden des Vibration Guard",
@@ -7531,15 +7244,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#VOLCOMP ON/OFF",
-    "range": "___RANGE___",
+    "completionText": "#VOLCOMP ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #VOLCOMP ON/OFF\n\nAn-/Abwahl der Volumenkompensation",
       "en-GB": "### #VOLCOMP ON/OFF\n\nSelecting/deselecting Volumetric Compensation"
     },
     "hoverTrigger": [
-      "#VOLCOMP ON/OFF"
+      "#VOLCOMP ON",
+      "#VOLCOMP OFF"
     ]
   },
   {
@@ -7552,7 +7265,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#WAIT",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #WAIT\n\nWarten auf Signale",
@@ -7572,7 +7284,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#WAIT FOR",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #WAIT FOR\n\nWarten auf Ereignis",
@@ -7592,7 +7303,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#WAIT INDP",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #WAIT INDP\n\nWarten auf asynchrone unabhängige Achse",
@@ -7612,7 +7322,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#WAIT INDP ALL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #WAIT INDP ALL\n\nWarten auf alle asynchronen unabhängigen Achsen",
@@ -7632,7 +7341,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#WCS TO MCS",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #WCS TO MCS\n\nAbbildung Werkstückkoordinaten in Maschinenkoordinaten",
@@ -7652,7 +7360,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "INDP_SYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### INDP_SYN\n\nSynchrone (satzweise) unabhängige Achsbewegung",
@@ -7672,7 +7379,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "INDP_ASYN",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### INDP_ASYN\n\nAsynchrone (satzübergreifende) unabhängige Achsbewegung",
@@ -7692,7 +7398,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "OSC",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### OSC\n\nPendelachsen",
@@ -7712,7 +7417,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "COMP",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### COMP\n\nEin-/Ausschalten von Achskompensationen",
@@ -7732,7 +7436,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "DIST_CTRL",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### DIST_CTRL\n\nAbstandsregelung (Getastete Spindel)",
@@ -7752,7 +7455,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "OVERRIDE",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### OVERRIDE\n\nProgrammierbarer Achsoverride",
@@ -7772,7 +7474,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "DYNAMIC",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### DYNAMIC\n\nProgrammierbare Beschleunigungsüberlast",
@@ -7791,15 +7492,16 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "LIFT LIFT_START / LIFT_END",
-    "range": "___RANGE___",
+    "completionText": "LIFT_${1|START,END|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### LIFT LIFT_START / LIFT_END\n\nAbheben / Senken einer Achse",
       "en-GB": "### LIFT LIFT_START / LIFT_END\n\nLifting/lowering an axis"
     },
     "hoverTrigger": [
-      "LIFT LIFT_START / LIFT_END"
+      "LIFT_START",
+      "LIFT_END",
+      "LIFT"
     ]
   },
   {
@@ -7811,15 +7513,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "SYNC IN / OUT",
-    "range": "___RANGE___",
+    "completionText": "SYNC IN ${1|,|} OUT",
     "filterText": null,
     "hoverText": {
       "de-DE": "### SYNC IN / OUT\n\nSynchronisieren einer Achse auf Bahnverbund",
       "en-GB": "### SYNC IN/OUT\n\nSynchronising an axis in coordinated motion"
     },
     "hoverTrigger": [
-      "SYNC IN / OUT"
+      "SYNC IN  OUT",
+      "SYNC IN  OUT"
     ]
   },
   {
@@ -7832,7 +7534,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "POLY",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### POLY\n\nProgrammierung eines Achspolynoms",
@@ -7852,7 +7553,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_Home",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_Home\n\nReferenzpunktfahrt",
@@ -7872,7 +7572,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_MoveAbsolute",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_MoveAbsolute\n\nAchsbewegung auf absolute Position",
@@ -7892,7 +7591,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_MoveAdditive",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_MoveAdditive\n\nRelative Achsbewegung zur kommandierten Position",
@@ -7912,7 +7610,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_MoveRelative",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_MoveRelative\n\nRelative Achsbewegung zur aktuellen Position",
@@ -7932,7 +7629,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_MoveSuperImposed",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_MoveSuperImposed\n\nRelative Achsbewegung zu einer bereits aktiven Bewegung",
@@ -7952,7 +7648,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_MoveVelocity",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_MoveVelocity\n\nEndlose Achsbewegung mit einer Geschwindigkeit",
@@ -7972,7 +7667,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_Stop",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_Stop\n\nAnhalten einer Achsbewegung",
@@ -7992,7 +7686,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_GearIn",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_GearIn\n\nGetriebekopplung mit Übersetzung",
@@ -8012,7 +7705,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_GearOut",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_GearOut\n\nLösen einer Getriebekopplung",
@@ -8032,7 +7724,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_Phasing",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_Phasing\n\nPhasenverschiebung von Kopplungen",
@@ -8052,7 +7743,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "MC_TouchProbe",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### MC_TouchProbe\n\nMessen einer Achsposition",
@@ -8080,7 +7770,6 @@
     ],
     "kind": "Snippet",
     "completionText": "V.A. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.A. …\n\nAchsspezifische Variablen",
@@ -8100,7 +7789,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.G. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.G. …\n\nGlobale Variablen",
@@ -8120,7 +7808,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.P. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.P. …\n\nEigendefinierte Variablen, programmglobal",
@@ -8140,7 +7827,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.S. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.S. …\n\nEigendefinierte Variablen, (Haupt-)programmübergreifend",
@@ -8160,7 +7846,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.L. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.L. …\n\nEigendefinierte Variablen, programmlokal",
@@ -8180,7 +7865,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.E. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.E. …\n\nExterne Variablen",
@@ -8200,7 +7884,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.CYC. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.CYC. …\n\nEigendefinierte Variablen, Zyklenvariablen",
@@ -8220,7 +7903,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.TOOL. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.TOOL. …\n\nWerkzeug-ID Variablen",
@@ -8240,7 +7922,6 @@
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "V.TLM. …",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.TLM. …\n\nWerkzeugstandzeitvariablen",
@@ -8260,7 +7941,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "%${TM_FILENAME}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### Filename\nProgrammnummer hinzufügen",
@@ -8278,7 +7958,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "(----------------------------------------)\n(            ${0}                            )\n(----------------------------------------)",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### commentbox\nKommentarbox einfügen",
@@ -8296,7 +7975,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": ";date: ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR} ${CURRENT_HOUR}:${CURRENT_MINUTE}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### date\nDatum einfügen",
@@ -8314,7 +7992,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "%${TM_FILENAME}\n;Author: ${1:[Author]}\n;date: ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR} ${CURRENT_HOUR}:${CURRENT_MINUTE}\n;file: ${TM_FILENAME}\n;folder: ${TM_DIRECTORY}\n;Description: ${2}\n${0}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### Header\nNC-File Header einfügen",
@@ -8332,7 +8009,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "/${1|1,2,3,4,5,6,7,8,9|} ${0}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### skipblock\nBlockskip einfügen",
@@ -8350,7 +8026,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "S${1:[RPM]} M0${2|3,4|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### Spindle\nSpindelgeschwindigkeit",
@@ -8370,7 +8045,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.A.${1|MENT.,PROG.,ABS.,ACT_POS.,ACS.ABS.,+SWE.,+SWE.,-SWE_MDS.,+SWE_MDS,REF.|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.A.variables\nAchsenspezifische Variablen",
@@ -8390,7 +8064,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.G.${1|T_AKT,D_AKT,NP,NP_AKT,NP_DEFAULT,BLOCK_NR,CNC_CHANNEL,MASS_MM,MASS_360,I,J,K,R,FEEDRATE,FEEDRATE_SCALE,MERR,IPO_COUNT,CS_ACTIVE,CS_COUNT,ACS_ACTIVE,ACS_COUNT,TOOL_COMP,AKT_PLATZ,AX_LINK.NR,AX_LINK.ACTIVE,AX_LINK_GROUP,ROT_ACTIVE,ROT_ANGLE,ROT_CENTER1,ROT_CENTER2,TIMER,PROG_ABS,CNC_RELEASE,CNC_VERSION.MAJOR,CNC_VERSION.MINOR,CNC_VERSION.BUILD,CNC_VERSION.PATCH,WCS_POSLIMIT_1,WCS_POSLIMIT_2,WCS_POSLIMIT_3,RANDOM,MAIN_FILE_NAME,MAIN_PROG_NAME,MAIN_PROG_NR,FILE_NAME,PROG_NAME,PROG_NR,PROG_LEVEL,FILE_OFFSET|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.G.variables\nGlobale Variablen",
@@ -8410,7 +8083,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.G.WZ_AKT.${1|R,L,P,V,ME,OK,SPDL_AX_NR,KIN_PARAM,KIN_ID,TYPE,TOOL_FIXED,SRK_ID,S_MIN_SPEED,S_MAX_SPEED,S_MAX_ACC,SISTER_VALID,SISTER,VARIANT_VALID,VARIANT,WEAR_RADIUS,WEAR_RADIUS_CONT,WEAR,WEAR_CONST,GOBJECT,LINKPOINT|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.G.WZ_AKT.variables\nGlobal Current Tool Variables",
@@ -8430,7 +8102,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.G.WZ.${1|R,L,P,V,ME,OK,SPDL_AX_NR,KIN_PARAM,KIN_ID,TYPE,SRK_ID,S_MIN_SPEED,S_MAX_SPEED,S_MAX_ACC,SISTER_VALID,SISTER,VARIANT_VALID,VARIANT,GOBJECT,LINKPOINT|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.G.WZ.variables\nGlobal Tool Variables",
@@ -8450,7 +8121,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.SPDL_PROG.${1|SPEED.S,MOVE_CMD.S,POSITION.S,MAX_SPEED.S,CONST_CUT_SPEED.S,DWELL_ROT_COUNT.S,GEAR_DATA_STEP.S|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.SPDL_PROG.variables\nSpindle specific Variables",
@@ -8470,7 +8140,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.SPDL.${1|LOG_AX_NR.S,PLC_CONTROL.S,NBR_IN_CHANNEL.,M_FCT_FREE.|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.SPDL.variables\nSpindle specific Variables",
@@ -8490,7 +8159,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "V.${1|L.,P.,S.,E.,G.,CYC.,A.,SPDL.,SPDL_PROG.|}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### variables\nVariables",
@@ -8510,7 +8178,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": ";#region $0",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### region-start\nFolding region start",
@@ -8530,7 +8197,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": ";#endregion",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### region-end\nFolding region end",
@@ -8550,7 +8216,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": ";#region $0\n;#endregion",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### region-block\nFolding region",
@@ -8570,7 +8235,6 @@
     "sublinks": null,
     "kind": "Snippet",
     "completionText": "M19 S${1:[RPM]} S.POS=${0:[Angle]}",
-    "range": "___RANGE___",
     "filterText": null,
     "hoverText": {
       "de-DE": "### M19S\nM19 Position spindle",
