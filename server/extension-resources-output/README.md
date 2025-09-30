@@ -1,0 +1,2 @@
+This directory contains generated generic meta data json files for various ISG-CNC-Commands/Cycles and general language information like the language configuration in vscode/monaco-format.
+It is generated, edited and provided by the [extension-ressources repository](https://github.com/isg-stuttgart/extension-ressources) and therefore should not be modified manually in other repositories.
