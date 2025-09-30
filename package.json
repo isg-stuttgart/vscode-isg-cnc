@@ -494,26 +494,6 @@
         ],
         "snippets": [
             {
-                "language": "isg-cnc",
-                "path": "./snippets/dollar-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/gcode-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/general-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/hashtag-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/mcode-snippets.json"
-            },
-            {
                 "language": "isg-cnc-cycle-error",
                 "path": "./snippets/cnc-cycles-error-definition-snippets.json"
             }
