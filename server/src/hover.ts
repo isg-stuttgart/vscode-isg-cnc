@@ -7,9 +7,13 @@ import { getCycles, getISGCycleByName } from "./cycles";
 import path = require("path");
 import { getDefinition } from "./getDefinitionAndReferences";
 import { getDocByUri } from "./fileSystem";
-import { getLocale, Locale } from "./config";
+import { getDocumentationPathBase, getLocale, Locale } from "./config";
 import { getSurroundingVar } from "./stringSearching";
 import { MatchType } from "./matchTypes";
+import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import * as rawCycleData from '../extension-resources-output/output_generated/genericCycles.json';
+import { JsonEntry } from "../extension-resources-output/src/JsonEntry";
+const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList([...rawJsonData, ...rawCycleData] as any[]);
 /**
  * Returns the hover information for the given position in the document.
  * Currently it supports cycle call and cycle parameter hover. 
@@ -18,6 +22,28 @@ import { MatchType } from "./matchTypes";
  * @returns the hover information item for the given position 
  */
 export function getHoverInformation(position: Position, textDocument: TextDocument, rootPaths: string[] | null, openDocs: Map<string, TextDocument>): Hover | null {
+    // try to find entry which can be found in the line and contains the hovered word
+    const line = textDocument.getText(Range.create(new Position(position.line, 0), new Position(position.line + 1, 0)));
+    const surroundingEntry = JsonEntry.findBestSurroundingEntry(position, line, jsonEntries);
+    if (surroundingEntry) {
+        const hoverText = surroundingEntry.entry.getInfoTextWithLink(getDocumentationPathBase(), getLocale());
+        return {
+            range: {
+                start: {
+                    line: position.line,
+                    character: surroundingEntry.startIdx
+                },
+                end: {
+                    line: position.line,
+                    character: surroundingEntry.endIdx
+                }
+            },
+            contents: {
+                value: hoverText,
+                kind: "markdown"
+            },
+        };
+    }
     // parse to check which type of hover information is needed
     // supported types are cycle call, cycle parameter, subprogram call, GOTO, variable
     const parseResults: ParseResults = new ParseResults(textDocument.getText());

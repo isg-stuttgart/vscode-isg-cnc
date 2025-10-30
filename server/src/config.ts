@@ -19,6 +19,12 @@ export function getLocale(): Locale {
 let documentationPath = "";
 
 /**
+ * @returns the base path to the documentation website without locale or index.html, e.g. https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/
+ */
+export function getDocumentationPathBase(): string {
+    return documentationPath;
+}
+/**
  * @returns the localed path to the documentation website
  */
 export function getDocumentationPathWithLocale(): string {
