@@ -65,14 +65,6 @@ export function getExtensionForCycles(): string {
     return extensionForCycles;
 }
 
-let extensionForCycles: string = ".ecy";
-/**
- * @returns the file extension for cycle calls
- */
-export function getExtensionForCycles(): string {
-    return extensionForCycles;
-}
-
 export function cloneFileAssociations(): { [key: string]: string } {
     const clone: { [key: string]: string } = {};
     for (const [key, value] of Object.entries(fileAssociations)) {
@@ -98,10 +90,6 @@ export function cloneFileAssociations(): { [key: string]: string } {
  *
 */
 export function updateSettings(workspaceConfig: any) {
-    const failedSettings: string[] = [];
-    // update documentation path
-    documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
-    // update file associations
     const failedSettings: string[] = [];
     // update documentation path
     documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
@@ -160,8 +148,6 @@ export function updateSettings(workspaceConfig: any) {
 
     if (failedSettings.length > 0) {
         throw new Error("Failed to update settings: " + failedSettings.join(", "));
-    } catch (error) {
-        failedSettings.push("fileAssociations");
     }
 
     // update extension for cycles
