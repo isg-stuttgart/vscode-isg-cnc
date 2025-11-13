@@ -451,7 +451,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-cnc-language-configuration.json"
+                "configuration": "./server/extension-resources-output/output_manual/isg-cnc-language-configuration.json"
             },
             {
                 "id": "isg-list",
@@ -466,7 +466,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-list-language-configuration.json"
+                "configuration": "./server/extension-resources-output/output_manual/isg-list-language-configuration.json"
             },
             {
                 "id": "isg-cnc-cycle-error",

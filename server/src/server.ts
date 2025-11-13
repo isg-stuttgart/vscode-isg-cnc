@@ -14,7 +14,7 @@ import {
 import * as parser from './getDefinitionAndReferences';
 import { Position } from './parserClasses';
 import * as config from './config';
-import { getCompletions, updateStaticCycleCompletions } from './completion';
+import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
 import { ParseResults } from './parsingResults';
 // Create a connection for the server, using Node's IPC as a transport.
@@ -223,6 +223,10 @@ async function updateConfig() {
 		oldExtensionForCycles !== config.getExtensionForCycles()
 	) {
 		updateStaticCycleCompletions();
+	}
+	// if docupath changed, update general completions
+	if (oldDocuPath !== config.getDocumentationPathWithLocale()) {
+		updateStaticGeneralCompletions();
 	}
 }
 

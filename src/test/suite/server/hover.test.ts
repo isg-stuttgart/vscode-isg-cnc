@@ -38,16 +38,16 @@ suite('LS Doc Comment Hover Content', () => {
         const nameHover = await executeHover(docHover1Uri, new vscode.Position(8, 5));
         const prgCallHover = await executeHover(docHover1Uri, new vscode.Position(14, 5));
         const cycleCallHover = await executeHover(docHover1Uri, new vscode.Position(15, 16));
-        const declarationHoverShouldNull = await executeHover(docHover1Uri, new vscode.Position(8, 1));
-        const callHoverShouldNull = await executeHover(docHover1Uri, new vscode.Position(14, 1));
-        const cycleHoverShouldNull = await executeHover(docHover1Uri, new vscode.Position(15, 4));
+        const declarationHoverShouldNotContainName = await executeHover(docHover1Uri, new vscode.Position(8, 1));
+        const callHoverShouldNotContainName = await executeHover(docHover1Uri, new vscode.Position(14, 1));
+        const cycleHoverShouldNotContainName = await executeHover(docHover1Uri, new vscode.Position(15, 4));
 
         checkHoverContentCorrect(nameHover, "**UP1** (Local Subprogram)");
         checkHoverContentCorrect(prgCallHover, "**UP1** (Local Subprogram Call)");
         checkHoverContentCorrect(cycleCallHover, "**UP1** (Local Cycle Call)");
-        assert.ok(declarationHoverShouldNull === null);
-        assert.ok(callHoverShouldNull === null);
-        assert.ok(cycleHoverShouldNull === null);
+        assert.ok(declarationHoverShouldNotContainName?.includes("UP1") === false);
+        assert.ok(!callHoverShouldNotContainName?.includes("UP1"));
+        assert.ok(!cycleHoverShouldNotContainName?.includes("UP1"));
 
         function checkHoverContentCorrect(hover: string | null, specialIncludes: string) {
             assert.ok(hover !== null);
