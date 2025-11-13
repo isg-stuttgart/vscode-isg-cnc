@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable curly */
+
 /*
 This file is generated, edited and provided by the [extension-ressources repository](https://github.com/isg-stuttgart/extension-ressources) and therefore should not be modified manually in other repositories.
 */
@@ -63,11 +66,23 @@ export class JsonEntry implements JsonEntryUncompleted {
   getInfoTextWithLink(docuPath: string, locale: Locale): string {
     const infoText = this.hoverText[locale];
     const linkid = this.linkid;
-
-    const mainLink = linkid ? `\n\n[**Documentation**](${docuPath}/${locale}/index.html#${linkid})` : '';
-    const sublinks = this.sublinks && this.sublinks.length > 0 ? ("\n\n**Related Links:**\n" + this.sublinks.map(sublink => `- [${sublink.label[locale]}](${docuPath}/${locale}/index.html#${sublink.linkid})`).join('\n')) : '';
+    const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
+    const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
+    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${docuPath}/${locale}/index.html#${linkid})` : '';
+    const sublinks = this.sublinks && this.sublinks.length > 0 ? (`\n\n**${sublinksLocalized}**\n` + this.sublinks.map(sublink => `- [${sublink.label[locale]}](${docuPath}/${locale}/index.html#${sublink.linkid})`).join('\n')) : '';
     return `${infoText}${mainLink}${sublinks}`;
   }
+
+  getInfoTextWithVscodeCommand(getCommandUriToOpenDocu: (id: string) => string, locale: Locale): string {
+    const infoText = this.hoverText;
+    const linkid = this.linkid;
+    const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
+    const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
+    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${getCommandUriToOpenDocu(linkid)})` : '';
+    const sublinks = this.sublinks && this.sublinks.length > 0 ? (`\n\n**${sublinksLocalized}**\n` + this.sublinks.map(sublink => `- [${sublink.label[locale]}](${getCommandUriToOpenDocu(sublink.linkid!)})`).join('\n')) : '';
+    return `${infoText[locale]}${mainLink}${sublinks}`;
+  }
+
   /** Parses a JSON object into a JsonEntry object and throws an error if the JSON is invalid */
   static parseJson(json: any) {
     return new JsonEntry(
@@ -128,9 +143,9 @@ export class JsonEntry implements JsonEntryUncompleted {
         entry: best.entry,
         startIdx: best.start,
         endIdx: best.end
-      }
+      };
     } else {
-      return null
+      return null;
     }
   }
   /**

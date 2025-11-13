@@ -42,6 +42,23 @@
 				"${workspaceFolder}/out/src/test/**/*.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
+		},
+		{
+			"name": "Debug Extension Tests (runTest.js)",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/out/src/test/runTest.js",
+			"cwd": "${workspaceFolder}",
+			"runtimeArgs": [
+				"--nolazy"
+			],
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"outFiles": [
+				"${workspaceFolder}/out/src/test/**/*.js",
+				"${workspaceFolder}/out/src/**/*.js"
+			],
+			"preLaunchTask": "${defaultBuildTask}"
 		}
 	]
 }

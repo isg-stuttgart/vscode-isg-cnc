@@ -126,6 +126,7 @@ export async function addBlocknumbersCommand() {
 }
 
 export async function addBlockNumbers(start: number, step: number) {
+
     if (start === undefined) {
         start = 10;
     }
@@ -136,7 +137,9 @@ export async function addBlockNumbers(start: number, step: number) {
     let blocknumber = start;
     const textEdits: vscode.TextEdit[] = [];
     const { activeTextEditor } = vscode.window;
-
+    if (!activeTextEditor) {
+        throw new Error("No activeTextEditor found in addBlockNumbers");
+    }
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {

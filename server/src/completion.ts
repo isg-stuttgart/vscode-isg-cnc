@@ -1,15 +1,16 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode, Range } from 'vscode-languageserver';
-import { CycleSnippetFormatting, getCycleSnippetFormatting, getDocumentationPathBase, getExtensionForCycles, getLocale } from './config';
+import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles, getLocale } from './config';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
 import { Match, Position } from './parserClasses';
-import { Cycle, getCycles } from './cycles';
+import { Cycle, getCommandUriToOpenDocu, getCycles } from './cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
 import { ParseResults } from './parsingResults';
 import path = require('path');
 import { MatchType } from './matchTypes';
 import { ItemKind, JsonEntry } from '../extension-resources-output/src/JsonEntry';
 import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import { replaceLinksWithCommandUris } from './stringSearching';
 /**
  * A list of all cycle completions, independent of the position in the document.
  * 
@@ -25,6 +26,8 @@ export function updateStaticGeneralCompletions(): void {
     const locale = getLocale();
     for (const entry of jsonEntries) {
         const kind = entry.kind === ItemKind.FUNCTION ? CompletionItemKind.Function : CompletionItemKind.Snippet;
+        const docString = replaceLinksWithCommandUris(entry.getInfoTextWithVscodeCommand(getCommandUriToOpenDocu, locale));
+
         const completionItem: CompletionItem = {
             label: entry.label,
             kind: kind,
@@ -32,7 +35,7 @@ export function updateStaticGeneralCompletions(): void {
             filterText: entry.filterText ?? entry.label,
             documentation: {
                 kind: 'markdown',
-                value: entry.getInfoTextWithLink(getDocumentationPathBase(), locale)
+                value: docString
             },
             detail: entry.shortDescription[locale],
             insertTextFormat: InsertTextFormat.Snippet,
@@ -51,8 +54,11 @@ export function updateStaticGeneralCompletions(): void {
  * @returns the completions for the given position 
  */
 export function getCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
-    // GENERAL COMPLETIONS
-    // CYCLE COMPLETIONS
+    const cycleCompletions = getCycleCompletions(pos, doc);
+    return [...staticGeneralCompletions, ...cycleCompletions];
+}
+
+export function getCycleCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
     const parseResults: ParseResults = new ParseResults(doc.getText());
     // if the position is within a cycle call, get the completions for the cycle
     const cycle = findPreciseMatchOfTypes(parseResults.results.fileTree, pos, [MatchType.globalCycleCall]);
@@ -62,8 +68,7 @@ export function getCompletions(pos: Position, doc: TextDocument): CompletionItem
     } else {
         cycleCompletions.push(...getReplaceCompletion(pos, doc, staticCycleCompletions, "L "));
     }
-
-    return [...staticGeneralCompletions, ...cycleCompletions];
+    return cycleCompletions;
 }
 
 /**

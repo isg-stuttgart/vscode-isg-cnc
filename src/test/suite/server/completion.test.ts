@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as vscode from "vscode";
 import { getPathOfWorkspaceFile } from '../testHelper';
-import { getCompletions } from '../../../../server/src/completion';
+import { getCycleCompletions } from '../../../../server/src/completion';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { CompletionItem } from 'vscode-languageserver';
 // open test file
@@ -40,13 +40,13 @@ suite('LS Snippet Completion', () => {
     test('Cycle Completion inside of cycle call and no prefix', async () => {
         const doc = await openCycleNcTestFile();
         // completion request inside but before parameters should return no completions
-        const completionsExpectedEmptyMultiLine = getCompletions(new vscode.Position(1, 13), doc);
+        const completionsExpectedEmptyMultiLine = getCycleCompletions(new vscode.Position(1, 13), doc);
         assert.strictEqual(completionsExpectedEmptyMultiLine.length, 0);
-        const completionsExpectedEmptySingleLine = getCompletions(new vscode.Position(8, 13), doc);
+        const completionsExpectedEmptySingleLine = getCycleCompletions(new vscode.Position(8, 13), doc);
         assert.strictEqual(completionsExpectedEmptySingleLine.length, 0);
         // completion request inside and after cycle name should return completions for missing parameters (this should work for single-line and multi-line snippets)
-        const completionsMulti = getCompletions(new vscode.Position(6, 1), doc);
-        const completionsSingle = getCompletions(new vscode.Position(8, 43), doc);
+        const completionsMulti = getCycleCompletions(new vscode.Position(6, 1), doc);
+        const completionsSingle = getCycleCompletions(new vscode.Position(8, 43), doc);
         testParamCompletions(completionsMulti);
         testParamCompletions(completionsSingle);
 
@@ -68,7 +68,7 @@ suite('LS Snippet Completion', () => {
     test('Cycle Completion outside of cycle call and with prefix', async () => {
         const doc = await openCycleNcTestFile();
         // completion should replace the matched prefix
-        const completions = getCompletions(new vscode.Position(9, 22), doc);
+        const completions = getCycleCompletions(new vscode.Position(9, 22), doc);
         const sysCalibBacklash1Completion = completions.find(c => c.label.toString().includes("SysCalibBacklash1") && c.label.toString().includes("all params"));
         assert.ok(sysCalibBacklash1Completion);
         // completion should have the textEdit attribute because a matching prefix was given
@@ -84,7 +84,7 @@ suite('LS Snippet Completion', () => {
     test('Cycle Completion inside of cycle call and with prefix', async () => {
         const doc = await openCycleNcTestFile();
         // completion should replace the matched prefix
-        const completions = getCompletions(new vscode.Position(8, 108), doc);
+        const completions = getCycleCompletions(new vscode.Position(8, 108), doc);
         const p16Completion = completions.find(c => c.label.toString().includes("P16"));
         assert.ok(p16Completion);
         // completion should have the textEdit attribute because a matching prefix was given

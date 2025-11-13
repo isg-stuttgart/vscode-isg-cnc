@@ -1,6 +1,7 @@
 import { EOL } from "os";
 import { FileRange, Match, Position } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
+import { getCommandUriToOpenDocu } from "./cycles";
 
 /**
  * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based). If an empty string is specified to be searched, an empty array is returned.
@@ -103,4 +104,16 @@ export function compareLocations(pos1: Position, pos2: Position): number {
         result = 0;
     };
     return result;
+}
+/**
+ * Replaces links to the online documentation with command URIs to open the documentation within the IDE, depending on the type of link (file/https).
+ * @param markdown  the markdown text containing possible links to the online documentation
+ * @returns  the markdown with replaced links
+ */
+export function replaceLinksWithCommandUris(markdown: string): string {
+    const urlRegex = /https:\/\/www\.isg-stuttgart\.de\/fileadmin\/kernel\/kernel-html\/([A-Za-z\-]+)\/index\.html#(\d+)/g;
+
+    return markdown.replace(urlRegex, (_match, _locale, id) => {
+        return getCommandUriToOpenDocu(id);
+    });
 }
