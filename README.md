@@ -49,6 +49,8 @@ Visual Studio Code V1.73.1 or higher
   - Sidebar to show important code fragments (currently: Tool calls and Program calls) of the currently opened NC-file. When clicked, cursor will land at the right file position.
   - Command to jump into a file by selecting it's name or absolute path and an optional offset 
   - Hover information for self-defined calls of subprograms/cycles based on [program-doc-comments](#sub-program-comments)
+  - Command to jump into a file by selecting it's name or absolute path and an optional offset 
+  - Hover information for self-defined calls of subprograms/cycles based on [program-doc-comments](#sub-program-comments)
 
   ### Additionals
   - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)

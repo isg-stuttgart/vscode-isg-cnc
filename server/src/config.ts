@@ -65,6 +65,14 @@ export function getExtensionForCycles(): string {
     return extensionForCycles;
 }
 
+let extensionForCycles: string = ".ecy";
+/**
+ * @returns the file extension for cycle calls
+ */
+export function getExtensionForCycles(): string {
+    return extensionForCycles;
+}
+
 export function cloneFileAssociations(): { [key: string]: string } {
     const clone: { [key: string]: string } = {};
     for (const [key, value] of Object.entries(fileAssociations)) {
@@ -81,8 +89,19 @@ export function cloneFileAssociations(): { [key: string]: string } {
  * - {@link extensionForCycles}
  * - {@link cycleSnippetFormatting}
  *
+ * Updates the important settings with the setting of the IDE, namely:
+ * - {@link documentationPath}
+ * - {@link fileAssociations}
+ * - {@link locale}
+ * - {@link extensionForCycles}
+ * - {@link cycleSnippetFormatting}
+ *
 */
 export function updateSettings(workspaceConfig: any) {
+    const failedSettings: string[] = [];
+    // update documentation path
+    documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
+    // update file associations
     const failedSettings: string[] = [];
     // update documentation path
     documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
@@ -100,6 +119,47 @@ export function updateSettings(workspaceConfig: any) {
         for (const [key, value] of Object.entries(newFileAssociations)) {
             fileAssociations[key] = value;
         }
+    } catch (error) {
+        failedSettings.push("fileAssociations");
+    }
+
+    // update extension for cycles
+    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+
+    // update locale
+    try {
+        switch (workspaceConfig['isg-cnc']['locale']) {
+            case "en-GB":
+                locale = Locale.en;
+                break;
+            case "de-DE":
+                locale = Locale.de;
+                break;
+            default:
+                throw new Error("Invalid isg-cnc.locale");
+        }
+    } catch (error) {
+        failedSettings.push("locale");
+    }
+
+    // update cycle snippet formatting
+    try {
+        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
+            case "multi-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+                break;
+            case "single-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
+                break;
+            default:
+                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
+        }
+    } catch (error) {
+        failedSettings.push("cycleSnippetFormatting");
+    }
+
+    if (failedSettings.length > 0) {
+        throw new Error("Failed to update settings: " + failedSettings.join(", "));
     } catch (error) {
         failedSettings.push("fileAssociations");
     }
@@ -185,4 +245,5 @@ export function isCncFile(path: string): boolean {
         return false;
     }
 }
+
 
