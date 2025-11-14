@@ -1,21 +1,50 @@
 import { CompletionItem, CompletionItemKind, InsertTextFormat, InsertTextMode, Range } from 'vscode-languageserver';
-import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles } from './config';
+import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycles, getLocale } from './config';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
 import { Match, Position } from './parserClasses';
-import { Cycle, getCycles } from './cycles';
+import { Cycle, getCommandUriToOpenDocu, getCycles } from './cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
 import { ParseResults } from './parsingResults';
 import path = require('path');
 import { MatchType } from './matchTypes';
-
+import { ItemKind, JsonEntry } from '../extension-resources-output/src/JsonEntry';
+import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import { replaceLinksWithCommandUris } from './stringSearching';
 /**
  * A list of all cycle completions, independent of the position in the document.
  * 
  * This list is updated once on startup and then only when an important setting, namely cycleSnippetFormatting, locale, documentationPath or extensionForCycles is changed.
  */
 let staticCycleCompletions: CompletionItem[];
+let staticGeneralCompletions: CompletionItem[] = [];
+updateStaticGeneralCompletions();
 
+export function updateStaticGeneralCompletions(): void {
+    const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList(rawJsonData as any[]);
+    const completions: CompletionItem[] = [];
+    const locale = getLocale();
+    for (const entry of jsonEntries) {
+        const kind = entry.kind === ItemKind.FUNCTION ? CompletionItemKind.Function : CompletionItemKind.Snippet;
+        const docString = replaceLinksWithCommandUris(entry.getInfoTextWithVscodeCommand(getCommandUriToOpenDocu, locale));
+
+        const completionItem: CompletionItem = {
+            label: entry.label,
+            kind: kind,
+            insertText: entry.completionText,
+            filterText: entry.filterText ?? entry.label,
+            documentation: {
+                kind: 'markdown',
+                value: docString
+            },
+            detail: entry.shortDescription[locale],
+            insertTextFormat: InsertTextFormat.Snippet,
+            insertTextMode: InsertTextMode.adjustIndentation
+        };
+        completions.push(completionItem);
+    }
+    staticGeneralCompletions = completions;
+}
 
 /**
  * Returns the completions for the given position in the document.
@@ -25,14 +54,21 @@ let staticCycleCompletions: CompletionItem[];
  * @returns the completions for the given position 
  */
 export function getCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
+    const cycleCompletions = getCycleCompletions(pos, doc);
+    return [...staticGeneralCompletions, ...cycleCompletions];
+}
+
+export function getCycleCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
     const parseResults: ParseResults = new ParseResults(doc.getText());
     // if the position is within a cycle call, get the completions for the cycle
     const cycle = findPreciseMatchOfTypes(parseResults.results.fileTree, pos, [MatchType.globalCycleCall]);
+    const cycleCompletions = [];
     if (cycle) {
-        return getCompletionsWithinCycle(pos, doc, cycle);
+        cycleCompletions.push(...getCompletionsWithinCycle(pos, doc, cycle));
+    } else {
+        cycleCompletions.push(...getReplaceCompletion(pos, doc, staticCycleCompletions, "L "));
     }
-
-    return getReplaceCompletion(pos, doc, staticCycleCompletions, "L ");
+    return cycleCompletions;
 }
 
 /**

@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
@@ -451,7 +451,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-cnc-language-configuration.json"
+                "configuration": "./server/extension-resources-output/output_manual/isg-cnc-language-configuration.json"
             },
             {
                 "id": "isg-list",
@@ -466,7 +466,7 @@
                     "light": "resources/ISGCncEditor.png",
                     "dark": "resources/ISGCncEditor.png"
                 },
-                "configuration": "./languages/isg-list-language-configuration.json"
+                "configuration": "./server/extension-resources-output/output_manual/isg-list-language-configuration.json"
             },
             {
                 "id": "isg-cnc-cycle-error",
@@ -493,26 +493,6 @@
             }
         ],
         "snippets": [
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/dollar-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/gcode-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/general-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/hashtag-snippets.json"
-            },
-            {
-                "language": "isg-cnc",
-                "path": "./snippets/mcode-snippets.json"
-            },
             {
                 "language": "isg-cnc-cycle-error",
                 "path": "./snippets/cnc-cycles-error-definition-snippets.json"

@@ -14,7 +14,7 @@ import {
 import * as parser from './getDefinitionAndReferences';
 import { Position } from './parserClasses';
 import * as config from './config';
-import { getCompletions, updateStaticCycleCompletions } from './completion';
+import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
 import { ParseResults } from './parsingResults';
 // Create a connection for the server, using Node's IPC as a transport.
@@ -101,6 +101,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
@@ -208,6 +209,7 @@ connection.onDidChangeConfiguration(async () => {
  * Fetches the workspace configuration and updates the languageIDs associated with the isg-cnc language.
  */
 async function updateConfig() {
+	// update settings
 	const oldDocuPath = config.getDocumentationPathWithLocale();
 	const oldCycleSnippetFormatting = config.getCycleSnippetFormatting();
 	const oldExtensionForCycles = config.getExtensionForCycles();
@@ -223,6 +225,10 @@ async function updateConfig() {
 		oldExtensionForCycles !== config.getExtensionForCycles()
 	) {
 		updateStaticCycleCompletions();
+	}
+	// if docupath changed, update general completions
+	if (oldDocuPath !== config.getDocumentationPathWithLocale()) {
+		updateStaticGeneralCompletions();
 	}
 }
 

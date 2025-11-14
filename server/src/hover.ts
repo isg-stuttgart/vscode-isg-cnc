@@ -3,13 +3,17 @@ import { isMatch, Match, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
 import { ParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
-import { getCycles, getISGCycleByName } from "./cycles";
+import { getCommandUriToOpenDocu, getCycles, getISGCycleByName } from "./cycles";
 import path = require("path");
 import { getDefinition } from "./getDefinitionAndReferences";
 import { getDocByUri } from "./fileSystem";
 import { getLocale, Locale } from "./config";
-import { getSurroundingVar } from "./stringSearching";
+import { getSurroundingVar, replaceLinksWithCommandUris } from "./stringSearching";
 import { MatchType } from "./matchTypes";
+import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import * as rawCycleData from '../extension-resources-output/output_generated/genericCycles.json';
+import { JsonEntry } from "../extension-resources-output/src/JsonEntry";
+const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList([...rawJsonData, ...rawCycleData] as any[]);
 /**
  * Returns the hover information for the given position in the document.
  * Currently it supports cycle call and cycle parameter hover. 
@@ -36,14 +40,15 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
         MatchType.variable,
         MatchType.varDeclaration
     ]);
-    // if no match found, no hover information can be provided
-    if (!match) { return null; }
 
     // cycle call of known isg cycle -> we can provide hover information via json file
     if (match?.type === MatchType.globalCycleCall && match.name && getISGCycleByName(match.name)) {
         return getHoverForISGCycleCall(position, match);
     }
-
+    if (!match) {
+        // try to get static pattern based hover information from json entries
+        return getStaticPatternBasedHoverInformation(position, textDocument);
+    }
     // basic hover content containing the name and what hover type it is
     const callType = getHoverTypeString(match);
     const name = [MatchType.blockNumberLabel, MatchType.gotoBlocknumber].includes(match.type) ? "N" + match.name : match.name;
@@ -141,10 +146,41 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
                 }
             }
         };
+    } else {
+        // try to get static pattern based hover information from json entries
+        hover = getStaticPatternBasedHoverInformation(position, textDocument);
     }
     return hover;
 }
 
+function getStaticPatternBasedHoverInformation(position: Position, textDocument: TextDocument): Hover | null {
+    // try to find entry which can be found in the line and contains the hovered word
+    const line = textDocument.getText(Range.create(new Position(position.line, 0), new Position(position.line + 1, 0)));
+    const surroundingEntry = JsonEntry.findBestSurroundingEntry(position, line, jsonEntries);
+    if (surroundingEntry) {
+        const hoverText = replaceLinksWithCommandUris(
+            surroundingEntry.entry.getInfoTextWithVscodeCommand(getCommandUriToOpenDocu, getLocale())
+        );
+        return {
+            range: {
+                start: {
+                    line: position.line,
+                    character: surroundingEntry.startIdx
+                },
+                end: {
+                    line: position.line,
+                    character: surroundingEntry.endIdx
+                }
+            },
+            contents: {
+                value: hoverText,
+                kind: "markdown"
+            },
+        };
+    } else {
+        return null;
+    }
+}
 /**
  * 
  * @param defDoc the document to search in

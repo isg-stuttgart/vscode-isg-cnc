@@ -19,6 +19,12 @@ export function getLocale(): Locale {
 let documentationPath = "";
 
 /**
+ * @returns the base path to the documentation website without locale or index.html, e.g. https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/
+ */
+export function getDocumentationPathBase(): string {
+    return documentationPath;
+}
+/**
  * @returns the localed path to the documentation website
  */
 export function getDocumentationPathWithLocale(): string {
@@ -75,6 +81,13 @@ export function cloneFileAssociations(): { [key: string]: string } {
  * - {@link extensionForCycles}
  * - {@link cycleSnippetFormatting}
  *
+ * Updates the important settings with the setting of the IDE, namely:
+ * - {@link documentationPath}
+ * - {@link fileAssociations}
+ * - {@link locale}
+ * - {@link extensionForCycles}
+ * - {@link cycleSnippetFormatting}
+ *
 */
 export function updateSettings(workspaceConfig: any) {
     const failedSettings: string[] = [];
@@ -96,6 +109,45 @@ export function updateSettings(workspaceConfig: any) {
         }
     } catch (error) {
         failedSettings.push("fileAssociations");
+    }
+
+    // update extension for cycles
+    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+
+    // update locale
+    try {
+        switch (workspaceConfig['isg-cnc']['locale']) {
+            case "en-GB":
+                locale = Locale.en;
+                break;
+            case "de-DE":
+                locale = Locale.de;
+                break;
+            default:
+                throw new Error("Invalid isg-cnc.locale");
+        }
+    } catch (error) {
+        failedSettings.push("locale");
+    }
+
+    // update cycle snippet formatting
+    try {
+        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
+            case "multi-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+                break;
+            case "single-line":
+                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
+                break;
+            default:
+                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
+        }
+    } catch (error) {
+        failedSettings.push("cycleSnippetFormatting");
+    }
+
+    if (failedSettings.length > 0) {
+        throw new Error("Failed to update settings: " + failedSettings.join(", "));
     }
 
     // update extension for cycles
@@ -179,4 +231,5 @@ export function isCncFile(path: string): boolean {
         return false;
     }
 }
+
 

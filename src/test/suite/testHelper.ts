@@ -6,6 +6,12 @@ import { Match } from '../../../server/src/parserClasses';
 import * as peggy from 'peggy';
 import { MatchType } from '../../../server/src/matchTypes';
 
+export function assertEqualNoHugeDiff(actual: string, expected: string, label: string) {
+    if (actual !== expected) {
+        assert.ok(false, `[${label}] output mismatch`);
+    }
+}
+
 export async function openTestFileForLS(fileName: string): Promise<vscode.TextDocument> {
     const doc = await openTestFile(fileName);
     // wait 2 seconds for the language server to be ready
@@ -73,6 +79,7 @@ export async function assertApplyingCommandToFile(fileName: string, expectedName
     //compare result
     const newContent = tmpDoc.getText();
     const expectedContent = fs.readFileSync(expectedPath, 'utf8');
+    //assertEqualNoHugeDiff(newContent, expectedContent, `Applying command to ${fileName}`);
     assert.strictEqual(newContent, expectedContent);
 }
 
