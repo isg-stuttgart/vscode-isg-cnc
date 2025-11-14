@@ -12,10 +12,14 @@ Types of changes:
 - Removed for now removed features.
 - Fixed for any bug fixes.
 - Security in case of vulnerabilities.
+
 ## [Unreleased]
 
 
 ## [V1.3.0]
+
+### Added
+
 - Use of generic data from [extension-resources repository](https://github.com/isg-stuttgart/extension-ressources) for additional/updatable hover and completion information [Issue #169](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/169)
 - This also results in new Hover+Completion for #-commands [Issue #154](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/154)
 
@@ -406,6 +410,7 @@ Types of changes:
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V1.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.2.0...V1.3.0
 [V1.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.1.0...V1.2.0
 [V1.1.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.0.0...V1.1.0
 [V1.0.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V0.4.6...V1.0.0
