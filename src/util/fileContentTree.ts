@@ -3,8 +3,6 @@ import * as fs from 'fs';
 import * as Path from "path";
 import * as parser from "../../server/src/parsingResults";
 
-//New line marker, based on operating system
-import { EOL as newline } from "node:os";
 import { Match } from '../../server/src/parserClasses';
 
 export enum Sorting {
@@ -15,7 +13,7 @@ export enum Sorting {
 /**
  * The Tree Data Provider for the NC-Match-Tree
  */
-export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeItem>{
+export class FileContentProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
     fileItem: FileItem = new FileItem("", vscode.TreeItemCollapsibleState.None);
@@ -320,16 +318,18 @@ export class MatchLineLabel {
 
     private _textoffset: number;
     constructor(match: Match) {
-        this._file = vscode.window.activeTextEditor?.document.uri.fsPath;
+        const document = vscode.window.activeTextEditor?.document;
+        this._file = document?.uri.fsPath;
         let labelString: string;
         let textoffset: number;
 
-        if (this._file !== undefined) {
-            const paddingGoal = getMaxLine(this._file).toString().length;
+        if (this._file !== undefined && document !== undefined) {
+            const eol = document.eol;
+            const paddingGoal = getMaxLine(this._file, eol).toString().length;
             const lineNumber = match.location.start.line;
             const column = match.location.start.column;
             labelString = lineNumber.toString().padStart(paddingGoal, '0') + ": ";
-            let text: string = getLine(this._file, match.location.start.line);
+            let text: string = getLine(this._file, match.location.start.line, eol);
             textoffset = paddingGoal + 2/* skip ': ' */ - 1 /*different counting between match and label*/;
 
             //label shall contain a maximum of 15 characters left from the match
@@ -381,6 +381,7 @@ enum ItemPosition {
     subCategory
 }
 
+
 /**
  * Forces my item classes to have a getChildren method, which returns their children as an array
  */
@@ -406,7 +407,8 @@ class MessageItem extends vscode.TreeItem implements MyItem {
  * Updates the maxLine-Variable of this module indicating the max amount of lines in the current file
  * @param file 
  */
-function getMaxLine(file: string): number {
+function getMaxLine(file: string, eol: vscode.EndOfLine): number {
+    const newline = eol === vscode.EndOfLine.LF ? "\n" : "\r\n";
     const filecontent: string = fs.readFileSync(file, "utf8");
     const lineArray = filecontent.split(newline);
     return lineArray.length;
@@ -418,9 +420,10 @@ function getMaxLine(file: string): number {
  * @param lineNumber 1-based
  * @returns the line as a string
  */
-function getLine(file: string, lineNumber: number): string {
+function getLine(file: string, lineNumber: number, eol: vscode.EndOfLine): string {
     let result = "";
     const filecontent: string | undefined = fs.readFileSync(file, "utf8");
+    const newline = eol === vscode.EndOfLine.LF ? "\n" : "\r\n";
     const lineArray = filecontent.split(newline);
     result = lineArray[lineNumber - 1];
     return result;

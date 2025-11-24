@@ -23,6 +23,9 @@ Types of changes:
 - Use of generic data from [extension-resources repository](https://github.com/isg-stuttgart/extension-ressources) for additional/updatable hover and completion information [Issue #169](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/169)
 - This also results in new Hover+Completion for #-commands [Issue #154](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/154)
 
+### Fixed
+- Fix issue where changing EOL within vscode client caused issues with nodes EOL detection based on operating system [Issue # 173](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/173)
+  
 ## [V1.2.0]
 
 ### Added
