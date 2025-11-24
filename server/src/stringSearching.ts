@@ -1,4 +1,3 @@
-import { EOL } from "os";
 import { FileRange, Match, Position } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
 import { getCommandUriToOpenDocu } from "./cycles";
@@ -17,7 +16,7 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
         return [];
     }
     let ranges: FileRange[] = [];
-    const lines = fileContent.split(EOL);
+    const lines = fileContent.split("\n");
     let commentMatches: Match[];
     try {
         commentMatches = new ParseResults(fileContent).syntaxArray.comments;
@@ -66,7 +65,7 @@ export function isWithinMatches(matches: Match[], pos: Position): boolean {
  */
 export function getSurroundingVar(text: string, position: Position): string | null {
     let result = null;
-    const lines = text.split(EOL);
+    const lines = text.split("\n");
     const line = lines[position.line];
     const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+/gm;
 
