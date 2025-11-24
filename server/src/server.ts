@@ -102,6 +102,7 @@ connection.onDefinition((docPos) => {
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
 		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
+		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		console.error("Getting definition failed: " + JSON.stringify(error));
 		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
