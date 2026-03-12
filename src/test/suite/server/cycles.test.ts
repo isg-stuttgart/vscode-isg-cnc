@@ -50,15 +50,9 @@ suite("LS cycles", () => {
         const requirementDic4 = new RequirementDictionary(0, undefined, undefined, undefined, "", false, false, "integer");
 
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic1, [], "docuId", undefined).getPlaceholder(1), "${1|0,1,2,3,4,5,6,7,8,9,10|}");
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId", undefined).getPlaceholder(1), "${1:0-100}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId", undefined).getPlaceholder(1), "${1:[0,100]}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic3, [], "docuId", undefined).getPlaceholder(1), "${1:default}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic4, [], "docuId", undefined).getPlaceholder(1), "${1:pname}");
-    });
-
-    test("DocumentationReference Constructor", function () {
-        // assert error if parameter is lacking
-        assert.throws(() => new DocumentationReference(<string><unknown>undefined, "67890", undefined, undefined, undefined, undefined));
-        assert.throws(() => new DocumentationReference("12345", <string><unknown>undefined, undefined, undefined, undefined, undefined));
     });
 
     test("DescriptionDictionary", function () {

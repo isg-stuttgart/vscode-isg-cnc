@@ -19,7 +19,7 @@ suite('LS Cycle Hover Information', () => {
         const doc = await vscode.workspace.openTextDocument(testFileUri);
         const hover = getHoverInformation({ line: 1, character: 17 }, TextDocument.create(testFileUri.toString(), "isg-cnc", 0, doc.getText()), null, new Map<string, TextDocument>());
         assert.ok(hover !== undefined && hover !== null);
-        assert.ok(getHoverContent(hover).includes("SysCalibToolSettingProbe"));
+        assert.ok((getHoverContent(hover) as any).value.includes("SysCalibToolSettingProbe"));
     });
 
     test('Hover Information for cycle parameter (both single-line and multi-line)', async () => {
@@ -134,5 +134,5 @@ async function executeHover(uri: vscode.Uri, position: vscode.Position): Promise
 }
 
 function getHoverContent(hover: Hover) {
-    return (hover.contents as MarkupContent).value;
+    return (hover.contents as string);
 }
