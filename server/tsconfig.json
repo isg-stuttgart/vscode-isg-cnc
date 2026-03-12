@@ -21,6 +21,7 @@
 	"include": [
 		"res/**/*",
 		"src/**/*",
-		"src/parserGenerating/ncParser.ts"
+		"src/parserGenerating/ncParser.ts",
+		"extension-resources-output/src/cycles.ts"
 	]
 }

@@ -4,6 +4,8 @@ import ignore, { Ignore } from "ignore";
 import { isCncFile } from "./config";
 import { minimatch } from 'minimatch';
 import { TextDocument } from "vscode-languageserver-textdocument";
+
+
 /**
  * Finds the most specific glob pattern which matches the given path. "Most specific" is estimated by the depth (count of /) of the pattern.
  * @param path the path to find the most specific glob pattern for. 

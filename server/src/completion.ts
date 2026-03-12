@@ -3,7 +3,7 @@ import { CycleSnippetFormatting, getCycleSnippetFormatting, getExtensionForCycle
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as ls from 'vscode-languageserver';
 import { Match, Position } from './parserClasses';
-import { Cycle, getCommandUriToOpenDocu, getCycles } from './cycles';
+import { Cycle, getCycles } from '../extension-resources-output/src/cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
 import { ParseResults } from './parsingResults';
 import path = require('path');
@@ -11,6 +11,7 @@ import { MatchType } from './matchTypes';
 import { ItemKind, JsonEntry } from '../extension-resources-output/src/JsonEntry';
 import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
 import { replaceLinksWithCommandUris } from './stringSearching';
+import { getCommandUriToOpenDocu } from './helper';
 /**
  * A list of all cycle completions, independent of the position in the document.
  * 
@@ -110,52 +111,22 @@ function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdi
  */
 function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFormat: CycleSnippetFormatting): CompletionItem {
     const fileExtension = getExtensionForCycles();
-    const sep = snippetFormat === CycleSnippetFormatting.multiLine ? " \\\n\t" : " ";
-    const parameters = onlyRequired ? cycle.parameterList.filter(p => p.requirementDictionary.required) : cycle.parameterList;
     const requiredString = onlyRequired ? "required" : "all";
-
-    // Create the snippet and preview depending on the parameters
-    let snippet = "L CYCLE [NAME=" + cycle.name + fileExtension;
-    let preview = "L CYCLE [NAME=" + cycle.name + fileExtension;
-    let counter = 1;
-    for (const parameter of parameters) {
-        snippet += sep + "@" + parameter.name + "=" + parameter.getPlaceholder(counter);
-        if (counter <= 3) {
-            preview += sep + "@" + parameter.name + "=" + parameter.name.toLowerCase();
-        }
-        counter++;
-    }
-    snippet += snippetFormat === CycleSnippetFormatting.multiLine ? sep + "]" : "]";
-    preview += counter <= 4 ? "]" : sep + "...]";
-
+    const detail = cycle.descriptionDictionary.getDescription(getLocale());
     const completionItem: CompletionItem = {
         label: "Cycle: " + cycle.name + " (" + requiredString + " params)",
         kind: CompletionItemKind.Function,
-        detail: preview,
-        documentation: cycle.getMarkupDocumentation(onlyRequired),
+        detail: detail,
+        documentation: {
+            kind: 'markdown',
+            value: replaceLinksWithCommandUris(cycle.getMarkupDocumentation(getLocale(), onlyRequired))
+        },
         insertTextFormat: InsertTextFormat.Snippet,
         insertTextMode: InsertTextMode.adjustIndentation,
-        filterText: preview,
-        insertText: snippet
+        insertText: cycle.getCompletion(onlyRequired, snippetFormat, fileExtension)
     };
     return completionItem;
 }
-
-/**
- * Updates the static cycle completions based on the current settings.
- */
-export function updateStaticCycleCompletions(): void {
-    const cycles: Cycle[] = getCycles();
-    const completions: CompletionItem[] = [];
-    const snippetFormat: CycleSnippetFormatting = getCycleSnippetFormatting();
-    for (const cycle of cycles) {
-        completions.push(getStaticCycleCompletion(cycle, true, snippetFormat));
-        completions.push(getStaticCycleCompletion(cycle, false, snippetFormat));
-    }
-    staticCycleCompletions = completions;
-}
-// update once on startup
-updateStaticCycleCompletions();
 
 /**
  * Get the completions for the given position which must be within the cycleMatch.
@@ -184,7 +155,7 @@ function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch:
         completions.push({
             label: param.name,
             kind: CompletionItemKind.Field,
-            documentation: param.getMarkupDocumentation(),
+            documentation: param.getMarkupDocumentation(getLocale()),
             insertText: insertText,
             insertTextFormat: InsertTextFormat.Snippet,
             filterText: insertText
@@ -193,4 +164,18 @@ function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch:
     return getReplaceCompletion(pos, doc, completions, "@");
 }
 
-
+/**
+ * Updates the static cycle completions based on the current settings.
+ */
+export function updateStaticCycleCompletions(): void {
+    const cycles: Cycle[] = getCycles();
+    const completions: CompletionItem[] = [];
+    const snippetFormat: CycleSnippetFormatting = getCycleSnippetFormatting();
+    for (const cycle of cycles) {
+        completions.push(getStaticCycleCompletion(cycle, true, snippetFormat));
+        completions.push(getStaticCycleCompletion(cycle, false, snippetFormat));
+    }
+    staticCycleCompletions = completions;
+}
+// update once on startup
+updateStaticCycleCompletions();

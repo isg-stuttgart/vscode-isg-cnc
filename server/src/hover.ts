@@ -3,7 +3,7 @@ import { isMatch, Match, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
 import { ParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
-import { getCommandUriToOpenDocu, getCycles, getISGCycleByName } from "./cycles";
+import { getCycles, getISGCycleByName } from "../extension-resources-output/src/cycles";
 import path = require("path");
 import { getDefinition } from "./getDefinitionAndReferences";
 import { getDocByUri } from "./fileSystem";
@@ -13,6 +13,7 @@ import { MatchType } from "./matchTypes";
 import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
 import * as rawCycleData from '../extension-resources-output/output_generated/genericCycles.json';
 import { JsonEntry } from "../extension-resources-output/src/JsonEntry";
+import { getCommandUriToOpenDocu } from "./helper";
 const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList([...rawJsonData, ...rawCycleData] as any[]);
 /**
  * Returns the hover information for the given position in the document.
@@ -43,7 +44,7 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
 
     // cycle call of known isg cycle -> we can provide hover information via json file
     if (match?.type === MatchType.globalCycleCall && match.name && getISGCycleByName(match.name)) {
-        return getHoverForISGCycleCall(position, match);
+        return getHoverForISGCycleCall(position, match, textDocument);
     }
     if (!match) {
         // try to get static pattern based hover information from json entries
@@ -217,7 +218,7 @@ function findFirstNonWhitespaceOffsetBefore(defDoc: TextDocument, position: Posi
  * @param cycleMatch the cycle call match containing the position 
  * @returns the hover information item for the given position, null if no hover information is found 
  */
-function getHoverForISGCycleCall(position: Position, cycleMatch: Match): Hover | null {
+function getHoverForISGCycleCall(position: Position, cycleMatch: Match, textDocument: TextDocument): Hover | null {
     // find the cycle object fitting to the name of the cycle call
     if (!cycleMatch.name) { return null; }
     const cycleName = path.parse(cycleMatch.name).name;
@@ -226,27 +227,16 @@ function getHoverForISGCycleCall(position: Position, cycleMatch: Match): Hover |
     // find the most precise match being either the cycle name or a parameter
     const cycleSubMatch = findPreciseMatchOfTypes(cycleMatch, position, [MatchType.globalCycleCallName, MatchType.cycleParameter]);
     if (!cycleSubMatch) { return null; }
-    // if on cycle name, show cycle documentation
+    // if on cycle name, show cycle documentation via default pattern based hover information
     if (cycleSubMatch.type === MatchType.globalCycleCallName) {
-        return {
-            contents: cycle.getMarkupDocumentation(false),
-            range: {
-                start: {
-                    line: cycleSubMatch.location.start.line - 1,
-                    character: cycleSubMatch.location.start.column - 1
-                },
-                end: {
-                    line: cycleSubMatch.location.end.line - 1,
-                    character: cycleSubMatch.location.end.column - 1
-                }
-            }
-        };
+        return getStaticPatternBasedHoverInformation(position, textDocument);
     }
+
     // else if on cycle parameter, show parameter documentation
     else if (cycleSubMatch.type === MatchType.cycleParameter) {
         const parameter = cycle.parameterList.find(p => p.name === cycleSubMatch.name);
         return parameter ? {
-            contents: parameter.getMarkupDocumentation(),
+            contents: parameter.getMarkupDocumentation(getLocale()),
             range: {
                 start: {
                     line: cycleSubMatch.location.start.line - 1,

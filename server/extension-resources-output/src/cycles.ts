@@ -1,15 +1,46 @@
-import { Locale, getLocale } from './config';
-import { MarkupContent } from 'vscode-languageserver';
-import { URI } from 'vscode-uri';
-import * as cyclesJson from "../res/cycles.json";
+import cyclesJson = require("../output_generated/cycles.json");
 import * as path from "path";
-
+import { Dict, ItemKind, JsonEntry, Locale } from "../src/JsonEntry";
 /**
  * If the amount of values for a parameter is below this limit, a choice snippet is used for the placeholder. Else the range is shown.
  */
 const rangeLimitForChoiceSnippet = 50;
 
 let cycles: Cycle[];
+
+export function getCycleEntries(): JsonEntry[] {
+    const result: JsonEntry[] = [];
+    const cycles = getCycles();
+    cycles.forEach((cycle) => {
+        result.push(getCycleEntry(cycle, true));
+        result.push(getCycleEntry(cycle, false));
+    });
+    return result;
+}
+
+function getCycleEntry(cycle: Cycle, onlyRequired: boolean): JsonEntry {
+    const reqString = onlyRequired ? " (required)" : " (all)";
+    const entry = new JsonEntry(
+        cycle.name + reqString,
+        cycle.documentationReference?.overview ? cycle.documentationReference.overview : null,
+        new Dict(
+            cycle.descriptionDictionary.getDescription(Locale.de),
+            cycle.descriptionDictionary.getDescription(Locale.en),
+        ),
+        [],
+        ItemKind.FUNCTION,
+        cycle.getCompletion(onlyRequired, CycleSnippetFormatting.multiLine),
+        new Dict(
+            cycle.getMarkupDocumentation(Locale.de, onlyRequired),
+            cycle.getMarkupDocumentation(Locale.en, onlyRequired),
+        ),
+        cycle.name,
+        [cycle.name + ".ecy", cycle.name + ".cyc"],
+    );
+
+    return entry;
+}
+
 
 /**
  * @returns a list of cycles generated from the cycles.json file
@@ -28,17 +59,6 @@ export function getISGCycleByName(name: string): Cycle | null {
 }
 
 /**
- * @returns a markdown string that contains a clickable command uri to open the documentation with the given id
- */
-export function getCommandUriToOpenDocu(id: string | undefined): string {
-    if (!id) {
-        return "";
-    }
-    const commandUri = URI.parse(`command:isg-cnc.openDocuWithId?${encodeURIComponent(JSON.stringify([id]))}`);
-    return commandUri.toString();
-}
-
-/**
  * Transforms a cycle object from the cycles.json file to a {@link Cycle} object.
  * @param cycle a cycle object generated from the cycles.json file
  * @returns a {@link Cycle} object 
@@ -53,7 +73,18 @@ function jsonCycleToCycle(cycle: any): Cycle {
             return numA - numB;
         });
 
-        const documentationReference = (cycle.DocumentationReference && cycle.DocumentationReference.Overview && cycle.DocumentationReference.Parameter) ? new DocumentationReference(cycle.DocumentationReference.Overview, cycle.DocumentationReference.Parameter) : undefined;
+        let documentationReference: DocumentationReference | undefined = undefined;
+        if (cycle.DocumentationReference) {
+            documentationReference = new DocumentationReference(
+                cycle.DocumentationReference.Overview,
+                cycle.DocumentationReference.Parameter,
+                cycle.DocumentationReference.Process,
+                cycle.DocumentationReference.Syntax,
+                cycle.DocumentationReference["Programming-Example"],
+                cycle.DocumentationReference["Output-Variables"]
+            );
+        }
+
         const descriptionDictionary = new DescriptionDictionary(cycle.DescriptionDictionary["en-US"], cycle.DescriptionDictionary["de-DE"]);
 
         return new Cycle(
@@ -146,34 +177,99 @@ export class Cycle {
             throw new Error("Cycle version is missing");
         }
     }
-    getMarkupDocumentation(onlyRequired: boolean): MarkupContent {
+    getMarkupDocumentation(locale: Locale, onlyRequired: boolean): string {
         // if the documentation reference is missing, don't add a link to the documentation
-        const moreInfo = getLocale() === Locale.de ? "[Mehr Informationen]" : "[More Information]";
-        const infoLink = this.documentationReference && this.documentationReference.overview ? `  \n\n${moreInfo}(${getCommandUriToOpenDocu(this.documentationReference.overview)})` : "";
-        const subCycleTitle = (getLocale() === Locale.de ? "### Unterzyklen:  \n" : "### Subcycles:  \n");
+        const title =
+            this.documentationReference && this.documentationReference.overview
+                ? `## [${this.name}](${getLinkToDocu(this.documentationReference.overview, locale)})`
+                : `## ${this.name}`;
+        // subcycles
+        const subCycleTitle = (locale === Locale.de ? "### Unterzyklen:  \n" : "### Subcycles:  \n");
         const subcycleString: string = this.subcycles.length > 0 ? subCycleTitle + this.subcycles.map(subcycle => "- " + subcycle).join("\n") + "\n\n" : "";
+        // parameters
         let parameterTitle: string;
-        const locale = getLocale();
         if (this.parameterList.length > 0) {
-            parameterTitle = onlyRequired ? (locale === Locale.de ? "### Erforderliche Parameter:  \n" : "### Required Parameters:  \n") : (locale === Locale.de ? "### Parameter:  \n" : "### Parameters:  \n");
+            if (onlyRequired) {
+                parameterTitle = (locale === Locale.de ? "Erforderliche Parameter:" : "Required Parameters:");
+            } else {
+                parameterTitle = (locale === Locale.de ? "Parameter:" : "Parameters:");
+            }
+            // add the documentation reference to the parameter title
+            if (this.documentationReference && this.documentationReference.parameter) {
+                parameterTitle = "### [" + parameterTitle + "](" + getLinkToDocu(this.documentationReference.parameter, locale) + ")";
+            } else {
+                parameterTitle = "### " + parameterTitle;
+            }
         } else {
             parameterTitle = "";
         }
-        return {
-            kind: "markdown",
-            value:
-                "### " + this.name + "  \n" + this.descriptionDictionary.getDescription(getLocale()) + "  \n\n" +
 
-                parameterTitle +
-                this.parameterList
-                    .filter(param => !onlyRequired || param.requirementDictionary.required)
-                    .map(param => param.getShortDescriptionLine()).join("\n") +
-                "\n\n" +
-                (locale === Locale.de ? "### Lizenz:  \n" : "### License:  \n") + this.license + "  \n" +
-                (locale === Locale.de ? "### Version:  \n" : "### Version:  \n") + this.version + "  \n" +
-                subcycleString +
-                infoLink
-        };
+        const tableHeader = locale === Locale.de
+            ? parameterTitle + "  \n" +
+            "(Erforderliche Parameter sind mit * gekennzeichnet)  \n" +
+            "| Name | Beschreibung | Typ | Wertebereich |\n" +
+            "| --- | --- | --- | --- |\n"
+            : parameterTitle + "  \n" +
+            "(Required parameters are marked with *)  \n" +
+            "| Name | Description | Type | Range |\n" +
+            "| --- | --- | --- | --- |\n";
+        // prepare helper links as markdown listing
+        const helperLinks = [];
+        if (this.documentationReference) {
+            if (this.documentationReference.process) {
+                helperLinks.push((locale === Locale.de ? "[Prozessbeschreibung]" : "[Process Description]") + "(" + getLinkToDocu(this.documentationReference.process, locale) + ")");
+            }
+            if (this.documentationReference.syntax) {
+                helperLinks.push((locale === Locale.de ? "[Syntax]" : "[Syntax]") + "(" + getLinkToDocu(this.documentationReference.syntax, locale) + ")");
+            }
+            if (this.documentationReference.programmingExample) {
+                helperLinks.push((locale === Locale.de ? "[Programmierbeispiel]" : "[Programming Example]") + "(" + getLinkToDocu(this.documentationReference.programmingExample, locale) + ")");
+            }
+            if (this.documentationReference.outputVariables) {
+                helperLinks.push((locale === Locale.de ? "[Ausgabevariablen]" : "[Output Variables]") + "(" + getLinkToDocu(this.documentationReference.outputVariables, locale) + ")");
+            }
+        }
+        let helperLinksString = "";
+        if (helperLinks.length > 0 && this.documentationReference) {
+            helperLinksString = (locale === Locale.de ? "### Hilfreiche Links:  \n" : "### Helpful Links:  \n") + helperLinks.map(link => "- " + link).join("\n") + "\n\n";
+        }
+
+        // Build the markdown string for the cycle documentation
+        const result =
+            // main
+            title + "  \n" +
+            this.descriptionDictionary.getDescription(locale) + "\n" +
+            // parameters
+            tableHeader +
+            this.parameterList
+                .filter(param => !onlyRequired || param.requirementDictionary.required)
+                .map(param => param.getTableRow(locale)).join("\n") +
+            "\n\n" +
+            // helper links as listing
+            helperLinksString +
+            // others
+            (locale === Locale.de ? "### Lizenz: " : "### License: ") + this.license + "  \n" +
+            (locale === Locale.de ? "### Version: " : "### Version: ") + this.version + "  \n" +
+            subcycleString +
+            title;
+
+        return result;
+    }
+
+    getCompletion(onlyRequired: boolean, snippetFormat: CycleSnippetFormatting, fileExtension = ".ecy"): string {
+        const sep = snippetFormat === CycleSnippetFormatting.multiLine ? " \\\n\t" : " ";
+        const parameters = onlyRequired ? this.parameterList.filter(p => p.requirementDictionary.required) : this.parameterList;
+
+        // Create the snippet and preview depending on the parameters
+        let snippet = "L CYCLE [NAME=" + this.name + fileExtension;
+        let counter = 1;
+        for (const parameter of parameters) {
+            snippet += sep + "@" + parameter.name + "=" + parameter.getPlaceholder(counter);
+            counter++;
+        }
+        snippet += snippetFormat === CycleSnippetFormatting.multiLine ? "\\\n" + "]" : "]";
+
+        return snippet;
     }
 }
 /**
@@ -262,7 +358,7 @@ export class Parameter {
         }
         // case 3: parameter has min and max but the difference is too big -> show the range as placeholder
         else if (min !== undefined && max !== undefined) {
-            return "${" + tabstopNumber + ":" + min + "-" + max + "}";
+            return "${" + tabstopNumber + ":[" + min + "," + max + "]}";
         }
         // case 4: parameter has a default value -> use the default value as placeholder
         else if (defaultVal) {
@@ -276,7 +372,7 @@ export class Parameter {
     /**
      * @returns a markdown string that contains important information about the parameter. Can be used for completion or hover items.
      */
-    getMarkupDocumentation(): MarkupContent {
+    getMarkupDocumentation(locale: Locale): string {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
         const min2 = this.requirementDictionary.min2;
@@ -284,7 +380,6 @@ export class Parameter {
         const defaultVal = this.requirementDictionary.default;
         const notZero = this.requirementDictionary.notZero;
         const required = this.requirementDictionary.required;
-        const locale = getLocale();
         let description = "";
         try {
             description = this.descriptionDictionary.getDescription(locale);
@@ -293,17 +388,17 @@ export class Parameter {
         }
         let dependencyMarkdownString = "";
         if (this.dependencyList && this.dependencyList.length > 0) {
-            dependencyMarkdownString = getLocale() === Locale.de ? "### Abhängigkeiten:  \n" : "### Dependencies:  \n";
+            dependencyMarkdownString = locale === Locale.de ? "### Abhängigkeiten:  \n" : "### Dependencies:  \n";
             dependencyMarkdownString += this.dependencyList.map(dependency => {
                 return "- " + dependency;
             }).join("\n") + "\n\n";
         }
         // if the documentation reference is missing, don't add a link to the documentation
         const moreInfo = locale === Locale.de ? "[Mehr Informationen]" : "[More Information]";
-        const infoLink = this.documentationReference ? `  \n\n${moreInfo}(${getCommandUriToOpenDocu(this.documentationReference)})` : "";
+        const infoLink = this.documentationReference ? `  \n\n${moreInfo}(${getLinkToDocu(this.documentationReference, locale)})` : "";
 
         const markdownString = "## " + this.name + ": " + description + "  \n" +
-            this.getEnumValuesMarkdown() +
+            this.getEnumValuesMarkdown(locale) +
             (locale === Locale.de ? "### Anforderungen:  \n" : "### Requirements:  \n") +
             (min !== undefined ? "Min: " + min + "  \n" : "") +
             (max !== undefined ? "Max: " + max + "  \n" : "") +
@@ -317,22 +412,18 @@ export class Parameter {
             dependencyMarkdownString +
 
             infoLink;
-        return {
-            kind: "markdown",
-            value: markdownString
 
-        };
+        return markdownString;
     }
 
     /**
      * @returns a markdown string that contains the enum values of the parameter with their descriptions.
      * If the parameter has no enum values, an empty string is returned.
      */
-    getEnumValuesMarkdown(): string {
+    getEnumValuesMarkdown(locale: Locale): string {
         if (!this.enumValues || this.enumValues.length === 0) {
             return "";
         }
-        const locale = getLocale();
         return (locale === Locale.de ? "### Mögliche Werte:  \n" : "### Possible Values:  \n") +
             this.enumValues.map(enumValue => {
                 return "- " + enumValue.value + ": " + enumValue.description.getDescription(locale);
@@ -341,13 +432,14 @@ export class Parameter {
     }
     ;
     /**
-     * @returns a short description line for the parameter. Is used within the cycle markdown documentaiton.
+     * @returns a short description line for the parameter. Is used within the cycle markdown documentation.
      */
-    getShortDescriptionLine(): string {
-        const id = this.documentationReference;
-        const nameMarkdown = id ? `[${this.name}](${getCommandUriToOpenDocu(id)})` : this.name;
-        const description = this.descriptionDictionary.getDescription(getLocale());
-        return "- " + nameMarkdown + ": " + description;
+    getTableRow(locale: Locale): string {
+        const row = "| " + this.name + (this.requirementDictionary.required ? "*" : "") +
+            " | " + this.descriptionDictionary.getDescription(locale) +
+            " | *" + this.requirementDictionary.type + "*" +
+            " | [" + this.requirementDictionary.min + "," + this.requirementDictionary.max + "] | ";
+        return row;
     }
 }
 
@@ -421,19 +513,29 @@ function parseIntOrUndefined(value: string | number | undefined): number | undef
 }
 
 /**
- * A documentation reference object that contains the documentation references of a cycle and its parameters.
+ * A documentation reference object that contains the documentation references of a cycle, its parameters and its helper links. The properties of this object are used to create links to the documentation in the markdown documentation of the cycle and its parameters.
  */
 export class DocumentationReference {
-    overview: string;
-    parameter: string;
-    constructor(overview: string, parameter: string) {
-        this.overview = overview;
-        this.parameter = parameter;
-
-        // throw error if some required parameters are missing
-        if (!this.overview || !this.parameter) {
-            throw new Error("Documentation reference is missing");
-        }
+    overview: string | undefined;
+    parameter: string | undefined;
+    process: string | undefined;
+    syntax: string | undefined;
+    programmingExample: string | undefined;
+    outputVariables: string | undefined;
+    constructor(
+        overview: string | undefined,
+        parameter: string | undefined,
+        process: string | undefined,
+        syntax: string | undefined,
+        programmingExample: string | undefined,
+        outputVariables: string | undefined
+    ) {
+        this.overview = overview ?? undefined;
+        this.parameter = parameter ?? undefined;
+        this.process = process ?? undefined;
+        this.syntax = syntax ?? undefined;
+        this.programmingExample = programmingExample ?? undefined;
+        this.outputVariables = outputVariables ?? undefined;
     }
 }
 /**
@@ -479,3 +581,22 @@ export class EnumValue {
         this.description = new DescriptionDictionary(enumValueJson.Desc["en-US"], enumValueJson.Desc["de-DE"]);
     }
 }
+
+/**
+ * Returns the link to the documentation for the given id and set locale.
+ * @param id the id of the documentation entry
+ * @returns the link to the documentation entry 
+ */
+function getLinkToDocu(id: string, locale: Locale) {
+    if (locale === Locale.en) {
+        return "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/en-GB/index.html#" + id;
+    } else {
+        return "https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html/de-DE/index.html#" + id;
+    }
+}
+
+enum CycleSnippetFormatting {
+    multiLine = "multi-line",
+    singleLine = "single-line"
+}
+

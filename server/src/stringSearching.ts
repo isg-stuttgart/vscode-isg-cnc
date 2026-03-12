@@ -1,6 +1,6 @@
 import { FileRange, Match, Position } from "./parserClasses";
 import { ParseResults } from "./parsingResults";
-import { getCommandUriToOpenDocu } from "./cycles";
+import { getCommandUriToOpenDocu } from "./helper";
 
 /**
  * Find all ranges of the given string in the given file content. Hereby exclude strings in comments (parser based). If an empty string is specified to be searched, an empty array is returned.

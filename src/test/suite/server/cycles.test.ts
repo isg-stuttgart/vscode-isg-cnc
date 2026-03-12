@@ -1,7 +1,7 @@
 import assert = require("assert");
-import { Cycle, DescriptionDictionary, DocumentationReference, getCycles, getCommandUriToOpenDocu, Parameter, RequirementDictionary } from "../../../../server/src/cycles";
+import { Cycle, DescriptionDictionary, DocumentationReference, getCycles, Parameter, RequirementDictionary } from "../../../../server/extension-resources-output/src/cycles";
 import { Locale } from "../../../../server/src/config";
-
+import { getCommandUriToOpenDocu } from "../../../../server/src/helper";
 suite("LS cycles", () => {
     test("getCycles()", function () {
         const cycles = getCycles(); // if json file can't be found or correctly converted, this will throw an error
@@ -14,7 +14,7 @@ suite("LS cycles", () => {
     });
 
     test("Cycle Constructor", function () {
-        const documentationReference = new DocumentationReference("12345", "67890");
+        const documentationReference = new DocumentationReference("12345", "67890", undefined, undefined, undefined, undefined);
         const descriptionDic = new DescriptionDictionary("de-DE description", "en-US description");
         // assert error if parameter is lacking
         assert.throws(() => new Cycle(<string><unknown>undefined, "media", documentationReference, descriptionDic, [], "license", ["some subcycles"], "version"));
@@ -57,8 +57,8 @@ suite("LS cycles", () => {
 
     test("DocumentationReference Constructor", function () {
         // assert error if parameter is lacking
-        assert.throws(() => new DocumentationReference(<string><unknown>undefined, "67890"));
-        assert.throws(() => new DocumentationReference("12345", <string><unknown>undefined));
+        assert.throws(() => new DocumentationReference(<string><unknown>undefined, "67890", undefined, undefined, undefined, undefined));
+        assert.throws(() => new DocumentationReference("12345", <string><unknown>undefined, undefined, undefined, undefined, undefined));
     });
 
     test("DescriptionDictionary", function () {
