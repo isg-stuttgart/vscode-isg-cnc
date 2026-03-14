@@ -64,41 +64,36 @@ export class JsonEntry implements JsonEntryUncompleted {
   }
 
   getInfoTextWithLink(docuPath: string, locale: Locale): string {
-    const infoText = this.hoverText[locale];
-    const linkid = this.linkid;
-    const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
-    const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
-    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${docuPath}/${locale}/index.html#${linkid})` : '';
-    let sublinksString = "";
-    if (this.sublinks && this.sublinks.length > 0) {
-      const sublinkLocalized = locale === Locale.de ? "Hilfslink" : "Helper Link"; 
-      sublinksString = `\n\n**${sublinksLocalized}**\n`
-      for (let i = 0; i < this.sublinks.length; i++) {
-        const sublink = this.sublinks[i];
-        const label = sublink.label ? sublink.label[locale] : `${sublinkLocalized} ${i + 1}`;
-        sublinksString += `- [${label}](${docuPath}/${locale}/index.html#${sublink.linkid})\n`;
-      }
-    }
-    return `${infoText}${mainLink}${sublinksString}`;
+    return this.buildInfoText(
+      locale,
+      (id: string) => `${docuPath}/${locale}/index.html#${id}`
+    );
   }
 
   getInfoTextWithVscodeCommand(getCommandUriToOpenDocu: (id: string) => string, locale: Locale): string {
-    const infoText = this.hoverText;
+    return this.buildInfoText(locale, getCommandUriToOpenDocu);
+  }
+
+  private buildInfoText(locale: Locale, getLinkById: (id: string) => string): string {
+    const localizedInfoText = this.hoverText[locale];
     const linkid = this.linkid;
     const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
     const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
-    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${getCommandUriToOpenDocu(linkid)})` : '';
+    const fallbackSublinkLabel = locale === Locale.de ? "Hilfslink" : "Helper Link";
+
+    const hasMainLinkAlready = linkid ? localizedInfoText.includes(`#${linkid})`) : false;
+    const mainLink = linkid && !hasMainLinkAlready ? `\n\n[**${documentationLocalized}**](${getLinkById(linkid)})` : '';
+
     let sublinksString = "";
     if (this.sublinks && this.sublinks.length > 0) {
-      const sublinkLocalized = locale === Locale.de ? "Hilfslink" : "Helper Link";
       sublinksString = `\n\n**${sublinksLocalized}**\n`
       for (let i = 0; i < this.sublinks.length; i++) {
         const sublink = this.sublinks[i];
-        const label = sublink.label ? sublink.label[locale] : `${sublinkLocalized} ${i + 1}`;
-        sublinksString += `- [${label}](${getCommandUriToOpenDocu(sublink.linkid!)})\n`;
+        const label = sublink.label ? sublink.label[locale] : `${fallbackSublinkLabel} ${i + 1}`;
+        sublinksString += `- [${label}](${getLinkById(sublink.linkid!)})\n`;
       }
     }
-    return `${infoText[locale]}${mainLink}${sublinksString}`;
+    return `${localizedInfoText}${mainLink}${sublinksString}`;
   }
 
   /** Parses a JSON object into a JsonEntry object and throws an error if the JSON is invalid */
