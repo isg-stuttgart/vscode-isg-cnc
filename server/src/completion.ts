@@ -119,7 +119,7 @@ function getStaticCycleCompletion(cycle: Cycle, onlyRequired: boolean, snippetFo
         detail: detail,
         documentation: {
             kind: 'markdown',
-            value: replaceLinksWithCommandUris(cycle.getMarkupDocumentation(getLocale(), onlyRequired))
+            value: replaceLinksWithCommandUris(cycle.getMarkupDocumentation(getLocale()))
         },
         insertTextFormat: InsertTextFormat.Snippet,
         insertTextMode: InsertTextMode.adjustIndentation,

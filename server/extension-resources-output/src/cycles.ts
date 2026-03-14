@@ -31,8 +31,8 @@ function getCycleEntry(cycle: Cycle, onlyRequired: boolean): JsonEntry {
         ItemKind.FUNCTION,
         cycle.getCompletion(onlyRequired, CycleSnippetFormatting.multiLine),
         new Dict(
-            cycle.getMarkupDocumentation(Locale.de, onlyRequired),
-            cycle.getMarkupDocumentation(Locale.en, onlyRequired),
+            cycle.getMarkupDocumentation(Locale.de),
+            cycle.getMarkupDocumentation(Locale.en),
         ),
         cycle.name,
         [cycle.name + ".ecy", cycle.name + ".cyc"],
@@ -177,7 +177,7 @@ export class Cycle {
             throw new Error("Cycle version is missing");
         }
     }
-    getMarkupDocumentation(locale: Locale, onlyRequired: boolean): string {
+    getMarkupDocumentation(locale: Locale): string {
         // if the documentation reference is missing, don't add a link to the documentation
         const title =
             this.documentationReference && this.documentationReference.overview
