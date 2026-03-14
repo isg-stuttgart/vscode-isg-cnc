@@ -202,10 +202,12 @@ export class Cycle {
 
         const tableHeader = locale === Locale.de
             ? parameterTitle + "  \n" +
-            "| Name | &nbsp;Erforderlich&nbsp; | Beschreibung | Typ | Wertebereich |\n" +
+            "(* bedeutet: erforderlich)  \n" +
+            "| Name |  | Beschreibung | Typ | Wertebereich |\n" +
             "| --- | :---: | --- | --- | --- |\n"
             : parameterTitle + "  \n" +
-            "| Name | &nbsp;Required&nbsp; | Description | Type | Range |\n" +
+            "(* means: required)  \n" +
+            "| Name |  | Description | Type | Range |\n" +
             "| --- | :---: | --- | --- | --- |\n";
         // prepare helper links as markdown listing
         const helperLinks = [];
@@ -438,7 +440,7 @@ export class Parameter {
      */
     getTableRow(locale: Locale): string {
         const row = "| " + this.name +
-            " | " + (this.requirementDictionary.required ? "✓" : "") +
+            " | " + (this.requirementDictionary.required ? "*" : "") +
             " | " + this.descriptionDictionary.getDescription(locale) +
             " | *" + this.requirementDictionary.type + "*" +
             " | [" + this.requirementDictionary.min + "," + this.requirementDictionary.max + "] | ";
