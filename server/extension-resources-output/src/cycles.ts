@@ -1,6 +1,6 @@
-import cyclesJson = require("../output_generated/cycles.json");
+import cyclesJson = require("../res/cycles.json");
 import * as path from "path";
-import { Dict, ItemKind, JsonEntry, Locale } from "../src/JsonEntry";
+import { Dict, ItemKind, JsonEntry, Locale } from "./JsonEntry";
 /**
  * If the amount of values for a parameter is below this limit, a choice snippet is used for the placeholder. Else the range is shown.
  */
@@ -189,11 +189,7 @@ export class Cycle {
         // parameters
         let parameterTitle: string;
         if (this.parameterList.length > 0) {
-            if (onlyRequired) {
-                parameterTitle = (locale === Locale.de ? "Erforderliche Parameter:" : "Required Parameters:");
-            } else {
-                parameterTitle = (locale === Locale.de ? "Parameter:" : "Parameters:");
-            }
+            parameterTitle = (locale === Locale.de ? "Parameter:" : "Parameters:");
             // add the documentation reference to the parameter title
             if (this.documentationReference && this.documentationReference.parameter) {
                 parameterTitle = "### [" + parameterTitle + "](" + getLinkToDocu(this.documentationReference.parameter, locale) + ")";
@@ -206,13 +202,11 @@ export class Cycle {
 
         const tableHeader = locale === Locale.de
             ? parameterTitle + "  \n" +
-            "(Erforderliche Parameter sind mit * gekennzeichnet)  \n" +
-            "| Name | Beschreibung | Typ | Wertebereich |\n" +
-            "| --- | --- | --- | --- |\n"
+            "| Name | &nbsp;Erforderlich&nbsp; | Beschreibung | Typ | Wertebereich |\n" +
+            "| --- | :---: | --- | --- | --- |\n"
             : parameterTitle + "  \n" +
-            "(Required parameters are marked with *)  \n" +
-            "| Name | Description | Type | Range |\n" +
-            "| --- | --- | --- | --- |\n";
+            "| Name | &nbsp;Required&nbsp; | Description | Type | Range |\n" +
+            "| --- | :---: | --- | --- | --- |\n";
         // prepare helper links as markdown listing
         const helperLinks = [];
         if (this.documentationReference) {
@@ -242,7 +236,6 @@ export class Cycle {
             // parameters
             tableHeader +
             this.parameterList
-                .filter(param => !onlyRequired || param.requirementDictionary.required)
                 .map(param => param.getTableRow(locale)).join("\n") +
             "\n\n" +
             // helper links as listing
@@ -364,9 +357,13 @@ export class Parameter {
         else if (defaultVal) {
             return "${" + tabstopNumber + ":" + defaultVal + "}";
         }
-        // case 5: nothing special -> use the lowercase parameter name as placeholder
+        // case 5: string parameters should start as explicit quoted string values
+        else if (this.requirementDictionary.type?.toLowerCase() === "string") {
+            return "${" + tabstopNumber + ':""}';
+        }
+        // case 6: nothing special -> use the parameter type as placeholder
         else {
-            return "${" + tabstopNumber + ":" + this.name.toLowerCase() + "}";
+            return "${" + tabstopNumber + ":" + this.requirementDictionary.type.toLowerCase() + "}";
         }
     }
     /**
@@ -440,7 +437,8 @@ export class Parameter {
      * @returns a short description line for the parameter. Is used within the cycle markdown documentation.
      */
     getTableRow(locale: Locale): string {
-        const row = "| " + this.name + (this.requirementDictionary.required ? "*" : "") +
+        const row = "| " + this.name +
+            " | " + (this.requirementDictionary.required ? "✓" : "") +
             " | " + this.descriptionDictionary.getDescription(locale) +
             " | *" + this.requirementDictionary.type + "*" +
             " | [" + this.requirementDictionary.min + "," + this.requirementDictionary.max + "] | ";
