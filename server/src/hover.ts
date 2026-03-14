@@ -236,7 +236,7 @@ function getHoverForISGCycleCall(position: Position, cycleMatch: Match, textDocu
     else if (cycleSubMatch.type === MatchType.cycleParameter) {
         const parameter = cycle.parameterList.find(p => p.name === cycleSubMatch.name);
         return parameter ? {
-            contents: parameter.getMarkupDocumentation(getLocale()),
+            contents: parameter.getMarkupDocumentation(getLocale(), getCommandUriToOpenDocu),
             range: {
                 start: {
                     line: cycleSubMatch.location.start.line - 1,

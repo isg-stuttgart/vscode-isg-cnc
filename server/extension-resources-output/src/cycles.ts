@@ -371,8 +371,11 @@ export class Parameter {
     }
     /**
      * @returns a markdown string that contains important information about the parameter. Can be used for completion or hover items.
+     * 
+     * @param locale the locale to use for the documentation
+     * @param getDocLinkById an optional function to get the documentation link by id. If not provided, the default function getLinkToDocu is used. This can be used to provide custom links to the documentation, e.g. for testing purposes.
      */
-    getMarkupDocumentation(locale: Locale): string {
+    getMarkupDocumentation(locale: Locale, getDocLinkById?: (id: string) => string): string {
         const min = this.requirementDictionary.min;
         const max = this.requirementDictionary.max;
         const min2 = this.requirementDictionary.min2;
@@ -395,7 +398,9 @@ export class Parameter {
         }
         // if the documentation reference is missing, don't add a link to the documentation
         const moreInfo = locale === Locale.de ? "[Mehr Informationen]" : "[More Information]";
-        const infoLink = this.documentationReference ? `  \n\n${moreInfo}(${getLinkToDocu(this.documentationReference, locale)})` : "";
+        const infoLink = this.documentationReference
+            ? `  \n\n${moreInfo}(${getDocLinkById ? getDocLinkById(this.documentationReference) : getLinkToDocu(this.documentationReference, locale)})`
+            : "";
 
         const markdownString = "## " + this.name + ": " + description + "  \n" +
             this.getEnumValuesMarkdown(locale) +

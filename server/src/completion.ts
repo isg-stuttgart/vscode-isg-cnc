@@ -155,7 +155,7 @@ function getCompletionsWithinCycle(pos: Position, doc: TextDocument, cycleMatch:
         completions.push({
             label: param.name,
             kind: CompletionItemKind.Field,
-            documentation: param.getMarkupDocumentation(getLocale()),
+            documentation: param.getMarkupDocumentation(getLocale(), getCommandUriToOpenDocu),
             insertText: insertText,
             insertTextFormat: InsertTextFormat.Snippet,
             filterText: insertText
