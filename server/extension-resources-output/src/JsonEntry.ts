@@ -8,7 +8,7 @@ export interface JsonEntryUncompleted {
   label: string;
   linkid: string | null | undefined;
   shortDescription: Dict | null | undefined;
-  sublinks: { label: Dict; linkid: string | null }[] | null | undefined;
+  sublinks: { label: Dict | null; linkid: string | null }[] | null | undefined;
   kind: ItemKind | null | undefined;
   completionText: string | null | undefined;
   hoverText: Dict | null | undefined;
@@ -19,7 +19,7 @@ export class JsonEntry implements JsonEntryUncompleted {
   label: string;
   linkid: string | null;
   shortDescription: Dict;
-  sublinks: { label: Dict; linkid: string | null }[];
+  sublinks: { label: Dict | null; linkid: string | null }[];
   kind: ItemKind;
   completionText: string;
   filterText: string | null;
@@ -41,7 +41,7 @@ export class JsonEntry implements JsonEntryUncompleted {
     label: string,
     linkid: string | null,
     shortDescription: Dict,
-    sublinks: { label: Dict; linkid: string | null }[],
+    sublinks: { label: Dict | null; linkid: string | null }[],
     kind: ItemKind,
     completionText: string,
     hoverText: Dict,
@@ -64,23 +64,36 @@ export class JsonEntry implements JsonEntryUncompleted {
   }
 
   getInfoTextWithLink(docuPath: string, locale: Locale): string {
-    const infoText = this.hoverText[locale];
-    const linkid = this.linkid;
-    const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
-    const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
-    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${docuPath}/${locale}/index.html#${linkid})` : '';
-    const sublinks = this.sublinks && this.sublinks.length > 0 ? (`\n\n**${sublinksLocalized}**\n` + this.sublinks.map(sublink => `- [${sublink.label[locale]}](${docuPath}/${locale}/index.html#${sublink.linkid})`).join('\n')) : '';
-    return `${infoText}${mainLink}${sublinks}`;
+    return this.buildInfoText(
+      locale,
+      (id: string) => `${docuPath}/${locale}/index.html#${id}`
+    );
   }
 
   getInfoTextWithVscodeCommand(getCommandUriToOpenDocu: (id: string) => string, locale: Locale): string {
-    const infoText = this.hoverText;
+    return this.buildInfoText(locale, getCommandUriToOpenDocu);
+  }
+
+  private buildInfoText(locale: Locale, getLinkById: (id: string) => string): string {
+    const localizedInfoText = this.hoverText[locale];
     const linkid = this.linkid;
     const documentationLocalized = locale === Locale.de ? "Dokumentation" : "Documentation";
     const sublinksLocalized = locale === Locale.de ? "Verwandte Links:" : "Related Links:";
-    const mainLink = linkid ? `\n\n[**${documentationLocalized}**](${getCommandUriToOpenDocu(linkid)})` : '';
-    const sublinks = this.sublinks && this.sublinks.length > 0 ? (`\n\n**${sublinksLocalized}**\n` + this.sublinks.map(sublink => `- [${sublink.label[locale]}](${getCommandUriToOpenDocu(sublink.linkid!)})`).join('\n')) : '';
-    return `${infoText[locale]}${mainLink}${sublinks}`;
+    const fallbackSublinkLabel = locale === Locale.de ? "Hilfslink" : "Helper Link";
+
+    const hasMainLinkAlready = linkid ? localizedInfoText.includes(`#${linkid})`) : false;
+    const mainLink = linkid && !hasMainLinkAlready ? `\n\n[**${documentationLocalized}**](${getLinkById(linkid)})` : '';
+
+    let sublinksString = "";
+    if (this.sublinks && this.sublinks.length > 0) {
+      sublinksString = `\n\n**${sublinksLocalized}**\n`
+      for (let i = 0; i < this.sublinks.length; i++) {
+        const sublink = this.sublinks[i];
+        const label = sublink.label ? sublink.label[locale] : `${fallbackSublinkLabel} ${i + 1}`;
+        sublinksString += `- [${label}](${getLinkById(sublink.linkid!)})\n`;
+      }
+    }
+    return `${localizedInfoText}${mainLink}${sublinksString}`;
   }
 
   /** Parses a JSON object into a JsonEntry object and throws an error if the JSON is invalid */
@@ -184,7 +197,7 @@ export class JsonEntry implements JsonEntryUncompleted {
     // merge sublinks into current sublinks
     if (newObj.sublinks && Array.isArray(newObj.sublinks)) {
       newObj.sublinks.forEach((sublink: { label: Dict, linkid: string | null }) => {
-        const index = this.sublinks.findIndex((s) => s.label.equals(sublink.label));
+        const index = this.sublinks.findIndex((s) => s.label?.equals(sublink.label));
         if (index === -1) {
           this.sublinks.push(sublink);
         } else {
