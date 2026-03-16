@@ -52,7 +52,7 @@ suite("LS cycles", () => {
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic1, [], "docuId", undefined).getPlaceholder(1), "${1|0,1,2,3,4,5,6,7,8,9,10|}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic2, [], "docuId", undefined).getPlaceholder(1), "${1:[0,100]}");
         assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic3, [], "docuId", undefined).getPlaceholder(1), "${1:default}");
-        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic4, [], "docuId", undefined).getPlaceholder(1), "${1:pname}");
+        assert.strictEqual(new Parameter("pName", "media", descriptionDic, requirementDic4, [], "docuId", undefined).getPlaceholder(1), "${1:integer}");
     });
 
     test("DescriptionDictionary", function () {
