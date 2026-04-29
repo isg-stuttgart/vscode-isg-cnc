@@ -327,7 +327,7 @@
     "linkid": "206259723",
     "shortDescription": {
       "de-DE": "Abwahl der Spiegelung",
-      "en-GB": "Deselecting the mirroring function"
+      "en-GB": "Deselect the mirroring function"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -335,7 +335,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G20\n\nAbwahl der Spiegelung",
-      "en-GB": "### G20\n\nDeselecting the mirroring function"
+      "en-GB": "### G20\n\nDeselect the mirroring function"
     },
     "hoverTrigger": [
       "G20"
@@ -346,7 +346,7 @@
     "linkid": "206259723",
     "shortDescription": {
       "de-DE": "Spiegeln der programmierten Wege an der Y-Achse",
-      "en-GB": "Mirroring programmed paths on the Y axis"
+      "en-GB": "Mirror programmed paths on the Y axis"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -354,7 +354,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G21\n\nSpiegeln der programmierten Wege an der Y-Achse",
-      "en-GB": "### G21\n\nMirroring programmed paths on the Y axis"
+      "en-GB": "### G21\n\nMirror programmed paths on the Y axis"
     },
     "hoverTrigger": [
       "G21"
@@ -365,7 +365,7 @@
     "linkid": "206259723",
     "shortDescription": {
       "de-DE": "Spiegeln der programmierten Wege an der X-Achse",
-      "en-GB": "Mirroring programmed paths on the X axis"
+      "en-GB": "Mirror programmed paths on the X axis"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -373,7 +373,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G22\n\nSpiegeln der programmierten Wege an der X-Achse",
-      "en-GB": "### G22\n\nMirroring programmed paths on the X axis"
+      "en-GB": "### G22\n\nMirror programmed paths on the X axis"
     },
     "hoverTrigger": [
       "G22"
@@ -384,7 +384,7 @@
     "linkid": "206259723",
     "shortDescription": {
       "de-DE": "Überlagerung von G21 und G22",
-      "en-GB": "Superimposing G21 and G22"
+      "en-GB": "Superimpose G21 and G22"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -392,7 +392,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G23\n\nÜberlagerung von G21 und G22",
-      "en-GB": "### G23\n\nSuperimposing G21 and G22"
+      "en-GB": "### G23\n\nSuperimpose G21 and G22"
     },
     "hoverTrigger": [
       "G23"
@@ -460,7 +460,7 @@
     "linkid": null,
     "shortDescription": {
       "de-DE": "WRK/SRK Abwahl",
-      "en-GB": "Deselecting TRC/SRK"
+      "en-GB": "Deselection of TRC/CRC"
     },
     "sublinks": [
       {
@@ -483,7 +483,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G40\n\nWRK/SRK Abwahl",
-      "en-GB": "### G40\n\nDeselecting TRC/SRK"
+      "en-GB": "### G40\n\nDeselection of TRC/CRC"
     },
     "hoverTrigger": [
       "G40"
@@ -562,7 +562,7 @@
     "linkid": "208074507",
     "shortDescription": {
       "de-DE": "Anwahl Durchmesserprogrammierung",
-      "en-GB": "Selecting diameter programming"
+      "en-GB": "Selection of diameter programming"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -570,7 +570,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G51\n\nAnwahl Durchmesserprogrammierung",
-      "en-GB": "### G51\n\nSelecting diameter programming"
+      "en-GB": "### G51\n\nSelection of diameter programming"
     },
     "hoverTrigger": [
       "G51"
@@ -581,7 +581,7 @@
     "linkid": "208074507",
     "shortDescription": {
       "de-DE": "Abwahl Durchmesserprogrammierung",
-      "en-GB": "Deselecting diameter programming"
+      "en-GB": "Deselection of diameter programming"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -589,7 +589,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G52\n\nAbwahl Durchmesserprogrammierung",
-      "en-GB": "### G52\n\nDeselecting diameter programming"
+      "en-GB": "### G52\n\nDeselection of diameter programming"
     },
     "hoverTrigger": [
       "G52"
@@ -600,7 +600,7 @@
     "linkid": "206487307",
     "shortDescription": {
       "de-DE": "Abwahl der Nullpunktverschiebung",
-      "en-GB": "Deselecting zero offsets"
+      "en-GB": "Deselect zero offsets"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -608,7 +608,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G53\n\nAbwahl der Nullpunktverschiebung",
-      "en-GB": "### G53\n\nDeselecting zero offsets"
+      "en-GB": "### G53\n\nDeselect zero offsets"
     },
     "hoverTrigger": [
       "G53"
@@ -619,7 +619,7 @@
     "linkid": "206487307",
     "shortDescription": {
       "de-DE": "Anwahl der Nullpunktverschiebungen",
-      "en-GB": "Selecting zero offsets"
+      "en-GB": "Select zero offsets"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -627,7 +627,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G54 - G59\n\nAnwahl der Nullpunktverschiebungen",
-      "en-GB": "### G54 - G59\n\nSelecting zero offsets"
+      "en-GB": "### G54 - G59\n\nSelect zero offsets"
     },
     "hoverTrigger": [
       "G54",
@@ -700,7 +700,7 @@
     "linkid": "206749451",
     "shortDescription": {
       "de-DE": "Taktsynchronisierung am Satzende",
-      "en-GB": "Synchronising cycle at block end"
+      "en-GB": "Synchronise cycle at block end"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -708,7 +708,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G66\n\nTaktsynchronisierung am Satzende",
-      "en-GB": "### G66\n\nSynchronising cycle at block end"
+      "en-GB": "### G66\n\nSynchronise cycle at block end"
     },
     "hoverTrigger": [
       "G66"
@@ -719,7 +719,7 @@
     "linkid": "969743115",
     "shortDescription": {
       "de-DE": "Anwahl Konturrotation",
-      "en-GB": "Selecting contour rotation"
+      "en-GB": "Select contour rotation"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -727,7 +727,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G68\n\nAnwahl Konturrotation",
-      "en-GB": "### G68\n\nSelecting contour rotation"
+      "en-GB": "### G68\n\nSelect contour rotation"
     },
     "hoverTrigger": [
       "G68"
@@ -738,7 +738,7 @@
     "linkid": "969743115",
     "shortDescription": {
       "de-DE": "Abwahl Konturrotation",
-      "en-GB": "Deselecting contour rotation"
+      "en-GB": "Deselect contour rotation"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -746,7 +746,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G69\n\nAbwahl Konturrotation",
-      "en-GB": "### G69\n\nDeselecting contour rotation"
+      "en-GB": "### G69\n\nDeselect contour rotation"
     },
     "hoverTrigger": [
       "G69"
@@ -1117,7 +1117,7 @@
     "linkid": "206208011",
     "shortDescription": {
       "de-DE": "Messoffset in Verschiebung einrechnen",
-      "en-GB": "Including measuring offset calculation in offset"
+      "en-GB": "Include measuring offset calculation in offset"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1125,7 +1125,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G101\n\nMessoffset in Verschiebung einrechnen",
-      "en-GB": "### G101\n\nIncluding measuring offset calculation in offset"
+      "en-GB": "### G101\n\nInclude measuring offset calculation in offset"
     },
     "hoverTrigger": [
       "G101"
@@ -1136,7 +1136,7 @@
     "linkid": "206208011",
     "shortDescription": {
       "de-DE": "Messoffset aus Verschiebung rückrechnen",
-      "en-GB": "Extracting measuring offset from offset"
+      "en-GB": "Extract measuring offset from offset"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1144,7 +1144,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G102\n\nMessoffset aus Verschiebung rückrechnen",
-      "en-GB": "### G102\n\nExtracting measuring offset from offset"
+      "en-GB": "### G102\n\nExtract measuring offset from offset"
     },
     "hoverTrigger": [
       "G102"
@@ -1174,7 +1174,7 @@
     "linkid": "206224907",
     "shortDescription": {
       "de-DE": "Abwahl satzübergreifendes Kantenstoßen",
-      "en-GB": "Deselecting cross-block edge banding"
+      "en-GB": "Deselect cross-block edge banding"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1182,7 +1182,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G107\n\nAbwahl satzübergreifendes Kantenstoßen",
-      "en-GB": "### G107\n\nDeselecting cross-block edge banding"
+      "en-GB": "### G107\n\nDeselect cross-block edge banding"
     },
     "hoverTrigger": [
       "G107"
@@ -1212,7 +1212,7 @@
     "linkid": "206730251",
     "shortDescription": {
       "de-DE": "Getriebeschalten",
-      "en-GB": "Gear changing"
+      "en-GB": "Gear change"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1220,7 +1220,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G112\n\nGetriebeschalten",
-      "en-GB": "### G112\n\nGear changing"
+      "en-GB": "### G112\n\nGear change"
     },
     "hoverTrigger": [
       "G112"
@@ -1548,7 +1548,7 @@
       {
         "label": {
           "de-DE": "Direkte Anwahl",
-          "en-GB": "Direct selection"
+          "en-GB": "Direct TRC selection"
         },
         "linkid": "207740939"
       },
@@ -1715,7 +1715,7 @@
     "linkid": "206523403",
     "shortDescription": {
       "de-DE": "Erweiterte Nullpunktverschiebung",
-      "en-GB": "Extended zero offsets"
+      "en-GB": "Extended zero offset"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1723,7 +1723,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G159\n\nErweiterte Nullpunktverschiebung",
-      "en-GB": "### G159\n\nExtended zero offsets"
+      "en-GB": "### G159\n\nExtended zero offset"
     },
     "hoverTrigger": [
       "G159"
@@ -1734,7 +1734,7 @@
     "linkid": "206529291",
     "shortDescription": {
       "de-DE": "Nullpunktverschiebungen achsspezifisch freigeben/verriegeln",
-      "en-GB": "Enabling/disabling zero offsets axis-specific"
+      "en-GB": "Enable/disable zero offsets axis-specific"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -1742,7 +1742,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### G160\n\nNullpunktverschiebungen achsspezifisch freigeben/verriegeln",
-      "en-GB": "### G160\n\nEnabling/disabling zero offsets axis-specific"
+      "en-GB": "### G160\n\nEnable/disable zero offsets axis-specific"
     },
     "hoverTrigger": [
       "G160"
@@ -2046,6 +2046,25 @@
     },
     "hoverTrigger": [
       "G231"
+    ]
+  },
+  {
+    "label": "G232",
+    "linkid": "206596619",
+    "shortDescription": {
+      "de-DE": "Rampenzeitgewichtung G00, achsspezifisch",
+      "en-GB": "Ramp time weighting G00, axis-specific"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "G232",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### G232\n\nRampenzeitgewichtung G00, achsspezifisch",
+      "en-GB": "### G232\n\nRamp time weighting G00, axis-specific"
+    },
+    "hoverTrigger": [
+      "G232"
     ]
   },
   {
@@ -4163,7 +4182,15 @@
       "de-DE": "Löschen einer gesicherten Konfiguration",
       "en-GB": "Deleting a saved configuration"
     },
-    "sublinks": [],
+    "sublinks": [
+      {
+        "label": {
+          "de-DE": "Kollisionsüberwachung abschalten",
+          "en-GB": "Disabling collision monitoring"
+        },
+        "linkid": "1223986443"
+      }
+    ],
     "kind": "Snippet",
     "completionText": "#CLEAR CONFIG",
     "filterText": null,
@@ -4173,6 +4200,25 @@
     },
     "hoverTrigger": [
       "#CLEAR CONFIG"
+    ]
+  },
+  {
+    "label": "#COLL MON ON",
+    "linkid": "1223985419",
+    "shortDescription": {
+      "de-DE": "Kollisionsüberwachung parametrieren und aktivieren",
+      "en-GB": "Parameterising and enabling collision monitoring"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#COLL MON ON",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #COLL MON ON\n\nKollisionsüberwachung parametrieren und aktivieren",
+      "en-GB": "### #COLL MON ON\n\nParameterising and enabling collision monitoring"
+    },
+    "hoverTrigger": [
+      "#COLL MON ON"
     ]
   },
   {
@@ -4663,6 +4709,25 @@
     },
     "hoverTrigger": [
       "#DEL DIST2GO"
+    ]
+  },
+  {
+    "label": "#DIAGNOSIS",
+    "linkid": "947782539",
+    "shortDescription": {
+      "de-DE": "Erstellen von Diagnosedaten",
+      "en-GB": "Creating diagnosis data"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#DIAGNOSIS",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #DIAGNOSIS\n\nErstellen von Diagnosedaten",
+      "en-GB": "### #DIAGNOSIS\n\nCreating diagnosis data"
+    },
+    "hoverTrigger": [
+      "#DIAGNOSIS"
     ]
   },
   {
@@ -6951,19 +7016,38 @@
     "label": "#TOOL REFRESH",
     "linkid": "208599691",
     "shortDescription": {
-      "de-DE": "Werkzeugdaten auffrischen",
-      "en-GB": "Refreshing tool data"
+      "de-DE": "Werkzeugdaten erneut einrechnen",
+      "en-GB": "Refreshing tool data in calculation"
     },
     "sublinks": [],
     "kind": "Snippet",
     "completionText": "#TOOL REFRESH",
     "filterText": null,
     "hoverText": {
-      "de-DE": "### #TOOL REFRESH\n\nWerkzeugdaten auffrischen",
-      "en-GB": "### #TOOL REFRESH\n\nRefreshing tool data"
+      "de-DE": "### #TOOL REFRESH\n\nWerkzeugdaten erneut einrechnen",
+      "en-GB": "### #TOOL REFRESH\n\nRefreshing tool data in calculation"
     },
     "hoverTrigger": [
       "#TOOL REFRESH"
+    ]
+  },
+  {
+    "label": "#TOOL UPDATE",
+    "linkid": "208599691",
+    "shortDescription": {
+      "de-DE": "Werkzeugdaten aktualisieren und erneut einrechnen",
+      "en-GB": "Updating and refreshing tool data in calculation"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#TOOL UPDATE",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #TOOL UPDATE\n\nWerkzeugdaten aktualisieren und erneut einrechnen",
+      "en-GB": "### #TOOL UPDATE\n\nUpdating and refreshing tool data in calculation"
+    },
+    "hoverTrigger": [
+      "#TOOL UPDATE"
     ]
   },
   {
@@ -7173,7 +7257,7 @@
       {
         "label": {
           "de-DE": "Variablen",
-          "en-GB": "variable"
+          "en-GB": "Variable"
         },
         "linkid": "207960587"
       },
@@ -7544,6 +7628,82 @@
     ]
   },
   {
+    "label": "SET_POSITION",
+    "linkid": "482566155",
+    "shortDescription": {
+      "de-DE": "Setzen einer Achsposition im Kanal",
+      "en-GB": "Setting an axis position in the channel"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "SET_POSITION",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### SET_POSITION\n\nSetzen einer Achsposition im Kanal",
+      "en-GB": "### SET_POSITION\n\nSetting an axis position in the channel"
+    },
+    "hoverTrigger": [
+      "SET_POSITION"
+    ]
+  },
+  {
+    "label": "FIXED_STOP",
+    "linkid": "516232715",
+    "shortDescription": {
+      "de-DE": "Fahren auf Festanschlag",
+      "en-GB": "Fixed stop"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "FIXED_STOP",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### FIXED_STOP\n\nFahren auf Festanschlag",
+      "en-GB": "### FIXED_STOP\n\nFixed stop"
+    },
+    "hoverTrigger": [
+      "FIXED_STOP"
+    ]
+  },
+  {
+    "label": "POS_LIMIT",
+    "linkid": "1014981131",
+    "shortDescription": {
+      "de-DE": "Programmierung der Softwareendschalterüberwachung",
+      "en-GB": "Programming software limit switch monitoring"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "POS_LIMIT",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### POS_LIMIT\n\nProgrammierung der Softwareendschalterüberwachung",
+      "en-GB": "### POS_LIMIT\n\nProgramming software limit switch monitoring"
+    },
+    "hoverTrigger": [
+      "POS_LIMIT"
+    ]
+  },
+  {
+    "label": "MODULO",
+    "linkid": "1014982283",
+    "shortDescription": {
+      "de-DE": "Programmierung des Modulobereichs",
+      "en-GB": "Programming modulo range"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "MODULO",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### MODULO\n\nProgrammierung des Modulobereichs",
+      "en-GB": "### MODULO\n\nProgramming modulo range"
+    },
+    "hoverTrigger": [
+      "MODULO"
+    ]
+  },
+  {
     "label": "MC_Home",
     "linkid": "208322955",
     "shortDescription": {
@@ -7799,11 +7959,30 @@
     ]
   },
   {
+    "label": "V.I. …",
+    "linkid": "1225681547",
+    "shortDescription": {
+      "de-DE": "Globale kanalübergreifende Variablen",
+      "en-GB": "Global cross-channel variable"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "V.I. …",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### V.I. …\n\nGlobale kanalübergreifende Variablen",
+      "en-GB": "### V.I. …\n\nGlobal cross-channel variable"
+    },
+    "hoverTrigger": [
+      "V.I. …"
+    ]
+  },
+  {
     "label": "V.P. …",
     "linkid": "207966475",
     "shortDescription": {
       "de-DE": "Eigendefinierte Variablen, programmglobal",
-      "en-GB": "Self-defined variables, program global"
+      "en-GB": "User-defined variables, program global"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -7811,7 +7990,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.P. …\n\nEigendefinierte Variablen, programmglobal",
-      "en-GB": "### V.P. …\n\nSelf-defined variables, program global"
+      "en-GB": "### V.P. …\n\nUser-defined variables, program global"
     },
     "hoverTrigger": [
       "V.P. …"
@@ -7822,7 +8001,7 @@
     "linkid": "207973899",
     "shortDescription": {
       "de-DE": "Eigendefinierte Variablen, (Haupt-)programmübergreifend",
-      "en-GB": "Self-defined variables, (main) program global"
+      "en-GB": "User-defined variables, (main) program global"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -7830,7 +8009,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.S. …\n\nEigendefinierte Variablen, (Haupt-)programmübergreifend",
-      "en-GB": "### V.S. …\n\nSelf-defined variables, (main) program global"
+      "en-GB": "### V.S. …\n\nUser-defined variables, (main) program global"
     },
     "hoverTrigger": [
       "V.S. …"
@@ -7841,7 +8020,7 @@
     "linkid": "207981323",
     "shortDescription": {
       "de-DE": "Eigendefinierte Variablen, programmlokal",
-      "en-GB": "Self-defined variables, program local"
+      "en-GB": "User-defined variables, program local"
     },
     "sublinks": [],
     "kind": "Snippet",
@@ -7849,7 +8028,7 @@
     "filterText": null,
     "hoverText": {
       "de-DE": "### V.L. …\n\nEigendefinierte Variablen, programmlokal",
-      "en-GB": "### V.L. …\n\nSelf-defined variables, program local"
+      "en-GB": "### V.L. …\n\nUser-defined variables, program local"
     },
     "hoverTrigger": [
       "V.L. …"
