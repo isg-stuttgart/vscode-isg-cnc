@@ -535,6 +535,7 @@
         "node-gyp": "^9.1.0",
         "peggy": "^2.0.1",
         "ts-pegjs": "^2.2.1",
+        "tsx": "^4.21.0",
         "typedoc": "^0.22.18",
         "typescript": "^4.4.3"
     },
@@ -542,8 +543,8 @@
         "ignore": "^5.2.4",
         "minimatch": "^9.0.3",
         "vscode-languageclient": "^9.0.1",
-        "vscode-uri": "^3.0.8",
         "vscode-languageserver": "^9.0.1",
-        "vscode-languageserver-textdocument": "^1.0.11"
+        "vscode-languageserver-textdocument": "^1.0.11",
+        "vscode-uri": "^3.0.8"
     }
 }

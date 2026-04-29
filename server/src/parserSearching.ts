@@ -200,3 +200,34 @@ export function findMatchRangesWithinPath(filePaths: string[], types: MatchType[
     return ranges;
 }
 
+export function findCompleteASTPath(treeNode: any, position: Position): any[] {
+    // returns a path (array) of nodes (arrays and Match objects)
+    // from the given tree down to the most precise Match that contains position
+    if (Array.isArray(treeNode)) {
+        for (const elem of treeNode) {
+            const subPath = findCompleteASTPath(elem, position);
+            if (subPath && subPath.length > 0) {
+                return [treeNode, ...subPath];
+            }
+        }
+        return [];
+    }
+
+    if (treeNode && isMatch(treeNode)) {
+        const match = treeNode as Match;
+        if (!match.location) {
+            return [];
+        }
+        const start = new Position(match.location.start.line - 1, match.location.start.column - 1);
+        const end = new Position(match.location.end.line - 1, match.location.end.column - 1);
+        if (compareLocations(position, start) >= 0 && compareLocations(position, end) <= 0) {
+            const subPath = findCompleteASTPath(match.content, position);
+            if (subPath && subPath.length > 0) {
+                return [match, ...subPath];
+            }
+            return [match];
+        }
+    }
+
+    return [];
+}

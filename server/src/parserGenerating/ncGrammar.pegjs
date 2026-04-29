@@ -310,7 +310,10 @@ var
 }
 
 stop_trashing
-= linebreak/"\\"/comment/prg_call/command/control_block/label/var
+= linebreak/"\\"/comment/prg_call/command/control_block_keyword/label/var
+
+control_block_keyword "control_block_keyword"
+= "$IF"/"$ELSEIF"/"$ELSE"/"$ENDIF"/"$FOR"/"$ENDFOR"/"$WHILE"/"$ENDWHILE"/"$SWITCH"/"$ENDSWITCH"
 
 command "command"                                           // a tool call or other normal command
 = (t_command/($([A-Z] number)))                             
