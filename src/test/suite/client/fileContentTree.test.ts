@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { fileContentProvider } from "../../../extension";
 import { openTestFile } from "../testHelper";
 import assert = require("assert");
-import { MatchItem } from "src/util/fileContentTree";
+import { MatchItem } from "../../../util/fileContentTree";
 suite("File Content Tree Provider Test", () => {
     test("Correct items sorted by line", async () => {
         // set to line by line sorting

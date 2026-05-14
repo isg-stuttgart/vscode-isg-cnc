@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"module": "commonjs",
 		"target": "ES2021",
 		"outDir": "out",
