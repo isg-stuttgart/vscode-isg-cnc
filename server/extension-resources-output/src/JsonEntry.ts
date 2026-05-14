@@ -12,7 +12,11 @@ export interface JsonEntryUncompleted {
   kind: ItemKind | null | undefined;
   completionText: string | null | undefined;
   hoverText: Dict | null | undefined;
+  defaultValue: string | null;
 }
+
+// JavaScript regex source string without delimiters, e.g. "G\\d+".
+export type HoverTriggerPattern = string;
 
 export class JsonEntry implements JsonEntryUncompleted {
 
@@ -24,7 +28,8 @@ export class JsonEntry implements JsonEntryUncompleted {
   completionText: string;
   filterText: string | null;
   hoverText: Dict;
-  hoverTrigger: string[];
+  hoverTrigger: HoverTriggerPattern[];
+  defaultValue: string | null;
 
   /**
    * @param label Label of the entry (unique)
@@ -46,7 +51,8 @@ export class JsonEntry implements JsonEntryUncompleted {
     completionText: string,
     hoverText: Dict,
     filterText: string | null = null,
-    hoverTrigger: string[] = [label]
+    hoverTrigger: HoverTriggerPattern[] = [label],
+    defaultValue: string | null = null
   ) {
     // validate inputs
     if (!label) throw new Error('Label is required on JsonEntry constructor');
@@ -61,6 +67,7 @@ export class JsonEntry implements JsonEntryUncompleted {
     this.hoverText = hoverText;
     this.filterText = filterText;
     this.hoverTrigger = hoverTrigger;
+    this.defaultValue = defaultValue;
   }
 
   getInfoTextWithLink(docuPath: string, locale: Locale): string {
@@ -107,12 +114,22 @@ export class JsonEntry implements JsonEntryUncompleted {
       json.completionText,
       json.hoverText,
       json.filterText,
-      json.hoverTrigger
+      json.hoverTrigger,
+      json.defaultValue
     );
   }
   /** Parses an array of JSON objects into an array of JsonEntry objects and throws an error if any JSON is invalid */
   static parseJsonList(rawJsonData: any[]): JsonEntry[] {
     return rawJsonData.map(json => JsonEntry.parseJson(json));
+  }
+
+  static isValidHoverTriggerPattern(trigger: HoverTriggerPattern): boolean {
+    try {
+      new RegExp(trigger);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -133,9 +150,14 @@ export class JsonEntry implements JsonEntryUncompleted {
       // check for all triggers if they have a hover trigger which contains the position and chose the longest one
       for (const trigger of entry.hoverTrigger ?? []) {
         if (!trigger) continue;
-        const len = trigger.length;
-        let startIdx = line.indexOf(trigger);
-        while (startIdx !== -1) {
+        let regex: RegExp;
+        regex = new RegExp(trigger, 'g');
+
+
+        let match: RegExpExecArray | null;
+        while ((match = regex.exec(line)) !== null) {
+          const startIdx = match.index;
+          const len = match[0]?.length ?? 0;
           const endIdx = startIdx + len;
           const underCursor = position.character >= startIdx && position.character < endIdx;
           // if under cursor and better than best, set as new best
@@ -147,7 +169,8 @@ export class JsonEntry implements JsonEntryUncompleted {
               score: len
             };
           }
-          startIdx = line.indexOf(trigger, startIdx + 1);
+          // avoid infinite loops on zero-length matches
+          if (len === 0) regex.lastIndex++;
         }
       }
     }
@@ -175,6 +198,12 @@ export class JsonEntry implements JsonEntryUncompleted {
     if (!Array.isArray(this.hoverTrigger)) {
       throw new Error('Hover trigger must be an array on JsonEntry');
     }
+    // every hoverTrigger must be a valid regex source string
+    this.hoverTrigger.forEach((trigger) => {
+      if (!JsonEntry.isValidHoverTriggerPattern(trigger)) {
+        throw new Error(`Hover trigger regex is invalid on JsonEntry: ${trigger}`);
+      }
+    });
 
   }
   /**

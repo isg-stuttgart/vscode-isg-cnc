@@ -16,7 +16,8 @@
     },
     "hoverTrigger": [
       "G00"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G01",
@@ -35,7 +36,8 @@
     },
     "hoverTrigger": [
       "G01"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G02",
@@ -54,7 +56,8 @@
     },
     "hoverTrigger": [
       "G02"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G03",
@@ -73,7 +76,8 @@
     },
     "hoverTrigger": [
       "G03"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G02 Z.. K..",
@@ -91,8 +95,9 @@
       "en-GB": "### G02 Z.. K..\n\nHelical interpolation (cw)"
     },
     "hoverTrigger": [
-      "G02 Z.. K.."
-    ]
+      "G02 Z\\.\\. K\\.\\."
+    ],
+    "defaultValue": null
   },
   {
     "label": "G03 Z.. K..",
@@ -110,8 +115,9 @@
       "en-GB": "### G03 Z.. K..\n\nHelical interpolation (ccw)"
     },
     "hoverTrigger": [
-      "G03 Z.. K.."
-    ]
+      "G03 Z\\.\\. K\\.\\."
+    ],
+    "defaultValue": null
   },
   {
     "label": "G04",
@@ -130,7 +136,8 @@
     },
     "hoverTrigger": [
       "G04"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G05",
@@ -149,7 +156,8 @@
     },
     "hoverTrigger": [
       "G05"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G08",
@@ -168,7 +176,8 @@
     },
     "hoverTrigger": [
       "G08"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G09",
@@ -187,7 +196,8 @@
     },
     "hoverTrigger": [
       "G09"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G10",
@@ -206,7 +216,8 @@
     },
     "hoverTrigger": [
       "G10"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G11",
@@ -225,7 +236,8 @@
     },
     "hoverTrigger": [
       "G11"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G12",
@@ -244,7 +256,8 @@
     },
     "hoverTrigger": [
       "G12"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G13",
@@ -263,7 +276,8 @@
     },
     "hoverTrigger": [
       "G13"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G17",
@@ -282,7 +296,8 @@
     },
     "hoverTrigger": [
       "G17"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G18",
@@ -301,7 +316,8 @@
     },
     "hoverTrigger": [
       "G18"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G19",
@@ -320,7 +336,8 @@
     },
     "hoverTrigger": [
       "G19"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G20",
@@ -339,7 +356,8 @@
     },
     "hoverTrigger": [
       "G20"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G21",
@@ -358,7 +376,8 @@
     },
     "hoverTrigger": [
       "G21"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G22",
@@ -377,7 +396,8 @@
     },
     "hoverTrigger": [
       "G22"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G23",
@@ -396,7 +416,8 @@
     },
     "hoverTrigger": [
       "G23"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G25",
@@ -415,7 +436,8 @@
     },
     "hoverTrigger": [
       "G25"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G26",
@@ -434,7 +456,8 @@
     },
     "hoverTrigger": [
       "G26"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G33",
@@ -453,7 +476,8 @@
     },
     "hoverTrigger": [
       "G33"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G40",
@@ -487,7 +511,8 @@
     },
     "hoverTrigger": [
       "G40"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G41",
@@ -521,7 +546,8 @@
     },
     "hoverTrigger": [
       "G41"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G42",
@@ -555,7 +581,8 @@
     },
     "hoverTrigger": [
       "G42"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G51",
@@ -574,7 +601,8 @@
     },
     "hoverTrigger": [
       "G51"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G52",
@@ -593,7 +621,8 @@
     },
     "hoverTrigger": [
       "G52"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G53",
@@ -612,7 +641,8 @@
     },
     "hoverTrigger": [
       "G53"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G54 - G59",
@@ -636,7 +666,8 @@
       "G57",
       "G58",
       "G59"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G60",
@@ -655,7 +686,8 @@
     },
     "hoverTrigger": [
       "G60"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G61",
@@ -674,7 +706,8 @@
     },
     "hoverTrigger": [
       "G61"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G63",
@@ -693,7 +726,8 @@
     },
     "hoverTrigger": [
       "G63"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G66",
@@ -712,7 +746,8 @@
     },
     "hoverTrigger": [
       "G66"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G68",
@@ -731,7 +766,8 @@
     },
     "hoverTrigger": [
       "G68"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G69",
@@ -750,7 +786,8 @@
     },
     "hoverTrigger": [
       "G69"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G70",
@@ -769,7 +806,8 @@
     },
     "hoverTrigger": [
       "G70"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G71",
@@ -788,7 +826,8 @@
     },
     "hoverTrigger": [
       "G71"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G74",
@@ -829,7 +868,8 @@
     },
     "hoverTrigger": [
       "G74"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G80 - G89",
@@ -857,7 +897,8 @@
       "G87",
       "G88",
       "G89"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G90",
@@ -876,7 +917,8 @@
     },
     "hoverTrigger": [
       "G90"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G91",
@@ -895,7 +937,8 @@
     },
     "hoverTrigger": [
       "G91"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G92",
@@ -914,7 +957,8 @@
     },
     "hoverTrigger": [
       "G92"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G93",
@@ -933,7 +977,8 @@
     },
     "hoverTrigger": [
       "G93"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G94",
@@ -952,7 +997,8 @@
     },
     "hoverTrigger": [
       "G94"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G95",
@@ -986,7 +1032,8 @@
     },
     "hoverTrigger": [
       "G95"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G96",
@@ -1005,7 +1052,8 @@
     },
     "hoverTrigger": [
       "G96"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G97",
@@ -1024,7 +1072,8 @@
     },
     "hoverTrigger": [
       "G97"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G98",
@@ -1043,7 +1092,8 @@
     },
     "hoverTrigger": [
       "G98"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G99",
@@ -1062,7 +1112,8 @@
     },
     "hoverTrigger": [
       "G99"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G100",
@@ -1110,7 +1161,8 @@
     },
     "hoverTrigger": [
       "G100"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G101",
@@ -1129,7 +1181,8 @@
     },
     "hoverTrigger": [
       "G101"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G102",
@@ -1148,7 +1201,8 @@
     },
     "hoverTrigger": [
       "G102"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G106",
@@ -1167,7 +1221,8 @@
     },
     "hoverTrigger": [
       "G106"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G107",
@@ -1186,7 +1241,8 @@
     },
     "hoverTrigger": [
       "G107"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G108",
@@ -1205,7 +1261,8 @@
     },
     "hoverTrigger": [
       "G108"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G112",
@@ -1224,7 +1281,8 @@
     },
     "hoverTrigger": [
       "G112"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G115",
@@ -1243,7 +1301,8 @@
     },
     "hoverTrigger": [
       "G115"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G116",
@@ -1262,7 +1321,8 @@
     },
     "hoverTrigger": [
       "G116"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G117",
@@ -1281,7 +1341,8 @@
     },
     "hoverTrigger": [
       "G117"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G127",
@@ -1300,7 +1361,8 @@
     },
     "hoverTrigger": [
       "G127"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G128",
@@ -1319,7 +1381,8 @@
     },
     "hoverTrigger": [
       "G128"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G129",
@@ -1338,7 +1401,8 @@
     },
     "hoverTrigger": [
       "G129"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G130",
@@ -1357,7 +1421,8 @@
     },
     "hoverTrigger": [
       "G130"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G131",
@@ -1376,7 +1441,8 @@
     },
     "hoverTrigger": [
       "G131"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G132",
@@ -1395,7 +1461,8 @@
     },
     "hoverTrigger": [
       "G132"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G133",
@@ -1414,7 +1481,8 @@
     },
     "hoverTrigger": [
       "G133"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G134",
@@ -1433,7 +1501,8 @@
     },
     "hoverTrigger": [
       "G134"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G135",
@@ -1467,7 +1536,8 @@
     },
     "hoverTrigger": [
       "G135"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G136",
@@ -1501,7 +1571,8 @@
     },
     "hoverTrigger": [
       "G136"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G137",
@@ -1535,7 +1606,8 @@
     },
     "hoverTrigger": [
       "G137"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G138",
@@ -1569,7 +1641,8 @@
     },
     "hoverTrigger": [
       "G138"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G139",
@@ -1617,7 +1690,8 @@
     },
     "hoverTrigger": [
       "G139"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G140",
@@ -1636,7 +1710,8 @@
     },
     "hoverTrigger": [
       "G140"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G141",
@@ -1655,7 +1730,8 @@
     },
     "hoverTrigger": [
       "G141"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G150",
@@ -1689,7 +1765,8 @@
     },
     "hoverTrigger": [
       "G150"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G151",
@@ -1708,7 +1785,8 @@
     },
     "hoverTrigger": [
       "G151"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G159",
@@ -1727,7 +1805,8 @@
     },
     "hoverTrigger": [
       "G159"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G160",
@@ -1746,7 +1825,8 @@
     },
     "hoverTrigger": [
       "G160"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G161",
@@ -1765,7 +1845,8 @@
     },
     "hoverTrigger": [
       "G161"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G162",
@@ -1784,7 +1865,8 @@
     },
     "hoverTrigger": [
       "G162"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G163",
@@ -1803,7 +1885,8 @@
     },
     "hoverTrigger": [
       "G163"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G164",
@@ -1822,7 +1905,8 @@
     },
     "hoverTrigger": [
       "G164"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G165",
@@ -1841,7 +1925,8 @@
     },
     "hoverTrigger": [
       "G165"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G166",
@@ -1860,7 +1945,8 @@
     },
     "hoverTrigger": [
       "G166"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G167",
@@ -1894,7 +1980,8 @@
     },
     "hoverTrigger": [
       "G167"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G193",
@@ -1913,7 +2000,8 @@
     },
     "hoverTrigger": [
       "G193"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G194",
@@ -1932,7 +2020,8 @@
     },
     "hoverTrigger": [
       "G194"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G196",
@@ -1951,7 +2040,8 @@
     },
     "hoverTrigger": [
       "G196"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G200",
@@ -1970,7 +2060,8 @@
     },
     "hoverTrigger": [
       "G200"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G201",
@@ -1989,7 +2080,8 @@
     },
     "hoverTrigger": [
       "G201"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G202",
@@ -2008,7 +2100,8 @@
     },
     "hoverTrigger": [
       "G202"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G230",
@@ -2027,7 +2120,8 @@
     },
     "hoverTrigger": [
       "G230"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G231",
@@ -2046,7 +2140,8 @@
     },
     "hoverTrigger": [
       "G231"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G232",
@@ -2065,7 +2160,8 @@
     },
     "hoverTrigger": [
       "G232"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G233",
@@ -2084,7 +2180,8 @@
     },
     "hoverTrigger": [
       "G233"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G236",
@@ -2118,7 +2215,8 @@
     },
     "hoverTrigger": [
       "G236"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G237",
@@ -2137,7 +2235,8 @@
     },
     "hoverTrigger": [
       "G237"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G238",
@@ -2156,7 +2255,8 @@
     },
     "hoverTrigger": [
       "G238"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G239",
@@ -2175,7 +2275,8 @@
     },
     "hoverTrigger": [
       "G239"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G260",
@@ -2194,7 +2295,8 @@
     },
     "hoverTrigger": [
       "G260"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G261",
@@ -2213,7 +2315,8 @@
     },
     "hoverTrigger": [
       "G261"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G293",
@@ -2232,7 +2335,8 @@
     },
     "hoverTrigger": [
       "G293"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G301",
@@ -2251,7 +2355,8 @@
     },
     "hoverTrigger": [
       "G301"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G302",
@@ -2270,7 +2375,8 @@
     },
     "hoverTrigger": [
       "G302"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G303",
@@ -2289,7 +2395,8 @@
     },
     "hoverTrigger": [
       "G303"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G310",
@@ -2308,7 +2415,8 @@
     },
     "hoverTrigger": [
       "G310"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G331",
@@ -2327,7 +2435,8 @@
     },
     "hoverTrigger": [
       "G331"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G332",
@@ -2346,7 +2455,8 @@
     },
     "hoverTrigger": [
       "G332"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G333",
@@ -2365,7 +2475,8 @@
     },
     "hoverTrigger": [
       "G333"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G334",
@@ -2384,7 +2495,8 @@
     },
     "hoverTrigger": [
       "G334"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G338",
@@ -2403,7 +2515,8 @@
     },
     "hoverTrigger": [
       "G338"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G339",
@@ -2422,7 +2535,8 @@
     },
     "hoverTrigger": [
       "G339"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G351",
@@ -2441,7 +2555,8 @@
     },
     "hoverTrigger": [
       "G351"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G359",
@@ -2460,7 +2575,8 @@
     },
     "hoverTrigger": [
       "G359"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G360",
@@ -2479,7 +2595,8 @@
     },
     "hoverTrigger": [
       "G360"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G800 - G819",
@@ -2517,7 +2634,8 @@
       "G817",
       "G818",
       "G819"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G900",
@@ -2536,7 +2654,8 @@
     },
     "hoverTrigger": [
       "G900"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "G901",
@@ -2555,7 +2674,8 @@
     },
     "hoverTrigger": [
       "G901"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "$BREAK",
@@ -2573,8 +2693,9 @@
       "en-GB": "### $BREAK\n\nBREAK statement"
     },
     "hoverTrigger": [
-      "$BREAK"
-    ]
+      "\\$BREAK"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$CONTINUE",
@@ -2592,8 +2713,9 @@
       "en-GB": "### $CONTINUE\n\nCONTINUE statement"
     },
     "hoverTrigger": [
-      "$CONTINUE"
-    ]
+      "\\$CONTINUE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$DO",
@@ -2611,8 +2733,9 @@
       "en-GB": "### $DO\n\nDO loop"
     },
     "hoverTrigger": [
-      "$DO"
-    ]
+      "\\$DO"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ENDDO",
@@ -2630,8 +2753,9 @@
       "en-GB": "### $ENDDO\n\nDO loop"
     },
     "hoverTrigger": [
-      "$ENDDO"
-    ]
+      "\\$ENDDO"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$REPEAT",
@@ -2649,8 +2773,9 @@
       "en-GB": "### $REPEAT\n\nREPEAT loop"
     },
     "hoverTrigger": [
-      "$REPEAT"
-    ]
+      "\\$REPEAT"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$UNTIL",
@@ -2668,8 +2793,9 @@
       "en-GB": "### $UNTIL\n\nREPEAT loop"
     },
     "hoverTrigger": [
-      "$UNTIL"
-    ]
+      "\\$UNTIL"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$FOR",
@@ -2687,8 +2813,9 @@
       "en-GB": "### $FOR\n\nFOR loop"
     },
     "hoverTrigger": [
-      "$FOR"
-    ]
+      "\\$FOR"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ENDFOR",
@@ -2706,8 +2833,9 @@
       "en-GB": "### $ENDFOR\n\nFOR loop"
     },
     "hoverTrigger": [
-      "$ENDFOR"
-    ]
+      "\\$ENDFOR"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$GOTO",
@@ -2725,8 +2853,9 @@
       "en-GB": "### $GOTO\n\nGOTO statement"
     },
     "hoverTrigger": [
-      "$GOTO"
-    ]
+      "\\$GOTO"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$IF",
@@ -2744,8 +2873,9 @@
       "en-GB": "### $IF\n\nThe IF-ELSE branching"
     },
     "hoverTrigger": [
-      "$IF"
-    ]
+      "\\$IF"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ELSE",
@@ -2763,8 +2893,9 @@
       "en-GB": "### $ELSE\n\nThe IF-ELSE branching"
     },
     "hoverTrigger": [
-      "$ELSE"
-    ]
+      "\\$ELSE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ELSEIF",
@@ -2782,8 +2913,9 @@
       "en-GB": "### $ELSEIF\n\nThe IF-ELSE branching"
     },
     "hoverTrigger": [
-      "$ELSEIF"
-    ]
+      "\\$ELSEIF"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ENDIF",
@@ -2801,8 +2933,9 @@
       "en-GB": "### $ENDIF\n\nThe IF-ELSE branching"
     },
     "hoverTrigger": [
-      "$ENDIF"
-    ]
+      "\\$ENDIF"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$IFELSE",
@@ -2820,8 +2953,9 @@
       "en-GB": "### $IFELSE\n\nThe IF-ELSE branching"
     },
     "hoverTrigger": [
-      "$IFELSE"
-    ]
+      "\\$IFELSE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$SWITCH",
@@ -2839,8 +2973,9 @@
       "en-GB": "### $SWITCH\n\nSwitch branching"
     },
     "hoverTrigger": [
-      "$SWITCH"
-    ]
+      "\\$SWITCH"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$CASE",
@@ -2858,8 +2993,9 @@
       "en-GB": "### $CASE\n\nSwitch branching"
     },
     "hoverTrigger": [
-      "$CASE"
-    ]
+      "\\$CASE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$DEFAULT",
@@ -2877,8 +3013,9 @@
       "en-GB": "### $DEFAULT\n\nSwitch branching"
     },
     "hoverTrigger": [
-      "$DEFAULT"
-    ]
+      "\\$DEFAULT"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ENDSWITCH",
@@ -2896,8 +3033,9 @@
       "en-GB": "### $ENDSWITCH\n\nSwitch branching"
     },
     "hoverTrigger": [
-      "$ENDSWITCH"
-    ]
+      "\\$ENDSWITCH"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$WHILE",
@@ -2915,8 +3053,9 @@
       "en-GB": "### $WHILE\n\nWHILE loop"
     },
     "hoverTrigger": [
-      "$WHILE"
-    ]
+      "\\$WHILE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "$ENDWHILE",
@@ -2934,8 +3073,9 @@
       "en-GB": "### $ENDWHILE\n\nWHILE loop"
     },
     "hoverTrigger": [
-      "$ENDWHILE"
-    ]
+      "\\$ENDWHILE"
+    ],
+    "defaultValue": null
   },
   {
     "label": "M00",
@@ -2954,7 +3094,8 @@
     },
     "hoverTrigger": [
       "M00"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M01",
@@ -2973,7 +3114,8 @@
     },
     "hoverTrigger": [
       "M01"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M02",
@@ -2992,7 +3134,8 @@
     },
     "hoverTrigger": [
       "M02"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M03",
@@ -3026,7 +3169,8 @@
     },
     "hoverTrigger": [
       "M03"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M04",
@@ -3060,7 +3204,8 @@
     },
     "hoverTrigger": [
       "M04"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M05",
@@ -3094,7 +3239,8 @@
     },
     "hoverTrigger": [
       "M05"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M06",
@@ -3113,7 +3259,8 @@
     },
     "hoverTrigger": [
       "M06"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M17",
@@ -3132,7 +3279,8 @@
     },
     "hoverTrigger": [
       "M17"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M19",
@@ -3166,7 +3314,8 @@
     },
     "hoverTrigger": [
       "M19"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M29",
@@ -3185,7 +3334,8 @@
     },
     "hoverTrigger": [
       "M29"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M30",
@@ -3204,7 +3354,8 @@
     },
     "hoverTrigger": [
       "M30"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M40 - 45",
@@ -3228,7 +3379,8 @@
       "M43",
       "M44",
       "M45"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "D",
@@ -3247,7 +3399,8 @@
     },
     "hoverTrigger": [
       "D"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "E",
@@ -3266,7 +3419,8 @@
     },
     "hoverTrigger": [
       "E"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "F",
@@ -3285,7 +3439,8 @@
     },
     "hoverTrigger": [
       "F"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M/H",
@@ -3319,7 +3474,8 @@
     },
     "hoverTrigger": [
       "M/H"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "L",
@@ -3338,7 +3494,8 @@
     },
     "hoverTrigger": [
       "L"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "LL",
@@ -3357,7 +3514,8 @@
     },
     "hoverTrigger": [
       "LL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "L , LL CYCLE",
@@ -3377,7 +3535,8 @@
     "hoverTrigger": [
       "L CYCLE",
       "LL CYCLE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "L SEQUENCE",
@@ -3396,7 +3555,8 @@
     },
     "hoverTrigger": [
       "L SEQUENCE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "N",
@@ -3415,7 +3575,8 @@
     },
     "hoverTrigger": [
       "N"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "P",
@@ -3434,7 +3595,8 @@
     },
     "hoverTrigger": [
       "P"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "R",
@@ -3453,7 +3615,8 @@
     },
     "hoverTrigger": [
       "R"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "S",
@@ -3487,7 +3650,8 @@
     },
     "hoverTrigger": [
       "S"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "S.POS",
@@ -3520,8 +3684,9 @@
       "en-GB": "### S.POS\n\nPositioning spindle"
     },
     "hoverTrigger": [
-      "S.POS"
-    ]
+      "S\\.POS"
+    ],
+    "defaultValue": null
   },
   {
     "label": "S.OFFSET",
@@ -3539,8 +3704,9 @@
       "en-GB": "### S.OFFSET\n\nAngle offset for multi-turn threads"
     },
     "hoverTrigger": [
-      "S.OFFSET"
-    ]
+      "S\\.OFFSET"
+    ],
+    "defaultValue": null
   },
   {
     "label": "T",
@@ -3559,7 +3725,8 @@
     },
     "hoverTrigger": [
       "T"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "/",
@@ -3586,7 +3753,8 @@
     },
     "hoverTrigger": [
       "/"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "\"...\"",
@@ -3604,8 +3772,9 @@
       "en-GB": "### \"...\"\n\nMacro programming"
     },
     "hoverTrigger": [
-      "\"...\""
-    ]
+      "\"\\.\\.\\.\""
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ACS ON/OFF",
@@ -3625,7 +3794,8 @@
     "hoverTrigger": [
       "#ACS ON",
       "#ACS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ADD",
@@ -3644,7 +3814,8 @@
     },
     "hoverTrigger": [
       "#ADD"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AKIMA STARTVECTOR",
@@ -3663,7 +3834,8 @@
     },
     "hoverTrigger": [
       "#AKIMA STARTVECTOR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AKIMA ENDVECTOR",
@@ -3682,7 +3854,8 @@
     },
     "hoverTrigger": [
       "#AKIMA ENDVECTOR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AKIMA TRANS",
@@ -3701,7 +3874,8 @@
     },
     "hoverTrigger": [
       "#AKIMA TRANS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ANG",
@@ -3720,7 +3894,8 @@
     },
     "hoverTrigger": [
       "#ANG"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX DEF",
@@ -3739,7 +3914,8 @@
     },
     "hoverTrigger": [
       "#AX DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX DEF DEFAULT",
@@ -3758,7 +3934,8 @@
     },
     "hoverTrigger": [
       "#AX DEF DEFAULT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX LINK ON/OFF/OFF ALL",
@@ -3794,7 +3971,8 @@
       "#AX LINK ON ALL",
       "#AX LINK OFF ALL",
       "#AX LINK OFF ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX LOCK/UNLOCK ALL",
@@ -3814,7 +3992,8 @@
     "hoverTrigger": [
       "#AX LOCK ALL",
       "#AX UNLOCK ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX REQUEST",
@@ -3833,7 +4012,8 @@
     },
     "hoverTrigger": [
       "#AX REQUEST"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX RELEASE",
@@ -3852,7 +4032,8 @@
     },
     "hoverTrigger": [
       "#AX RELEASE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#AX RELEASE ALL",
@@ -3871,7 +4052,8 @@
     },
     "hoverTrigger": [
       "#AX RELEASE ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#BACKWARD STORAGE CLEAR",
@@ -3890,7 +4072,8 @@
     },
     "hoverTrigger": [
       "#BACKWARD STORAGE CLEAR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#BCS DEF",
@@ -3909,7 +4092,8 @@
     },
     "hoverTrigger": [
       "#BCS DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#BCS ON/OFF",
@@ -3929,7 +4113,8 @@
     "hoverTrigger": [
       "#BCS ON",
       "#BCS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#BLOCKSEARCH LOCKED/|||RELEASED",
@@ -3948,8 +4133,9 @@
     },
     "hoverTrigger": [
       "#BLOCKSEARCH LOCKED",
-      "#BLOCKSEARCH |||RELEASED"
-    ]
+      "#BLOCKSEARCH \\|\\|\\|RELEASED"
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CACHE LOAD/CLEAR/ALL",
@@ -3970,7 +4156,8 @@
       "#CACHE LOAD",
       "#CACHE CLEAR",
       "#CACHE ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CALL AX",
@@ -3989,7 +4176,8 @@
     },
     "hoverTrigger": [
       "#CALL AX"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CAX",
@@ -4008,7 +4196,8 @@
     },
     "hoverTrigger": [
       "#CAX"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CAX OFF",
@@ -4027,7 +4216,8 @@
     },
     "hoverTrigger": [
       "#CAX OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CAXTRACK ON/OFF",
@@ -4047,7 +4237,8 @@
     "hoverTrigger": [
       "#CAXTRACK ON",
       "#CAXTRACK OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CHANNEL INIT",
@@ -4081,7 +4272,8 @@
     },
     "hoverTrigger": [
       "#CHANNEL INIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CHANNEL INTERFACE ON/OFF",
@@ -4101,7 +4293,8 @@
     "hoverTrigger": [
       "#CHANNEL INTERFACE ON",
       "#CHANNEL INTERFACE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CHANNEL SET",
@@ -4135,7 +4328,8 @@
     },
     "hoverTrigger": [
       "#CHANNEL SET"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CHF",
@@ -4154,7 +4348,8 @@
     },
     "hoverTrigger": [
       "#CHF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CHR",
@@ -4173,7 +4368,8 @@
     },
     "hoverTrigger": [
       "#CHR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CLEAR CONFIG",
@@ -4200,7 +4396,8 @@
     },
     "hoverTrigger": [
       "#CLEAR CONFIG"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COLL MON ON",
@@ -4219,7 +4416,8 @@
     },
     "hoverTrigger": [
       "#COLL MON ON"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COMMAND WR",
@@ -4238,7 +4436,8 @@
     },
     "hoverTrigger": [
       "#COMMAND WR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COMMAND WR SYN",
@@ -4257,7 +4456,8 @@
     },
     "hoverTrigger": [
       "#COMMAND WR SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COMMAND WAIT",
@@ -4276,7 +4476,8 @@
     },
     "hoverTrigger": [
       "#COMMAND WAIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COMMAND WAIT SYN",
@@ -4295,7 +4496,8 @@
     },
     "hoverTrigger": [
       "#COMMAND WAIT SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#COMMENT BEGIN/END",
@@ -4315,7 +4517,8 @@
     "hoverTrigger": [
       "#COMMENT BEGIN",
       "#COMMENT END"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CONTOUR MODE",
@@ -4349,7 +4552,8 @@
     },
     "hoverTrigger": [
       "#CONTOUR MODE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CONTROL AREA BEGIN/END",
@@ -4369,7 +4573,8 @@
     "hoverTrigger": [
       "#CONTROL AREA BEGIN",
       "#CONTROL AREA END"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CONTROL AREA ON/OFF",
@@ -4389,7 +4594,8 @@
     "hoverTrigger": [
       "#CONTROL AREA ON",
       "#CONTROL AREA OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CONTROL AREA CLEAR",
@@ -4408,7 +4614,8 @@
     },
     "hoverTrigger": [
       "#CONTROL AREA CLEAR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CORNER PARAM",
@@ -4427,7 +4634,8 @@
     },
     "hoverTrigger": [
       "#CORNER PARAM"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS DEF",
@@ -4446,7 +4654,8 @@
     },
     "hoverTrigger": [
       "#CS DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS ON/OFF",
@@ -4466,7 +4675,8 @@
     "hoverTrigger": [
       "#CS ON",
       "#CS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS MODE ON/OFF",
@@ -4486,7 +4696,8 @@
     "hoverTrigger": [
       "#CS MODE ON",
       "#CS MODE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS ADD/SELECT/SET/ DEL",
@@ -4508,7 +4719,8 @@
       "#CS SELECT DEL",
       "#CS SET DEL",
       "#CS  DEL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS TRACK",
@@ -4527,7 +4739,8 @@
     },
     "hoverTrigger": [
       "#CS TRACK"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CS SHIFT Z",
@@ -4546,7 +4759,8 @@
     },
     "hoverTrigger": [
       "#CS SHIFT Z"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CYL",
@@ -4580,7 +4794,8 @@
     },
     "hoverTrigger": [
       "#CYL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CYL 2ROT",
@@ -4599,7 +4814,8 @@
     },
     "hoverTrigger": [
       "#CYL 2ROT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CYL OFF",
@@ -4633,7 +4849,8 @@
     },
     "hoverTrigger": [
       "#CYL OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CYL ORI LATERAL",
@@ -4652,7 +4869,8 @@
     },
     "hoverTrigger": [
       "#CYL ORI LATERAL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#CYL ORI PROFILE",
@@ -4671,7 +4889,8 @@
     },
     "hoverTrigger": [
       "#CYL ORI PROFILE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DELETE",
@@ -4690,7 +4909,8 @@
     },
     "hoverTrigger": [
       "#DELETE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DEL DIST2GO",
@@ -4709,7 +4929,8 @@
     },
     "hoverTrigger": [
       "#DEL DIST2GO"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DIAGNOSIS",
@@ -4728,7 +4949,8 @@
     },
     "hoverTrigger": [
       "#DIAGNOSIS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DISABLE MODAL CYCLE",
@@ -4747,7 +4969,8 @@
     },
     "hoverTrigger": [
       "#DISABLE MODAL CYCLE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DIST CTRL ON/OFF",
@@ -4767,7 +4990,8 @@
     "hoverTrigger": [
       "#DIST CTRL ON",
       "#DIST CTRL OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DIST TO GO BEGIN/END",
@@ -4787,7 +5011,8 @@
     "hoverTrigger": [
       "#DIST TO GO BEGIN",
       "#DIST TO GO END"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DISTANCE PROG START ON/OFF/ CLEAR",
@@ -4808,7 +5033,8 @@
       "#DISTANCE PROG START ON CLEAR",
       "#DISTANCE PROG START OFF CLEAR",
       "#DISTANCE PROG START  CLEAR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DRIVE WR SYN",
@@ -4827,7 +5053,8 @@
     },
     "hoverTrigger": [
       "#DRIVE WR SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DRIVE WAIT SYN",
@@ -4846,7 +5073,8 @@
     },
     "hoverTrigger": [
       "#DRIVE WAIT SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#DYNAMIC WEIGHT ON/OFF",
@@ -4866,7 +5094,8 @@
     "hoverTrigger": [
       "#DYNAMIC WEIGHT ON",
       "#DYNAMIC WEIGHT OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ECS ON/OFF",
@@ -4886,7 +5115,8 @@
     "hoverTrigger": [
       "#ECS ON",
       "#ECS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#EDGE MACHINING ON/OFF",
@@ -4906,7 +5136,8 @@
     "hoverTrigger": [
       "#EDGE MACHINING ON",
       "#EDGE MACHINING OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#EDM ON/OFF",
@@ -4926,7 +5157,8 @@
     "hoverTrigger": [
       "#EDM ON",
       "#EDM OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ENABLE AX LINK|||#DISABLE AX LINK",
@@ -4944,8 +5176,9 @@
       "en-GB": "### #ENABLE AX LINK|||#DISABLE AX LINK\n\nSelecting/deselecting axis couplings"
     },
     "hoverTrigger": [
-      "#ENABLE AX LINK|||#DISABLE AX LINK"
-    ]
+      "#ENABLE AX LINK\\|\\|\\|#DISABLE AX LINK"
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ERROR",
@@ -4964,7 +5197,8 @@
     },
     "hoverTrigger": [
       "#ERROR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#EXPL SYN",
@@ -4983,7 +5217,8 @@
     },
     "hoverTrigger": [
       "#EXPL SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#EXPORT VE",
@@ -5002,7 +5237,8 @@
     },
     "hoverTrigger": [
       "#EXPORT VE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#EXTCOMP ON/OFF",
@@ -5022,7 +5258,8 @@
     "hoverTrigger": [
       "#EXTCOMP ON",
       "#EXTCOMP OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FACE",
@@ -5041,7 +5278,8 @@
     },
     "hoverTrigger": [
       "#FACE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FACE 2ROT",
@@ -5060,7 +5298,8 @@
     },
     "hoverTrigger": [
       "#FACE 2ROT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FACE OFF",
@@ -5079,7 +5318,8 @@
     },
     "hoverTrigger": [
       "#FACE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FF",
@@ -5098,7 +5338,8 @@
     },
     "hoverTrigger": [
       "#FF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FGROUP",
@@ -5117,7 +5358,8 @@
     },
     "hoverTrigger": [
       "#FGROUP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FGROUP ROT",
@@ -5136,7 +5378,8 @@
     },
     "hoverTrigger": [
       "#FGROUP ROT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FGROUP WAXIS",
@@ -5155,7 +5398,8 @@
     },
     "hoverTrigger": [
       "#FGROUP WAXIS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FILE NAME",
@@ -5174,7 +5418,8 @@
     },
     "hoverTrigger": [
       "#FILE NAME"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FILE RENAME",
@@ -5193,7 +5438,8 @@
     },
     "hoverTrigger": [
       "#FILE RENAME"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FILE DELETE",
@@ -5212,7 +5458,8 @@
     },
     "hoverTrigger": [
       "#FILE DELETE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FILE EXIST",
@@ -5231,7 +5478,8 @@
     },
     "hoverTrigger": [
       "#FILE EXIST"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FILTER ON/OFF",
@@ -5251,7 +5499,8 @@
     "hoverTrigger": [
       "#FILTER ON",
       "#FILTER OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FLUSH",
@@ -5270,7 +5519,8 @@
     },
     "hoverTrigger": [
       "#FLUSH"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FLUSH CONTINUE",
@@ -5289,7 +5539,8 @@
     },
     "hoverTrigger": [
       "#FLUSH CONTINUE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FLUSH WAIT",
@@ -5308,7 +5559,8 @@
     },
     "hoverTrigger": [
       "#FLUSH WAIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FRC",
@@ -5327,7 +5579,8 @@
     },
     "hoverTrigger": [
       "#FRC"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#FREE TOOL CHANGE ON/OFF",
@@ -5347,7 +5600,8 @@
     "hoverTrigger": [
       "#FREE TOOL CHANGE ON",
       "#FREE TOOL CHANGE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GANTRY OFF",
@@ -5366,7 +5620,8 @@
     },
     "hoverTrigger": [
       "#GANTRY OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GANTRY OFF ALL",
@@ -5385,7 +5640,8 @@
     },
     "hoverTrigger": [
       "#GANTRY OFF ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GANTRY ON",
@@ -5404,7 +5660,8 @@
     },
     "hoverTrigger": [
       "#GANTRY ON"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GANTRY ON ALL",
@@ -5423,7 +5680,8 @@
     },
     "hoverTrigger": [
       "#GANTRY ON ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GEAR LINK ON/OFF",
@@ -5443,7 +5701,8 @@
     "hoverTrigger": [
       "#GEAR LINK ON",
       "#GEAR LINK OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GET CMDPOS",
@@ -5462,7 +5721,8 @@
     },
     "hoverTrigger": [
       "#GET CMDPOS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GET ACTPOS",
@@ -5481,7 +5741,8 @@
     },
     "hoverTrigger": [
       "#GET ACTPOS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GET MANUAL OFFSETS",
@@ -5500,7 +5761,8 @@
     },
     "hoverTrigger": [
       "#GET MANUAL OFFSETS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#GET WCS POSLIMIT",
@@ -5519,7 +5781,8 @@
     },
     "hoverTrigger": [
       "#GET WCS POSLIMIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#HANDWHEEL",
@@ -5538,7 +5801,8 @@
     },
     "hoverTrigger": [
       "#HANDWHEEL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#HSC ON/OFF",
@@ -5580,7 +5844,8 @@
     "hoverTrigger": [
       "#HSC ON",
       "#HSC OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#IDENT WR",
@@ -5599,7 +5864,8 @@
     },
     "hoverTrigger": [
       "#IDENT WR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#IDENT WR SYN",
@@ -5618,7 +5884,8 @@
     },
     "hoverTrigger": [
       "#IDENT WR SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#IDENT RD",
@@ -5637,7 +5904,8 @@
     },
     "hoverTrigger": [
       "#IDENT RD"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#INIT MACRO TAB",
@@ -5656,7 +5924,8 @@
     },
     "hoverTrigger": [
       "#INIT MACRO TAB"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#INIT V.E.xx",
@@ -5674,8 +5943,9 @@
       "en-GB": "### #INIT V.E.xx\n\nInitialising V.E. variables"
     },
     "hoverTrigger": [
-      "#INIT V.E.xx"
-    ]
+      "#INIT V\\.E\\.xx"
+    ],
+    "defaultValue": null
   },
   {
     "label": "#JOG CONT",
@@ -5694,7 +5964,8 @@
     },
     "hoverTrigger": [
       "#JOG CONT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#JOG INCR",
@@ -5713,7 +5984,8 @@
     },
     "hoverTrigger": [
       "#JOG INCR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#KIN ID",
@@ -5732,7 +6004,8 @@
     },
     "hoverTrigger": [
       "#KIN ID"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#KIN DATA",
@@ -5751,7 +6024,8 @@
     },
     "hoverTrigger": [
       "#KIN DATA"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#KIN TCP DEF/DELETE",
@@ -5771,7 +6045,8 @@
     "hoverTrigger": [
       "#KIN TCP DEF",
       "#KIN TCP DELETE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#LAH",
@@ -5790,7 +6065,8 @@
     },
     "hoverTrigger": [
       "#LAH"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#LOAD CONFIG",
@@ -5809,7 +6085,8 @@
     },
     "hoverTrigger": [
       "#LOAD CONFIG"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#LOCK/UNLOCK",
@@ -5828,7 +6105,8 @@
     },
     "hoverTrigger": [
       "#LOCK/UNLOCK"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#LIMIT REFRESH",
@@ -5847,7 +6125,8 @@
     },
     "hoverTrigger": [
       "#LIMIT REFRESH"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#LIMIT LOAD ON/OFF/DEF",
@@ -5868,7 +6147,8 @@
       "#LIMIT LOAD ON",
       "#LIMIT LOAD OFF",
       "#LIMIT LOAD DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MACHINE DATA",
@@ -5887,7 +6167,8 @@
     },
     "hoverTrigger": [
       "#MACHINE DATA"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MAIN SPINDLE",
@@ -5906,7 +6187,8 @@
     },
     "hoverTrigger": [
       "#MAIN SPINDLE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MANUAL LIMITS",
@@ -5925,7 +6207,8 @@
     },
     "hoverTrigger": [
       "#MANUAL LIMITS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MCS ON/OFF",
@@ -5945,7 +6228,8 @@
     "hoverTrigger": [
       "#MCS ON",
       "#MCS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MCS TO WCS",
@@ -5964,7 +6248,8 @@
     },
     "hoverTrigger": [
       "#MCS TO WCS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MEAS MODE",
@@ -5983,7 +6268,8 @@
     },
     "hoverTrigger": [
       "#MEAS MODE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MEAS",
@@ -6002,7 +6288,8 @@
     },
     "hoverTrigger": [
       "#MEAS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MEAS DEFAULT",
@@ -6021,7 +6308,8 @@
     },
     "hoverTrigger": [
       "#MEAS DEFAULT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MEAS PREPARE",
@@ -6040,7 +6328,8 @@
     },
     "hoverTrigger": [
       "#MEAS PREPARE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MSG",
@@ -6059,7 +6348,8 @@
     },
     "hoverTrigger": [
       "#MSG"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MSG INFO",
@@ -6078,7 +6368,8 @@
     },
     "hoverTrigger": [
       "#MSG INFO"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#MSG SAVE",
@@ -6097,7 +6388,8 @@
     },
     "hoverTrigger": [
       "#MSG SAVE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#NIBBLE ON/OFF",
@@ -6117,7 +6409,8 @@
     "hoverTrigger": [
       "#NIBBLE ON",
       "#NIBBLE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#OPTIONAL EXECUTION ON/OFF",
@@ -6137,7 +6430,8 @@
     "hoverTrigger": [
       "#OPTIONAL EXECUTION ON",
       "#OPTIONAL EXECUTION OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ORI MODE",
@@ -6171,7 +6465,8 @@
     },
     "hoverTrigger": [
       "#ORI MODE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#OTC ON/OFF",
@@ -6191,7 +6486,8 @@
     "hoverTrigger": [
       "#OTC ON",
       "#OTC OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#OVERRIDE",
@@ -6210,7 +6506,8 @@
     },
     "hoverTrigger": [
       "#OVERRIDE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PSET",
@@ -6229,7 +6526,8 @@
     },
     "hoverTrigger": [
       "#PSET"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PRESET",
@@ -6248,7 +6546,8 @@
     },
     "hoverTrigger": [
       "#PRESET"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PTP ON/OFF",
@@ -6268,7 +6567,8 @@
     "hoverTrigger": [
       "#PTP ON",
       "#PTP OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PUNCH ON/OFF",
@@ -6288,7 +6588,8 @@
     "hoverTrigger": [
       "#PUNCH ON",
       "#PUNCH OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PUT AX",
@@ -6307,7 +6608,8 @@
     },
     "hoverTrigger": [
       "#PUT AX"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#PUT AX ALL",
@@ -6326,7 +6628,8 @@
     },
     "hoverTrigger": [
       "#PUT AX ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#RETAIN CYCLE CHANGES",
@@ -6345,7 +6648,8 @@
     },
     "hoverTrigger": [
       "#RETAIN CYCLE CHANGES"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#RND",
@@ -6364,7 +6668,8 @@
     },
     "hoverTrigger": [
       "#RND"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#ROTATION ON / OFF",
@@ -6384,7 +6689,8 @@
     "hoverTrigger": [
       "#ROTATION ON  OFF",
       "#ROTATION ON  OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#RT CYCLE",
@@ -6403,7 +6709,8 @@
     },
     "hoverTrigger": [
       "#RT CYCLE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SAVE CONFIG",
@@ -6422,7 +6729,8 @@
     },
     "hoverTrigger": [
       "#SAVE CONFIG"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SCALE ON / OFF",
@@ -6442,7 +6750,8 @@
     "hoverTrigger": [
       "#SCALE ON  OFF",
       "#SCALE ON  OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SEGMENTATION ON/OFF/ALL",
@@ -6463,7 +6772,8 @@
       "#SEGMENTATION ON",
       "#SEGMENTATION OFF",
       "#SEGMENTATION ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SET AX",
@@ -6482,7 +6792,8 @@
     },
     "hoverTrigger": [
       "#SET AX"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SET AX LINK",
@@ -6501,7 +6812,8 @@
     },
     "hoverTrigger": [
       "#SET AX LINK"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SIGNAL",
@@ -6520,7 +6832,8 @@
     },
     "hoverTrigger": [
       "#SIGNAL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SIGNAL REMOVE",
@@ -6539,7 +6852,8 @@
     },
     "hoverTrigger": [
       "#SIGNAL REMOVE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SIGNAL READ",
@@ -6558,7 +6872,8 @@
     },
     "hoverTrigger": [
       "#SIGNAL READ"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SINGLE STEP",
@@ -6577,7 +6892,8 @@
     },
     "hoverTrigger": [
       "#SINGLE STEP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SLOPE",
@@ -6596,7 +6912,8 @@
     },
     "hoverTrigger": [
       "#SLOPE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SLOPE DEFAULT",
@@ -6615,7 +6932,8 @@
     },
     "hoverTrigger": [
       "#SLOPE DEFAULT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SPLINE ON",
@@ -6649,7 +6967,8 @@
     },
     "hoverTrigger": [
       "#SPLINE ON"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SPLINE OFF",
@@ -6683,7 +7002,8 @@
     },
     "hoverTrigger": [
       "#SPLINE OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SPLINE TYPE AKIMA",
@@ -6702,7 +7022,8 @@
     },
     "hoverTrigger": [
       "#SPLINE TYPE AKIMA"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SPLINE TYPE BSPLINE",
@@ -6721,7 +7042,8 @@
     },
     "hoverTrigger": [
       "#SPLINE TYPE BSPLINE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#STOP REVERSIBLE",
@@ -6740,7 +7062,8 @@
     },
     "hoverTrigger": [
       "#STOP REVERSIBLE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#STROKE DEF BEGIN/END",
@@ -6760,7 +7083,8 @@
     "hoverTrigger": [
       "#STROKE DEF BEGIN",
       "#STROKE DEF END"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SUPPRESS OFFSETS",
@@ -6779,7 +7103,8 @@
     },
     "hoverTrigger": [
       "#SUPPRESS OFFSETS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#SYNC IN/ OUT",
@@ -6799,7 +7124,8 @@
     "hoverTrigger": [
       "#SYNC IN OUT",
       "#SYNC  OUT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TANGFEED",
@@ -6818,7 +7144,8 @@
     },
     "hoverTrigger": [
       "#TANGFEED"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TIME",
@@ -6837,7 +7164,8 @@
     },
     "hoverTrigger": [
       "#TIME"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TIMER",
@@ -6856,7 +7184,8 @@
     },
     "hoverTrigger": [
       "#TIMER"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TLAX",
@@ -6875,7 +7204,8 @@
     },
     "hoverTrigger": [
       "#TLAX"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TLAX DEFAULT",
@@ -6894,7 +7224,8 @@
     },
     "hoverTrigger": [
       "#TLAX DEFAULT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TLC ON/OFF",
@@ -6914,7 +7245,8 @@
     "hoverTrigger": [
       "#TLC ON",
       "#TLC OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL DATA",
@@ -6933,7 +7265,8 @@
     },
     "hoverTrigger": [
       "#TOOL DATA"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL LIFE READ/REMOVE",
@@ -6953,7 +7286,8 @@
     "hoverTrigger": [
       "#TOOL LIFE READ",
       "#TOOL LIFE REMOVE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL LIFE DEF",
@@ -6972,7 +7306,8 @@
     },
     "hoverTrigger": [
       "#TOOL LIFE DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL ORI CS",
@@ -6991,7 +7326,8 @@
     },
     "hoverTrigger": [
       "#TOOL ORI CS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL PREP",
@@ -7010,7 +7346,8 @@
     },
     "hoverTrigger": [
       "#TOOL PREP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL REFRESH",
@@ -7029,7 +7366,8 @@
     },
     "hoverTrigger": [
       "#TOOL REFRESH"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TOOL UPDATE",
@@ -7048,7 +7386,8 @@
     },
     "hoverTrigger": [
       "#TOOL UPDATE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRACK CS ABS/ON/OFF",
@@ -7069,7 +7408,8 @@
       "#TRACK CS ABS",
       "#TRACK CS ON",
       "#TRACK CS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRAFO ON/OFF",
@@ -7089,7 +7429,8 @@
     "hoverTrigger": [
       "#TRAFO ON",
       "#TRAFO OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRAFO PCS ID",
@@ -7108,7 +7449,8 @@
     },
     "hoverTrigger": [
       "#TRAFO PCS ID"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRAFO PCS ON/OFF",
@@ -7128,7 +7470,8 @@
     "hoverTrigger": [
       "#TRAFO PCS ON",
       "#TRAFO PCS OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRAFO STACK DEF",
@@ -7147,7 +7490,8 @@
     },
     "hoverTrigger": [
       "#TRAFO STACK DEF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRAFO STACK ON/OFF",
@@ -7167,7 +7511,8 @@
     "hoverTrigger": [
       "#TRAFO STACK ON",
       "#TRAFO STACK OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRANSFORM",
@@ -7186,7 +7531,8 @@
     },
     "hoverTrigger": [
       "#TRANSFORM"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRANSVELMIN ON/OFF",
@@ -7206,7 +7552,8 @@
     "hoverTrigger": [
       "#TRANSVELMIN ON",
       "#TRANSVELMIN OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TRC",
@@ -7225,7 +7572,8 @@
     },
     "hoverTrigger": [
       "#TRC"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#TURN",
@@ -7244,7 +7592,8 @@
     },
     "hoverTrigger": [
       "#TURN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#VAR...#ENDVAR",
@@ -7277,8 +7626,9 @@
       "en-GB": "### #VAR...#ENDVAR\n\nDeclaration block for self-defined variables or parameters"
     },
     "hoverTrigger": [
-      "#VAR...#ENDVAR"
-    ]
+      "#VAR\\.\\.\\.#ENDVAR"
+    ],
+    "defaultValue": null
   },
   {
     "label": "#VECTOR LIMIT ON/OFF",
@@ -7298,7 +7648,8 @@
     "hoverTrigger": [
       "#VECTOR LIMIT ON",
       "#VECTOR LIMIT OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#VIB GUARD",
@@ -7317,7 +7668,8 @@
     },
     "hoverTrigger": [
       "#VIB GUARD"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#VOLCOMP ON/OFF",
@@ -7337,7 +7689,8 @@
     "hoverTrigger": [
       "#VOLCOMP ON",
       "#VOLCOMP OFF"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#WAIT",
@@ -7356,7 +7709,8 @@
     },
     "hoverTrigger": [
       "#WAIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#WAIT FOR",
@@ -7375,7 +7729,8 @@
     },
     "hoverTrigger": [
       "#WAIT FOR"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#WAIT INDP",
@@ -7394,7 +7749,8 @@
     },
     "hoverTrigger": [
       "#WAIT INDP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#WAIT INDP ALL",
@@ -7413,7 +7769,8 @@
     },
     "hoverTrigger": [
       "#WAIT INDP ALL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "#WCS TO MCS",
@@ -7432,7 +7789,8 @@
     },
     "hoverTrigger": [
       "#WCS TO MCS"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "INDP_SYN",
@@ -7451,7 +7809,8 @@
     },
     "hoverTrigger": [
       "INDP_SYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "INDP_ASYN",
@@ -7470,7 +7829,8 @@
     },
     "hoverTrigger": [
       "INDP_ASYN"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "OSC",
@@ -7489,7 +7849,8 @@
     },
     "hoverTrigger": [
       "OSC"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "COMP",
@@ -7508,7 +7869,8 @@
     },
     "hoverTrigger": [
       "COMP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "DIST_CTRL",
@@ -7527,7 +7889,8 @@
     },
     "hoverTrigger": [
       "DIST_CTRL"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "OVERRIDE",
@@ -7546,7 +7909,8 @@
     },
     "hoverTrigger": [
       "OVERRIDE"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "DYNAMIC",
@@ -7565,7 +7929,8 @@
     },
     "hoverTrigger": [
       "DYNAMIC"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "LIFT LIFT_START / LIFT_END",
@@ -7586,7 +7951,8 @@
       "LIFT_START",
       "LIFT_END",
       "LIFT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "SYNC IN / OUT",
@@ -7606,7 +7972,8 @@
     "hoverTrigger": [
       "SYNC IN  OUT",
       "SYNC IN  OUT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "POLY",
@@ -7625,7 +7992,8 @@
     },
     "hoverTrigger": [
       "POLY"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "SET_POSITION",
@@ -7644,7 +8012,8 @@
     },
     "hoverTrigger": [
       "SET_POSITION"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "FIXED_STOP",
@@ -7663,7 +8032,8 @@
     },
     "hoverTrigger": [
       "FIXED_STOP"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "POS_LIMIT",
@@ -7682,7 +8052,8 @@
     },
     "hoverTrigger": [
       "POS_LIMIT"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MODULO",
@@ -7701,7 +8072,8 @@
     },
     "hoverTrigger": [
       "MODULO"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_Home",
@@ -7720,7 +8092,8 @@
     },
     "hoverTrigger": [
       "MC_Home"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_MoveAbsolute",
@@ -7739,7 +8112,8 @@
     },
     "hoverTrigger": [
       "MC_MoveAbsolute"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_MoveAdditive",
@@ -7758,7 +8132,8 @@
     },
     "hoverTrigger": [
       "MC_MoveAdditive"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_MoveRelative",
@@ -7777,7 +8152,8 @@
     },
     "hoverTrigger": [
       "MC_MoveRelative"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_MoveSuperImposed",
@@ -7796,7 +8172,8 @@
     },
     "hoverTrigger": [
       "MC_MoveSuperImposed"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_MoveVelocity",
@@ -7815,7 +8192,8 @@
     },
     "hoverTrigger": [
       "MC_MoveVelocity"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_Stop",
@@ -7834,7 +8212,8 @@
     },
     "hoverTrigger": [
       "MC_Stop"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_GearIn",
@@ -7853,7 +8232,8 @@
     },
     "hoverTrigger": [
       "MC_GearIn"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_GearOut",
@@ -7872,7 +8252,8 @@
     },
     "hoverTrigger": [
       "MC_GearOut"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_Phasing",
@@ -7891,7 +8272,8 @@
     },
     "hoverTrigger": [
       "MC_Phasing"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "MC_TouchProbe",
@@ -7910,7 +8292,8 @@
     },
     "hoverTrigger": [
       "MC_TouchProbe"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.A. …",
@@ -7936,8 +8319,9 @@
       "en-GB": "### V.A. …\n\nAxis-specific variables"
     },
     "hoverTrigger": [
-      "V.A. …"
-    ]
+      "V\\.A\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.G. …",
@@ -7955,8 +8339,9 @@
       "en-GB": "### V.G. …\n\nGlobal variables"
     },
     "hoverTrigger": [
-      "V.G. …"
-    ]
+      "V\\.G\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.I. …",
@@ -7974,8 +8359,9 @@
       "en-GB": "### V.I. …\n\nGlobal cross-channel variable"
     },
     "hoverTrigger": [
-      "V.I. …"
-    ]
+      "V\\.I\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.P. …",
@@ -7993,8 +8379,9 @@
       "en-GB": "### V.P. …\n\nUser-defined variables, program global"
     },
     "hoverTrigger": [
-      "V.P. …"
-    ]
+      "V\\.P\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.S. …",
@@ -8012,8 +8399,9 @@
       "en-GB": "### V.S. …\n\nUser-defined variables, (main) program global"
     },
     "hoverTrigger": [
-      "V.S. …"
-    ]
+      "V\\.S\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.L. …",
@@ -8031,8 +8419,9 @@
       "en-GB": "### V.L. …\n\nUser-defined variables, program local"
     },
     "hoverTrigger": [
-      "V.L. …"
-    ]
+      "V\\.L\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.E. …",
@@ -8050,8 +8439,9 @@
       "en-GB": "### V.E. …\n\nExternal variables"
     },
     "hoverTrigger": [
-      "V.E. …"
-    ]
+      "V\\.E\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.CYC. …",
@@ -8069,8 +8459,9 @@
       "en-GB": "### V.CYC. …\n\nUser-defined variables, cycle variables"
     },
     "hoverTrigger": [
-      "V.CYC. …"
-    ]
+      "V\\.CYC\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.TOOL. …",
@@ -8088,8 +8479,9 @@
       "en-GB": "### V.TOOL. …\n\nTool identification variables"
     },
     "hoverTrigger": [
-      "V.TOOL. …"
-    ]
+      "V\\.TOOL\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.TLM. …",
@@ -8107,8 +8499,9 @@
       "en-GB": "### V.TLM. …\n\nTool life variables"
     },
     "hoverTrigger": [
-      "V.TLM. …"
-    ]
+      "V\\.TLM\\. …"
+    ],
+    "defaultValue": null
   },
   {
     "label": "%Filename",
@@ -8125,7 +8518,8 @@
       "de-DE": "### Filename\nProgrammnummer hinzufügen",
       "en-GB": "### Filename\nAdd Program Number"
     },
-    "hoverTrigger": []
+    "hoverTrigger": [],
+    "defaultValue": null
   },
   {
     "label": "commentbox",
@@ -8142,7 +8536,8 @@
       "de-DE": "### commentbox\nKommentarbox einfügen",
       "en-GB": "### commentbox\nInsert commentbox"
     },
-    "hoverTrigger": []
+    "hoverTrigger": [],
+    "defaultValue": null
   },
   {
     "label": "date",
@@ -8159,7 +8554,8 @@
       "de-DE": "### date\nDatum einfügen",
       "en-GB": "### date\nInsert Date"
     },
-    "hoverTrigger": []
+    "hoverTrigger": [],
+    "defaultValue": null
   },
   {
     "label": "Header",
@@ -8176,7 +8572,8 @@
       "de-DE": "### Header\nNC-File Header einfügen",
       "en-GB": "### Header\nInsert NC-file header"
     },
-    "hoverTrigger": []
+    "hoverTrigger": [],
+    "defaultValue": null
   },
   {
     "label": "skipblock",
@@ -8193,7 +8590,8 @@
       "de-DE": "### skipblock\nBlockskip einfügen",
       "en-GB": "### skipblock\nInsert Blockskip"
     },
-    "hoverTrigger": []
+    "hoverTrigger": [],
+    "defaultValue": null
   },
   {
     "label": "Spindle",
@@ -8212,7 +8610,8 @@
     },
     "hoverTrigger": [
       "Spindle"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.A.variables",
@@ -8230,8 +8629,9 @@
       "en-GB": "### V.A.variables\nAxis specific Variables"
     },
     "hoverTrigger": [
-      "V.A."
-    ]
+      "V\\.A\\."
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.G.variables",
@@ -8249,8 +8649,9 @@
       "en-GB": "### V.G.variables\nGlobal Variables"
     },
     "hoverTrigger": [
-      "V.G."
-    ]
+      "V\\.G\\."
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.G.WZ_AKT.variables",
@@ -8268,8 +8669,9 @@
       "en-GB": "### V.G.WZ_AKT.variables\nGlobal Current Tool Variables"
     },
     "hoverTrigger": [
-      "V.G.WZ_AKT.variables"
-    ]
+      "V\\.G\\.WZ_AKT\\.variables"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.G.WZ.variables",
@@ -8287,8 +8689,9 @@
       "en-GB": "### V.G.WZ.variables\nGlobal Tool Variables"
     },
     "hoverTrigger": [
-      "V.G.WZ.variables"
-    ]
+      "V\\.G\\.WZ\\.variables"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.SPDL_PROG.variables",
@@ -8306,8 +8709,9 @@
       "en-GB": "### V.SPDL_PROG.variables\nSpindle specific Variables"
     },
     "hoverTrigger": [
-      "V.SPDL_PROG.variables"
-    ]
+      "V\\.SPDL_PROG\\.variables"
+    ],
+    "defaultValue": null
   },
   {
     "label": "V.SPDL.variables",
@@ -8325,8 +8729,9 @@
       "en-GB": "### V.SPDL.variables\nSpindle specific Variables"
     },
     "hoverTrigger": [
-      "V.SPDL.variables"
-    ]
+      "V\\.SPDL\\.variables"
+    ],
+    "defaultValue": null
   },
   {
     "label": "variables",
@@ -8345,7 +8750,8 @@
     },
     "hoverTrigger": [
       "variables"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "region-start",
@@ -8364,7 +8770,8 @@
     },
     "hoverTrigger": [
       "region-start"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "region-end",
@@ -8383,7 +8790,8 @@
     },
     "hoverTrigger": [
       "region-end"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "region-block",
@@ -8402,7 +8810,8 @@
     },
     "hoverTrigger": [
       "region-block"
-    ]
+    ],
+    "defaultValue": null
   },
   {
     "label": "M19S",
@@ -8421,6 +8830,7 @@
     },
     "hoverTrigger": [
       "M19S"
-    ]
+    ],
+    "defaultValue": null
   }
 ]
