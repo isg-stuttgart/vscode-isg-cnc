@@ -17,9 +17,13 @@ import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
 import { ParseResults } from './parsingResults';
-// Create a connection for the server, using Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
-const connection = createConnection(ProposedFeatures.all);
+// Create a connection for the server.
+// If --stdio flag is passed, use stdio transport; otherwise use IPC (default).
+// This allows the server to work both as a VS Code extension and as a remote LSP server over WebSocket.
+const useStdio = process.argv.includes('--stdio');
+const connection = useStdio
+	? createConnection(ProposedFeatures.all, process.stdin, process.stdout)
+	: createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
