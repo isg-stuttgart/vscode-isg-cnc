@@ -10,19 +10,21 @@ import { getCommandUriToOpenDocu } from "./helper";
  * @param uri the uri of the file
  * @returns an array of file ranges (uri and start/end positions)
  */
-export function findLocalStringRanges(fileContent: string, string: string, uri: string): FileRange[] {
+export function findLocalStringRanges(fileContent: string, string: string, uri: string, commentMatches?: Match[], wholeWord: boolean = false): FileRange[] {
     // if string is empty, return empty array
     if (string.length === 0) {
         return [];
     }
     let ranges: FileRange[] = [];
     const lines = fileContent.split("\n");
-    let commentMatches: Match[];
-    try {
-        commentMatches = new ParseResults(fileContent).syntaxArray.comments;
-    } catch (error) {
-        // if the parser fails, comments are not excluded
-        commentMatches = [];
+    // reuse comments from an already parsed tree if provided, otherwise parse once here
+    if (commentMatches === undefined) {
+        try {
+            commentMatches = new ParseResults(fileContent).syntaxArray.comments;
+        } catch (error) {
+            // if the parser fails, comments are not excluded
+            commentMatches = [];
+        }
     }
 
     for (let i = 0; i < lines.length; i++) {
@@ -30,7 +32,13 @@ export function findLocalStringRanges(fileContent: string, string: string, uri: 
         let varIndex = line.indexOf(string);
         while (varIndex !== -1) {
             const varEnd = varIndex + string.length;
-            if (!isWithinMatches(commentMatches, new Position(i, varIndex))) {
+            // For variable searches (wholeWord) the match must not be the prefix of a longer variable
+            // name (e.g. V.P.FOO must not match inside V.P.FOOBAR / V.P.FOO.BAR). Only the trailing
+            // boundary is checked: NC address words like the "X" in "XV.L.VAR" legitimately precede a
+            // variable, so a leading identifier character must not disqualify the match.
+            const after = varEnd < line.length ? line[varEnd] : "";
+            const trailingBoundaryOk = !wholeWord || !/[_a-zA-Z0-9.]/.test(after);
+            if (trailingBoundaryOk && !isWithinMatches(commentMatches, new Position(i, varIndex))) {
                 const range = new FileRange(uri, new Position(i, varIndex), new Position(i, varEnd));
                 ranges.push(range);
             }
@@ -64,28 +72,24 @@ export function isWithinMatches(matches: Match[], pos: Position): boolean {
  * @returns the surrounding variable string or null if no variable is found at the given position 
  */
 export function getSurroundingVar(text: string, position: Position): string | null {
-    let result = null;
     const lines = text.split("\n");
     const line = lines[position.line];
-    const varRegex = /^V\.(P|S|L|CYC)\.[_a-zA-Z0-9]+/gm;
+    if (line === undefined) {
+        return null;
+    }
+    // dots are part of the name (e.g. V.P.FOO.BAR), matching the grammar rule name = [_a-zA-Z0-9.]+
+    const varRegex = /V\.(P|S|L|CYC)\.[_a-zA-Z0-9.]+/g;
 
-    // word begin can be between 0 and position.character
-    for (let begin = 0; begin <= position.character; begin++) {
-        // get match which starts at current begin
-        const substring = line.substring(begin);
-        const match = substring.match(varRegex);
-        if (match) {
-            const matchString = match[0];
-            const matchEnd = begin + matchString.length;
-
-            // if match ends after position.character, we found the surrounding variable
-            if (matchEnd >= position.character) {
-                result = matchString;
-                break;
-            }
+    // scan the line once and return the variable that contains the position (single pass instead of O(col^2))
+    let match: RegExpExecArray | null;
+    while ((match = varRegex.exec(line)) !== null) {
+        const start = match.index;
+        const end = start + match[0].length;
+        if (position.character >= start && position.character <= end) {
+            return match[0];
         }
     }
-    return result;
+    return null;
 }
 
 /**

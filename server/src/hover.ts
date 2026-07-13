@@ -1,7 +1,7 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { isMatch, Match, Position } from "./parserClasses";
 import { findPreciseMatchOfTypes } from "./parserSearching";
-import { ParseResults } from "./parsingResults";
+import { ParseResults, getParseResults } from "./parsingResults";
 import { Hover, Range } from "vscode-languageserver";
 import { getCycles, getISGCycleByName } from "../extension-resources-output/src/cycles";
 import path = require("path");
@@ -25,7 +25,7 @@ const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList([...rawJsonData, ...raw
 export function getHoverInformation(position: Position, textDocument: TextDocument, rootPaths: string[] | null, openDocs: Map<string, TextDocument>): Hover | null {
     // parse to check which type of hover information is needed
     // supported types are cycle call, cycle parameter, subprogram call, GOTO, variable
-    const parseResults: ParseResults = new ParseResults(textDocument.getText());
+    const parseResults: ParseResults = getParseResults(textDocument.getText());
     const ast = parseResults.results.fileTree;
     const match = findPreciseMatchOfTypes(ast, position, [
         MatchType.localPrgDefinitionName,
@@ -53,7 +53,8 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
     // basic hover content containing the name and what hover type it is
     const callType = getHoverTypeString(match);
     const name = [MatchType.blockNumberLabel, MatchType.gotoBlocknumber].includes(match.type) ? "N" + match.name : match.name;
-    let hoverContent = `**${name}** ${callType}\n\n`;
+    const baseHeader = `**${name}** ${callType}\n\n`;
+    let hoverContent = baseHeader;
     let commentOffset = -1;
     let defDocument = textDocument;
     let defTree = ast;
@@ -73,7 +74,7 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
             commentOffset = findFirstNonWhitespaceOffsetAfter(varDefResults.defDoc, varDefResults.defFileRange.range.end);
             const lineComment = findPreciseMatchOfTypes(varDefResults.defParseResults.results.fileTree, varDefResults.defDoc.positionAt(commentOffset), [MatchType.lineComment]);
             if (lineComment) {
-                hoverContent += `${lineComment.content}\n\n`;
+                hoverContent += `${escapeMarkdownLinks(lineComment.content)}\n\n`;
             }
         }
         // comment searching done for variable
@@ -129,29 +130,28 @@ export function getHoverInformation(position: Position, textDocument: TextDocume
         hoverContent += `File Location: [${defDocument.uri}](${defDocument.uri})`;
     }
     // return hover element
-    let hover: Hover | null = null;
-    if (hoverContent !== "") {
-        hover = {
-            contents: {
-                kind: "markdown",
-                value: hoverContent
+    const headerHover: Hover = {
+        contents: {
+            kind: "markdown",
+            value: hoverContent
+        },
+        range: {
+            start: {
+                line: match.location.start.line - 1,
+                character: match.location.start.column - 1
             },
-            range: {
-                start: {
-                    line: match.location.start.line - 1,
-                    character: match.location.start.column - 1
-                },
-                end: {
-                    line: match.location.end.line - 1,
-                    character: match.location.end.column - 1
-                }
+            end: {
+                line: match.location.end.line - 1,
+                character: match.location.end.column - 1
             }
-        };
-    } else {
-        // try to get static pattern based hover information from json entries
-        hover = getStaticPatternBasedHoverInformation(position, textDocument);
+        }
+    };
+    // if we found documentation (or a cross-file link), show it; otherwise fall back to the
+    // static pattern based hover information and only use the bare header if that yields nothing
+    if (hoverContent !== baseHeader) {
+        return headerHover;
     }
-    return hover;
+    return getStaticPatternBasedHoverInformation(position, textDocument) ?? headerHover;
 }
 
 function getStaticPatternBasedHoverInformation(position: Position, textDocument: TextDocument): Hover | null {
@@ -354,12 +354,12 @@ function getMarkdownDocumentationOfPrgDoc(commentMatch: Match): string {
     for (const contentItem of commentMatch.content) {
         if (isMatch(contentItem)) {// contentItem is a special comment like a @param or @return
             const matchTypeString = contentItem.type.slice(0, -3); // remove "Doc" suffix
-            const nameString = contentItem.name ? ` \`\`\`${contentItem.name}\`\`\` ` : "";
-            const infoText = contentItem.content ? ` — ${contentItem.content}` : "";
+            const nameString = contentItem.name ? ` \`\`\`${escapeMarkdownLinks(contentItem.name)}\`\`\` ` : "";
+            const infoText = contentItem.content ? ` — ${escapeMarkdownLinks(contentItem.content)}` : "";
             markdown += `*@${matchTypeString}*${nameString}${infoText}`;
         }
         else if (typeof contentItem === "string") { // contentItem is a simple comment
-            markdown += `${contentItem}`;
+            markdown += `${escapeMarkdownLinks(contentItem)}`;
         }
         else { // otherwise skip
             continue;
@@ -367,5 +367,14 @@ function getMarkdownDocumentationOfPrgDoc(commentMatch: Match): string {
         markdown += "\n\n";
     }
     return markdown;
+}
+
+/**
+ * Escapes characters in file-derived comment text that could otherwise form a clickable
+ * markdown/command link. This is defense-in-depth on top of the markdown "enabledCommands"
+ * restriction configured on the client.
+ */
+function escapeMarkdownLinks(text: string): string {
+    return text.replace(/[[\]<>]/g, (c) => "\\" + c);
 }
 

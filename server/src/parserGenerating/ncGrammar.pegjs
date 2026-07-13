@@ -167,7 +167,7 @@ block "block"                                               // an NC block
 }
 
 skipped_block "skipped_block"                               // a skipped nc block
-= content:("/"(digit/"10")?  grayspaces block_body){
+= content:("/"("10"/digit)?  grayspaces block_body){
     return new Match(types.skipBlock, content, location(), text(), null);
 }
 
@@ -400,7 +400,7 @@ label                                                       // a label to which 
 
 data_type = 
   $("BOOLEAN"/"SGN08"/"UNS08"/"SGN16"/"UNS16"/"SGN32"/"UNS32"/"REAL"/
-  ("STRING[" (("12"[0-6]) / ("1"[01][1-9]) / ([1-9][0-9]) / ([0-9]))  "]")) // STRING[i] with i = 1...126
+  ("STRING[" (("12"[0-6]) / ("1"[01]"0") / ("1"[01][1-9]) / ([1-9][0-9]) / ([0-9]))  "]")) // STRING[i] with i = 1...126 (longer alternatives first so ordered choice reaches 100/110/120-126)
 
 
 var_dec_name

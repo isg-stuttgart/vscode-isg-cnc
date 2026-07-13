@@ -54,6 +54,10 @@ Visual Studio Code V1.73.1 or higher
   - Command to change the language mode of a file or whole directory (accessible via right-click menu, not in the ISG Command Submenu)
   - Encrypt files by key
 
+    > **Note:** The file encryption uses the Blowfish algorithm to stay compatible with the encrypted
+    > file format expected by the ISG-CNC kernel (e.g. `.ecy` files). It is meant for format
+    > compatibility, not as a strong, general-purpose security feature.
+
 ## Feature Details
 ### Sub Program Comments
 You can define doc comments for your subprograms, cycles, Goto-Labels, Goto-Blocknumber, variables like this:

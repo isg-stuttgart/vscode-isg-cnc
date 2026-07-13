@@ -16,5 +16,7 @@ try {
     fs.writeFileSync('./server/src/parserGenerating/ncParser.ts', parser);
 } catch (error) {
     console.error(error);
+    // fail loudly so a broken grammar is caught in the build/CI instead of silently producing nothing
+    process.exit(1);
 }
 
