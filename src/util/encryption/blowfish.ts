@@ -109,19 +109,11 @@ const S_BOXES_CONST = [
   ]),
 ];
 /**
- * Generates a random byte.
+ * Generates a cryptographically secure random byte.
  * @returns random byte (number between 0 and 255)
  */
 function getRandomByte(): number {
-  let hash: crypto.Hash = crypto.createHash('sha1');
-  const date: number = Date.now();
-  hash.update(date.toString());
-  let randomHex: string = hash.digest('hex');
-  if (randomHex.length > 2) {
-    const randomInt = Math.floor(Math.random() * (randomHex.length - 2));
-    randomHex = randomHex.substring(randomInt, randomInt + 2);
-  }
-  return parseInt(randomHex, 16);
+  return crypto.randomBytes(1)[0];
 }
 
 /**

@@ -16,7 +16,7 @@ import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
-import { ParseResults } from './parsingResults';
+import { getParseResults } from './parsingResults';
 // Create a connection for the server.
 // If --stdio flag is passed, use stdio transport; otherwise use IPC (default).
 // This allows the server to work both as a VS Code extension and as a remote LSP server over WebSocket.
@@ -105,7 +105,7 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
+		return parser.getDefinition(getParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
 		connection.console.error("Getting definition failed: " + (error instanceof Error ? error.stack : String(error)));
 		connection.window.showErrorMessage("Getting definition failed: " + getErrorMessage(error));

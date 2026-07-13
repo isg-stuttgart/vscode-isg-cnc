@@ -19,6 +19,11 @@ export function openDocu(): void {
  * @param id the id of the documentation to open
  */
 export function openDocuWithId(id: string): void {
+    // reject ids that could escape the documentation directory (path traversal via "/", "\" or "..")
+    if (!/^[\w.-]+$/.test(id) || id.includes("..")) {
+        vscode.window.showWarningMessage(`Invalid documentation id: ${id}`);
+        return;
+    }
     // if the documentation does not start with http, interpret it as local file path and open it in browser
     if (!getDocumentationPath().startsWith("http")) {
         const filePath = path.join(getDocumentationPath(), getLocale(), `${id}.html`);
@@ -48,23 +53,8 @@ export function createFullAddress(): string {
         } else {
             localeDocuPath += `${locale}/`;
         }
-        //IMPORTANT: THE FOLLOWING BLOCK IS FOR OPEN DOCU WITH SELECTED SEARCHING KEYWORD
-        //THE WEBSITE IS BROKEN AT THE MOMENT SO IT WILL JUST LOAD THE GENERAL DOCU WEBSITE
-        //UNCOMMENT IF THE WEBSITE WAS FIXES AND DELETE THE ASSIGNMENT UNDER THE COMMENT:
-        //  "docuAddress = localeDocuPath + "index.html";"
-        /*  if (!activeTextEditor.selection.isEmpty) {
-             searchContext = activeTextEditor.document.getText(
-                 activeTextEditor.selection
-             );
-             const query = new URLSearchParams();
-             query.append("q", searchContext);
-             docuAddress = localeDocuPath + `search.html?${query.toString()}`;
-         } else {
-              docuAddress = localeDocuPath + "index.html";
-         } */
         docuAddress = localeDocuPath + "index.html";
     }
-    printToOutputchannel(docuAddress);
     printToOutputchannel(`Address to the website: ${docuAddress}`);
     return docuAddress;
 }
