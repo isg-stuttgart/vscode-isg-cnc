@@ -62,19 +62,27 @@ export function activate(context: vscode.ExtensionContext): void {
 
     const clientOptions: LanguageClientOptions = {
         documentSelector: [{ language: 'isg-cnc' }],
-        markdown: { isTrusted: true },
+        // Only allow the extension's own documentation command in hover/completion markdown.
+        // Trusting all commands would let a prepared NC file execute arbitrary VS Code commands
+        // (e.g. terminal input) via a command:-link built from unescaped file comments.
+        markdown: { isTrusted: { enabledCommands: ['isg-cnc.openDocuWithId'] } },
     };
 
     // start the cnc language server
     try {
         client = new LanguageClient("cnc-client", serverOptions, clientOptions);
-        client.start();
+        client.start().catch((error) => {
+            console.error(error);
+            vscode.window.showErrorMessage("Failed to start the ISG-CNC language server. Language features are unavailable.");
+        });
     } catch (error) {
         console.error(error);
     }
 
     // code formatter
-    vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider());
+    context.subscriptions.push(
+        vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider())
+    );
 
     //NC-file sidebar tree provider
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);
@@ -181,11 +189,10 @@ export function activate(context: vscode.ExtensionContext): void {
  * This method is called when the extension is deactivated
  *
  */
-export function deactivate(): void {
+export function deactivate(): Thenable<void> | undefined {
     printToOutputchannel("Deactivate vscode-isg-cnc extension");
     disposeOutputchannel();
-    if (client) {
-        client.stop();
-    }
+    // return the promise so VS Code waits for the language server to shut down cleanly
+    return client ? client.stop() : undefined;
 }
 
