@@ -26,7 +26,7 @@
 	"typedocOptions": {
 		"entryPoints": [
 			"server/src/server.ts",
-			"src/util/blowfish/blowfishIntegration.ts",
+			"src/util/encryption/encryption.ts",
 			"src/extension.ts"
 		],
 		"out": "docs"

@@ -20,9 +20,7 @@ export async function jumpIntoFileAtOffset() {
     if (selections.length < 1) {
         return vscode.window.showErrorMessage("The first selection must contain the absolute file path or name.");
     }
-    if (selections.length < 2) {
-        return vscode.window.showErrorMessage("The second selection must contain the offset.");
-    }
+    const hasOffsetSelection = selections.length > 1;
 
     // get uri based on file path/name
     const fileNameOrPath = document.getText(selections[0]).trim();
@@ -33,12 +31,14 @@ export async function jumpIntoFileAtOffset() {
 
     // get offset if a valid second selection is found
     let offset: number = 0;
-    const offsetText = document.getText(selections[1]).trim();
-    // if second selection is a number jump to offset
-    if (/^\d+$/.test(offsetText)) {
-        offset = parseInt(offsetText, 10);
-    } else {
-        vscode.window.showWarningMessage("The second selection could not be interpreted as offset. Jumping to start of file.");
+    if (hasOffsetSelection) {
+        const offsetText = document.getText(selections[1]).trim();
+        // if second selection is a number jump to offset
+        if (/^\d+$/.test(offsetText)) {
+            offset = parseInt(offsetText, 10);
+        } else {
+            vscode.window.showWarningMessage("The second selection could not be interpreted as offset. Jumping to start of file.");
+        }
     }
 
 
