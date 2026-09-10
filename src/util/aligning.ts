@@ -1,5 +1,4 @@
-import { Match } from '../../server/src/parserClasses';
-import { ParseResults } from '../../server/src/parsingResults';
+import { Match, ParseResults } from '../shared/languageServer';
 import * as vscode from 'vscode';
 
 /**
@@ -67,12 +66,17 @@ export async function alignEqualSigns(): Promise<void> {
         const selection: vscode.Selection = editor.selection;
         if (!selection.isEmpty) {
             const lines: Array<EqSignLine> = new Array();
-            // collect all selected lines with "="
+            // collect all selected lines with a real assignment "="
             for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
                 //get intersection of selection and current line to only handle selected part when in first or last line
                 const range = selection.intersection(editor.document.lineAt(ln).range);
-                if (range && editor.document.getText(range).includes("=")) {
-                    lines.push(new EqSignLine(editor.document.getText(range), range));
+                if (range) {
+                    const text = editor.document.getText(range);
+                    // only align a real assignment "=", never a comparison operator (==, <=, >=, !=)
+                    const eqIndex = findAssignmentEqualIndex(text);
+                    if (eqIndex !== -1) {
+                        lines.push(new EqSignLine(text, range, eqIndex));
+                    }
                 }
             }
 
@@ -90,14 +94,22 @@ export async function alignEqualSigns(): Promise<void> {
 }
 
 /**
+ * Returns the index of the first real assignment "=" in the line, i.e. an "=" that is not part of
+ * a comparison operator ("==", "<=", ">=", "!="). Returns -1 if there is no such assignment.
+ */
+function findAssignmentEqualIndex(line: string): number {
+    const match = /(?<![=<>!])=(?!=)/.exec(line);
+    return match ? match.index : -1;
+}
+
+/**
  * Helper class to save the information about the equal sign lines.
  */
 class EqSignLine {
     beforeEq: string;
     afterEq: string;
     range: vscode.Range;
-    constructor(line: string, range: vscode.Range) {
-        const eqIndex = line.indexOf("=");
+    constructor(line: string, range: vscode.Range, eqIndex: number) {
         this.beforeEq = line.substring(0, eqIndex).trimEnd();
         this.afterEq = line.substring(eqIndex + 1).trimStart();
         this.range = range;

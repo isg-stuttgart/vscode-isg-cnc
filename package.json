@@ -518,7 +518,8 @@
         "compile": "tsc -p ./ && tsc -p ./server",
         "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
+        "lint": "eslint src server/src --ext ts --max-warnings 0",
+        "generateParser": "node ./server/src/parserGenerating/generateParser.js",
         "test": "node ./out/src/test/runTest.js",
         "postinstall": "cd server && npm install"
     },

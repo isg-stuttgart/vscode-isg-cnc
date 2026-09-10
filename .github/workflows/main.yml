@@ -1,5 +1,6 @@
 on:
-  push:    
+  workflow_dispatch:
+  push:
     tags:
       - "V*"
 
@@ -9,17 +10,20 @@ jobs:
   deploy_extension:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      # Note: for a hardened, secret-bearing workflow consider pinning these actions to a full commit SHA.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm ci
+      # quality gate: never publish a build that does not compile or lint
+      - run: npm run pretest
       - name: Publish to Visual Studio Marketplace
-        uses: HaaLeo/publish-vscode-extension@v0
+        uses: HaaLeo/publish-vscode-extension@v1
         with:
           pat: ${{ secrets.VS_MARKETPLACE_TOKEN }}
           registryUrl: https://marketplace.visualstudio.com
 #      - name: Publish to Open VSX Registry
-#        uses: HaaLeo/publish-vscode-extension@v0
+#        uses: HaaLeo/publish-vscode-extension@v1
 #        with:
 #          pat: ${{ secrets.OPEN_VSX_TOKEN }}

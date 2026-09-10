@@ -1,5 +1,5 @@
 name: Extension Tests
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test:
@@ -10,11 +10,11 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     name: Test on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
           cache: "npm"
           cache-dependency-path: package-lock.json
