@@ -91,8 +91,14 @@ export function cloneFileAssociations(): { [key: string]: string } {
 */
 export function updateSettings(workspaceConfig: any) {
     const failedSettings: string[] = [];
+    const isgCncConfig = workspaceConfig['isg-cnc'];
+    // on no isg-cnc config, skip updating settings
+    if (!isgCncConfig) {
+        console.warn("No isg-cnc configuration found in workspace settings. Using previous settings.");
+        return;
+    }
     // update documentation path
-    documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
+    documentationPath = isgCncConfig['documentationPath'];
     // update file associations
     try {
         const newFileAssociations: { [key: string]: string } = workspaceConfig['files']['associations'];
@@ -112,11 +118,11 @@ export function updateSettings(workspaceConfig: any) {
     }
 
     // update extension for cycles
-    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+    extensionForCycles = isgCncConfig['extensionForCycles'];
 
     // update locale
     try {
-        switch (workspaceConfig['isg-cnc']['locale']) {
+        switch (isgCncConfig['locale']) {
             case "en-GB":
                 locale = Locale.en;
                 break;
@@ -132,46 +138,7 @@ export function updateSettings(workspaceConfig: any) {
 
     // update cycle snippet formatting
     try {
-        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
-            case "multi-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
-                break;
-            case "single-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
-        }
-    } catch (error) {
-        failedSettings.push("cycleSnippetFormatting");
-    }
-
-    if (failedSettings.length > 0) {
-        throw new Error("Failed to update settings: " + failedSettings.join(", "));
-    }
-
-    // update extension for cycles
-    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
-
-    // update locale
-    try {
-        switch (workspaceConfig['isg-cnc']['locale']) {
-            case "en-GB":
-                locale = Locale.en;
-                break;
-            case "de-DE":
-                locale = Locale.de;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.locale");
-        }
-    } catch (error) {
-        failedSettings.push("locale");
-    }
-
-    // update cycle snippet formatting
-    try {
-        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
+        switch (isgCncConfig['cycleSnippetFormatting']) {
             case "multi-line":
                 cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
                 break;

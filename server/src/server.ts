@@ -219,6 +219,12 @@ async function updateConfig() {
 
 	// update settings
 	const workspaceConfig = await connection.workspace.getConfiguration();
+	// on no response, give warning and skip updating settings
+	if (!workspaceConfig) {
+		connection.window.showWarningMessage("Failed to fetch workspace configuration. Using previous settings.");
+		return;
+	}
+
 	config.updateSettings(workspaceConfig);
 
 	// if a setting, relevant for cycle settings is changed, update the cycle completions
