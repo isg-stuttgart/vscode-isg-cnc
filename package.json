@@ -11,7 +11,8 @@
     "icon": "resources/ISGCncEditor.png",
     "license": "SEE LICENSE IN LICENSE",
     "engines": {
-        "vscode": "^1.86.2"
+        "vscode": "^1.86.2",
+        "node": ">=22"
     },
     "categories": [
         "Other",
