@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { isNumeric } from './util';
 import { updateCurrentOffsetStatusBarItem } from './statusbar';
-import { WorkspaceIgnorer, findFileInRootDir } from '../../server/src/fileSystem';
+import { WorkspaceIgnorer, findFileInRootDir } from '../shared/languageServer';
 import * as path from 'path';
 
 /**
@@ -21,6 +20,7 @@ export async function jumpIntoFileAtOffset() {
     if (selections.length < 1) {
         return vscode.window.showErrorMessage("The first selection must contain the absolute file path or name.");
     }
+    const hasOffsetSelection = selections.length > 1;
 
     // get uri based on file path/name
     const fileNameOrPath = document.getText(selections[0]).trim();
@@ -29,15 +29,18 @@ export async function jumpIntoFileAtOffset() {
         return vscode.window.showErrorMessage("No fitting file found.");
     }
 
-    // get offset if valid second selection is found
-    const offsetText = document.getText(selections[1]).trim();
+    // get offset if a valid second selection is found
     let offset: number = 0;
-    // if second selection is a number jump to offset
-    if (isNumeric(parseInt(offsetText))) {
-        offset = parseInt(offsetText);
-    } else if (selections.length > 1) {
-        vscode.window.showWarningMessage("The second selection could not be interpreted as offset. Jumping to start of file.");
+    if (hasOffsetSelection) {
+        const offsetText = document.getText(selections[1]).trim();
+        // if second selection is a number jump to offset
+        if (/^\d+$/.test(offsetText)) {
+            offset = parseInt(offsetText, 10);
+        } else {
+            vscode.window.showWarningMessage("The second selection could not be interpreted as offset. Jumping to start of file.");
+        }
     }
+
 
     // open doc with uri and set cursor to offset
     const doc = await vscode.workspace.openTextDocument(uri);
@@ -134,8 +137,10 @@ export async function goToPosition(): Promise<void> {
                 .showInputBox({
                     prompt: `Type an offset number from 0 to ${maxOffset}.`,
                     validateInput: (input: string) => {
-                        if (!isNumeric(parseFloat(String(input))) || parseFloat(String(input)) > maxOffset || parseFloat(String(input)) < 0) {
-                            return "Number must be between 0 and " + maxOffset + ".";
+                        const trimmed = input.trim();
+                        // only accept non-negative integers; parseFloat would accept "12.5"/"12abc"
+                        if (!/^\d+$/.test(trimmed) || parseInt(trimmed, 10) > maxOffset) {
+                            return "Number must be an integer between 0 and " + maxOffset + ".";
                         } else {
                             return null;
                         }
@@ -144,7 +149,7 @@ export async function goToPosition(): Promise<void> {
                 })
                 .then((input?: string) => {
                     if (input) {
-                        setCursorPosition(parseFloat(String(input)));
+                        setCursorPosition(parseInt(input.trim(), 10));
                     }
                 });
         }

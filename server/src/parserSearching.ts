@@ -4,7 +4,7 @@ import { Match, Position, FileRange, IncrementableProgress, isMatch } from "./pa
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { normalizePath } from "./fileSystem";
 import { compareLocations as compareLocations } from "./stringSearching";
-import { ParseResults } from "./parsingResults";
+import { getParseResults } from "./parsingResults";
 import { MatchType } from "./matchTypes";
 
 /**
@@ -156,7 +156,7 @@ export function findMatchRangesWithinPrgTree(tree: any, types: MatchType[], name
  * @param progressHandler progress reporter
  * @returns the found ranges
  */
-export function findMatchRangesWithinPath(filePaths: string[], types: MatchType[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress): FileRange[] {
+export async function findMatchRangesWithinPath(filePaths: string[], types: MatchType[], name: string, uriToOpenFileContent: Map<string, string>, progressHandler: IncrementableProgress): Promise<FileRange[]> {
     let ranges: FileRange[] = [];
 
     // convert uri mapping of open files to normalized path mapping
@@ -173,11 +173,19 @@ export function findMatchRangesWithinPath(filePaths: string[], types: MatchType[
         }
         // report progress
         progressHandler.changeMessage(filePath);
-        // if file is open, get current file content of editor
+        // if file is open, get current file content of editor (an open but empty file is "", which is
+        // still the authoritative content, so only fall back to disk when the file is not open at all)
         let fileContent: string | undefined = pathToOpenFileContent.get(filePath);
-        // if file is not open, read file content from disk
-        if (!fileContent) {
-            fileContent = fs.readFileSync(filePath, 'utf8');
+        // if file is not open, read file content from disk (async so cancellation and other requests
+        // can be processed between files instead of blocking the whole server loop)
+        if (fileContent === undefined) {
+            try {
+                fileContent = await fs.promises.readFile(filePath, 'utf8');
+            } catch (error) {
+                console.error(`Error while reading ${filePath}: ${error}`);
+                progressHandler.increment();
+                continue;
+            }
         }
         // if file does not contain the searched match-name skip parsing/searching
         if (!fileContent.includes(name)) {
@@ -185,13 +193,13 @@ export function findMatchRangesWithinPath(filePaths: string[], types: MatchType[
             continue;
         }
         try {
-            const ast = new ParseResults(fileContent).results.fileTree;
+            const ast = getParseResults(fileContent).results.fileTree;
             const uri = pathToFileURL(filePath).toString();
             const fileRanges: FileRange[] = findMatchRangesWithinPrgTree(ast, types, name, uri);
             ranges.push(...fileRanges);
         } catch (error) {
-            const errorMessage = `Error while parsing ${filePath}: ${error} \nThis file is not included in the found references.`;
-            throw new Error(errorMessage);
+            // skip files that cannot be parsed instead of aborting the whole reference search
+            console.error(`Error while parsing ${filePath}: ${error} \nThis file is not included in the found references.`);
         }
 
         progressHandler.increment(filePath);

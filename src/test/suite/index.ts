@@ -15,7 +15,8 @@ export async function run(): Promise<void> {
     const tmpPath = getPathOfWorkspaceFile("tmp.nc");
     fs.writeFileSync(tmpPath, "");
     // open the test workspace and wait for the server to initialize
-    const ext = vscode.extensions.getExtension("vscode-isg-cnc");
+    // the extension id is "<publisher>.<name>" = "isg-cnc.vscode-isg-cnc"
+    const ext = vscode.extensions.getExtension("isg-cnc.vscode-isg-cnc");
     await ext?.activate();
     console.log("Extension activated");
     try {

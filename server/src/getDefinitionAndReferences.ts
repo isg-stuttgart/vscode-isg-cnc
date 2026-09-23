@@ -7,13 +7,12 @@ import {
     findMatchRangesWithinPath,
 } from "./parserSearching";
 import * as fs from "fs";
-import path = require("node:path");
 import { Connection } from "vscode-languageserver";
 import { getSurroundingVar, findLocalStringRanges, isWithinMatches } from "./stringSearching";
-import { WorkspaceIgnorer, findFileInRootDir, normalizePath } from "./fileSystem";
+import { WorkspaceIgnorer, findFileInRootDir, normalizePath, isAbsoluteCrossPlatform, basenameCrossPlatform } from "./fileSystem";
 import { getDefType, getRefTypes, MatchType } from "./matchTypes";
 import { getAllNotIgnoredCncFilePathsInRoot } from "./config";
-import { ParseResults } from "./parsingResults";
+import { ParseResults, getParseResults } from "./parsingResults";
 import { LocationRange } from "peggy";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -70,8 +69,9 @@ export function getDefinition(parseResults: ParseResults, position: Position, ur
         definitions.push(new FileRange(uri, start, end));
     } else if (rootPaths && [MatchType.globalPrgCall, MatchType.globalCycleCall].includes(defType)) {
         let defPaths: string[] = [];
-        // if the call contains a valid absolute path, use it
-        if (path.isAbsolute(match.name)) {
+        // if the call contains a valid absolute path, use it (NC code usually contains Windows paths,
+        // so check both Windows and POSIX absoluteness regardless of the server platform)
+        if (isAbsoluteCrossPlatform(match.name)) {
             const normPath = normalizePath(match.name);
             if (fs.existsSync(normPath)) {
                 defPaths.push(normalizePath(match.name));
@@ -88,11 +88,13 @@ export function getDefinition(parseResults: ParseResults, position: Position, ur
             const defFileContent = openDocs.get(uri)?.getText() ?? fs.readFileSync(path, "utf8");
             let mainPrgLoc: LocationRange | null = null;
             try {
-                const parseResults = new ParseResults(defFileContent);
+                const parseResults = getParseResults(defFileContent);
                 parsedDocs.set(uri, parseResults);
                 mainPrgLoc = parseResults.results.mainPrgLoc;
             } catch (error) {
-                throw new Error(`Error parsing file ${uri}: ${error}`);
+                // skip files that cannot be parsed instead of failing the whole definition lookup
+                console.error(`Error parsing file ${uri}: ${error}`);
+                continue;
             }
             let range = {
                 start: new Position(0, 0),
@@ -124,7 +126,7 @@ export async function getReferences(fileContent: string, position: Position, uri
     // parse the file content and search for the selected position
     let parseResult: ParseResults;
     try {
-        parseResult = new ParseResults(fileContent);
+        parseResult = getParseResults(fileContent);
     } catch (error) {
         throw new Error(`Error parsing file ${uri}: ${error}`);
     }
@@ -137,7 +139,9 @@ export async function getReferences(fileContent: string, position: Position, uri
     // if the selected position is a variable use string search to find all references and return the result
     const surroundingVar = getSurroundingVar(fileContent, position);
     if (surroundingVar) {
-        const stringRanges = findLocalStringRanges(fileContent, surroundingVar, uri);
+        // reuse the already parsed comments instead of parsing the file a second time; use whole-word
+        // matching so V.P.FOO does not match inside a longer variable name like V.P.FOOBAR
+        const stringRanges = findLocalStringRanges(fileContent, surroundingVar, uri, parseResult.syntaxArray.comments, true);
         return stringRanges;
     }
 
@@ -151,8 +155,9 @@ export async function getReferences(fileContent: string, position: Position, uri
     let name: string = match.name;
 
     // if the match is a global program name or cycle call name and absolute path is given, add the filename to the search names
-    if (rootPaths && [MatchType.globalPrgCallName, MatchType.globalCycleCallName].includes(match.type) && path.isAbsolute(match.name)) {
-        name = path.basename(match.name);
+    // (handle Windows and POSIX paths regardless of the server platform)
+    if (rootPaths && [MatchType.globalPrgCallName, MatchType.globalCycleCallName].includes(match.type) && isAbsoluteCrossPlatform(match.name)) {
+        name = basenameCrossPlatform(match.name);
     }
 
     // if local find all references in the same file and add their ranges to the result array
@@ -170,8 +175,12 @@ export async function getReferences(fileContent: string, position: Position, uri
         // create a progress bar and search for references in all isg-cnc files
         const progress = await connection.window.createWorkDoneProgress();
         const progressHandler = new IncrementableProgress(progress, isgCncFiles.length, "Searching references");
-        referenceRanges.push(...findMatchRangesWithinPath(isgCncFiles, refTypes, name, openFiles, progressHandler));
-        progressHandler.done();
+        // ensure the progress bar is always closed, even if the search throws
+        try {
+            referenceRanges.push(...await findMatchRangesWithinPath(isgCncFiles, refTypes, name, openFiles, progressHandler));
+        } finally {
+            progressHandler.done();
+        }
     }
 
     return referenceRanges;

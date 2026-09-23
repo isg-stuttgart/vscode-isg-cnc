@@ -5,7 +5,7 @@ import * as ls from 'vscode-languageserver';
 import { Match, Position } from './parserClasses';
 import { Cycle, getCycles } from '../extension-resources-output/src/cycles';
 import { findMatchesWithinPrgTree, findPreciseMatchOfTypes } from './parserSearching';
-import { ParseResults } from './parsingResults';
+import { getParseResults } from './parsingResults';
 import path = require('path');
 import { MatchType } from './matchTypes';
 import { ItemKind, JsonEntry } from '../extension-resources-output/src/JsonEntry';
@@ -55,12 +55,19 @@ export function updateStaticGeneralCompletions(): void {
  * @returns the completions for the given position 
  */
 export function getCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
-    const cycleCompletions = getCycleCompletions(pos, doc);
+    let cycleCompletions: CompletionItem[] = [];
+    try {
+        cycleCompletions = getCycleCompletions(pos, doc);
+    } catch (error) {
+        // a parse failure (e.g. the grammar timeout on very large files) must not suppress the
+        // static general completions as well
+        console.error("Failed to compute cycle completions: " + error);
+    }
     return [...staticGeneralCompletions, ...cycleCompletions];
 }
 
 export function getCycleCompletions(pos: Position, doc: TextDocument): CompletionItem[] {
-    const parseResults: ParseResults = new ParseResults(doc.getText());
+    const parseResults = getParseResults(doc.getText());
     // if the position is within a cycle call, get the completions for the cycle
     const cycle = findPreciseMatchOfTypes(parseResults.results.fileTree, pos, [MatchType.globalCycleCall]);
     const cycleCompletions = [];
@@ -81,7 +88,9 @@ export function getCycleCompletions(pos: Position, doc: TextDocument): Completio
  * @returns the replace-completions for the given position 
  */
 function getReplaceCompletion(pos: Position, doc: TextDocument, completionsToEdit: CompletionItem[], startFilter?: string): CompletionItem[] {
-    const completions = JSON.parse(JSON.stringify(completionsToEdit));
+    // shallow-copy each item so we can attach a textEdit without mutating the shared (static) items;
+    // a full JSON deep-copy of the whole list (incl. large markdown docs) on every request is wasteful
+    const completions: CompletionItem[] = completionsToEdit.map(completion => ({ ...completion }));
     let startCharacter = pos.character - 1;
     while (startCharacter >= 0) {
         const text = doc.getText(Range.create(pos.line, startCharacter, pos.line, pos.character));
