@@ -3689,6 +3689,41 @@
     "defaultValue": null
   },
   {
+    "label": "S.POS_SHIFT",
+    "linkid": null,
+    "shortDescription": {
+      "de-DE": "Additive Spindelposition (Winkelversatz)",
+      "en-GB": "Additive spindle position (angular offset)"
+    },
+    "sublinks": [
+      {
+        "label": {
+          "de-DE": "in DIN-Syntax",
+          "en-GB": "in DIN syntax"
+        },
+        "linkid": "1277101963"
+      },
+      {
+        "label": {
+          "de-DE": "in spindelspezifischer Syntax (POS_SHIFT)",
+          "en-GB": "in spindle-specific syntax (POS)"
+        },
+        "linkid": "1277103115"
+      }
+    ],
+    "kind": "Snippet",
+    "completionText": "S.POS_SHIFT",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### S.POS_SHIFT\n\nAdditive Spindelposition (Winkelversatz)",
+      "en-GB": "### S.POS_SHIFT\n\nAdditive spindle position (angular offset)"
+    },
+    "hoverTrigger": [
+      "S\\.POS_SHIFT"
+    ],
+    "defaultValue": null
+  },
+  {
     "label": "S.OFFSET",
     "linkid": "208088587",
     "shortDescription": {
@@ -6187,6 +6222,26 @@
     },
     "hoverTrigger": [
       "#MAIN SPINDLE"
+    ],
+    "defaultValue": null
+  },
+  {
+    "label": "#MANUAL",
+    "linkid": "1256362123",
+    "shortDescription": {
+      "de-DE": "Einstellungen für den Handbetrieb",
+      "en-GB": "Settings for manual mode"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#MANUAL",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #MANUAL\n\nEinstellungen für den Handbetrieb",
+      "en-GB": "### #MANUAL\n\nSettings for manual mode"
+    },
+    "hoverTrigger": [
+      "#MANUAL"
     ],
     "defaultValue": null
   },
