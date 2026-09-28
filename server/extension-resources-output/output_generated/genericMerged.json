@@ -2164,6 +2164,25 @@
     "defaultValue": null
   },
   {
+    "label": "G232",
+    "linkid": "206596619",
+    "shortDescription": {
+      "de-DE": "Rampenzeitgewichtung G00, achsspezifisch",
+      "en-GB": "Ramp time weighting G00, axis-specific"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "G232",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### G232\n\nRampenzeitgewichtung G00, achsspezifisch",
+      "en-GB": "### G232\n\nRamp time weighting G00, axis-specific"
+    },
+    "hoverTrigger": [
+      "G232"
+    ]
+  },
+  {
     "label": "G233",
     "linkid": "206596619",
     "shortDescription": {
@@ -4455,6 +4474,25 @@
     "defaultValue": null
   },
   {
+    "label": "#COLL MON ON",
+    "linkid": "1223985419",
+    "shortDescription": {
+      "de-DE": "Kollisionsüberwachung parametrieren und aktivieren",
+      "en-GB": "Parameterising and enabling collision monitoring"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#COLL MON ON",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #COLL MON ON\n\nKollisionsüberwachung parametrieren und aktivieren",
+      "en-GB": "### #COLL MON ON\n\nParameterising and enabling collision monitoring"
+    },
+    "hoverTrigger": [
+      "#COLL MON ON"
+    ]
+  },
+  {
     "label": "#COMMAND WR",
     "linkid": "207377291",
     "shortDescription": {
@@ -4986,6 +5024,25 @@
       "#DIAGNOSIS"
     ],
     "defaultValue": null
+  },
+  {
+    "label": "#DIAGNOSIS",
+    "linkid": "947782539",
+    "shortDescription": {
+      "de-DE": "Erstellen von Diagnosedaten",
+      "en-GB": "Creating diagnosis data"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#DIAGNOSIS",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #DIAGNOSIS\n\nErstellen von Diagnosedaten",
+      "en-GB": "### #DIAGNOSIS\n\nCreating diagnosis data"
+    },
+    "hoverTrigger": [
+      "#DIAGNOSIS"
+    ]
   },
   {
     "label": "#DISABLE MODAL CYCLE",
@@ -7445,6 +7502,25 @@
     "defaultValue": null
   },
   {
+    "label": "#TOOL UPDATE",
+    "linkid": "208599691",
+    "shortDescription": {
+      "de-DE": "Werkzeugdaten aktualisieren und erneut einrechnen",
+      "en-GB": "Updating and refreshing tool data in calculation"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "#TOOL UPDATE",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### #TOOL UPDATE\n\nWerkzeugdaten aktualisieren und erneut einrechnen",
+      "en-GB": "### #TOOL UPDATE\n\nUpdating and refreshing tool data in calculation"
+    },
+    "hoverTrigger": [
+      "#TOOL UPDATE"
+    ]
+  },
+  {
     "label": "#TRACK CS ABS/ON/OFF",
     "linkid": "354798603",
     "shortDescription": {
@@ -8131,6 +8207,82 @@
     "defaultValue": null
   },
   {
+    "label": "SET_POSITION",
+    "linkid": "482566155",
+    "shortDescription": {
+      "de-DE": "Setzen einer Achsposition im Kanal",
+      "en-GB": "Setting an axis position in the channel"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "SET_POSITION",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### SET_POSITION\n\nSetzen einer Achsposition im Kanal",
+      "en-GB": "### SET_POSITION\n\nSetting an axis position in the channel"
+    },
+    "hoverTrigger": [
+      "SET_POSITION"
+    ]
+  },
+  {
+    "label": "FIXED_STOP",
+    "linkid": "516232715",
+    "shortDescription": {
+      "de-DE": "Fahren auf Festanschlag",
+      "en-GB": "Fixed stop"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "FIXED_STOP",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### FIXED_STOP\n\nFahren auf Festanschlag",
+      "en-GB": "### FIXED_STOP\n\nFixed stop"
+    },
+    "hoverTrigger": [
+      "FIXED_STOP"
+    ]
+  },
+  {
+    "label": "POS_LIMIT",
+    "linkid": "1014981131",
+    "shortDescription": {
+      "de-DE": "Programmierung der Softwareendschalterüberwachung",
+      "en-GB": "Programming software limit switch monitoring"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "POS_LIMIT",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### POS_LIMIT\n\nProgrammierung der Softwareendschalterüberwachung",
+      "en-GB": "### POS_LIMIT\n\nProgramming software limit switch monitoring"
+    },
+    "hoverTrigger": [
+      "POS_LIMIT"
+    ]
+  },
+  {
+    "label": "MODULO",
+    "linkid": "1014982283",
+    "shortDescription": {
+      "de-DE": "Programmierung des Modulobereichs",
+      "en-GB": "Programming modulo range"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "MODULO",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### MODULO\n\nProgrammierung des Modulobereichs",
+      "en-GB": "### MODULO\n\nProgramming modulo range"
+    },
+    "hoverTrigger": [
+      "MODULO"
+    ]
+  },
+  {
     "label": "MC_Home",
     "linkid": "208322955",
     "shortDescription": {
@@ -8417,6 +8569,25 @@
       "V\\.I\\. …"
     ],
     "defaultValue": null
+  },
+  {
+    "label": "V.I. …",
+    "linkid": "1225681547",
+    "shortDescription": {
+      "de-DE": "Globale kanalübergreifende Variablen",
+      "en-GB": "Global cross-channel variable"
+    },
+    "sublinks": [],
+    "kind": "Snippet",
+    "completionText": "V.I. …",
+    "filterText": null,
+    "hoverText": {
+      "de-DE": "### V.I. …\n\nGlobale kanalübergreifende Variablen",
+      "en-GB": "### V.I. …\n\nGlobal cross-channel variable"
+    },
+    "hoverTrigger": [
+      "V.I. …"
+    ]
   },
   {
     "label": "V.P. …",

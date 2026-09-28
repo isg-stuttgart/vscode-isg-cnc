@@ -374,6 +374,7 @@ enum ItemPosition {
 }
 
 
+
 /**
  * Forces my item classes to have a getChildren method, which returns their children as an array
  */
