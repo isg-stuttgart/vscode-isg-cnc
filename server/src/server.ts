@@ -16,10 +16,14 @@ import { Position } from './parserClasses';
 import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
-import { ParseResults } from './parsingResults';
-// Create a connection for the server, using Node's IPC as a transport.
-// Also include all preview / proposed LSP features.
-const connection = createConnection(ProposedFeatures.all);
+import { getParseResults } from './parsingResults';
+// Create a connection for the server.
+// If --stdio flag is passed, use stdio transport; otherwise use IPC (default).
+// This allows the server to work both as a VS Code extension and as a remote LSP server over WebSocket.
+const useStdio = process.argv.includes('--stdio');
+const connection = useStdio
+	? createConnection(ProposedFeatures.all, process.stdin, process.stdout)
+	: createConnection(ProposedFeatures.all);
 
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -30,7 +34,7 @@ let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
 connection.onInitialize(async (params: InitializeParams) => {
-	console.log("Initializing ISG-CNC Language Server");
+	connection.console.log("Initializing ISG-CNC Language Server");
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
@@ -64,7 +68,7 @@ connection.onInitialize(async (params: InitializeParams) => {
 			hoverProvider: true
 		}
 	};
-	console.log("ISG-CNC Language Server initialized");
+	connection.console.log("ISG-CNC Language Server initialized");
 	return result;
 });
 
@@ -101,11 +105,10 @@ connection.onDefinition((docPos) => {
 		}
 		const text = textDocument.getText();
 		const position: Position = docPos.position;
-		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
-		return parser.getDefinition(new ParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
+		return parser.getDefinition(getParseResults(text), position, docPos.textDocument.uri, getRootPaths(), getOpenDocs()).definitionRanges;
 	} catch (error) {
-		console.error("Getting definition failed: " + JSON.stringify(error));
-		connection.window.showErrorMessage("Getting definition failed: " + JSON.stringify(error));
+		connection.console.error("Getting definition failed: " + (error instanceof Error ? error.stack : String(error)));
+		connection.window.showErrorMessage("Getting definition failed: " + getErrorMessage(error));
 	}
 });
 
@@ -127,8 +130,8 @@ connection.onReferences(async (docPos) => {
 		const references = parser.getReferences(text, position, docPos.textDocument.uri, getRootPaths(), openFiles, connection);
 		return references;
 	} catch (error) {
-		console.error("Getting references failed: " + JSON.stringify(error));
-		connection.window.showErrorMessage("Getting references failed: " + JSON.stringify(error));
+		connection.console.error("Getting references failed: " + (error instanceof Error ? error.stack : String(error)));
+		connection.window.showErrorMessage("Getting references failed: " + getErrorMessage(error));
 	}
 });
 
@@ -144,8 +147,8 @@ connection.onCompletion((docPos) => {
 		const position: Position = docPos.position;
 		return getCompletions(position, textDocument);
 	} catch (error) {
-		console.error("Getting completions failed: " + JSON.stringify(error));
-		connection.window.showErrorMessage("Getting completions failed: " + JSON.stringify(error));
+		connection.console.error("Getting completions failed: " + (error instanceof Error ? error.stack : String(error)));
+		connection.window.showErrorMessage("Getting completions failed: " + getErrorMessage(error));
 	}
 });
 
@@ -160,8 +163,8 @@ connection.onHover((docPos) => {
 		const openDocs = getOpenDocs();
 		return getHoverInformation(position, textDocument, getRootPaths(), openDocs);
 	} catch (error) {
-		console.error("Getting hover information failed: " + JSON.stringify(error));
-		connection.window.showErrorMessage("Getting hover information failed: " + JSON.stringify(error));
+		connection.console.error("Getting hover information failed: " + (error instanceof Error ? error.stack : String(error)));
+		connection.window.showErrorMessage("Getting hover information failed: " + getErrorMessage(error));
 	}
 });
 
@@ -216,6 +219,12 @@ async function updateConfig() {
 
 	// update settings
 	const workspaceConfig = await connection.workspace.getConfiguration();
+	// on no response, give warning and skip updating settings
+	if (!workspaceConfig) {
+		connection.window.showWarningMessage("Failed to fetch workspace configuration. Using previous settings.");
+		return;
+	}
+
 	config.updateSettings(workspaceConfig);
 
 	// if a setting, relevant for cycle settings is changed, update the cycle completions
@@ -230,6 +239,13 @@ async function updateConfig() {
 	if (oldDocuPath !== config.getDocumentationPathWithLocale()) {
 		updateStaticGeneralCompletions();
 	}
+}
+
+function getErrorMessage(error: unknown): string {
+	if (error instanceof Error) {
+		return error.message ?? String(error);
+	}
+	return String(error);
 }
 
 

@@ -37,6 +37,19 @@
 			]
 		},
 		{
+			"label": "Run Current TypeScript File",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"tsx",
+				"${file}"
+			],
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
 			"label": "generateParser",
 			"type": "shell",
 			"command": "node ./server/src/parserGenerating/generateParser.js",

@@ -1,10 +1,7 @@
 import * as vscode from 'vscode';
 import { getEnableFormatter } from './config';
-import { Match } from '../../server/src/parserClasses';
-import { ParseResults } from '../../server/src/parsingResults';
-// Blocknumber regex
-const regExpBlocknumbers = new RegExp(/^((\s?)((\/)|(\/[1-9]{0,2}))*?(\s*?)N[0-9]*(\s?))/);
-const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
+import { Match, ParseResults } from '../shared/languageServer';
+import { regExpBlocknumbers, regExpLabels } from './ncBlockRegex';
 
 export class DocumentRangeFormattingEditProvider implements vscode.DocumentRangeFormattingEditProvider {
     provideDocumentRangeFormattingEdits(document: vscode.TextDocument, range: vscode.Range, options: vscode.FormattingOptions): vscode.ProviderResult<vscode.TextEdit[]> {
@@ -106,11 +103,11 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
                 currentLine.indexOf("$WHILE") === 0 ||
                 currentLine.indexOf("#VAR") === 0
             ) {
-                // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+                // insert the line at the current position, then increase the current position by tabSize
                 newLine = newLineForBeautifier(currentLine, currentPos);
                 currentPos = currentPos + whiteSpaces;
             } else if (currentLine.indexOf("$SWITCH") === 0) {
-                // Einfügen der Zeile an aktueller Position, danach wird die aktuelle Position um die TabSize erhöht
+                // insert the line at the current position, then increase the current position by tabSize
                 newLine = newLineForBeautifier(currentLine, currentPos);
                 currentPos = currentPos + whiteSpaces * 2;
             } else if (
@@ -121,14 +118,14 @@ export class DocumentRangeFormattingEditProvider implements vscode.DocumentRange
                 currentLine.indexOf("$ENDWHILE") === 0 ||
                 currentLine.indexOf("#ENDVAR") === 0
             ) {
-                // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+                // decrease the current position by tabSize, then insert the line at the new position
                 currentPos = currentPos - whiteSpaces;
                 if (currentPos < 0) {
                     currentPos = 0;
                 }
                 newLine = newLineForBeautifier(currentLine, currentPos);
             } else if (currentLine.indexOf("$ENDSWITCH") === 0) {
-                // Aktuelle Position wird um TabSize verringert, danach wird die Zeile an der neuen Position eingefügt
+                // decrease the current position by tabSize, then insert the line at the new position
                 currentPos = currentPos - whiteSpaces * 2;
                 if (currentPos < 0) {
                     currentPos = 0;

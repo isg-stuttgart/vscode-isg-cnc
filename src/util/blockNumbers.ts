@@ -1,12 +1,8 @@
 import * as vscode from "vscode";
 import { digitCount, isNumeric } from "./util";
-import { ParseResults } from "../../server/src/parsingResults";
-import { Match } from "../../server/src/parserClasses";
-import { MatchType } from "../../server/src/matchTypes";
+import { ParseResults, Match, MatchType } from "../shared/languageServer";
 import { getIncludeCommentsInNumbering } from "./config";
-
-// Blocknumber regex
-const regExpLabels = new RegExp(/(\s?)N[0-9]*:{1}(\s?)|\[.*\]:{1}/);
+import { regExpLabels } from "./ncBlockRegex";
 
 /**
  * Remove all block numbers
@@ -34,9 +30,15 @@ export async function removeAllBlocknumbers() {
                 const blockNumber: Match | undefined = linesToBlocknumberMap.get(ln);
                 if (blockNumber !== undefined) {
                     let gotoPos = line.text.indexOf("$GOTO");
+                    // peggy locations are 1-based and end.column points *after* the last matched
+                    // character, so the 0-based exclusive end of the block number is end.column - 1
+                    const blockNumberEnd = blockNumber.location.end.column - 1;
+                    // remove a single trailing separating space if present, but never the following
+                    // command (e.g. keep the "G" in compact "N10G01")
+                    const deleteEnd = line.text.charAt(blockNumberEnd) === " " ? blockNumberEnd + 1 : blockNumberEnd;
                     const range = new vscode.Range(
                         new vscode.Position(ln, blockNumber.location.start.column - 1),
-                        new vscode.Position(line.lineNumber, blockNumber.location.end.column)
+                        new vscode.Position(line.lineNumber, deleteEnd)
                     );
                     // if label found and blocknumber are the same -> skip deleting
                     if (matchLabel !== null && ((gotoPos === -1) || (line.text.indexOf(matchLabel[0]) < gotoPos)) && line.text.indexOf(matchLabel[0].trim()) === blockNumber.location.start.column - 1) {
@@ -54,14 +56,22 @@ export async function removeAllBlocknumbers() {
             if (getIncludeCommentsInNumbering()) {
                 textEdits.length = 0;
                 parseResults.syntaxArray.comments.forEach((match) => {
-                    // check for all comment lines if the trimmed version BEGINS with a N[0-9]*
+                    // check for all comment lines if they begin (ignoring leading whitespace) with a block number
                     for (let i = match.location.start.line - 1; i <= match.location.end.line - 1; i++) {
                         const line = document.lineAt(i);
-                        const blockNumberMatch = new RegExp(/^\s*N[0-9]*/).exec(line.text.trim());
+                        // match on the untrimmed line so index/length line up with the real range;
+                        // require at least one digit so plain words like "Note" are not touched
+                        const blockNumberMatch = /^(\s*)(N[0-9]+)/.exec(line.text);
                         if (blockNumberMatch !== null) {
+                            const start = blockNumberMatch[1].length;
+                            let end = start + blockNumberMatch[2].length;
+                            // remove a single trailing separating space if present
+                            if (line.text.charAt(end) === " ") {
+                                end += 1;
+                            }
                             const range = new vscode.Range(
-                                new vscode.Position(i, blockNumberMatch.index),
-                                new vscode.Position(i, blockNumberMatch.index + blockNumberMatch[0].length + 1)
+                                new vscode.Position(i, start),
+                                new vscode.Position(i, end)
                             );
                             textEdits.push(vscode.TextEdit.replace(range, ""));
                         }
@@ -146,20 +156,22 @@ export async function addBlockNumbers(start: number, step: number) {
             const parseResult: ParseResults = new ParseResults(document.getText());
             const linesToNumber: Array<number> = parseResult.getNumberableLines();
             const includeComments = getIncludeCommentsInNumbering();
-            const commentLines: Array<number> = [];
+            const commentLines: Set<number> = new Set();
             // if configuration says to also number comments, add them to linesToNumber
             if (includeComments) {
+                const numberedLines: Set<number> = new Set(linesToNumber);
                 parseResult.syntaxArray.comments.forEach((match) => {
-                    // push all lines between match.location.start.line and match.location.end.line to linesToNumber if not already included
+                    // add all lines of the comment to linesToNumber if not already included
                     for (let i = match.location.start.line - 1; i <= match.location.end.line - 1; i++) {
-                        if (!linesToNumber.includes(i)) {
+                        if (!numberedLines.has(i)) {
+                            numberedLines.add(i);
                             linesToNumber.push(i);
-                            commentLines.push(i);
+                            commentLines.add(i);
                         }
                     }
-                    // sort because now the order may be destroyed
-                    linesToNumber.sort((a: number, b: number) => a - b);
                 });
+                // sort once after collecting instead of on every comment match
+                linesToNumber.sort((a: number, b: number) => a - b);
             }
             const skipLineBeginIndexes: Map<number, number> = new Map();
             let skipBlocks;
@@ -181,7 +193,10 @@ export async function addBlockNumbers(start: number, step: number) {
                 return;
             }
             // add new blocknumbers
-            const maxDigits = digitCount(start + linesToNumber.length * step);
+            // the highest assigned block number is start + (numberedCount - 1) * step, and empty
+            // lines are skipped without consuming a number, so count only non-empty lines
+            const numberedCount = linesToNumber.filter(ln => document.lineAt(ln).text.trim() !== "").length;
+            const maxDigits = digitCount(start + Math.max(0, numberedCount - 1) * step);
 
             for (let ln of linesToNumber) {
                 const line = document.lineAt(ln);
@@ -220,7 +235,7 @@ export async function addBlockNumbers(start: number, step: number) {
                     } else {
                         textEdits.push(vscode.TextEdit.replace(range, blockNumberString));
                     }
-                } else if (includeComments && commentLines.includes(ln)) {
+                } else if (includeComments && commentLines.has(ln)) {
                     // if parser did not give blocknumber but comments are included and this is a comment line which starts with blocknumber regex, replace it
                     const blockNumberMatch = line.text.match(/^\s*N[0-9]*/);
                     if (blockNumberMatch?.index !== undefined) {
@@ -239,7 +254,10 @@ export async function addBlockNumbers(start: number, step: number) {
                     let insertIndex: number;
                     const skipLineBegin: number | undefined = skipLineBeginIndexes.get(line.lineNumber + 1);  //parser is 1 based
                     if (skipLineBegin !== undefined) {
-                        insertIndex = skipLineBegin;
+                        // insert *after* the complete skip marker ("/", "/0".."/9" or "/10"),
+                        // otherwise a multi-character marker would be split (e.g. "/1" -> "/N10 1")
+                        const markerMatch = /^\s*\/(?:10|[0-9])?/.exec(line.text);
+                        insertIndex = markerMatch ? markerMatch[0].length : skipLineBegin;
                     } else {
                         insertIndex = line.range.start.character;
                     }

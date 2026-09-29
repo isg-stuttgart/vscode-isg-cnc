@@ -47,7 +47,9 @@ export function findNextTFS(): boolean {
 
 export function findAllToolCalls(): any {
     let params = {
-        query: "(?<![\w\d])T[0-9]+",
+        // backslashes must be escaped in a normal string literal, otherwise "\w"/"\d" collapse to
+        // the literal letters "w"/"d" and the lookbehind stops excluding word characters/digits
+        query: "(?<![\\w\\d])T[0-9]+",
         triggerSearch: true,
         isRegex: true,
         isCaseSensitive: true,

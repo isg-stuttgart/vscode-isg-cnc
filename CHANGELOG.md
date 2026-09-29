@@ -14,6 +14,9 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+### Fixed
+- Fixed parsing issue where the end of control blocks was trashed instead of being recognized as end of control block [Issue # 168](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/168)
+- Reviewed AI-generated changes and selectively adopted the valid correctness, performance and security fixes after manual validation and adjustment [Pull Request # 180](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/180).
 
 ## [V1.4.0]
 

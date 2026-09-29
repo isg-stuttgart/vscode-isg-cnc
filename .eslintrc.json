@@ -23,6 +23,9 @@
     "ignorePatterns": [
         "out",
         "dist",
-        "**/*.d.ts"
+        "**/*.d.ts",
+        "server/src/parserGenerating/ncParser.ts",
+        "server/src/parserGenerating/generateParser.js",
+        "server/src/parserGenerating/debugParser.ts"
     ]
 }

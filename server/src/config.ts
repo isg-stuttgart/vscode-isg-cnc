@@ -1,4 +1,4 @@
-import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath } from "./fileSystem";
+import { WorkspaceIgnorer, findMostSpecificGlobPattern, normalizePath, HEAVY_DIRS } from "./fileSystem";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -80,19 +80,19 @@ export function cloneFileAssociations(): { [key: string]: string } {
  * - {@link locale}
  * - {@link extensionForCycles}
  * - {@link cycleSnippetFormatting}
- *
- * Updates the important settings with the setting of the IDE, namely:
- * - {@link documentationPath}
- * - {@link fileAssociations}
- * - {@link locale}
- * - {@link extensionForCycles}
- * - {@link cycleSnippetFormatting}
- *
 */
 export function updateSettings(workspaceConfig: any) {
     const failedSettings: string[] = [];
-    // update documentation path
-    documentationPath = workspaceConfig['isg-cnc']['documentationPath'];
+    // guard against a missing isg-cnc config section so a malformed config cannot crash the server
+    const isgCncConfig = workspaceConfig?.['isg-cnc'] ?? {};
+
+    // update documentation path (keep previous value if not provided)
+    if (typeof isgCncConfig['documentationPath'] === "string") {
+        documentationPath = isgCncConfig['documentationPath'];
+    } else {
+        failedSettings.push("documentationPath");
+    }
+
     // update file associations
     try {
         const newFileAssociations: { [key: string]: string } = workspaceConfig['files']['associations'];
@@ -112,77 +112,34 @@ export function updateSettings(workspaceConfig: any) {
     }
 
     // update extension for cycles
-    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
+    if (typeof isgCncConfig['extensionForCycles'] === "string") {
+        extensionForCycles = isgCncConfig['extensionForCycles'];
+    } else {
+        failedSettings.push("extensionForCycles");
+    }
 
     // update locale
-    try {
-        switch (workspaceConfig['isg-cnc']['locale']) {
-            case "en-GB":
-                locale = Locale.en;
-                break;
-            case "de-DE":
-                locale = Locale.de;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.locale");
-        }
-    } catch (error) {
-        failedSettings.push("locale");
+    switch (isgCncConfig['locale']) {
+        case "en-GB":
+            locale = Locale.en;
+            break;
+        case "de-DE":
+            locale = Locale.de;
+            break;
+        default:
+            failedSettings.push("locale");
     }
 
     // update cycle snippet formatting
-    try {
-        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
-            case "multi-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
-                break;
-            case "single-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
-        }
-    } catch (error) {
-        failedSettings.push("cycleSnippetFormatting");
-    }
-
-    if (failedSettings.length > 0) {
-        throw new Error("Failed to update settings: " + failedSettings.join(", "));
-    }
-
-    // update extension for cycles
-    extensionForCycles = workspaceConfig['isg-cnc']['extensionForCycles'];
-
-    // update locale
-    try {
-        switch (workspaceConfig['isg-cnc']['locale']) {
-            case "en-GB":
-                locale = Locale.en;
-                break;
-            case "de-DE":
-                locale = Locale.de;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.locale");
-        }
-    } catch (error) {
-        failedSettings.push("locale");
-    }
-
-    // update cycle snippet formatting
-    try {
-        switch (workspaceConfig['isg-cnc']['cycleSnippetFormatting']) {
-            case "multi-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
-                break;
-            case "single-line":
-                cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
-                break;
-            default:
-                throw new Error("Invalid isg-cnc.cycleSnippetFormatting");
-        }
-    } catch (error) {
-        failedSettings.push("cycleSnippetFormatting");
+    switch (isgCncConfig['cycleSnippetFormatting']) {
+        case "multi-line":
+            cycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+            break;
+        case "single-line":
+            cycleSnippetFormatting = CycleSnippetFormatting.singleLine;
+            break;
+        default:
+            failedSettings.push("cycleSnippetFormatting");
     }
 
     if (failedSettings.length > 0) {
@@ -195,19 +152,22 @@ export function updateSettings(workspaceConfig: any) {
  * This includes all files which the client considers to be isg-cnc files and exludes the one ignored by the .isg-cnc-ignore file within the root path (if existing).
  * @param root the root directory to start searching in (most likely a workspace root)
  */
-export function getAllNotIgnoredCncFilePathsInRoot(root: string): string[] {
+export function getAllNotIgnoredCncFilePathsInRoot(root: string, dir: string = root, ignorer: WorkspaceIgnorer = new WorkspaceIgnorer(root)): string[] {
     const paths: string[] = [];
-    const dirEntries = fs.readdirSync(root, { withFileTypes: true });
-    const ignorer = new WorkspaceIgnorer(root);
+    const dirEntries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of dirEntries) {
-        const entryPath = path.join(root, entry.name);
+        const entryPath = path.join(dir, entry.name);
         // skip ignored files/folders
         if (ignorer.ignores(entryPath)) {
             continue;
         }
         if (entry.isDirectory()) {
-            //search in subdirectory
-            paths.push(...getAllNotIgnoredCncFilePathsInRoot(entryPath));
+            // skip large directories that never contain relevant NC files
+            if (HEAVY_DIRS.has(entry.name)) {
+                continue;
+            }
+            //search in subdirectory, reusing the ignorer created for this root
+            paths.push(...getAllNotIgnoredCncFilePathsInRoot(root, entryPath, ignorer));
         } else if (entry.isFile() && isCncFile(entryPath)) {
             //file found
             const normPath = normalizePath(entryPath);

@@ -129,6 +129,38 @@ export class ParseResults {
     }
 }
 
+/**
+ * Small content-keyed cache for parse results. The key is the exact document text, so a cache hit
+ * can never return stale data. This avoids re-parsing the same (unchanged) document across the
+ * completion/hover/definition/reference requests that typically follow each other.
+ */
+const parseCache = new Map<string, ParseResults>();
+const PARSE_CACHE_MAX = 16;
+
+/**
+ * Returns the {@link ParseResults} for the given text, reusing a cached result when the exact same
+ * text was parsed recently.
+ * @throws Error if the parser throws an error
+ */
+export function getParseResults(text: string): ParseResults {
+    const cached = parseCache.get(text);
+    if (cached) {
+        // refresh recency (Map keeps insertion order)
+        parseCache.delete(text);
+        parseCache.set(text, cached);
+        return cached;
+    }
+    const result = new ParseResults(text);
+    parseCache.set(text, result);
+    if (parseCache.size > PARSE_CACHE_MAX) {
+        const oldestKey = parseCache.keys().next().value;
+        if (oldestKey !== undefined) {
+            parseCache.delete(oldestKey);
+        }
+    }
+    return result;
+}
+
 export interface SyntaxArray {
     toolCalls: Array<Match>;
     prgCallNames: Array<Match>;

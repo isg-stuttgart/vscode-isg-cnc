@@ -68,6 +68,10 @@ export interface Match {
 
 /** Returns if a given object is a Match and so can be converted to such*/
 export function isMatch(obj: any): obj is Match {
+    // if passed obj is not an object or is null, it cannot be a Match
+    if (typeof obj !== "object" || obj === null) {
+        return false;
+    }
     const exampleMatch = {
         type: null,
         content: null,

@@ -58,15 +58,40 @@ export function findFileInRootDir(rootPath: string, fileName: string, ignorer: W
             continue;
         }
         if (entry.isDirectory()) {
+            // skip large directories that never contain relevant NC files
+            if (HEAVY_DIRS.has(entry.name)) {
+                continue;
+            }
             //search in subdirectory
             paths.push(...findFileInRootDir(entryPath, fileName, ignorer, needsToBeCNCFile));
-        } else if (entry.isFile() && entry.name === fileName && (!needsToBeCNCFile || isCncFile(entryPath))) {
+        } else if (entry.isFile() && fileNamesMatch(entry.name, fileName) && (!needsToBeCNCFile || isCncFile(entryPath))) {
             //file found
             const normPath = normalizePath(entryPath);
             paths.push(normPath);
         }
     }
     return paths;
+}
+
+/** Directories that never contain relevant NC files and would only slow down the recursive file search. */
+export const HEAVY_DIRS = new Set([".git", "node_modules", ".svn", ".hg"]);
+
+/**
+ * Compares two file names. On Windows the file system is case-insensitive, so "SUB.NC" and "sub.nc"
+ * refer to the same file; on POSIX the comparison stays case-sensitive.
+ */
+function fileNamesMatch(a: string, b: string): boolean {
+    return process.platform === "win32" ? a.toLowerCase() === b.toLowerCase() : a === b;
+}
+
+/** Returns whether the given path is absolute on either Windows or POSIX. */
+export function isAbsoluteCrossPlatform(p: string): boolean {
+    return path.win32.isAbsolute(p) || path.posix.isAbsolute(p);
+}
+
+/** Returns the base name of the given path, handling both Windows and POSIX separators. */
+export function basenameCrossPlatform(p: string): string {
+    return path.win32.isAbsolute(p) ? path.win32.basename(p) : path.posix.basename(p);
 }
 
 /**
