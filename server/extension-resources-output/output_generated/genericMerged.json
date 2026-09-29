@@ -2164,25 +2164,6 @@
     "defaultValue": null
   },
   {
-    "label": "G232",
-    "linkid": "206596619",
-    "shortDescription": {
-      "de-DE": "Rampenzeitgewichtung G00, achsspezifisch",
-      "en-GB": "Ramp time weighting G00, axis-specific"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "G232",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### G232\n\nRampenzeitgewichtung G00, achsspezifisch",
-      "en-GB": "### G232\n\nRamp time weighting G00, axis-specific"
-    },
-    "hoverTrigger": [
-      "G232"
-    ]
-  },
-  {
     "label": "G233",
     "linkid": "206596619",
     "shortDescription": {
@@ -3847,7 +3828,9 @@
     },
     "hoverTrigger": [
       "#ACS ON",
-      "#ACS OFF"
+      "#ACS OFF",
+      "#ACS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#ACS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3867,7 +3850,8 @@
       "en-GB": "### #ADD\n\nAdditional information at block end"
     },
     "hoverTrigger": [
-      "#ADD"
+      "#ADD",
+      "#ADD(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3887,7 +3871,8 @@
       "en-GB": "### #AKIMA STARTVECTOR\n\nDefining start tangent"
     },
     "hoverTrigger": [
-      "#AKIMA STARTVECTOR"
+      "#AKIMA STARTVECTOR",
+      "#AKIMA\\s+STARTVECTOR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3907,7 +3892,8 @@
       "en-GB": "### #AKIMA ENDVECTOR\n\nDefining end tangent"
     },
     "hoverTrigger": [
-      "#AKIMA ENDVECTOR"
+      "#AKIMA ENDVECTOR",
+      "#AKIMA\\s+ENDVECTOR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3927,7 +3913,8 @@
       "en-GB": "### #AKIMA TRANS\n\nSpecifying spline curve motion block"
     },
     "hoverTrigger": [
-      "#AKIMA TRANS"
+      "#AKIMA TRANS",
+      "#AKIMA\\s+TRANS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3947,7 +3934,8 @@
       "en-GB": "### #ANG\n\nContour line programming"
     },
     "hoverTrigger": [
-      "#ANG"
+      "#ANG",
+      "#ANG(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3967,7 +3955,8 @@
       "en-GB": "### #AX DEF\n\nDefining an axis configuration (extended syntax)"
     },
     "hoverTrigger": [
-      "#AX DEF"
+      "#AX DEF",
+      "#AX\\s+DEF(?!\\w)(?!\\s+(?:DEFAULT)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -3987,7 +3976,8 @@
       "en-GB": "### #AX DEF DEFAULT\n\nLoading default axis configuration (extended syntax)"
     },
     "hoverTrigger": [
-      "#AX DEF DEFAULT"
+      "#AX DEF DEFAULT",
+      "#AX\\s+DEF\\s+DEFAULT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4015,16 +4005,19 @@
       }
     ],
     "kind": "Snippet",
-    "completionText": "#AX LINK ${1|ON,OFF,OFF|} ALL",
+    "completionText": "#AX LINK ${1|ON,OFF,OFF ALL|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #AX LINK ON/OFF/OFF ALL\n\nProgrammierung von Achskopplungen",
       "en-GB": "### #AX LINK ON/OFF/OFF ALL\n\nProgramming axis couplings"
     },
     "hoverTrigger": [
-      "#AX LINK ON ALL",
+      "#AX LINK ON",
+      "#AX LINK OFF",
       "#AX LINK OFF ALL",
-      "#AX LINK OFF ALL"
+      "#AX\\s+LINK\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#AX\\s+LINK\\s+OFF(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#AX\\s+LINK\\s+OFF\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4045,7 +4038,9 @@
     },
     "hoverTrigger": [
       "#AX LOCK ALL",
-      "#AX UNLOCK ALL"
+      "#AX UNLOCK ALL",
+      "#AX\\s+LOCK\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#AX\\s+UNLOCK\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4065,7 +4060,8 @@
       "en-GB": "### #AX REQUEST\n\nRequesting axes (extended syntax)"
     },
     "hoverTrigger": [
-      "#AX REQUEST"
+      "#AX REQUEST",
+      "#AX\\s+REQUEST(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4085,7 +4081,8 @@
       "en-GB": "### #AX RELEASE\n\nReleasing axes (extended syntax)"
     },
     "hoverTrigger": [
-      "#AX RELEASE"
+      "#AX RELEASE",
+      "#AX\\s+RELEASE(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4105,7 +4102,8 @@
       "en-GB": "### #AX RELEASE ALL\n\nReleasing all axes (extended syntax)"
     },
     "hoverTrigger": [
-      "#AX RELEASE ALL"
+      "#AX RELEASE ALL",
+      "#AX\\s+RELEASE\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4125,7 +4123,8 @@
       "en-GB": "### #BACKWARD STORAGE CLEAR\n\nClearing backward storage"
     },
     "hoverTrigger": [
-      "#BACKWARD STORAGE CLEAR"
+      "#BACKWARD STORAGE CLEAR",
+      "#BACKWARD\\s+STORAGE\\s+CLEAR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4145,7 +4144,8 @@
       "en-GB": "### #BCS DEF\n\nDefining and storing a BCS"
     },
     "hoverTrigger": [
-      "#BCS DEF"
+      "#BCS DEF",
+      "#BCS\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4166,7 +4166,9 @@
     },
     "hoverTrigger": [
       "#BCS ON",
-      "#BCS OFF"
+      "#BCS OFF",
+      "#BCS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#BCS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4179,7 +4181,7 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#BLOCKSEARCH ${1|LOCKED,|||RELEASED|}",
+    "completionText": "#BLOCKSEARCH ${1|LOCKED,RELEASED|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #BLOCKSEARCH LOCKED/|||RELEASED\n\nSperren von Programmbereichen für den Satzvorlauf",
@@ -4187,7 +4189,9 @@
     },
     "hoverTrigger": [
       "#BLOCKSEARCH LOCKED",
-      "#BLOCKSEARCH \\|\\|\\|RELEASED"
+      "#BLOCKSEARCH RELEASED",
+      "#BLOCKSEARCH\\s+LOCKED(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#BLOCKSEARCH\\s+RELEASED(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4209,7 +4213,10 @@
     "hoverTrigger": [
       "#CACHE LOAD",
       "#CACHE CLEAR",
-      "#CACHE ALL"
+      "#CACHE ALL",
+      "#CACHE\\s+LOAD(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CACHE\\s+CLEAR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CACHE\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4229,7 +4236,8 @@
       "en-GB": "### #CALL AX\n\nRequesting axes"
     },
     "hoverTrigger": [
-      "#CALL AX"
+      "#CALL AX",
+      "#CALL\\s+AX(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4249,7 +4257,8 @@
       "en-GB": "### #CAX\n\nRequesting a spindle axis for C axis machining"
     },
     "hoverTrigger": [
-      "#CAX"
+      "#CAX",
+      "#CAX(?!\\w)(?!\\s+(?:OFF)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4269,7 +4278,8 @@
       "en-GB": "### #CAX OFF\n\nReturning C axis to the spindle"
     },
     "hoverTrigger": [
-      "#CAX OFF"
+      "#CAX OFF",
+      "#CAX\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4290,7 +4300,9 @@
     },
     "hoverTrigger": [
       "#CAXTRACK ON",
-      "#CAXTRACK OFF"
+      "#CAXTRACK OFF",
+      "#CAXTRACK\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CAXTRACK\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4325,7 +4337,8 @@
       "en-GB": "### #CHANNEL INIT\n\nInitialising channel with current command/actual positions"
     },
     "hoverTrigger": [
-      "#CHANNEL INIT"
+      "#CHANNEL INIT",
+      "#CHANNEL\\s+INIT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4346,7 +4359,9 @@
     },
     "hoverTrigger": [
       "#CHANNEL INTERFACE ON",
-      "#CHANNEL INTERFACE OFF"
+      "#CHANNEL INTERFACE OFF",
+      "#CHANNEL\\s+INTERFACE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CHANNEL\\s+INTERFACE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4381,7 +4396,8 @@
       "en-GB": "### #CHANNEL SET\n\nSetting function-specific parameters in the channel"
     },
     "hoverTrigger": [
-      "#CHANNEL SET"
+      "#CHANNEL SET",
+      "#CHANNEL\\s+SET(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4401,7 +4417,8 @@
       "en-GB": "### #CHF\n\nInserting chamfers and roundings: chamfer length"
     },
     "hoverTrigger": [
-      "#CHF"
+      "#CHF",
+      "#CHF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4421,7 +4438,8 @@
       "en-GB": "### #CHR\n\nInserting chamfers and roundings: chamfer width"
     },
     "hoverTrigger": [
-      "#CHR"
+      "#CHR",
+      "#CHR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4449,7 +4467,8 @@
       "en-GB": "### #CLEAR CONFIG\n\nDeleting a saved configuration"
     },
     "hoverTrigger": [
-      "#CLEAR CONFIG"
+      "#CLEAR CONFIG",
+      "#CLEAR\\s+CONFIG(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4469,28 +4488,10 @@
       "en-GB": "### #COLL MON ON\n\nParameterising and enabling collision monitoring"
     },
     "hoverTrigger": [
-      "#COLL MON ON"
+      "#COLL MON ON",
+      "#COLL\\s+MON\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
-  },
-  {
-    "label": "#COLL MON ON",
-    "linkid": "1223985419",
-    "shortDescription": {
-      "de-DE": "Kollisionsüberwachung parametrieren und aktivieren",
-      "en-GB": "Parameterising and enabling collision monitoring"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "#COLL MON ON",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### #COLL MON ON\n\nKollisionsüberwachung parametrieren und aktivieren",
-      "en-GB": "### #COLL MON ON\n\nParameterising and enabling collision monitoring"
-    },
-    "hoverTrigger": [
-      "#COLL MON ON"
-    ]
   },
   {
     "label": "#COMMAND WR",
@@ -4508,7 +4509,8 @@
       "en-GB": "### #COMMAND WR\n\nNon-synchronised write of SERCOS commands"
     },
     "hoverTrigger": [
-      "#COMMAND WR"
+      "#COMMAND WR",
+      "#COMMAND\\s+WR(?!\\w)(?!\\s+(?:SYN)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4528,7 +4530,8 @@
       "en-GB": "### #COMMAND WR SYN\n\nSynchronised write of SERCOS commands"
     },
     "hoverTrigger": [
-      "#COMMAND WR SYN"
+      "#COMMAND WR SYN",
+      "#COMMAND\\s+WR\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4548,7 +4551,8 @@
       "en-GB": "### #COMMAND WAIT\n\nNon-synchronised wait for SERCOS commands"
     },
     "hoverTrigger": [
-      "#COMMAND WAIT"
+      "#COMMAND WAIT",
+      "#COMMAND\\s+WAIT(?!\\w)(?!\\s+(?:SYN)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4568,7 +4572,8 @@
       "en-GB": "### #COMMAND WAIT SYN\n\nSynchronised wait for SERCOS commands"
     },
     "hoverTrigger": [
-      "#COMMAND WAIT SYN"
+      "#COMMAND WAIT SYN",
+      "#COMMAND\\s+WAIT\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4589,7 +4594,9 @@
     },
     "hoverTrigger": [
       "#COMMENT BEGIN",
-      "#COMMENT END"
+      "#COMMENT END",
+      "#COMMENT\\s+BEGIN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#COMMENT\\s+END(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4624,7 +4631,8 @@
       "en-GB": "### #CONTOUR MODE\n\nContouring"
     },
     "hoverTrigger": [
-      "#CONTOUR MODE"
+      "#CONTOUR MODE",
+      "#CONTOUR\\s+MODE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4645,7 +4653,9 @@
     },
     "hoverTrigger": [
       "#CONTROL AREA BEGIN",
-      "#CONTROL AREA END"
+      "#CONTROL AREA END",
+      "#CONTROL\\s+AREA\\s+BEGIN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CONTROL\\s+AREA\\s+END(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4666,7 +4676,9 @@
     },
     "hoverTrigger": [
       "#CONTROL AREA ON",
-      "#CONTROL AREA OFF"
+      "#CONTROL AREA OFF",
+      "#CONTROL\\s+AREA\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CONTROL\\s+AREA\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4686,7 +4698,8 @@
       "en-GB": "### #CONTROL AREA CLEAR\n\nClearing a control area"
     },
     "hoverTrigger": [
-      "#CONTROL AREA CLEAR"
+      "#CONTROL AREA CLEAR",
+      "#CONTROL\\s+AREA\\s+CLEAR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4706,7 +4719,8 @@
       "en-GB": "### #CORNER PARAM\n\nParameterising corner deceleration"
     },
     "hoverTrigger": [
-      "#CORNER PARAM"
+      "#CORNER PARAM",
+      "#CORNER\\s+PARAM(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4726,7 +4740,8 @@
       "en-GB": "### #CS DEF\n\nDefining and storing a CS"
     },
     "hoverTrigger": [
-      "#CS DEF"
+      "#CS DEF",
+      "#CS\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4747,7 +4762,9 @@
     },
     "hoverTrigger": [
       "#CS ON",
-      "#CS OFF"
+      "#CS OFF",
+      "#CS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4768,7 +4785,9 @@
     },
     "hoverTrigger": [
       "#CS MODE ON",
-      "#CS MODE OFF"
+      "#CS MODE OFF",
+      "#CS\\s+MODE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CS\\s+MODE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4781,17 +4800,21 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#CS ${1|ADD,SELECT,SET,|} DEL",
+    "completionText": "#CS ${1|ADD,SELECT,SET,DEL|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #CS ADD/SELECT/SET/ DEL\n\nErweiterte Programmierung von Koordinatensystemen",
       "en-GB": "### #CS ADD/SELECT/SET/ DEL\n\nExtended programming of coordinate systems"
     },
     "hoverTrigger": [
-      "#CS ADD DEL",
-      "#CS SELECT DEL",
-      "#CS SET DEL",
-      "#CS  DEL"
+      "#CS ADD",
+      "#CS SELECT",
+      "#CS SET",
+      "#CS DEL",
+      "#CS\\s+ADD(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CS\\s+SELECT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CS\\s+SET(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#CS\\s+DEL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4811,7 +4834,8 @@
       "en-GB": "### #CS TRACK\n\nTracking a coordinate system"
     },
     "hoverTrigger": [
-      "#CS TRACK"
+      "#CS TRACK",
+      "#CS\\s+TRACK(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4831,7 +4855,8 @@
       "en-GB": "### #CS SHIFT Z\n\nShifting a coordinate system"
     },
     "hoverTrigger": [
-      "#CS SHIFT Z"
+      "#CS SHIFT Z",
+      "#CS\\s+SHIFT\\s+Z(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4866,7 +4891,8 @@
       "en-GB": "### #CYL\n\nLateral surface machining"
     },
     "hoverTrigger": [
-      "#CYL"
+      "#CYL",
+      "#CYL(?!\\w)(?!\\s+(?:2ROT|OFF|ORI\\s+LATERAL|ORI\\s+PROFILE)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4886,7 +4912,8 @@
       "en-GB": "### #CYL 2ROT\n\nLateral surface machining with 2 rotary axes"
     },
     "hoverTrigger": [
-      "#CYL 2ROT"
+      "#CYL 2ROT",
+      "#CYL\\s+2ROT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4921,7 +4948,8 @@
       "en-GB": "### #CYL OFF\n\nLateral surface machining"
     },
     "hoverTrigger": [
-      "#CYL OFF"
+      "#CYL OFF",
+      "#CYL\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4941,7 +4969,8 @@
       "en-GB": "### #CYL ORI LATERAL\n\n5/6-axis round tube machining"
     },
     "hoverTrigger": [
-      "#CYL ORI LATERAL"
+      "#CYL ORI LATERAL",
+      "#CYL\\s+ORI\\s+LATERAL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4961,7 +4990,8 @@
       "en-GB": "### #CYL ORI PROFILE\n\n5/6-axis profile tube machining"
     },
     "hoverTrigger": [
-      "#CYL ORI PROFILE"
+      "#CYL ORI PROFILE",
+      "#CYL\\s+ORI\\s+PROFILE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -4981,7 +5011,8 @@
       "en-GB": "### #DELETE\n\nDeleting self-defined variables or parameters"
     },
     "hoverTrigger": [
-      "#DELETE"
+      "#DELETE",
+      "#DELETE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5001,7 +5032,8 @@
       "en-GB": "### #DEL DIST2GO\n\nDeleting distance to go"
     },
     "hoverTrigger": [
-      "#DEL DIST2GO"
+      "#DEL DIST2GO",
+      "#DEL\\s+DIST2GO(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5021,28 +5053,10 @@
       "en-GB": "### #DIAGNOSIS\n\nCreating diagnosis data"
     },
     "hoverTrigger": [
-      "#DIAGNOSIS"
+      "#DIAGNOSIS",
+      "#DIAGNOSIS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
-  },
-  {
-    "label": "#DIAGNOSIS",
-    "linkid": "947782539",
-    "shortDescription": {
-      "de-DE": "Erstellen von Diagnosedaten",
-      "en-GB": "Creating diagnosis data"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "#DIAGNOSIS",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### #DIAGNOSIS\n\nErstellen von Diagnosedaten",
-      "en-GB": "### #DIAGNOSIS\n\nCreating diagnosis data"
-    },
-    "hoverTrigger": [
-      "#DIAGNOSIS"
-    ]
   },
   {
     "label": "#DISABLE MODAL CYCLE",
@@ -5060,7 +5074,8 @@
       "en-GB": "### #DISABLE MODAL CYCLE\n\nDisabling a modal cycle"
     },
     "hoverTrigger": [
-      "#DISABLE MODAL CYCLE"
+      "#DISABLE MODAL CYCLE",
+      "#DISABLE\\s+MODAL\\s+CYCLE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5081,7 +5096,9 @@
     },
     "hoverTrigger": [
       "#DIST CTRL ON",
-      "#DIST CTRL OFF"
+      "#DIST CTRL OFF",
+      "#DIST\\s+CTRL\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#DIST\\s+CTRL\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5102,7 +5119,9 @@
     },
     "hoverTrigger": [
       "#DIST TO GO BEGIN",
-      "#DIST TO GO END"
+      "#DIST TO GO END",
+      "#DIST\\s+TO\\s+GO\\s+BEGIN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#DIST\\s+TO\\s+GO\\s+END(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5122,9 +5141,12 @@
       "en-GB": "### #DISTANCE PROG START ON/OFF/ CLEAR\n\nCovered distance from program start"
     },
     "hoverTrigger": [
-      "#DISTANCE PROG START ON CLEAR",
-      "#DISTANCE PROG START OFF CLEAR",
-      "#DISTANCE PROG START  CLEAR"
+      "#DISTANCE PROG START ON",
+      "#DISTANCE PROG START OFF",
+      "#DISTANCE PROG START CLEAR",
+      "#DISTANCE\\s+PROG\\s+START\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#DISTANCE\\s+PROG\\s+START\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#DISTANCE\\s+PROG\\s+START\\s+CLEAR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5144,7 +5166,8 @@
       "en-GB": "### #DRIVE WR SYN\n\nSwitching drive functions: Synchronous writing"
     },
     "hoverTrigger": [
-      "#DRIVE WR SYN"
+      "#DRIVE WR SYN",
+      "#DRIVE\\s+WR\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5164,7 +5187,8 @@
       "en-GB": "### #DRIVE WAIT SYN\n\nSwitching drive functions: Synchronous waiting for acknowledgement"
     },
     "hoverTrigger": [
-      "#DRIVE WAIT SYN"
+      "#DRIVE WAIT SYN",
+      "#DRIVE\\s+WAIT\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5185,7 +5209,9 @@
     },
     "hoverTrigger": [
       "#DYNAMIC WEIGHT ON",
-      "#DYNAMIC WEIGHT OFF"
+      "#DYNAMIC WEIGHT OFF",
+      "#DYNAMIC\\s+WEIGHT\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#DYNAMIC\\s+WEIGHT\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5206,7 +5232,9 @@
     },
     "hoverTrigger": [
       "#ECS ON",
-      "#ECS OFF"
+      "#ECS OFF",
+      "#ECS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#ECS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5227,7 +5255,9 @@
     },
     "hoverTrigger": [
       "#EDGE MACHINING ON",
-      "#EDGE MACHINING OFF"
+      "#EDGE MACHINING OFF",
+      "#EDGE\\s+MACHINING\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#EDGE\\s+MACHINING\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5248,7 +5278,9 @@
     },
     "hoverTrigger": [
       "#EDM ON",
-      "#EDM OFF"
+      "#EDM OFF",
+      "#EDM\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#EDM\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5268,7 +5300,8 @@
       "en-GB": "### #ENABLE AX LINK|||#DISABLE AX LINK\n\nSelecting/deselecting axis couplings"
     },
     "hoverTrigger": [
-      "#ENABLE AX LINK\\|\\|\\|#DISABLE AX LINK"
+      "#ENABLE AX LINK\\|\\|\\|#DISABLE AX LINK",
+      "#ENABLE\\s+AX\\s+LINK\\|\\|\\|#DISABLE\\s+AX\\s+LINK(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5288,7 +5321,8 @@
       "en-GB": "### #ERROR\n\nUser-defined error output"
     },
     "hoverTrigger": [
-      "#ERROR"
+      "#ERROR",
+      "#ERROR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5308,7 +5342,8 @@
       "en-GB": "### #EXPL SYN\n\nExplicit synchronisation"
     },
     "hoverTrigger": [
-      "#EXPL SYN"
+      "#EXPL SYN",
+      "#EXPL\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5328,7 +5363,8 @@
       "en-GB": "### #EXPORT VE\n\nExporting V.E. variables in structures for a PLC integration"
     },
     "hoverTrigger": [
-      "#EXPORT VE"
+      "#EXPORT VE",
+      "#EXPORT\\s+VE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5349,7 +5385,9 @@
     },
     "hoverTrigger": [
       "#EXTCOMP ON",
-      "#EXTCOMP OFF"
+      "#EXTCOMP OFF",
+      "#EXTCOMP\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#EXTCOMP\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5369,7 +5407,8 @@
       "en-GB": "### #FACE\n\nSelecting face machining"
     },
     "hoverTrigger": [
-      "#FACE"
+      "#FACE",
+      "#FACE(?!\\w)(?!\\s+(?:2ROT|OFF)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5389,7 +5428,8 @@
       "en-GB": "### #FACE 2ROT\n\nSelecting face machining with 2 rotary axes"
     },
     "hoverTrigger": [
-      "#FACE 2ROT"
+      "#FACE 2ROT",
+      "#FACE\\s+2ROT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5409,7 +5449,8 @@
       "en-GB": "### #FACE OFF\n\nDeselecting face machining"
     },
     "hoverTrigger": [
-      "#FACE OFF"
+      "#FACE OFF",
+      "#FACE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5429,7 +5470,8 @@
       "en-GB": "### #FF\n\nWeighting of external feed rate"
     },
     "hoverTrigger": [
-      "#FF"
+      "#FF",
+      "#FF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5449,7 +5491,8 @@
       "en-GB": "### #FGROUP\n\nDefining a feed group"
     },
     "hoverTrigger": [
-      "#FGROUP"
+      "#FGROUP",
+      "#FGROUP(?!\\w)(?!\\s+(?:ROT|WAXIS)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5469,7 +5512,8 @@
       "en-GB": "### #FGROUP ROT\n\nCalculating feed rate for rotary axes"
     },
     "hoverTrigger": [
-      "#FGROUP ROT"
+      "#FGROUP ROT",
+      "#FGROUP\\s+ROT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5489,7 +5533,8 @@
       "en-GB": "### #FGROUP WAXIS\n\nWeakest axis as feed axis"
     },
     "hoverTrigger": [
-      "#FGROUP WAXIS"
+      "#FGROUP WAXIS",
+      "#FGROUP\\s+WAXIS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5509,7 +5554,8 @@
       "en-GB": "### #FILE NAME\n\nDefinition of filenames"
     },
     "hoverTrigger": [
-      "#FILE NAME"
+      "#FILE NAME",
+      "#FILE\\s+NAME(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5529,7 +5575,8 @@
       "en-GB": "### #FILE RENAME\n\nRenaming a file"
     },
     "hoverTrigger": [
-      "#FILE RENAME"
+      "#FILE RENAME",
+      "#FILE\\s+RENAME(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5549,7 +5596,8 @@
       "en-GB": "### #FILE DELETE\n\nDeleting a file"
     },
     "hoverTrigger": [
-      "#FILE DELETE"
+      "#FILE DELETE",
+      "#FILE\\s+DELETE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5569,7 +5617,8 @@
       "en-GB": "### #FILE EXIST\n\nChecking the existence of a file"
     },
     "hoverTrigger": [
-      "#FILE EXIST"
+      "#FILE EXIST",
+      "#FILE\\s+EXIST(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5590,7 +5639,9 @@
     },
     "hoverTrigger": [
       "#FILTER ON",
-      "#FILTER OFF"
+      "#FILTER OFF",
+      "#FILTER\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#FILTER\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5610,7 +5661,8 @@
       "en-GB": "### #FLUSH\n\nFlushing NC channel with interrupted motion"
     },
     "hoverTrigger": [
-      "#FLUSH"
+      "#FLUSH",
+      "#FLUSH(?!\\w)(?!\\s+(?:CONTINUE|WAIT)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5630,7 +5682,8 @@
       "en-GB": "### #FLUSH CONTINUE\n\nFlushing NC channel with continuous motion"
     },
     "hoverTrigger": [
-      "#FLUSH CONTINUE"
+      "#FLUSH CONTINUE",
+      "#FLUSH\\s+CONTINUE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5650,7 +5703,8 @@
       "en-GB": "### #FLUSH WAIT\n\nSynchronising decoding and interpolation"
     },
     "hoverTrigger": [
-      "#FLUSH WAIT"
+      "#FLUSH WAIT",
+      "#FLUSH\\s+WAIT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5670,7 +5724,8 @@
       "en-GB": "### #FRC\n\nInserting chamfers and roundings: feed rate in chamfer or rounding segment"
     },
     "hoverTrigger": [
-      "#FRC"
+      "#FRC",
+      "#FRC(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5691,7 +5746,9 @@
     },
     "hoverTrigger": [
       "#FREE TOOL CHANGE ON",
-      "#FREE TOOL CHANGE OFF"
+      "#FREE TOOL CHANGE OFF",
+      "#FREE\\s+TOOL\\s+CHANGE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#FREE\\s+TOOL\\s+CHANGE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5711,7 +5768,8 @@
       "en-GB": "### #GANTRY OFF\n\nDisabling gantry combination"
     },
     "hoverTrigger": [
-      "#GANTRY OFF"
+      "#GANTRY OFF",
+      "#GANTRY\\s+OFF(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5731,7 +5789,8 @@
       "en-GB": "### #GANTRY OFF ALL\n\nDisabling all gantry combinations"
     },
     "hoverTrigger": [
-      "#GANTRY OFF ALL"
+      "#GANTRY OFF ALL",
+      "#GANTRY\\s+OFF\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5751,7 +5810,8 @@
       "en-GB": "### #GANTRY ON\n\nRestoring a gantry combination"
     },
     "hoverTrigger": [
-      "#GANTRY ON"
+      "#GANTRY ON",
+      "#GANTRY\\s+ON(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5771,7 +5831,8 @@
       "en-GB": "### #GANTRY ON ALL\n\nRestoring all gantry combinations"
     },
     "hoverTrigger": [
-      "#GANTRY ON ALL"
+      "#GANTRY ON ALL",
+      "#GANTRY\\s+ON\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5792,7 +5853,9 @@
     },
     "hoverTrigger": [
       "#GEAR LINK ON",
-      "#GEAR LINK OFF"
+      "#GEAR LINK OFF",
+      "#GEAR\\s+LINK\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#GEAR\\s+LINK\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5812,7 +5875,8 @@
       "en-GB": "### #GET CMDPOS\n\nRequesting and storing current command positions of axes"
     },
     "hoverTrigger": [
-      "#GET CMDPOS"
+      "#GET CMDPOS",
+      "#GET\\s+CMDPOS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5832,7 +5896,8 @@
       "en-GB": "### #GET ACTPOS\n\nRequesting and storing current actual positions of axes"
     },
     "hoverTrigger": [
-      "#GET ACTPOS"
+      "#GET ACTPOS",
+      "#GET\\s+ACTPOS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5852,7 +5917,8 @@
       "en-GB": "### #GET MANUAL OFFSETS\n\nRequesting and storing current manual mode offsets"
     },
     "hoverTrigger": [
-      "#GET MANUAL OFFSETS"
+      "#GET MANUAL OFFSETS",
+      "#GET\\s+MANUAL\\s+OFFSETS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5872,7 +5938,8 @@
       "en-GB": "### #GET WCS POSLIMIT\n\nAuxiliary function to calculate motion limits in the workpiece coordinate system"
     },
     "hoverTrigger": [
-      "#GET WCS POSLIMIT"
+      "#GET WCS POSLIMIT",
+      "#GET\\s+WCS\\s+POSLIMIT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5892,7 +5959,8 @@
       "en-GB": "### #HANDWHEEL\n\nSetting handwheel parameters"
     },
     "hoverTrigger": [
-      "#HANDWHEEL"
+      "#HANDWHEEL",
+      "#HANDWHEEL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5935,7 +6003,9 @@
     },
     "hoverTrigger": [
       "#HSC ON",
-      "#HSC OFF"
+      "#HSC OFF",
+      "#HSC\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#HSC\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5955,7 +6025,8 @@
       "en-GB": "### #IDENT WR\n\nNon-synchronised write of SERCOS parameters"
     },
     "hoverTrigger": [
-      "#IDENT WR"
+      "#IDENT WR",
+      "#IDENT\\s+WR(?!\\w)(?!\\s+(?:SYN)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5975,7 +6046,8 @@
       "en-GB": "### #IDENT WR SYN\n\nSynchronised write of SERCOS parameters"
     },
     "hoverTrigger": [
-      "#IDENT WR SYN"
+      "#IDENT WR SYN",
+      "#IDENT\\s+WR\\s+SYN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -5995,7 +6067,8 @@
       "en-GB": "### #IDENT RD\n\nNon-synchronised read of SERCOS parameters"
     },
     "hoverTrigger": [
-      "#IDENT RD"
+      "#IDENT RD",
+      "#IDENT\\s+RD(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6015,7 +6088,8 @@
       "en-GB": "### #INIT MACRO TAB\n\nInitialising macro table"
     },
     "hoverTrigger": [
-      "#INIT MACRO TAB"
+      "#INIT MACRO TAB",
+      "#INIT\\s+MACRO\\s+TAB(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6035,7 +6109,8 @@
       "en-GB": "### #INIT V.E.xx\n\nInitialising V.E. variables"
     },
     "hoverTrigger": [
-      "#INIT V\\.E\\.xx"
+      "#INIT V\\.E\\.xx",
+      "#INIT\\s+V\\.E\\.xx(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6055,7 +6130,8 @@
       "en-GB": "### #JOG CONT\n\nParameterising continuous jog mode"
     },
     "hoverTrigger": [
-      "#JOG CONT"
+      "#JOG CONT",
+      "#JOG\\s+CONT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6075,7 +6151,8 @@
       "en-GB": "### #JOG INCR\n\nParameterising incremental jog mode"
     },
     "hoverTrigger": [
-      "#JOG INCR"
+      "#JOG INCR",
+      "#JOG\\s+INCR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6095,7 +6172,8 @@
       "en-GB": "### #KIN ID\n\nSelecting machine kinematics"
     },
     "hoverTrigger": [
-      "#KIN ID"
+      "#KIN ID",
+      "#KIN\\s+ID(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6115,7 +6193,8 @@
       "en-GB": "### #KIN DATA\n\nModify kinematic characteristics"
     },
     "hoverTrigger": [
-      "#KIN DATA"
+      "#KIN DATA",
+      "#KIN\\s+DATA(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6136,7 +6215,9 @@
     },
     "hoverTrigger": [
       "#KIN TCP DEF",
-      "#KIN TCP DELETE"
+      "#KIN TCP DELETE",
+      "#KIN\\s+TCP\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#KIN\\s+TCP\\s+DELETE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6156,7 +6237,8 @@
       "en-GB": "### #LAH\n\nSettings for look-ahead"
     },
     "hoverTrigger": [
-      "#LAH"
+      "#LAH",
+      "#LAH(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6176,7 +6258,8 @@
       "en-GB": "### #LOAD CONFIG\n\nLoading or restoring a saved configuration"
     },
     "hoverTrigger": [
-      "#LOAD CONFIG"
+      "#LOAD CONFIG",
+      "#LOAD\\s+CONFIG(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6189,14 +6272,17 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#LOCK/UNLOCK",
+    "completionText": "#${1|LOCK,UNLOCK|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #LOCK/UNLOCK\n\nJobmanager – Sperren konkurrierender Auftraggeber",
       "en-GB": "### #LOCK/UNLOCK\n\nJob Manager – Lock competing clients"
     },
     "hoverTrigger": [
-      "#LOCK/UNLOCK"
+      "#LOCK",
+      "#UNLOCK",
+      "#LOCK(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#UNLOCK(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6216,7 +6302,8 @@
       "en-GB": "### #LIMIT REFRESH\n\nRefresh all kinematic parameters of the TCP kinematic"
     },
     "hoverTrigger": [
-      "#LIMIT REFRESH"
+      "#LIMIT REFRESH",
+      "#LIMIT\\s+REFRESH(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6238,7 +6325,10 @@
     "hoverTrigger": [
       "#LIMIT LOAD ON",
       "#LIMIT LOAD OFF",
-      "#LIMIT LOAD DEF"
+      "#LIMIT LOAD DEF",
+      "#LIMIT\\s+LOAD\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#LIMIT\\s+LOAD\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#LIMIT\\s+LOAD\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6258,7 +6348,8 @@
       "en-GB": "### #MACHINE DATA\n\nWriting machine data"
     },
     "hoverTrigger": [
-      "#MACHINE DATA"
+      "#MACHINE DATA",
+      "#MACHINE\\s+DATA(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6278,7 +6369,8 @@
       "en-GB": "### #MAIN SPINDLE\n\nChanging the main spindle"
     },
     "hoverTrigger": [
-      "#MAIN SPINDLE"
+      "#MAIN SPINDLE",
+      "#MAIN\\s+SPINDLE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6318,7 +6410,8 @@
       "en-GB": "### #MANUAL LIMITS\n\nSpecifying offset limits in manual mode"
     },
     "hoverTrigger": [
-      "#MANUAL LIMITS"
+      "#MANUAL LIMITS",
+      "#MANUAL\\s+LIMITS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6339,7 +6432,9 @@
     },
     "hoverTrigger": [
       "#MCS ON",
-      "#MCS OFF"
+      "#MCS OFF",
+      "#MCS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#MCS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6359,7 +6454,8 @@
       "en-GB": "### #MCS TO WCS\n\nMapping machine coordinates into workpiece coordinates"
     },
     "hoverTrigger": [
-      "#MCS TO WCS"
+      "#MCS TO WCS",
+      "#MCS\\s+TO\\s+WCS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6379,7 +6475,8 @@
       "en-GB": "### #MEAS MODE\n\nSwitching measurement type"
     },
     "hoverTrigger": [
-      "#MEAS MODE"
+      "#MEAS MODE",
+      "#MEAS\\s+MODE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6399,7 +6496,8 @@
       "en-GB": "### #MEAS\n\nExtended programming of measurement options"
     },
     "hoverTrigger": [
-      "#MEAS"
+      "#MEAS",
+      "#MEAS(?!\\w)(?!\\s+(?:MODE|DEFAULT|PREPARE)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6419,7 +6517,8 @@
       "en-GB": "### #MEAS DEFAULT\n\nResetting extended measurement options"
     },
     "hoverTrigger": [
-      "#MEAS DEFAULT"
+      "#MEAS DEFAULT",
+      "#MEAS\\s+DEFAULT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6439,7 +6538,8 @@
       "en-GB": "### #MEAS PREPARE\n\nPreparing for a measurement run"
     },
     "hoverTrigger": [
-      "#MEAS PREPARE"
+      "#MEAS PREPARE",
+      "#MEAS\\s+PREPARE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6459,7 +6559,8 @@
       "en-GB": "### #MSG\n\nSending a message from the NC program"
     },
     "hoverTrigger": [
-      "#MSG"
+      "#MSG",
+      "#MSG(?!\\w)(?!\\s+(?:INFO|SAVE)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6479,7 +6580,8 @@
       "en-GB": "### #MSG INFO\n\nSending a message with additional information for the receiver"
     },
     "hoverTrigger": [
-      "#MSG INFO"
+      "#MSG INFO",
+      "#MSG\\s+INFO(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6499,7 +6601,8 @@
       "en-GB": "### #MSG SAVE\n\nWriting a message to a file"
     },
     "hoverTrigger": [
-      "#MSG SAVE"
+      "#MSG SAVE",
+      "#MSG\\s+SAVE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6520,7 +6623,9 @@
     },
     "hoverTrigger": [
       "#NIBBLE ON",
-      "#NIBBLE OFF"
+      "#NIBBLE OFF",
+      "#NIBBLE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#NIBBLE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6541,7 +6646,9 @@
     },
     "hoverTrigger": [
       "#OPTIONAL EXECUTION ON",
-      "#OPTIONAL EXECUTION OFF"
+      "#OPTIONAL EXECUTION OFF",
+      "#OPTIONAL\\s+EXECUTION\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#OPTIONAL\\s+EXECUTION\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6576,7 +6683,8 @@
       "en-GB": "### #ORI MODE\n\nOrientation programming"
     },
     "hoverTrigger": [
-      "#ORI MODE"
+      "#ORI MODE",
+      "#ORI\\s+MODE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6597,7 +6705,9 @@
     },
     "hoverTrigger": [
       "#OTC ON",
-      "#OTC OFF"
+      "#OTC OFF",
+      "#OTC\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#OTC\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6617,7 +6727,8 @@
       "en-GB": "### #OVERRIDE\n\nProgrammable path override"
     },
     "hoverTrigger": [
-      "#OVERRIDE"
+      "#OVERRIDE",
+      "#OVERRIDE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6637,7 +6748,8 @@
       "en-GB": "### #PSET\n\nSelecting position preset"
     },
     "hoverTrigger": [
-      "#PSET"
+      "#PSET",
+      "#PSET(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6657,7 +6769,8 @@
       "en-GB": "### #PRESET\n\nDeselecting position preset"
     },
     "hoverTrigger": [
-      "#PRESET"
+      "#PRESET",
+      "#PRESET(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6678,7 +6791,9 @@
     },
     "hoverTrigger": [
       "#PTP ON",
-      "#PTP OFF"
+      "#PTP OFF",
+      "#PTP\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#PTP\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6699,7 +6814,9 @@
     },
     "hoverTrigger": [
       "#PUNCH ON",
-      "#PUNCH OFF"
+      "#PUNCH OFF",
+      "#PUNCH\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#PUNCH\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6719,7 +6836,8 @@
       "en-GB": "### #PUT AX\n\nReleasing axes"
     },
     "hoverTrigger": [
-      "#PUT AX"
+      "#PUT AX",
+      "#PUT\\s+AX(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6739,7 +6857,8 @@
       "en-GB": "### #PUT AX ALL\n\nReleasing all axes"
     },
     "hoverTrigger": [
-      "#PUT AX ALL"
+      "#PUT AX ALL",
+      "#PUT\\s+AX\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6759,7 +6878,8 @@
       "en-GB": "### #RETAIN CYCLE CHANGES\n\nAdopting changes in the cycle at the next higher program level"
     },
     "hoverTrigger": [
-      "#RETAIN CYCLE CHANGES"
+      "#RETAIN CYCLE CHANGES",
+      "#RETAIN\\s+CYCLE\\s+CHANGES(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6779,7 +6899,8 @@
       "en-GB": "### #RND\n\nInserting chamfers and roundings: defining rounding"
     },
     "hoverTrigger": [
-      "#RND"
+      "#RND",
+      "#RND(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6792,15 +6913,17 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#ROTATION ON ${1|,|} OFF",
+    "completionText": "#ROTATION ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #ROTATION ON / OFF\n\nAn-/ Abwahl Konturrotation",
       "en-GB": "### #ROTATION ON/OFF\n\nSelect/deselect contour rotation"
     },
     "hoverTrigger": [
-      "#ROTATION ON  OFF",
-      "#ROTATION ON  OFF"
+      "#ROTATION ON",
+      "#ROTATION OFF",
+      "#ROTATION\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#ROTATION\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6820,7 +6943,8 @@
       "en-GB": "### #RT CYCLE\n\nDefinition of real-time cycle in NC program"
     },
     "hoverTrigger": [
-      "#RT CYCLE"
+      "#RT CYCLE",
+      "#RT\\s+CYCLE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6840,7 +6964,8 @@
       "en-GB": "### #SAVE CONFIG\n\nSaving current configuration"
     },
     "hoverTrigger": [
-      "#SAVE CONFIG"
+      "#SAVE CONFIG",
+      "#SAVE\\s+CONFIG(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6853,15 +6978,17 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#SCALE ON ${1|,|} OFF",
+    "completionText": "#SCALE ${1|ON,OFF|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SCALE ON / OFF\n\nVergrößern/ Verkleinern von Konturen",
       "en-GB": "### #SCALE ON / OFF\n\nEnlarging and reducing contours"
     },
     "hoverTrigger": [
-      "#SCALE ON  OFF",
-      "#SCALE ON  OFF"
+      "#SCALE ON",
+      "#SCALE OFF",
+      "#SCALE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#SCALE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6883,7 +7010,10 @@
     "hoverTrigger": [
       "#SEGMENTATION ON",
       "#SEGMENTATION OFF",
-      "#SEGMENTATION ALL"
+      "#SEGMENTATION ALL",
+      "#SEGMENTATION\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#SEGMENTATION\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#SEGMENTATION\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6903,7 +7033,8 @@
       "en-GB": "### #SET AX\n\nDefine an axis configuration"
     },
     "hoverTrigger": [
-      "#SET AX"
+      "#SET AX",
+      "#SET\\s+AX(?!\\w)(?!\\s+(?:LINK)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6923,7 +7054,8 @@
       "en-GB": "### #SET AX LINK\n\nProgramming axis couplings"
     },
     "hoverTrigger": [
-      "#SET AX LINK"
+      "#SET AX LINK",
+      "#SET\\s+AX\\s+LINK(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6943,7 +7075,8 @@
       "en-GB": "### #SIGNAL\n\nSending signals"
     },
     "hoverTrigger": [
-      "#SIGNAL"
+      "#SIGNAL",
+      "#SIGNAL(?!\\w)(?!\\s+(?:REMOVE|READ)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6963,7 +7096,8 @@
       "en-GB": "### #SIGNAL REMOVE\n\nClearing broadcast signals"
     },
     "hoverTrigger": [
-      "#SIGNAL REMOVE"
+      "#SIGNAL REMOVE",
+      "#SIGNAL\\s+REMOVE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -6983,7 +7117,8 @@
       "en-GB": "### #SIGNAL READ\n\nReading signals without waiting"
     },
     "hoverTrigger": [
-      "#SIGNAL READ"
+      "#SIGNAL READ",
+      "#SIGNAL\\s+READ(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7003,7 +7138,8 @@
       "en-GB": "### #SINGLE STEP\n\nLocking program areas for single-step mode"
     },
     "hoverTrigger": [
-      "#SINGLE STEP"
+      "#SINGLE STEP",
+      "#SINGLE\\s+STEP(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7023,7 +7159,8 @@
       "en-GB": "### #SLOPE\n\nParameterising the acceleration profile"
     },
     "hoverTrigger": [
-      "#SLOPE"
+      "#SLOPE",
+      "#SLOPE(?!\\w)(?!\\s+(?:DEFAULT)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7043,7 +7180,8 @@
       "en-GB": "### #SLOPE DEFAULT\n\nInitial state of acceleration profile"
     },
     "hoverTrigger": [
-      "#SLOPE DEFAULT"
+      "#SLOPE DEFAULT",
+      "#SLOPE\\s+DEFAULT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7078,7 +7216,8 @@
       "en-GB": "### #SPLINE ON\n\nSelecting spline interpolation"
     },
     "hoverTrigger": [
-      "#SPLINE ON"
+      "#SPLINE ON",
+      "#SPLINE\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7113,7 +7252,8 @@
       "en-GB": "### #SPLINE OFF\n\nDeselecting spline interpolation"
     },
     "hoverTrigger": [
-      "#SPLINE OFF"
+      "#SPLINE OFF",
+      "#SPLINE\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7133,7 +7273,8 @@
       "en-GB": "### #SPLINE TYPE AKIMA\n\nSelecting Akima spline"
     },
     "hoverTrigger": [
-      "#SPLINE TYPE AKIMA"
+      "#SPLINE TYPE AKIMA",
+      "#SPLINE\\s+TYPE\\s+AKIMA(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7153,7 +7294,8 @@
       "en-GB": "### #SPLINE TYPE BSPLINE\n\nSelecting B spline"
     },
     "hoverTrigger": [
-      "#SPLINE TYPE BSPLINE"
+      "#SPLINE TYPE BSPLINE",
+      "#SPLINE\\s+TYPE\\s+BSPLINE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7173,7 +7315,8 @@
       "en-GB": "### #STOP REVERSIBLE\n\nDefining stop flags for forward/backward motion"
     },
     "hoverTrigger": [
-      "#STOP REVERSIBLE"
+      "#STOP REVERSIBLE",
+      "#STOP\\s+REVERSIBLE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7194,7 +7337,9 @@
     },
     "hoverTrigger": [
       "#STROKE DEF BEGIN",
-      "#STROKE DEF END"
+      "#STROKE DEF END",
+      "#STROKE\\s+DEF\\s+BEGIN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#STROKE\\s+DEF\\s+END(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7214,7 +7359,8 @@
       "en-GB": "### #SUPPRESS OFFSETS\n\nSuppressing offsets"
     },
     "hoverTrigger": [
-      "#SUPPRESS OFFSETS"
+      "#SUPPRESS OFFSETS",
+      "#SUPPRESS\\s+OFFSETS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7227,15 +7373,17 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "#SYNC ${1|IN,|} OUT",
+    "completionText": "#SYNC ${1|IN,OUT|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### #SYNC IN/ OUT\n\nAuf-/ Aussynchronisieren mit der Funktionalität „Conveyor Tracking“",
       "en-GB": "### #SYNC IN/ OUT\n\nSynchronising/desynchronising with the “Conveyor Tracking” functionality"
     },
     "hoverTrigger": [
-      "#SYNC IN OUT",
-      "#SYNC  OUT"
+      "#SYNC IN",
+      "#SYNC OUT",
+      "#SYNC\\s+IN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#SYNC\\s+OUT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7255,7 +7403,8 @@
       "en-GB": "### #TANGFEED\n\nAdapting minimum radius for tangential feed"
     },
     "hoverTrigger": [
-      "#TANGFEED"
+      "#TANGFEED",
+      "#TANGFEED(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7275,7 +7424,8 @@
       "en-GB": "### #TIME\n\nDwell time"
     },
     "hoverTrigger": [
-      "#TIME"
+      "#TIME",
+      "#TIME(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7295,7 +7445,8 @@
       "en-GB": "### #TIMER\n\nTime measurement"
     },
     "hoverTrigger": [
-      "#TIMER"
+      "#TIMER",
+      "#TIMER(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7315,7 +7466,8 @@
       "en-GB": "### #TLAX\n\nFree assignment of tool length correction in an axis"
     },
     "hoverTrigger": [
-      "#TLAX"
+      "#TLAX",
+      "#TLAX(?!\\w)(?!\\s+(?:DEFAULT)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7335,7 +7487,8 @@
       "en-GB": "### #TLAX DEFAULT\n\nAssigning tool length correction to the 3rd main axis"
     },
     "hoverTrigger": [
-      "#TLAX DEFAULT"
+      "#TLAX DEFAULT",
+      "#TLAX\\s+DEFAULT(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7356,7 +7509,9 @@
     },
     "hoverTrigger": [
       "#TLC ON",
-      "#TLC OFF"
+      "#TLC OFF",
+      "#TLC\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TLC\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7376,7 +7531,8 @@
       "en-GB": "### #TOOL DATA\n\nRequesting tool data"
     },
     "hoverTrigger": [
-      "#TOOL DATA"
+      "#TOOL DATA",
+      "#TOOL\\s+DATA(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7397,7 +7553,9 @@
     },
     "hoverTrigger": [
       "#TOOL LIFE READ",
-      "#TOOL LIFE REMOVE"
+      "#TOOL LIFE REMOVE",
+      "#TOOL\\s+LIFE\\s+READ(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TOOL\\s+LIFE\\s+REMOVE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7417,7 +7575,8 @@
       "en-GB": "### #TOOL LIFE DEF\n\nSetting tool life values"
     },
     "hoverTrigger": [
-      "#TOOL LIFE DEF"
+      "#TOOL LIFE DEF",
+      "#TOOL\\s+LIFE\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7437,7 +7596,8 @@
       "en-GB": "### #TOOL ORI CS\n\nOrienting tool"
     },
     "hoverTrigger": [
-      "#TOOL ORI CS"
+      "#TOOL ORI CS",
+      "#TOOL\\s+ORI\\s+CS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7457,7 +7617,8 @@
       "en-GB": "### #TOOL PREP\n\nPreparing for a tool change"
     },
     "hoverTrigger": [
-      "#TOOL PREP"
+      "#TOOL PREP",
+      "#TOOL\\s+PREP(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7477,7 +7638,8 @@
       "en-GB": "### #TOOL REFRESH\n\nRefreshing tool data in calculation"
     },
     "hoverTrigger": [
-      "#TOOL REFRESH"
+      "#TOOL REFRESH",
+      "#TOOL\\s+REFRESH(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7497,28 +7659,10 @@
       "en-GB": "### #TOOL UPDATE\n\nUpdating and refreshing tool data in calculation"
     },
     "hoverTrigger": [
-      "#TOOL UPDATE"
+      "#TOOL UPDATE",
+      "#TOOL\\s+UPDATE(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
-  },
-  {
-    "label": "#TOOL UPDATE",
-    "linkid": "208599691",
-    "shortDescription": {
-      "de-DE": "Werkzeugdaten aktualisieren und erneut einrechnen",
-      "en-GB": "Updating and refreshing tool data in calculation"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "#TOOL UPDATE",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### #TOOL UPDATE\n\nWerkzeugdaten aktualisieren und erneut einrechnen",
-      "en-GB": "### #TOOL UPDATE\n\nUpdating and refreshing tool data in calculation"
-    },
-    "hoverTrigger": [
-      "#TOOL UPDATE"
-    ]
   },
   {
     "label": "#TRACK CS ABS/ON/OFF",
@@ -7538,7 +7682,10 @@
     "hoverTrigger": [
       "#TRACK CS ABS",
       "#TRACK CS ON",
-      "#TRACK CS OFF"
+      "#TRACK CS OFF",
+      "#TRACK\\s+CS\\s+ABS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRACK\\s+CS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRACK\\s+CS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7559,7 +7706,9 @@
     },
     "hoverTrigger": [
       "#TRAFO ON",
-      "#TRAFO OFF"
+      "#TRAFO OFF",
+      "#TRAFO\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRAFO\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7579,7 +7728,8 @@
       "en-GB": "### #TRAFO PCS ID\n\nSelecting the PCS transformation"
     },
     "hoverTrigger": [
-      "#TRAFO PCS ID"
+      "#TRAFO PCS ID",
+      "#TRAFO\\s+PCS\\s+ID(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7600,7 +7750,9 @@
     },
     "hoverTrigger": [
       "#TRAFO PCS ON",
-      "#TRAFO PCS OFF"
+      "#TRAFO PCS OFF",
+      "#TRAFO\\s+PCS\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRAFO\\s+PCS\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7620,7 +7772,8 @@
       "en-GB": "### #TRAFO STACK DEF\n\nDefining a transformation stack"
     },
     "hoverTrigger": [
-      "#TRAFO STACK DEF"
+      "#TRAFO STACK DEF",
+      "#TRAFO\\s+STACK\\s+DEF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7641,7 +7794,9 @@
     },
     "hoverTrigger": [
       "#TRAFO STACK ON",
-      "#TRAFO STACK OFF"
+      "#TRAFO STACK OFF",
+      "#TRAFO\\s+STACK\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRAFO\\s+STACK\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7661,7 +7816,8 @@
       "en-GB": "### #TRANSFORM\n\nConverting positions between coordinate systems"
     },
     "hoverTrigger": [
-      "#TRANSFORM"
+      "#TRANSFORM",
+      "#TRANSFORM(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7682,7 +7838,9 @@
     },
     "hoverTrigger": [
       "#TRANSVELMIN ON",
-      "#TRANSVELMIN OFF"
+      "#TRANSVELMIN OFF",
+      "#TRANSVELMIN\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#TRANSVELMIN\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7702,7 +7860,8 @@
       "en-GB": "### #TRC\n\nProgrammable additional options of TRC"
     },
     "hoverTrigger": [
-      "#TRC"
+      "#TRC",
+      "#TRC(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7722,7 +7881,8 @@
       "en-GB": "### #TURN\n\nSettings for turning functions"
     },
     "hoverTrigger": [
-      "#TURN"
+      "#TURN",
+      "#TURN(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7757,7 +7917,8 @@
       "en-GB": "### #VAR...#ENDVAR\n\nDeclaration block for self-defined variables or parameters"
     },
     "hoverTrigger": [
-      "#VAR\\.\\.\\.#ENDVAR"
+      "#VAR\\.\\.\\.#ENDVAR",
+      "#VAR\\.\\.\\.#ENDVAR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7778,7 +7939,9 @@
     },
     "hoverTrigger": [
       "#VECTOR LIMIT ON",
-      "#VECTOR LIMIT OFF"
+      "#VECTOR LIMIT OFF",
+      "#VECTOR\\s+LIMIT\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#VECTOR\\s+LIMIT\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7798,7 +7961,8 @@
       "en-GB": "### #VIB GUARD\n\nVibration Guard mode"
     },
     "hoverTrigger": [
-      "#VIB GUARD"
+      "#VIB GUARD",
+      "#VIB\\s+GUARD(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7819,7 +7983,9 @@
     },
     "hoverTrigger": [
       "#VOLCOMP ON",
-      "#VOLCOMP OFF"
+      "#VOLCOMP OFF",
+      "#VOLCOMP\\s+ON(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*",
+      "#VOLCOMP\\s+OFF(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7839,7 +8005,8 @@
       "en-GB": "### #WAIT\n\nWaiting for signals"
     },
     "hoverTrigger": [
-      "#WAIT"
+      "#WAIT",
+      "#WAIT(?!\\w)(?!\\s+(?:FOR|INDP|INDP\\s+ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7859,7 +8026,8 @@
       "en-GB": "### #WAIT FOR\n\nWaiting for an event"
     },
     "hoverTrigger": [
-      "#WAIT FOR"
+      "#WAIT FOR",
+      "#WAIT\\s+FOR(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7879,7 +8047,8 @@
       "en-GB": "### #WAIT INDP\n\nWaiting for asynchronous independent axis"
     },
     "hoverTrigger": [
-      "#WAIT INDP"
+      "#WAIT INDP",
+      "#WAIT\\s+INDP(?!\\w)(?!\\s+(?:ALL)(?!\\w))(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7899,7 +8068,8 @@
       "en-GB": "### #WAIT INDP ALL\n\nWaiting for all asynchronous independent axes"
     },
     "hoverTrigger": [
-      "#WAIT INDP ALL"
+      "#WAIT INDP ALL",
+      "#WAIT\\s+INDP\\s+ALL(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -7919,7 +8089,8 @@
       "en-GB": "### #WCS TO MCS\n\nMapping workpiece coordinates in machine coordinates"
     },
     "hoverTrigger": [
-      "#WCS TO MCS"
+      "#WCS TO MCS",
+      "#WCS\\s+TO\\s+MCS(?!\\w)(?:[ \\t]*(?:\"[^\"\\r\\n]*\"|[^\\s;(\"]))*"
     ],
     "defaultValue": null
   },
@@ -8094,15 +8265,15 @@
     },
     "sublinks": [],
     "kind": "Snippet",
-    "completionText": "SYNC IN ${1|,|} OUT",
+    "completionText": "SYNC ${1|IN,OUT|}",
     "filterText": null,
     "hoverText": {
       "de-DE": "### SYNC IN / OUT\n\nSynchronisieren einer Achse auf Bahnverbund",
       "en-GB": "### SYNC IN/OUT\n\nSynchronising an axis in coordinated motion"
     },
     "hoverTrigger": [
-      "SYNC IN  OUT",
-      "SYNC IN  OUT"
+      "SYNC IN",
+      "SYNC OUT"
     ],
     "defaultValue": null
   },
@@ -8205,82 +8376,6 @@
       "MODULO"
     ],
     "defaultValue": null
-  },
-  {
-    "label": "SET_POSITION",
-    "linkid": "482566155",
-    "shortDescription": {
-      "de-DE": "Setzen einer Achsposition im Kanal",
-      "en-GB": "Setting an axis position in the channel"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "SET_POSITION",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### SET_POSITION\n\nSetzen einer Achsposition im Kanal",
-      "en-GB": "### SET_POSITION\n\nSetting an axis position in the channel"
-    },
-    "hoverTrigger": [
-      "SET_POSITION"
-    ]
-  },
-  {
-    "label": "FIXED_STOP",
-    "linkid": "516232715",
-    "shortDescription": {
-      "de-DE": "Fahren auf Festanschlag",
-      "en-GB": "Fixed stop"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "FIXED_STOP",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### FIXED_STOP\n\nFahren auf Festanschlag",
-      "en-GB": "### FIXED_STOP\n\nFixed stop"
-    },
-    "hoverTrigger": [
-      "FIXED_STOP"
-    ]
-  },
-  {
-    "label": "POS_LIMIT",
-    "linkid": "1014981131",
-    "shortDescription": {
-      "de-DE": "Programmierung der Softwareendschalterüberwachung",
-      "en-GB": "Programming software limit switch monitoring"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "POS_LIMIT",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### POS_LIMIT\n\nProgrammierung der Softwareendschalterüberwachung",
-      "en-GB": "### POS_LIMIT\n\nProgramming software limit switch monitoring"
-    },
-    "hoverTrigger": [
-      "POS_LIMIT"
-    ]
-  },
-  {
-    "label": "MODULO",
-    "linkid": "1014982283",
-    "shortDescription": {
-      "de-DE": "Programmierung des Modulobereichs",
-      "en-GB": "Programming modulo range"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "MODULO",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### MODULO\n\nProgrammierung des Modulobereichs",
-      "en-GB": "### MODULO\n\nProgramming modulo range"
-    },
-    "hoverTrigger": [
-      "MODULO"
-    ]
   },
   {
     "label": "MC_Home",
@@ -8569,25 +8664,6 @@
       "V\\.I\\. …"
     ],
     "defaultValue": null
-  },
-  {
-    "label": "V.I. …",
-    "linkid": "1225681547",
-    "shortDescription": {
-      "de-DE": "Globale kanalübergreifende Variablen",
-      "en-GB": "Global cross-channel variable"
-    },
-    "sublinks": [],
-    "kind": "Snippet",
-    "completionText": "V.I. …",
-    "filterText": null,
-    "hoverText": {
-      "de-DE": "### V.I. …\n\nGlobale kanalübergreifende Variablen",
-      "en-GB": "### V.I. …\n\nGlobal cross-channel variable"
-    },
-    "hoverTrigger": [
-      "V.I. …"
-    ]
   },
   {
     "label": "V.P. …",
