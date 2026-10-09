@@ -13,7 +13,12 @@ Types of changes:
 - Fixed for any bug fixes.
 - Security in case of vulnerabilities.
 
-## [Unreleased]
+## [V1.5.0]
+
+### Added
+
+- Update of generic data from [extension-resources repository](https://github.com/isg-stuttgart/extension-ressources) for additional/updatable hover and completion information.
+
 ### Fixed
 - Fixed parsing issue where the end of control blocks was trashed instead of being recognized as end of control block [Issue # 168](https://github.com/isg-stuttgart/vscode-isg-cnc/issues/168)
 - Reviewed AI-generated changes and selectively adopted the valid correctness, performance and security fixes after manual validation and adjustment [Pull Request # 180](https://github.com/isg-stuttgart/vscode-isg-cnc/pull/180).
@@ -421,6 +426,7 @@ Types of changes:
 - Initial release of the extension for testing
 
 [Unreleased]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/main...develop
+[V1.5.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.4.0...V1.5.0
 [V1.4.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.3.0...V1.4.0
 [V1.3.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.2.0...V1.3.0
 [V1.2.0]: https://github.com/isg-stuttgart/vscode-isg-cnc/compare/V1.1.0...V1.2.0
