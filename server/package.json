@@ -14,7 +14,7 @@
 		"ignore": "^5.2.4",
 		"log4js": "^6.7.1",
 		"minimatch": "^9.0.3",
-		"ts-pegjs": "^3.0.0",
+		"ts-pegjs": "^4.2.2",
 		"vscode-languageserver": "^9.0.1",
 		"vscode-languageserver-textdocument": "^1.0.11",
 		"vscode-uri": "^3.0.8"
