@@ -12,7 +12,7 @@ jobs:
     steps:
       # Note: for a hardened, secret-bearing workflow consider pinning these actions to a full commit SHA.
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci
