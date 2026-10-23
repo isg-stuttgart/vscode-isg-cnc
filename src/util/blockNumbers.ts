@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 import { digitCount, isNumeric } from "./util";
-import { ParseResults, Match, MatchType } from "../shared/languageServer";
-import { getIncludeCommentsInNumbering } from "./config";
+import { ParseResults } from "../shared/languageServerParser";
+import type { Match } from "../shared/languageServerParser";
+import { MatchType } from "../../server/src/matchTypes";
+import { getIncludeCommentsInNumbering } from "./config/config";
 import { regExpLabels } from "./ncBlockRegex";
 
 /**
@@ -92,43 +94,46 @@ export async function removeAllBlocknumbers() {
  *
  * @returns
  */
-export async function addBlocknumbersCommand() {
-    let start = 10;
-    let step = 10;
+export async function addBlocknumbersCommand(startValue?: number, stepValue?: number) {
+    let start = startValue ?? 10;
+    let step = stepValue ?? 10;
     const { activeTextEditor } = vscode.window;
 
     if (activeTextEditor) {
         const { document } = activeTextEditor;
         if (document) {
             // get start number
-            const startInput = await vscode.window.showInputBox({
-                prompt: `Type a start number.`,
-                validateInput: (input: string) => {
-                    if (!isNumeric(parseInt(input, 10))) {
-                        return "Please type a number.";
-                    }
-                },
-                value: start.toString(),
-            });
-            if (!startInput) {
-                return;
+            if (startValue === undefined) {
+                const startInput = await vscode.window.showInputBox({
+                    prompt: `Type a start number.`,
+                    validateInput: (input: string) => {
+                        if (!isNumeric(parseInt(input, 10))) {
+                            return "Please type a number.";
+                        }
+                    },
+                    value: start.toString(),
+                });
+                if (startInput === undefined || startInput === '') {
+                    return;
+                }
+                start = parseInt(startInput, 10);
             }
-            start = parseInt(startInput, 10);
 
-            // get step size
-            const stepInput = await vscode.window.showInputBox({
-                prompt: `Type a step size.`,
-                validateInput: (input: string) => {
-                    if (!isNumeric(parseInt(input, 10))) {
-                        return "Please type a number.";
-                    }
-                },
-                value: step.toString(),
-            });
-            if (!stepInput) {
-                return;
+            if (stepValue === undefined) {
+                const stepInput = await vscode.window.showInputBox({
+                    prompt: `Type a step size.`,
+                    validateInput: (input: string) => {
+                        if (!isNumeric(parseInt(input, 10))) {
+                            return "Please type a number.";
+                        }
+                    },
+                    value: step.toString(),
+                });
+                if (stepInput === undefined || stepInput === '') {
+                    return;
+                }
+                step = parseInt(stepInput, 10);
             }
-            step = parseInt(stepInput, 10);
 
             await addBlockNumbers(start, step);
         }

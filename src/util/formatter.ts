@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { getEnableFormatter } from './config';
+import { getEnableFormatter } from './config/config';
 import { Match, ParseResults } from '../shared/languageServer';
 import { regExpBlocknumbers, regExpLabels } from './ncBlockRegex';
 

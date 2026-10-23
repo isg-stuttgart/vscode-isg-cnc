@@ -1,6 +1,7 @@
 .vscode/**
 .vscode-test/**
 src/**
+vscode-isg-cnc-browser/**
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md

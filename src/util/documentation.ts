@@ -1,6 +1,6 @@
 import { printToOutputchannel } from "./outputChannel";
 import * as vscode from "vscode";
-import { getDocumentationPath, getLocale } from "./config";
+import { buildDocumentationUrl, getDocumentationPath, getLocale, isValidDocumentationId } from "./config/config";
 import * as path from "path";
 import * as fs from "fs";
 /**
@@ -19,8 +19,7 @@ export function openDocu(): void {
  * @param id the id of the documentation to open
  */
 export function openDocuWithId(id: string): void {
-    // reject ids that could escape the documentation directory (path traversal via "/", "\" or "..")
-    if (!/^[\w.-]+$/.test(id) || id.includes("..")) {
+    if (!isValidDocumentationId(id)) {
         vscode.window.showWarningMessage(`Invalid documentation id: ${id}`);
         return;
     }
@@ -35,25 +34,16 @@ export function openDocuWithId(id: string): void {
         }
     } else {
         // if the documentation path starts with http interpret it as web address and open it in browser
-        let docuAddress: string = createFullAddress();
-        const parsedDocuPath = vscode.Uri.parse(docuAddress + "#" + id);
+        const parsedDocuPath = vscode.Uri.parse(buildDocumentationUrl(getDocumentationPath(), getLocale(), id));
         vscode.env.openExternal(parsedDocuPath);
     }
 }
 
 export function createFullAddress(): string {
-    const docuPath = getDocumentationPath();
-    let localeDocuPath: string = docuPath;
-    const locale: string = getLocale();
     let docuAddress: string = "";
     const document: vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document;
     if (document) {
-        if (!localeDocuPath.endsWith('/')) {
-            localeDocuPath += "/" + `${locale}/`;
-        } else {
-            localeDocuPath += `${locale}/`;
-        }
-        docuAddress = localeDocuPath + "index.html";
+        docuAddress = buildDocumentationUrl(getDocumentationPath(), getLocale());
     }
     printToOutputchannel(`Address to the website: ${docuAddress}`);
     return docuAddress;

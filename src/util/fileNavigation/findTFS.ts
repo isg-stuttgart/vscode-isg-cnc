@@ -45,8 +45,8 @@ export function findNextTFS(): boolean {
     return false;
 }
 
-export function findAllToolCalls(): any {
-    let params = {
+export function findAllToolCalls(): Thenable<unknown> {
+    const params = {
         // backslashes must be escaped in a normal string literal, otherwise "\w"/"\d" collapse to
         // the literal letters "w"/"d" and the lookbehind stops excluding word characters/digits
         query: "(?<![\\w\\d])T[0-9]+",
@@ -54,5 +54,5 @@ export function findAllToolCalls(): any {
         isRegex: true,
         isCaseSensitive: true,
     };
-    vscode.commands.executeCommand('workbench.action.findInFiles', params);
+    return vscode.commands.executeCommand('workbench.action.findInFiles', params);
 }
