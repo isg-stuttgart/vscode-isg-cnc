@@ -23,7 +23,7 @@ Visual Studio Code V1.73.1 or higher
 ## Manuals
 
 - For more project details look at the project [pages](https://isg-stuttgart.github.io/vscode-isg-cnc/).
-- More information about the nc code syntax look at the [ISG documentation](https://www.isg-stuttgart.de/kernel-html5/).
+- More information about the nc code syntax look at the [ISG documentation](https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html).
   - Direct link to the [german programming manual](https://www.isg-stuttgart.de/kernel-html5/de-DE/index.html#414992651)
   - Direct link to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651)
 

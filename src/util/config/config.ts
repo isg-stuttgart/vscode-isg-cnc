@@ -34,14 +34,6 @@ export function getLocale(): string {
 }
 
 /**
- * Returns whether the CNC formatter is enabled. Defaults to false if the setting is unavailable.
- */
-export function getEnableFormatter(): boolean {
-    const value = vscode.workspace.getConfiguration().get("isg-cnc.enableFormatter");
-    return typeof value === "boolean" ? value : false;
-}
-
-/**
  * Returns whether output-channel logging is enabled. Defaults to false if the setting is unavailable.
  */
 export function getEnableOutputchannel(): boolean {

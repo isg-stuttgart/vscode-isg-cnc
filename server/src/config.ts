@@ -38,6 +38,11 @@ export enum CycleSnippetFormatting {
     singleLine = "single-line"
 }
 let cycleSnippetFormatting: CycleSnippetFormatting = CycleSnippetFormatting.multiLine;
+let enableFormatter = false;
+
+export function getEnableFormatter(): boolean {
+    return enableFormatter;
+}
 /**
  * @returns the current {@link CycleSnippetFormatting} to use for cycle snippets.
  */
@@ -85,6 +90,9 @@ export function updateSettings(workspaceConfig: any) {
     const failedSettings: string[] = [];
     // guard against a missing isg-cnc config section so a malformed config cannot crash the server
     const isgCncConfig = workspaceConfig?.['isg-cnc'] ?? {};
+    enableFormatter = typeof isgCncConfig['enableFormatter'] === 'boolean'
+        ? isgCncConfig['enableFormatter']
+        : false;
 
     // update documentation path (keep previous value if not provided)
     if (typeof isgCncConfig['documentationPath'] === "string") {

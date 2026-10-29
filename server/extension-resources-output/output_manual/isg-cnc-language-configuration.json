@@ -85,7 +85,7 @@
     "indentationRules": {
         "increaseIndentPattern": "^(N\\d*)? *(#VAR|#COMMENT BEGIN|\\$DO|\\$REPEAT|\\$FOR|\\$IF|\\$WHILE|\\$CASE|\\$DEFAULT|\\$ELSE|\\$ELSEIF|\\$SWITCH)",
         "decreaseIndentPattern": "^(N\\d*)? *(#ENDVAR|#COMMENT END|\\$ENDDO|\\$UNTIL|\\$ENDFOR|\\$ENDIF|\\$ENDWHILE|\\$ENDSWITCH|\\$BREAK)",
-        "indentNextLinePattern": "\\"
+        "indentNextLinePattern": "\\\\$"
     },
     "folding": {
         "markers": {

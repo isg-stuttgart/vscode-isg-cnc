@@ -26,6 +26,6 @@ Important: Doubleclick on vsix file didn't work! Install inside Visual Studio Co
 
 ## CNC Manuals
 
-- More information about the nc code syntax look at the [ISG documentation](https://www.isg-stuttgart.de/kernel-html5/).
+- More information about the nc code syntax look at the [ISG documentation](https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html).
   - Direktlink to the [german programming manual](https://www.isg-stuttgart.de/kernel-html5/de-DE/index.html#414992651)
   - Direktlink to the [english programming manual](https://www.isg-stuttgart.de/kernel-html5/en-GB/index.html#414992651) 

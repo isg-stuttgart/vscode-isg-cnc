@@ -5,7 +5,9 @@ import {
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	Position as LspPosition,
+	Range
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -17,6 +19,7 @@ import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
 import { getParseResults } from './parsingResults';
+import { provideDocumentFormattingEdits } from './formatter';
 // Create a connection for the server.
 // If --stdio flag is passed, use stdio transport; otherwise use IPC (default).
 // This allows the server to work both as a VS Code extension and as a remote LSP server over WebSocket.
@@ -56,6 +59,8 @@ connection.onInitialize(async (params: InitializeParams) => {
 	const result: InitializeResult = {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
+			documentFormattingProvider: true,
+			documentRangeFormattingProvider: true,
 			definitionProvider: true,
 			referencesProvider: true,
 			completionProvider: {
@@ -167,6 +172,37 @@ connection.onHover((docPos) => {
 		connection.window.showErrorMessage("Getting hover information failed: " + getErrorMessage(error));
 	}
 });
+
+connection.onDocumentFormatting((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return [];
+	}
+	return getFormattingEdits(document, Range.create(LspPosition.create(0, 0), document.positionAt(document.getText().length)), params.options.tabSize);
+});
+
+connection.onDocumentRangeFormatting((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return [];
+	}
+	return getFormattingEdits(document, params.range, params.options.tabSize);
+});
+
+function getFormattingEdits(document: TextDocument, range: Range, tabSize: number) {
+	// if formatter disabled, cancel
+	if (!config.getEnableFormatter()) {
+		return [];
+	}
+	try {
+		return provideDocumentFormattingEdits(document, range, tabSize);
+	} catch (error) {
+		const message = 'Error while parsing file: ' + getErrorMessage(error);
+		connection.console.error(message);
+		void connection.window.showErrorMessage(message);
+		return [];
+	}
+}
 
 function getOpenDocs(): Map<string, TextDocument> {
 	const openDocs = new Map<string, TextDocument>();
