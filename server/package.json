@@ -1,10 +1,22 @@
 {
-	"name": "cnc-language-server",
+	"name": "isg-cnc-language-server",
 	"description": "A language server to provide features to cnc-editing",
 	"version": "1.0.0",
+	"main": "./out/src/server.js",
+	"bin": {
+		"isg-cnc-language-server": "./out/src/websocketBridge.js"
+	},
+	"files": [
+		"out"
+	],
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"prepack": "npm run build",
+		"start": "node ./out/src/websocketBridge.js"
+	},
 	"license": "MIT",
 	"engines": {
-		"node": "*"
+		"node": ">=22"
 	},
 	"repository": {
 		"type": "git",
@@ -17,6 +29,13 @@
 		"ts-pegjs": "^3.0.0",
 		"vscode-languageserver": "^9.0.1",
 		"vscode-languageserver-textdocument": "^1.0.11",
-		"vscode-uri": "^3.0.8"
+		"vscode-uri": "^3.0.8",
+		"vscode-ws-jsonrpc": "^3.5.0",
+		"ws": "^8.20.1"
+	},
+	"devDependencies": {
+		"@types/node": "^20.19.43",
+		"@types/ws": "^8.5.12",
+		"typescript": "~5.7.2"
 	}
 }

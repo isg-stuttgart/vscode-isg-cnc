@@ -2,7 +2,7 @@ import { Position, Range, TextEdit } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { ParseResults } from './parsingResults';
 import type { Match } from './parserClasses';
-import { regExpBlocknumbers, regExpLabels } from '../../src/util/ncBlockRegex';
+import { regExpBlocknumbers, regExpLabels } from './ncBlockRegex';
 
 export function provideDocumentFormattingEdits(
 	document: TextDocument,

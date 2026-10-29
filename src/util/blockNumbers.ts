@@ -4,7 +4,7 @@ import { ParseResults } from "../shared/languageServerParser";
 import type { Match } from "../shared/languageServerParser";
 import { MatchType } from "../../server/src/matchTypes";
 import { getIncludeCommentsInNumbering } from "./config/config";
-import { regExpLabels } from "./ncBlockRegex";
+import { regExpLabels } from "../../server/src/ncBlockRegex";
 
 /**
  * Remove all block numbers

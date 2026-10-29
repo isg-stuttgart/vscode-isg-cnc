@@ -33,6 +33,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
+let singleFileMode = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
@@ -41,10 +42,15 @@ connection.onInitialize(async (params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
-	rootPath = params.rootUri;
-	workspaceFolderUris = params.workspaceFolders?.map(wF => wF.uri) || null;
+	const initializationOptions = params.initializationOptions as { workspaceMode?: string } | undefined;
+	singleFileMode = initializationOptions?.workspaceMode === 'single-file';
+	rootPath = singleFileMode ? null : params.rootUri;
+	workspaceFolderUris = singleFileMode ? null : params.workspaceFolders?.map(wF => wF.uri) || null;
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
+	}
+	if (singleFileMode) {
+		connection.console.info('Single-file mode active; workspace scans and cross-file lookups are disabled.');
 	}
 
 	// Does the client support the `workspace/configuration` request?
@@ -83,7 +89,7 @@ connection.onInitialized(async () => {
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
 	// change workspace folders when getting notification from client
-	if (hasWorkspaceFolderCapability) {
+	if (hasWorkspaceFolderCapability && !singleFileMode) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
 			const addedUris = _event.added.map(folder => folder.uri);
 			const removedUris = _event.removed.map(folder => folder.uri);
@@ -228,6 +234,9 @@ connection.listen();
  * @returns rootPaths of the workspace
  */
 function getRootPaths() {
+	if (singleFileMode) {
+		return null;
+	}
 	let rootPaths: string[] | null;
 	if (workspaceFolderUris) {
 		rootPaths = workspaceFolderUris.map(folder => fileURLToPath(folder));
