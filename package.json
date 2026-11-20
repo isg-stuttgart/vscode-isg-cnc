@@ -226,6 +226,12 @@
             }
         ],
         "menus": {
+            "commandPalette": [
+                {
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "when": "!isg-cnc.hideShowCursorFileOffsetInfobox"
+                }
+            ],
             "view/title": [
                 {
                     "submenu": "isg-cnc.SidebarSorting",
@@ -318,6 +324,7 @@
                 },
                 {
                     "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "when": "!isg-cnc.hideShowCursorFileOffsetInfobox",
                     "group": "isg-cnc.offset@3"
                 },
                 {
@@ -412,7 +419,7 @@
             {
                 "key": "ctrl+i ctrl+f",
                 "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !isg-cnc.hideShowCursorFileOffsetInfobox"
             },
             {
                 "key": "ctrl+i ctrl+n",

@@ -9,6 +9,7 @@
 	"files": [
 		"out"
 	],
+	"bundleDependencies": true,
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"prepack": "npm run build",
@@ -26,7 +27,6 @@
 		"ignore": "^5.2.4",
 		"log4js": "^6.7.1",
 		"minimatch": "^9.0.3",
-		"ts-pegjs": "^3.0.0",
 		"vscode-languageserver": "^9.0.1",
 		"vscode-languageserver-textdocument": "^1.0.11",
 		"vscode-uri": "^3.0.8",
@@ -36,6 +36,7 @@
 	"devDependencies": {
 		"@types/node": "^20.19.43",
 		"@types/ws": "^8.5.12",
+		"ts-pegjs": "^3.0.0",
 		"typescript": "~5.7.2"
 	}
 }
