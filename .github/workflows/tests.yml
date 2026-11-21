@@ -10,7 +10,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     name: Test on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup node
         uses: actions/setup-node@v4
         with:
