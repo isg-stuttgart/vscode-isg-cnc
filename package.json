@@ -2,7 +2,7 @@
     "name": "vscode-isg-cnc",
     "displayName": "ISG CNC",
     "description": "Support for ISG-CNC NC-Code",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "publisher": "isg-cnc",
     "galleryBanner": {
         "color": "#0BA1E2",
@@ -534,7 +534,7 @@
         "eslint": "^7.32.0",
         "glob": "^10.3.0",
         "mocha": "^12.0.2",
-        "node-gyp": "^9.1.0",
+        "node-gyp": "^13.0.2",
         "peggy": "^2.0.1",
         "ts-pegjs": "^2.2.1",
         "tsx": "^4.21.0",
@@ -547,6 +547,6 @@
         "vscode-languageclient": "^9.0.1",
         "vscode-languageserver": "^9.0.1",
         "vscode-languageserver-textdocument": "^1.0.11",
-        "vscode-uri": "^3.0.8"
+        "vscode-uri": "^3.2.0"
     }
 }
