@@ -9,7 +9,7 @@ import { getParseResults } from './parsingResults';
 import path = require('path');
 import { MatchType } from './matchTypes';
 import { ItemKind, JsonEntry } from '../extension-resources-output/src/JsonEntry';
-import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
 import { replaceLinksWithCommandUris } from './stringSearching';
 import { getCommandUriToOpenDocu } from './helper';
 /**
