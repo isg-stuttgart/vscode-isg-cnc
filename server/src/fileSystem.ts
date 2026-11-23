@@ -1,6 +1,6 @@
 import path = require("path");
 import * as fs from "fs";
-import ignore, { Ignore } from "ignore";
+import ignore = require("ignore");
 import { isCncFile } from "./config";
 import { minimatch } from 'minimatch';
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -133,7 +133,7 @@ export function getDocByUri(uri: string, openDocs: Map<string, TextDocument>): T
  */
 export class WorkspaceIgnorer {
     private workspacePath: string;
-    private ignorer: Ignore;
+    private ignorer: ignore.Ignore;
 
     constructor(workspacePath: string) {
         const ig = ignore();

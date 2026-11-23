@@ -6,6 +6,10 @@
 		"lib": [
 			"ES2021"
 		],
+		"types": [
+			"node",
+			"mocha"
+		],
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
