@@ -102,7 +102,7 @@ start                                                       // start rule
   blockedBlockNumbersUnsorted.forEach(blockNumber => {
     numberableLinesUnsorted.delete(blockNumber);
   });
-  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc} // return the syntax information
+  return {fileTree:fileTree, numberableLinesUnsorted:numberableLinesUnsorted, mainPrgLoc:mainPrgLoc};
 }
 
 anyTrash "anyTrash"                                         // any trash which is not a file, only needed for cancellation after timeout
