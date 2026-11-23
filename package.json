@@ -544,7 +544,7 @@
         "vscode-languageserver-types": "^3.17.5"
     },
     "dependencies": {
-        "ignore": "^5.2.4",
+        "ignore": "^7.0.10",
         "minimatch": "^9.0.3",
         "vscode-languageclient": "^9.0.1",
         "vscode-languageserver": "^10.1.2",
