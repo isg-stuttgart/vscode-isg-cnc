@@ -1,10 +1,14 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
+		"esModuleInterop": true,
 		"target": "ES2021",
 		"outDir": "out",
 		"lib": [
 			"ES2021"
+		],
+		"types": [
+			"node"
 		],
 		"resolveJsonModule": true,
 		"sourceMap": true,

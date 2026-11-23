@@ -10,8 +10,8 @@ import { getDocByUri } from "./fileSystem";
 import { getLocale, Locale } from "./config";
 import { getSurroundingVar, replaceLinksWithCommandUris } from "./stringSearching";
 import { MatchType } from "./matchTypes";
-import * as rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
-import * as rawCycleData from '../extension-resources-output/output_generated/genericCycles.json';
+import rawJsonData from '../extension-resources-output/output_generated/genericMerged.json';
+import rawCycleData from '../extension-resources-output/output_generated/genericCycles.json';
 import { JsonEntry } from "../extension-resources-output/src/JsonEntry";
 import { getCommandUriToOpenDocu } from "./helper";
 const jsonEntries: JsonEntry[] = JsonEntry.parseJsonList([...rawJsonData, ...rawCycleData] as any[]);
@@ -206,7 +206,8 @@ function findFirstNonWhitespaceOffsetBefore(defDoc: TextDocument, position: Posi
     // this can be done because #COMMENT END is always at the end of the line
     const newPos = new Position(position.line, 0);
     let offset = defDoc.offsetAt(newPos) - 1;
-    while (offset >= 0 && /\s/.test(defDoc.getText(Range.create(defDoc.positionAt(offset), defDoc.positionAt(offset + 1)))) && offset < defDoc.getText().length) {
+    const text = defDoc.getText();
+    while (offset >= 0 && /\s/.test(text[offset])) {
         offset--;
     }
     return offset;

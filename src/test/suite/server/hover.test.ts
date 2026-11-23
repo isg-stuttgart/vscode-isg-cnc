@@ -106,6 +106,17 @@ suite('LS Doc Comment Hover Content', () => {
         assert.ok(gotoLabelHover?.includes("Doc for testLabel"));
     });
 
+    test("Variable hover prioritizes block comments with LF and CRLF", async () => {
+        const source = (await vscode.workspace.openTextDocument(docHover1Uri)).getText();
+        // Verify the same hover behavior with both Unix (LF) and Windows (CRLF) line endings.
+        for (const lineEnding of ["\n", "\r\n"]) {
+            const text = source.replace(/\r\n|\r|\n/g, lineEnding);
+            const document = TextDocument.create(docHover1Uri.toString(), "isg-cnc", 0, text);
+            const hover = getHoverInformation({ line: 35, character: 5 }, document, null, new Map<string, TextDocument>());
+            assert.ok(JSON.stringify(hover?.contents).includes("First Prio Doc for V.P.VAR_1"));
+        }
+    });
+
     test("Hover Content for Variable", async () => {
         await vscode.workspace.openTextDocument(docHover1Uri);
 
