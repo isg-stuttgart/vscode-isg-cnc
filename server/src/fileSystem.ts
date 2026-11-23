@@ -1,6 +1,6 @@
 import path = require("path");
 import * as fs from "fs";
-import ignore = require("ignore");
+import ignore from "ignore";
 import { isCncFile } from "./config";
 import { minimatch } from 'minimatch';
 import { TextDocument } from "vscode-languageserver-textdocument";
