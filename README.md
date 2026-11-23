@@ -99,6 +99,9 @@ Please find and report issues on [git issues](https://github.com/isg-stuttgart/v
 For release notes see [changlog.md](CHANGELOG.md).
 
 ## Testing of the extension
+
+The development and test toolchain requires Node.js 22.13 or newer in the Node 22 release line, or Node.js 24 or newer. This requirement applies to development tools such as ESLint, not to installing the VS Code extension.
+
 All extension utilities (client + server) are being tested by running mocha tests in
 a vscode test instance with [electron](https://www.npmjs.com/package/@vscode/test-electron). \
 The tests are located in the [test](src/test/suite) folder being split in client and server tests. \
