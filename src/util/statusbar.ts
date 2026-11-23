@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getCurrentFileOffset } from "./fileoffset";
+import { getCurrentFileOffset } from "./fileNavigation/fileoffset";
 
 /**
  * Statusbar items

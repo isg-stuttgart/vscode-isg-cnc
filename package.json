@@ -42,6 +42,7 @@
     "homepage": "https://github.com/isg-stuttgart/vscode-isg-cnc/blob/main/README.md",
     "markdown": "github",
     "main": "./out/src/extension.js",
+    "browser": "./out/src/browser.js",
     "activationEvents": [],
     "contributes": {
         "configurationDefaults": {
@@ -191,7 +192,7 @@
             {
                 "command": "isg-cnc.AlignEqualSigns",
                 "title": "ISG-CNC: Align equal signs in selected range",
-                "enablement": "editorHasSelection"
+                "enablement": "editorHasSelection || inQuickOpen"
             },
             {
                 "command": "isg-cnc.AlignComments",
@@ -225,6 +226,12 @@
             }
         ],
         "menus": {
+            "commandPalette": [
+                {
+                    "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "when": "!isg-cnc.hideShowCursorFileOffsetInfobox"
+                }
+            ],
             "view/title": [
                 {
                     "submenu": "isg-cnc.SidebarSorting",
@@ -317,6 +324,7 @@
                 },
                 {
                     "command": "isg-cnc.ShowCursorFileOffsetInfobox",
+                    "when": "!isg-cnc.hideShowCursorFileOffsetInfobox",
                     "group": "isg-cnc.offset@3"
                 },
                 {
@@ -411,7 +419,7 @@
             {
                 "key": "ctrl+i ctrl+f",
                 "command": "isg-cnc.ShowCursorFileOffsetInfobox",
-                "when": "editorTextFocus"
+                "when": "editorTextFocus && !isg-cnc.hideShowCursorFileOffsetInfobox"
             },
             {
                 "key": "ctrl+i ctrl+n",
@@ -516,7 +524,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./ && tsc -p ./server",
+        "compile": "tsc -p ./ && tsc -p ./server && esbuild src/browser.ts --bundle --platform=browser --format=cjs --target=es2021 --external:vscode --outfile=out/src/browser.js",
         "watch": "tsc -watch -p ./ && tsc -watch -p ./server",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src server/src --ext ts --max-warnings 0",
@@ -532,6 +540,7 @@
         "@typescript-eslint/eslint-plugin": "^8.73.0",
         "@typescript-eslint/parser": "^8.73.0",
         "@vscode/test-electron": "^3.1.0",
+        "esbuild": "^0.25.12",
         "eslint": "^10.15.0",
         "glob": "^10.3.0",
         "mocha": "^12.0.2",

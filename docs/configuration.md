@@ -29,7 +29,7 @@ You can change the settings in the graphical settings in visual studio code.
 
 ### Documentation settings
 
-- Check the correct path to your documentation. [Default is ISG online documentation](https://www.isg-stuttgart.de/kernel-html5/)
+- Check the correct path to your documentation. [Default is ISG online documentation](https://www.isg-stuttgart.de/fileadmin/kernel/kernel-html)
 
 ![settings documentation](images/vscode-isg-cnc_documentation_settings.png)
 

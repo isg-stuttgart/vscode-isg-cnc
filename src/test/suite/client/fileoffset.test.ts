@@ -1,6 +1,6 @@
 import assert = require("assert");
 import { getPathOfWorkspaceFile, openTestFile } from "../testHelper";
-import { getCurrentFileOffset, setCursorPosition, showCursorFileOffsetInfobox } from "../../../util/fileoffset";
+import { getCurrentFileOffset, setCursorPosition, showCursorFileOffsetInfobox } from "../../../util/fileNavigation/fileoffset";
 import * as vscode from "vscode";
 // get the absolute path of testWithEverything.nc
 const testWithEverythingPath = getPathOfWorkspaceFile("testWithEverything.nc");

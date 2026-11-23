@@ -5,7 +5,9 @@ import {
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	TextDocumentSyncKind,
-	InitializeResult
+	InitializeResult,
+	Position as LspPosition,
+	Range
 } from 'vscode-languageserver/node';
 import { fileURLToPath } from 'node:url';
 import {
@@ -17,6 +19,7 @@ import * as config from './config';
 import { getCompletions, updateStaticCycleCompletions, updateStaticGeneralCompletions } from './completion';
 import { getHoverInformation } from './hover';
 import { getParseResults } from './parsingResults';
+import { provideDocumentFormattingEdits } from './formatter';
 // Create a connection for the server.
 // If --stdio flag is passed, use stdio transport; otherwise use IPC (default).
 // This allows the server to work both as a VS Code extension and as a remote LSP server over WebSocket.
@@ -30,6 +33,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
+let singleFileMode = false;
 let rootPath: string | null;
 let workspaceFolderUris: string[] | null = null;
 
@@ -38,10 +42,15 @@ connection.onInitialize(async (params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
 	// save rootPath and convert it to normal fs-path
-	rootPath = params.rootUri;
-	workspaceFolderUris = params.workspaceFolders?.map(wF => wF.uri) || null;
+	const initializationOptions = params.initializationOptions as { workspaceMode?: string } | undefined;
+	singleFileMode = initializationOptions?.workspaceMode === 'single-file';
+	rootPath = singleFileMode ? null : params.rootUri;
+	workspaceFolderUris = singleFileMode ? null : params.workspaceFolders?.map(wF => wF.uri) || null;
 	if (rootPath) {
 		rootPath = fileURLToPath(rootPath);
+	}
+	if (singleFileMode) {
+		connection.console.info('Single-file mode active; workspace scans and cross-file lookups are disabled.');
 	}
 
 	// Does the client support the `workspace/configuration` request?
@@ -56,6 +65,8 @@ connection.onInitialize(async (params: InitializeParams) => {
 	const result: InitializeResult = {
 		capabilities: {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
+			documentFormattingProvider: true,
+			documentRangeFormattingProvider: true,
 			definitionProvider: true,
 			referencesProvider: true,
 			completionProvider: {
@@ -78,7 +89,7 @@ connection.onInitialized(async () => {
 		connection.client.register(DidChangeConfigurationNotification.type, undefined);
 	}
 	// change workspace folders when getting notification from client
-	if (hasWorkspaceFolderCapability) {
+	if (hasWorkspaceFolderCapability && !singleFileMode) {
 		connection.workspace.onDidChangeWorkspaceFolders(_event => {
 			const addedUris = _event.added.map(folder => folder.uri);
 			const removedUris = _event.removed.map(folder => folder.uri);
@@ -168,6 +179,37 @@ connection.onHover((docPos) => {
 	}
 });
 
+connection.onDocumentFormatting((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return [];
+	}
+	return getFormattingEdits(document, Range.create(LspPosition.create(0, 0), document.positionAt(document.getText().length)), params.options.tabSize);
+});
+
+connection.onDocumentRangeFormatting((params) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return [];
+	}
+	return getFormattingEdits(document, params.range, params.options.tabSize);
+});
+
+function getFormattingEdits(document: TextDocument, range: Range, tabSize: number) {
+	// if formatter disabled, cancel
+	if (!config.getEnableFormatter()) {
+		return [];
+	}
+	try {
+		return provideDocumentFormattingEdits(document, range, tabSize);
+	} catch (error) {
+		const message = 'Error while parsing file: ' + getErrorMessage(error);
+		connection.console.error(message);
+		void connection.window.showErrorMessage(message);
+		return [];
+	}
+}
+
 function getOpenDocs(): Map<string, TextDocument> {
 	const openDocs = new Map<string, TextDocument>();
 	const allDocs = documents.all();
@@ -192,6 +234,9 @@ connection.listen();
  * @returns rootPaths of the workspace
  */
 function getRootPaths() {
+	if (singleFileMode) {
+		return null;
+	}
 	let rootPaths: string[] | null;
 	if (workspaceFolderUris) {
 		rootPaths = workspaceFolderUris.map(folder => fileURLToPath(folder));

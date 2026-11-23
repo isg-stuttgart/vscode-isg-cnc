@@ -1,4 +1,5 @@
-import { Match, ParseResults } from '../shared/languageServer';
+import { ParseResults } from '../shared/languageServerParser';
+import type { Match } from '../shared/languageServerParser';
 import * as vscode from 'vscode';
 
 /**
@@ -58,66 +59,67 @@ export async function alignComments(): Promise<void> {
 }
 
 /**
- * Aligns the first equal signs in the current editor selection below each other.
+ * Aligns assignment equal signs in the selected range, or in the current editor selection.
  */
-export async function alignEqualSigns(): Promise<void> {
-    const editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
-    if (editor && editor.document) {
-        const selection: vscode.Selection = editor.selection;
-        if (!selection.isEmpty) {
-            const lines: Array<EqSignLine> = new Array();
-            // collect all selected lines with a real assignment "="
-            for (let ln = selection.start.line; ln <= selection.end.line; ln++) {
-                //get intersection of selection and current line to only handle selected part when in first or last line
-                const range = selection.intersection(editor.document.lineAt(ln).range);
-                if (range) {
-                    const text = editor.document.getText(range);
-                    // only align a real assignment "=", never a comparison operator (==, <=, >=, !=)
-                    const eqIndex = findAssignmentEqualIndex(text);
-                    if (eqIndex !== -1) {
-                        lines.push(new EqSignLine(text, range, eqIndex));
-                    }
-                }
-            }
+export async function alignEqualSigns(
+    documentUri?: string,
+    rangeArgs?: [number, number, number, number]
+): Promise<boolean> {
+    const editor = vscode.window.activeTextEditor;
+    const document = documentUri
+        ? await vscode.workspace.openTextDocument(vscode.Uri.parse(documentUri))
+        : editor?.document;
+    const selection = rangeArgs
+        ? new vscode.Range(...rangeArgs)
+        : editor?.selection;
 
-            // align equal signs
-            const maxBeforeEqLength = Math.max(...lines.map(line => line.beforeEq.length + line.range.start.character));
-            const textEdits: vscode.TextEdit[] = [];
-            lines.forEach(line => textEdits.push(vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqLength))));
+    if (!document || !selection || selection.isEmpty) {
+        return false;
+    }
 
-            // write back edits
-            const workEdits = new vscode.WorkspaceEdit();
-            workEdits.set(editor.document.uri, textEdits);
-            await vscode.workspace.applyEdit(workEdits);
+    const lines: Array<EqSignLine> = [];
+    for (let lineNumber = selection.start.line; lineNumber <= selection.end.line; lineNumber++) {
+        const range = selection.intersection(document.lineAt(lineNumber).range);
+        if (!range) {
+            continue;
+        }
+
+        const text = document.getText(range);
+        const equalsIndex = findAssignmentEqualIndex(text);
+        if (equalsIndex !== -1) {
+            lines.push(new EqSignLine(text, range, equalsIndex));
         }
     }
+
+    if (lines.length < 2) {
+        return false;
+    }
+
+    const maxBeforeEqualsLength = Math.max(...lines.map((line) => line.beforeEquals.length + line.range.start.character));
+    const edits = lines.map((line) => vscode.TextEdit.replace(line.range, line.getAligned(maxBeforeEqualsLength)));
+    const workspaceEdit = new vscode.WorkspaceEdit();
+    workspaceEdit.set(document.uri, edits);
+    return vscode.workspace.applyEdit(workspaceEdit);
 }
 
-/**
- * Returns the index of the first real assignment "=" in the line, i.e. an "=" that is not part of
- * a comparison operator ("==", "<=", ">=", "!="). Returns -1 if there is no such assignment.
- */
 function findAssignmentEqualIndex(line: string): number {
     const match = /(?<![=<>!])=(?!=)/.exec(line);
-    return match ? match.index : -1;
+    return match?.index ?? -1;
 }
 
-/**
- * Helper class to save the information about the equal sign lines.
- */
 class EqSignLine {
-    beforeEq: string;
-    afterEq: string;
-    range: vscode.Range;
-    constructor(line: string, range: vscode.Range, eqIndex: number) {
-        this.beforeEq = line.substring(0, eqIndex).trimEnd();
-        this.afterEq = line.substring(eqIndex + 1).trimStart();
-        this.range = range;
+    readonly beforeEquals: string;
+    private readonly afterEquals: string;
+
+    constructor(readonly text: string, readonly range: vscode.Range, equalsIndex: number) {
+        this.beforeEquals = text.substring(0, equalsIndex).trimEnd();
+        this.afterEquals = text.substring(equalsIndex + 1).trimStart();
     }
 
-    getAligned(maxBeforeEqLength: number): string {
-        const lengthBefore = this.beforeEq.length + this.range.start.character;
-        const paddingLength = maxBeforeEqLength - lengthBefore;
-        return this.beforeEq + ' '.repeat(paddingLength) + " = " + this.afterEq;
+    getAligned(maxBeforeEqualsLength: number): string {
+        const currentLength = this.beforeEquals.length + this.range.start.character;
+        const paddingLength = maxBeforeEqualsLength - currentLength;
+        return `${this.beforeEquals}${' '.repeat(paddingLength)} = ${this.afterEquals}`;
     }
 }
+

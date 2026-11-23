@@ -1,0 +1,5 @@
+src/
+tsconfig.json
+README.md
+.vscodeignore
+node_modules/

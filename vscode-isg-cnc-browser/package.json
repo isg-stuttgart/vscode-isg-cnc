@@ -1,0 +1,46 @@
+{
+  "name": "vscode-isg-cnc-browser",
+  "displayName": "ISG CNC Browser Test Extension",
+  "description": "Browser-compatible command tests for the ISG-CNC Monaco integration.",
+  "version": "0.0.11",
+  "publisher": "isg-cnc",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.86.2"
+  },
+  "browser": "./out/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "isg-cnc-browser.alignEqualSigns",
+        "title": "ISG CNC Browser: Align Equal Signs",
+        "enablement": "editorHasSelection || inQuickOpen"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "isg-cnc-browser.alignEqualSigns"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "isg-cnc-browser.alignEqualSigns",
+          "group": "isg-cnc.align@8"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p tsconfig.json",
+    "package": "npm run compile && vsce package --no-dependencies --allow-missing-repository --allow-star-activation"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.86.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "~5.7.2"
+  }
+}

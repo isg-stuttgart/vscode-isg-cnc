@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getEnableOutputchannel } from "./config";
+import { getEnableOutputchannel } from "./config/config";
 const outputChannel = vscode.window.createOutputChannel("ISG-CNC");
 vscode.workspace.onDidChangeConfiguration(() => {
     updateOutputchannel();

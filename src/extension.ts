@@ -9,18 +9,17 @@ import {
 } from 'vscode-languageclient/node';
 import * as fileContentTree from "./util/fileContentTree";
 import * as blowfish from "./util/encryption/encryption";
-import * as formatter from "./util/formatter";
-import { addToIgnore } from "./util/ignoreFileCommands";
+import { addToIgnore } from "./util/config/ignoreFileCommands";
 import * as statusbar from "./util/statusbar";
-import * as fileoffset from "./util/fileoffset";
+import * as fileoffset from "./util/fileNavigation/fileoffset";
 import { addBlocknumbersCommand, removeAllBlocknumbers } from "./util/blockNumbers";
 import { openDocu, openDocuWithId } from "./util/documentation";
 import { disposeOutputchannel, printToOutputchannel } from "./util/outputChannel";
-import { findAllToolCalls, findNextTFS } from "./util/findTFS";
-import { changeLanguageMode } from "./util/config";
+import { findAllToolCalls, findNextTFS } from "./util/fileNavigation/findTFS";
+import { changeLanguageMode } from "./util/config/configNode";
 import { alignComments, alignEqualSigns } from "./util/aligning";
-import { highlightNonAsciiChars } from "./util/nonAsciiCharacters";
-import { jumpIntoFileAtOffset } from "./util/fileoffset";
+import { highlightNonAsciiChars } from "./util/fileNavigation/nonAsciiWithOutputChannel";
+import { jumpIntoFileAtOffset } from "./util/fileNavigation/fileoffset";
 //NC-file sidebar tree provider
 export let fileContentProvider: fileContentTree.FileContentProvider;
 // package.json information
@@ -78,11 +77,6 @@ export function activate(context: vscode.ExtensionContext): void {
     } catch (error) {
         console.error(error);
     }
-
-    // code formatter
-    context.subscriptions.push(
-        vscode.languages.registerDocumentRangeFormattingEditProvider('isg-cnc', new formatter.DocumentRangeFormattingEditProvider())
-    );
 
     //NC-file sidebar tree provider
     fileContentProvider = new fileContentTree.FileContentProvider(extContext);

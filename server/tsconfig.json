@@ -4,6 +4,7 @@
 		"esModuleInterop": true,
 		"target": "ES2021",
 		"outDir": "out",
+		"rootDir": ".",
 		"lib": [
 			"ES2021"
 		],
