@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { getPathOfWorkspaceFile } from '../testHelper';
 import { getHoverInformation } from '../../../../server/src/hover';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { Hover, MarkupContent } from 'vscode-languageserver';
+import type { Hover, MarkupContent } from 'vscode-languageserver-types';
 const commands = vscode.commands;
 // open test file
 const testFilePath = getPathOfWorkspaceFile("isgCycles_test.nc");

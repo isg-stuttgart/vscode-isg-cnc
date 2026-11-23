@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { getPathOfWorkspaceFile } from '../testHelper';
 import { getCycleCompletions } from '../../../../server/src/completion';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { CompletionItem } from 'vscode-languageserver';
+import type { CompletionItem } from 'vscode-languageserver-types';
 // open test file
 const testFilePath = getPathOfWorkspaceFile("isgCycles_test.nc");
 const testFileUri = vscode.Uri.file(testFilePath);
