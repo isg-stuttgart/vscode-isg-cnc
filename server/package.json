@@ -29,7 +29,7 @@
 		"minimatch": "^11.0.8",
 		"vscode-languageserver": "^11.0.0",
 		"vscode-languageserver-textdocument": "^1.0.16",
-		"vscode-uri": "^3.0.8",
+		"vscode-uri": "^3.2.0",
 		"vscode-ws-jsonrpc": "^3.5.0",
 		"ws": "^8.20.1"
 	},
