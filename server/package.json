@@ -26,7 +26,7 @@
 	"dependencies": {
 		"ignore": "^7.0.16",
 		"log4js": "^6.7.1",
-		"minimatch": "^11.0.8",
+		"minimatch": "^11.0.9",
 		"vscode-languageserver": "^11.0.0",
 		"vscode-languageserver-textdocument": "^1.0.16",
 		"vscode-uri": "^3.0.8",
